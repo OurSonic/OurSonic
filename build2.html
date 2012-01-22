@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head> 
+        <meta name="viewport" content = "width = device-width, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, user-scalable = no" />  
+    <title>Spoke </title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js" type="text/javascript">
+    </script>
+    <script src="javascript/GCanvas.js" type="text/javascript"> 
+    </script>
+    <script type="text/javascript">
+                                //<![CDATA[
+        $(function () {
+            var myCanv = new GCanvas("build");
+            grad = myCanv.addGradient(100, 120, 90, "magenta", "yellow");
+            grad.click = function (e) {
+
+            };
+
+            grad.drag = { start: function (e) { e.node.ox = e.x - e.node.x; e.node.oy = e.y - e.node.y; }, move: function (e) { e.node.x = e.x - e.node.ox; e.node.y = e.y - e.node.oy; }, end: function (e) { } };
+
+        }); 
+                        //]]>
+    </script>
+</head>
+<body style="background-color: #000080;">
+    <canvas id="build" style="margin: 0px; position: absolute; top: 0px; left: 0px;"></canvas>
+</body>
+</html>

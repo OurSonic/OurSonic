@@ -1,0 +1,363 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CodeMirror 2: Spoke mode</title>
+    <link rel="stylesheet" href="codemirror.css">
+    <script src="codemirror.js"></script>
+    <script src="spoke.js"></script>
+    <link rel="stylesheet" href="default.css">
+  </head>
+  <body>
+    <h3>Spoke Editor</h3>
+
+<div><textarea id="code" name="code" >macro ;clonearray &;=>|(rrb)
+	rrb=>|(a89)
+		yield (a89)
+		
+macro ;&<&>;=>|(items,expressionc)
+	items=>|(_abb)
+		if expressionc(_abb)
+			return _abb
+	return null
+
+macro ;[&>>&];=>|(a333,v333)
+	(a333<=v333)=>
+		yield a333
+		a333=a333+1
+
+macro ;&{&};=>|(items1,expression)
+	items1=>|(_ff)
+		if expression(_ff)
+			yield return _ff
+
+macro ;&++;=>|(ref index)
+	f=index
+	index=index+1
+	return f-1
+
+macro ;&+=&;=>|(ref ba,gi)
+	fjf=ba
+	ba=ba+gi
+	return fjf
+
+macro ;&--;=>|(ref index)
+	f=index
+	index=index-1
+	return f+1
+	
+macro ;&-=&;=>|(ref index,v)
+	index=index-v
+	return index
+
+macro ;&**&;=>|(str,num)
+	a=0
+	strb=""
+	(a<=num)=>
+		strb=strb+str
+		a=a+1
+	return strb
+
+macro ;&?&:&;=>|(con,l1,l2)
+	if con
+		return l1
+	else
+		return l2
+
+class Main 
+
+	spades=create Pile("spades")
+	clubs=create Pile("clubs")
+	hearts=create Pile("hearts")
+	diamonds=create Pile("diamonds")
+	sorter={}
+	
+	cardgame=create CardGame()
+
+
+	def ()
+		cardgame.mainArea.pilePaths.add(create TablePilePath(){visible=true,stack=false,name="Clubs",xPosition=0,yPosition=0,width=0,height=13,rotateAngle=0-90,pile=clubs})
+		cardgame.mainArea.pilePaths.add(create TablePilePath(){visible=true,stack=false,name="Hearts",xPosition=1,yPosition=0,width=0,height=13,rotateAngle=0-90,pile=hearts})
+		cardgame.mainArea.pilePaths.add(create TablePilePath(){visible=true,stack=false,name="Diamonds",xPosition=2,yPosition=0,width=0,height=13,rotateAngle=0-90,pile=diamonds})
+		cardgame.mainArea.pilePaths.add(create TablePilePath(){visible=true,stack=false,name="Spades",xPosition=3,yPosition=0,width=0,height=13,rotateAngle=0-90,pile=spades})
+		
+		cardgame.mainArea.textAreas.add(create TableTextArea(){name="SpadesText",xPosition=0,yPosition=0,text="Clubs",rotateAngle=0-90})
+		cardgame.mainArea.textAreas.add(create TableTextArea(){name="ClubsText",xPosition=1,yPosition=0,text="Hearts",rotateAngle=0-90})
+		cardgame.mainArea.textAreas.add(create TableTextArea(){name="HeartsText",xPosition=2,yPosition=0,text="Diamonds",rotateAngle=0-90})
+		cardgame.mainArea.textAreas.add(create TableTextArea(){name="DiamondsText",xPosition=3,yPosition=0,text="Spades",rotateAngle=0-90})
+		
+		sorter=|(left,right)=>
+			return left.Value>right.Value
+		runGame()
+
+
+	def shuffle(arbs)
+	
+		indes=0
+		vafb=clonearray arbs 
+
+		arbs=>|(fs)
+			vm=nextRandom(0,vafb.length())
+			d=vafb[indes]
+			vafb[indes]=vafb[vm]
+			indes++
+			vafb[vm]=d
+
+		return vafb
+
+	def createUser(userIndex,text)
+		ua=create TableArea()
+		switch userIndex
+			0:
+			1: 
+			3:
+			4:
+				ua.numberOfCardsHorizontal=-1
+				ua.numberOfCardsVertical=4
+				ua.pilePaths.add(create TableSpace(){visible=true,stack=false,name="User"+userIndex,xPosition=0,yPosition=1,width=-1,height=1,bend=true,rotateAngle=0})
+				ua.textAreas.add(create TableTextArea(){name="Text"+userIndex,xPosition=1,yPosition=0,text=text})
+			2:
+			5:
+				ua.numberOfCardsHorizontal=4
+				ua.numberOfCardsVertical=-1
+				rotate=0
+				if userIndex==2
+					rotate=90
+				else
+					rotate=-90
+				ua.pilePaths.add(create TableSpace(){visible=true,stack=false,name="User"+userIndex,xPosition=1,yPosition=0,width=1,height=-1,bend=true,rotateAngle=rotate})
+				ua.textAreas.add(create TableTextArea(){name="Text"+userIndex,xPosition=0,yPosition=1,text=text}) 
+
+		switch userIndex
+			0:
+				ua.dimensions=(create Rectangle()).make(120,5,310,140)
+			1:
+				ua.dimensions=(create Rectangle()).make(490,5,310,140)
+			2:
+				ua.dimensions=(create Rectangle()).make(800,180,140,310)
+			3:
+				ua.dimensions=(create Rectangle()).make(495,524,310,140)
+			4:
+				ua.dimensions=(create Rectangle()).make(120,524,310,140)
+			5:
+				ua.dimensions=(create Rectangle()).make(5,180,140,310)
+		return ua
+  
+
+	def runGame()
+		[1>>20]=>
+			cardgame.deck=shuffle(cardgame.deck)
+
+		cardgame.users=>|(u,ind)
+			yc=createUser(ind,u.Name)
+			yc.pilePaths[0].pile=u.Cards
+			cardgame.userAreas.add(yc)
+
+		(cardgame.deck.length()>0)=>
+			cardgame.users=>|(u)
+				if cardgame.deck.length()>0
+					u.Cards.Cards.add(cardgame.deck[0])
+					cardgame.deck.remove(cardgame.deck[0])
+		cardgame.users=>|(u)
+			u.Cards.Cards=sortArray(u.Cards.Cards,sorter)
+
+
+		CardTypes=["","Hearts","Clubs","Diamonds","Spades"]
+		CardNames=["","Ace","Deuce","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Jack","Queen","King"]
+		
+		(1<2)=>
+			cardgame.users=>|(u,IND)
+
+				usable=[u.Cards.Cards{|(_)=>
+					return _.Type==4 && (_.Value==7 || this.spades.Cards<|(__)=> 
+						return __.Value==_.Value+1 || __ .Value==_.Value-1
+					>!=null)
+				},u.Cards.Cards{|(_)=>
+					return _.Type==2 && (_.Value==7 || this.clubs.Cards<|(__)=> 
+						return __.Value==_.Value+1 || __ .Value==_.Value-1
+					>!=null)
+				},u.Cards.Cards{|(_)=>
+					return _.Type==1 && (_.Value==7 || this.hearts.Cards<|(__)=> 
+						return __.Value==_.Value+1 || __ .Value==_.Value-1
+					>!=null)
+				},u.Cards.Cards{|(_)=>
+					return _.Type==3 && (_.Value==7 || this.diamonds.Cards<|(__)=> 
+						return __.Value==_.Value+1 || __ .Value==_.Value-1
+					>!=null)
+				}]
+
+				
+				answers=[]
+				answers.add("Skip")
+				sortArray(usable,sorter)=>|(card)
+					answers.add(CardNames[card.Value]+" Of "+(CardTypes[card.Type]))
+						
+				de=askQuestion(u,"Which card would you like to play?",answers,cardgame)
+
+
+				if de>0
+					rm=usable[de-1]
+					if rm.Type==4
+						u.Cards.Cards.remove(rm)
+						this.spades.Cards.add(rm)
+						this.spades.Cards=sortArray(this.spades.Cards,sorter)
+					if rm.Type==2
+						u.Cards.Cards.remove(rm)
+						this.clubs.Cards.add(rm)
+						this.clubs.Cards=sortArray(this.clubs.Cards,sorter)
+					if rm.Type==1
+						u.Cards.Cards.remove(rm)
+						this.hearts.Cards.add(rm)
+						this.hearts.Cards=sortArray(this.hearts.Cards,sorter)
+					if rm.Type==3
+						u.Cards.Cards.remove(rm)
+						this.diamonds.Cards.add(rm)
+						this.diamonds.Cards=sortArray(this.diamonds.Cards,sorter)
+				if u.Cards.length()==0
+					return u
+				
+				
+		return {Cards=create Pile(""),Name=""}
+				
+
+
+	def sortArray(vr,fbc)
+		ar=vr
+		i=ar.length()-1
+		(i>=0)=>
+			j=1
+			(j<=i)=>
+				if(fbc(ar[j-1],ar[j]))
+					temp=ar[j-1]
+					ar[j-1]=ar[j]
+					ar[j]=temp
+				j++
+			i-- 
+		
+		return ar
+
+
+
+
+class Pile
+	Cards=[]
+	Name=""
+
+	def (name)
+		Name=name
+		Cards.add(create Card(0,0))
+		Cards.clear()
+	def length()
+		return Cards.length()
+
+class Card
+	Value=0
+	Type=0
+	CardName=""
+	effects=type Effect[]
+	
+	def (v,t)
+		Value=v
+		Type=t
+
+		CardTypes=["","Hearts","Clubs","Diamonds","Spades"]
+		CardNames=["","Ace","Deuce","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Jack","Queen","King"]
+		CardName=CardNames[Value]+CardTypes[Type]
+		
+		
+class CardGameManager
+	users=type User[]
+	deck=type Card[]
+	piles=type Pile[]
+	mainArea=create TableArea()
+	userAreas=type TableArea[]
+	def ()
+		[1>>4]=>|(am)
+			[1>>13]=>|(ab)
+				deck.add(create Card(ab,am))
+		
+		populateUsers()=>|(n,ind)
+			this.users.add({Name=n,Cards=create Pile("User"+ind)})
+		write(this.users.length())
+		
+class CardLayoutManager
+	pilePaths=type LayoutPilePath[]
+		
+
+class LayoutManager
+	images=type ScreenImage[]
+	textAreas=type LayoutTextArea[]
+
+
+
+template ScreenImage
+	effect=type Effect[]
+	x=0
+	y=0
+	image=""
+		rotation=0
+
+
+
+class CardImage : ScreenImage
+		card=type Card
+	def() 
+	
+template Effect
+	effectType=type EffectType
+
+class RotateEffect : Effect
+	RotateAmount=0
+	relative=false
+		
+class MoveEffect : Effect
+	X=0
+	Y=0
+	relative=false
+		
+class HighlightEffect : Effect
+	width=0
+	color=type Color
+	
+enum EffectType
+	Rotate=1
+	Highlight=2
+	Move=3
+
+class LayoutPilePath
+	visible=true
+	stackCards=false
+	drawCardsBent=false
+	points=type PathPoints[]
+	pile=type Pile
+	effects=type Effect[]
+
+class PathPoints
+	x=0
+	y=0
+	offsetRotation=0
+
+class LayoutTextArea
+	name=""
+	xPosition=0
+	yPosition=0
+	rotateAngle=0
+	text=""
+
+
+</textarea></div>
+
+    <script>
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode:'Spoke',
+        indentWithTabs:false,
+        gutter: true, 
+
+        
+      });
+    </script>
+
+    
+  </body>
+</html>
