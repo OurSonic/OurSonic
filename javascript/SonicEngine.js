@@ -2,10 +2,40 @@
 
 
 SonicLevel = {
-    Tiles: defaultTiles(new Tile(defaultColors(new Color(17, 197, 255)))),
-    TilePieces: defaultTilePieces(new HeightMap()),
-    TileChunks: defaultTileChunks()
+    Tiles: [],
+    TilePieces: [],
+    TileChunks: []
 };
+
+function compareTiles(tiles, tiles2, colors) {
+    var i;
+    for (i = 0; i < tiles.length; i++) {
+        if (tiles[i].equals(colors)) {
+            return i;
+        }
+    }
+    for (i = 0; i < tiles2.length; i++) {
+        if (tiles2[i].equals(colors)) {
+            return tiles.length + i;
+        }
+    }
+    return -1;
+}
+
+function compareTilePieces(tilePieces, tilePieces2, tp) {
+    var i;
+    for (i = 0; i < tilePieces.length; i++) {
+        if (tilePieces[i].equals(tp)) {
+            return i;
+        }
+    }
+    for (i = 0; i < tilePieces2.length; i++) {
+        if (tilePieces2[i].equals(tp)) {
+            return tilePieces.length + i;
+        }
+    }
+    return -1;
+}
 
 
 function importChunkFromImage(image) {
@@ -17,6 +47,9 @@ function importChunkFromImage(image) {
     var tiles = [];
     var x;
     var y;
+    var tileIndexes = [];
+    var tilePieceIndexes = [];
+    var ind;
     for (var tY = 0; tY < 16; tY++) {
         for (var tX = 0; tX < 16; tX++) {
             var colors = [];
@@ -26,7 +59,13 @@ function importChunkFromImage(image) {
                     colors.push(new Color(data[f], data[f + 1], data[f + 2]));
                 }
             }
-            tiles.push(new Tile(colors));
+            ind = compareTiles(SonicLevel.Tiles, tiles, colors);
+            if (ind == -1) {
+                tileIndexes.push(start + tiles.length);
+                tiles.push(new Tile(colors));
+            } else {
+                tileIndexes.push(ind);
+            }
         }
     }
     var i;
@@ -36,23 +75,29 @@ function importChunkFromImage(image) {
 
     var tilePieces = [];
 
+    var startPieces = SonicLevel.TilePieces.length;
     for (y = 0; y < 8; y++) {
         for (x = 0; x < 8; x++) {
-            tilePieces.push(new TilePiece(defaultHeightMap(), [
-                    start + ((y * 2) * 16 + (x * 2)),
-                    start + ((y * 2) * 16 + (x * 2 + 1)),
-                    start + ((y * 2 + 1) * 16 + (x * 2)),
-                    start + ((y * 2 + 1) * 16 + (x * 2 + 1))]));
+            var tp = [tileIndexes[((y * 2) * 16 + (x * 2))],
+                tileIndexes[((y * 2) * 16 + (x * 2 + 1))],
+                tileIndexes[((y * 2 + 1) * 16 + (x * 2))],
+                tileIndexes[((y * 2 + 1) * 16 + (x * 2 + 1))]];
+            ind = compareTilePieces(SonicLevel.TilePieces, tilePieces, tp);
+            if (ind == -1) {
+                tilePieceIndexes.push(startPieces + tilePieces.length);
+                tilePieces.push(new TilePiece(defaultHeightMap(), tp));
+            } else {
+                tilePieceIndexes.push(ind);
+            } 
         }
     }
-    var startPieces = SonicLevel.TilePieces.length;
     for (i = 0; i < tilePieces.length; i++) {
         SonicLevel.TilePieces.push(tilePieces[i]);
     }
     var pieces = [];
     for (y = 0; y < 8; y++) {
         for (x = 0; x < 8; x++) {
-            pieces.push(startPieces + y * 8 + x);
+            pieces.push(tilePieceIndexes[y * 8 + x]);
         }
     }
 
@@ -69,7 +114,7 @@ function getImageData(img) {
     canvas.height = img.height;
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
-var data = ctx.getImageData(0, 0, img.width, img.height);
+    var data = ctx.getImageData(0, 0, img.width, img.height);
     return data.data;
 }
 
@@ -307,6 +352,8 @@ function SonicEngine(canvasName) {
     function doKeyDown(evt) {
         switch (evt.keyCode) {
             case 38:  /* Up arrow was pressed */
+                alert(JSON.stringify(SonicLevel).length);
+
                 break;
             case 40:  /* Down arrow was pressed */
                 var image = new Image();
@@ -314,7 +361,7 @@ function SonicEngine(canvasName) {
 
                     importChunkFromImage(image);
                 };
-                var j = "http://localhost:59836/oursonic/assets/SonicImages/HiPlane26.png";
+                var j = "assets/SonicImages/HiPlane26.png";
                 image.src = j;
                 break;
             case 37:  /* Left arrow was pressed */
@@ -349,7 +396,7 @@ function SonicEngine(canvasName) {
         requestAnimFrame(that.draw);
         clear(that.canvasItem);
         for (var j = 0; j < SonicLevel.TileChunks.length; j++) {
-            SonicLevel.TileChunks[j].draw(that.canvasItem, { x: 25 + j * 150*pixelWidth, y: 25 });
+            SonicLevel.TileChunks[j].draw(that.canvasItem, { x: 25 + j * 150 * pixelWidth, y: 25 });
 
         }
 
@@ -405,6 +452,19 @@ function Tile(colors) {
             canvas.fillStyle = this.colors[i].style();
             canvas.fillRect(pos.x + (i % 8) * pixelWidth, pos.y + Math.floor(i / 8) * pixelWidth, pixelWidth, pixelWidth);
         }
+        canvas.fillStyle = "#FFFFFF";
+        canvas.fillText(SonicLevel.Tiles.indexOf(this), pos.x + 4 * pixelWidth, pos.y + 4 * pixelWidth);
+
+
+    };
+
+    this.equals = function (cols) {
+        for (var i = 0; i < this.colors.length; i++) {
+
+            if (cols[i]._style != this.colors[i]._style)
+                return false;
+        }
+        return true;
     };
 }
 
@@ -417,8 +477,20 @@ function TilePiece(heightMap, tiles) {
         for (var i = 0; i < this.tiles.length; i++) {
             SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: pos.x + (i % 2) * 8 * pixelWidth, y: pos.y + Math.floor(i / 2) * 8 * pixelWidth });
         }
+
+        canvas.fillStyle = "#FFFFFF";
+        canvas.fillText(SonicLevel.TilePieces.indexOf(this), pos.x + 8 * pixelWidth, pos.y + 8 * pixelWidth);
+        
         if (showHeightMap)
             this.heightMap.draw(canvas, pos, pixelWidth);
+    };
+    this.equals = function (tp) {
+        for (var i = 0; i < this.tiles.length; i++) {
+
+            if (tp[i]!= this.tiles[i])
+                return false;
+        }
+        return true;
     };
 
 }
