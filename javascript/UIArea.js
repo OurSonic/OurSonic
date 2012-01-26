@@ -185,7 +185,7 @@ function TilePieceArea(x, y, scale, tilePiece) {
     this.onMouseUp = function (e) {
         if (!this.visible) return;
 
-        if (this.clicking && !this.clickHandled) {
+        if (this.tilePiece && this.clicking && !this.clickHandled) {
             this.tilePiece.click(Math.floor(e.x / scale.x), Math.floor(e.y / scale.y), this.state);
         }
         this.clickHandled = false;
@@ -193,7 +193,7 @@ function TilePieceArea(x, y, scale, tilePiece) {
     };
     this.clickHandled = false;
     this.onMouseOver = function (e) {
-        
+        if (!this.tilePiece) return;
         if (this.clicking) {
             this.clickHandled = true;
             this.tilePiece.click(Math.floor(e.x / scale.x), Math.floor(e.y / scale.y), this.state);
@@ -203,8 +203,44 @@ function TilePieceArea(x, y, scale, tilePiece) {
     };
     this.draw = function (canv) {
         if (!this.visible) return;
-        
+        if (!this.tilePiece) return;
         this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, true);
+    };
+    return this;
+}
+
+function TileChunkArea(x, y, scale, tileChunk) {
+    this.x = x;
+    this.y = y;
+    this.visible = true;
+    this.scale = scale;
+    this.width = scale.x * 128;
+    this.height = scale.y * 128;
+    this.clicking = false;
+    this.tileChunk = tileChunk;
+    this.parent = null;
+    
+    this.onClick = function (e) {
+        if (!this.visible) return;
+        this.clicking = true;
+    };
+    this.onMouseUp = function (e) {
+        if (!this.visible) return;
+
+        if (this.clicking ) {
+        }
+        this.clickHandled = false;
+        this.clicking = false;
+    };
+    this.clickHandled = false;
+    this.onMouseOver = function (e) {
+        if (this.clicking) {
+        }
+    };
+    this.draw = function (canv) {
+        if (!this.visible) return;
+        if (!this.tileChunk) return;
+        this.tileChunk.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale,true);
     };
     return this;
 };
