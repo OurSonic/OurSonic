@@ -39,7 +39,7 @@ function compareTilePieces(tilePieces, tilePieces2, tp) {
 
 
 function importChunkFromImage(image) {
-    var data = getImageData(image);
+    var data = _H.getImageData(image);
     if (data.length != 128 * 128 * 4) {
         alert('Chunk size incorrect');
     }
@@ -85,7 +85,7 @@ function importChunkFromImage(image) {
             ind = compareTilePieces(SonicLevel.TilePieces, tilePieces, tp);
             if (ind == -1) {
                 tilePieceIndexes.push(startPieces + tilePieces.length);
-                tilePieces.push(new TilePiece(defaultHeightMap(), tp));
+                tilePieces.push(new TilePiece(defaultHeightMask(), tp));
             } else {
                 tilePieceIndexes.push(ind);
             }
@@ -103,19 +103,10 @@ function importChunkFromImage(image) {
 
     SonicLevel.TileChunks.push(new TileChunk(pieces));
 }
-function defaultHeightMap() {
-    var hm = new HeightMap();
+function defaultHeightMask() {
+    var hm = new HeightMask();
     hm.init();
     return hm;
-}
-function getImageData(img) {
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-    var data = ctx.getImageData(0, 0, img.width, img.height);
-    return data.data;
 }
 
 
@@ -129,12 +120,12 @@ function defaultTiles(tile) {
     return tiles;
 }
 
-function defaultTilePieces(heightMap) {
+function defaultTilePieces(heightMask) {
     var tilePieces = [];
     var ind = 0;
     for (var x = 0; x < 8; x++) {
         for (var y = 0; y < 8; y++) {
-            tilePieces.push(new TilePiece(heightMap, [ind, ind + 1, ind + 2, ind + 3]));
+            tilePieces.push(new TilePiece(heightMask, [ind, ind + 1, ind + 2, ind + 3]));
             ind += 4;
         }
     }
@@ -282,8 +273,6 @@ function SonicEngine(canvasName) {
         return false;
     }
 
-    ;
-
     function canvasMouseMove(e) {
         e.preventDefault();
         var cell = getCursorPosition(e);
@@ -302,8 +291,8 @@ function SonicEngine(canvasName) {
 
 
         return false;
-
     }
+
     function canvasMouseUp(e) {
         e.preventDefault();
 
@@ -359,7 +348,7 @@ function SonicEngine(canvasName) {
 
                 var index = 0;
                 var tim = function () {
-                    if (index == 87) return;
+                    if (index == 5) return;
                     setTimeout(tim, 30);
                     var image = new Image();
                     image.onload = function () {
@@ -387,27 +376,19 @@ function SonicEngine(canvasName) {
         that.canvas.attr("height", that.canvasHeight);
     };
 
-    /*var img = new Image();
-    img.src = 'http://dested.com/spoke/assets/images/Brick.jpg';
-    img.onload = function () { img.loaded = true; };*/
-
-
-    var fps = 0, now, lastUpdate = (new Date) * 1 - 1; var fpsFilter = 60;
-    var jcs = 0;
-
     function clear(ctx) {
         ctx.clearRect(0, 0, that.canvasWidth, that.canvasHeight);
     }
 
-    that.canvasItem.mozImageSmoothingEnabled = false;
     that.draw = function () {
         requestAnimFrame(that.draw);
         clear(that.canvasItem);
         var inc = 0;
-        for (var j = SonicLevel.TileChunks.length - 6; j < SonicLevel.TileChunks.length; j++) {
-            if (j < 0) continue;
-            SonicLevel.TileChunks[j].draw(that.canvasItem, { x: 25 + (inc++) * 150 * pixelWidth, y: 25 });
+        var scale = { x: 4, y: 4 };
 
+        for (var j = SonicLevel.TileChunks.length - 9; j < SonicLevel.TileChunks.length; j++) {
+            if (j < 0) continue;
+            SonicLevel.TileChunks[j].draw(that.canvasItem, { x: 25 + (inc++) * 150 * scale.x, y: 25 }, scale);
         }
 
 
@@ -432,199 +413,12 @@ function SonicEngine(canvasName) {
             for (var i = 0; i < that.messages.length; i++) {
                 that.canvasItem.fillText(that.messages[i], 10, 25 + i * 30);
             }
-            var fcs = 1000 / ((now = new Date) - lastUpdate);
-            fps += (fcs - fps) / fpsFilter;
-            lastUpdate = now;
-            jcs++;
-
-            that.canvasItem.font = 'bold 10px sans-serif';
-            that.canvasItem.fillText('FPS: ' + fps.toFixed(1), 4, that.canvasHeight - 4);
-            that.canvasItem.fillText('ss: ' + jcs, 4, that.canvasHeight - 25);
         }
     };
 
 
     $(window).resize(this.resizeCanvas);
     this.resizeCanvas();
-
     requestAnimFrame(that.draw);
-
-
 };
-function setDataFromColors(data, colors) {
-    var ind = 0;
-    for (var c in colors) {
-        var col = colors[c];
-        data[ind++] = (col.r);
-        data[ind++] = (col.g);
-        data[ind++] = (col.b);
-        data[ind++] = (255);
-    }
-    return data;
-}
-
-
-function getBase64Image(data) {
-    // Create an empty canvas element
-    var canvas = document.createElement("canvas");
-    canvas.width = data.width;
-    canvas.height = data.height;
-
-    // Copy the image contents to the canvas
-    var ctx = canvas.getContext("2d");
-    ctx.putImageData(data, 0, 0);
-    var dataURL = canvas.toDataURL("image/png");
-    return dataURL;
-}
-
-
-
-var pixelWidth = 1;
-function Tile(colors) {
-    this.colors = colors;
-
-    this.imageData = null;
-    this.image = null;
-    this.draw = function (canvas, pos) {
-        if (!this.imageData) {
-            var d = canvas.createImageData(8, 8);
-            setDataFromColors(d.data, this.colors);
-            this.imageData = d;
-            this.image = new Image();
-            this.image.src = getBase64Image(d);
-            var image = this.image;
-            this.image.onload = function() {
-                image.loaded = true;
-            };
-        }
-        if(this.image.loaded)
-            canvas.drawImage(this.image, pos.x, pos.y, 8 * pixelWidth, 8 * pixelWidth);
-        
-
-        /*for (var i = 0; i < this.colors.length; i++) {
-        canvas.fillStyle = this.colors[i].style();
-        canvas.fillRect(pos.x + (i % 8) * pixelWidth, pos.y + Math.floor(i / 8) * pixelWidth, pixelWidth, pixelWidth);
-        }*/
-        
-        
-        //canvas.fillStyle = "#FFFFFF";
-        //canvas.fillText(SonicLevel.Tiles.indexOf(this), pos.x + 4 * pixelWidth, pos.y + 4 * pixelWidth);
-
-
-    };
-
-    this.equals = function (cols) {
-        for (var i = 0; i < this.colors.length; i++) {
-
-            if (cols[i]._style != this.colors[i]._style)
-                return false;
-        }
-        return true;
-    };
-}
-
-function TilePiece(heightMap, tiles) {
-    this.heightMap = heightMap;
-    this.tiles = tiles;
-
-    this.draw = function (canvas, pos, showHeightMap) {
-
-        for (var i = 0; i < this.tiles.length; i++) {
-            SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: pos.x + (i % 2) * 8 * pixelWidth, y: pos.y + Math.floor(i / 2) * 8 * pixelWidth });
-        }
-
-        //canvas.fillStyle = "#FFFFFF";
-        //canvas.fillText(SonicLevel.TilePieces.indexOf(this), pos.x + 8 * pixelWidth, pos.y + 8 * pixelWidth);
-
-        if (showHeightMap)
-            this.heightMap.draw(canvas, pos, pixelWidth);
-    };
-    this.equals = function (tp) {
-        for (var i = 0; i < this.tiles.length; i++) {
-
-            if (tp[i] != this.tiles[i])
-                return false;
-        }
-        return true;
-    };
-
-}
-
-function TileChunk(tilesPieces) {
-    this.tilesPieces = tilesPieces;
-    this.draw = function (canvas, pos) {
-        for (var i = 0; i < this.tilesPieces.length; i++) {
-
-            SonicLevel.TilePieces[this.tilesPieces[i]].draw(canvas, { x: pos.x + (i % 8) * 16 * pixelWidth, y: pos.y + Math.floor(i / 8) * 16 * pixelWidth }, false);
-
-            canvas.strokeStyle = "#FFFFFF";
-            canvas.strokeRect(pos.x + (i % 8) * 16 * pixelWidth, pos.y + Math.floor(i / 8) * 16 * pixelWidth, 16 * pixelWidth, 16 * pixelWidth);
-
-        }
-    };
-
-}
-function Color(r, g, b) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this._style = "#" + (r.toString(16).length == 1 ? "0" + r.toString(16) : r.toString(16))
-        + (g.toString(16).length == 1 ? "0" + g.toString(16) : g.toString(16))
-            + (b.toString(16).length == 1 ? "0" + b.toString(16) : b.toString(16));
-
-    this.style = function () {
-        return this._style;
-    };
-}
-function HeightMap() {
-    this.width = 16;
-    this.height = 16;
-    this.items = [];
-    this.init = function () {
-        this.items = [];
-        for (var x = 0; x < 16; x++) {
-            this.items[x] = [];
-            for (var y = 0; y < 16; y++) {
-                this.items[y * 16 + x] = false;
-            }
-        }
-
-    };
-    this.draw = function (canvas, pos, w) {
-        for (var x = 0; x < 16; x++) {
-            for (var y = 0; y < 16; y++) {
-                if (this.items[y * 16 + x]) {
-                    canvas.fillRect(pos.x + (x * w), pos.y + (y * w), w, w);
-                } else {
-                    canvas.strokeRect(pos.x + (x * w), pos.y + (y * w), w, w);
-                }
-            }
-        }
-    };
-}
-
-
-function stringify(obj, cc) {
-    return JSON.stringify(obj);
-
-    if (cc > 0) return "";
-    if (!cc) cc = 0;
-    var t = typeof (obj);
-    if (t != "object" || obj === null) {
-        // simple data type
-        if (t == "string") obj = '"' + obj + '"';
-        return String(obj);
-    }
-    else {
-        // recurse array or object
-        var n, v, json = [], arr = (obj && obj.constructor == Array);
-        for (n in obj) {
-            v = obj[n]; t = typeof (v);
-            if (t == "string") v = '"' + v + '"';
-            else if (t == "object" && v !== null) v = stringify(v, cc + 1);
-            json.push((arr ? "" : '"' + n + '":') + String(v));
-        }
-        return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
-    }
-}
 
