@@ -2,7 +2,7 @@
 var WireColor = "rgb(255,255,255)";
 
 
-function UIArea(x, y, w, h) {
+function UiArea(x, y, w, h) {
     this.x = x;
     this.y = y;
     this.width = w;

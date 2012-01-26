@@ -1,6 +1,9 @@
 ﻿function TileChunk(tilesPieces) {
     this.tilesPieces = tilesPieces;
-
+    this.getTilePiece = function (x, y, scale) {
+        return SonicLevel.TilePieces[this.tilesPieces[Math.floor((x / scale.x / 16)) + Math.floor((y / scale.y / 16)) * 8]];
+    };
+    
     this.draw = function (canvas, position, scale, drawLines) {
         for (var i = 0; i < this.tilesPieces.length; i++) {
 
