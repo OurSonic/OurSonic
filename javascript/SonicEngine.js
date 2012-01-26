@@ -88,7 +88,7 @@ function importChunkFromImage(image) {
                 tilePieces.push(new TilePiece(defaultHeightMap(), tp));
             } else {
                 tilePieceIndexes.push(ind);
-            } 
+            }
         }
     }
     for (i = 0; i < tilePieces.length; i++) {
@@ -356,13 +356,21 @@ function SonicEngine(canvasName) {
 
                 break;
             case 40:  /* Down arrow was pressed */
-                var image = new Image();
-                image.onload = function () {
 
-                    importChunkFromImage(image);
+                var index = 0;
+                var tim = function () {
+                    if (index == 87) return;
+                    setTimeout(tim, 30);
+                    var image = new Image();
+                    image.onload = function () {
+
+                        importChunkFromImage(image);
+                    };
+                    var j = "assets/SonicImages/HiPlane" + index++ + ".png";
+                    image.src = j;
+
                 };
-                var j = "assets/SonicImages/HiPlane26.png";
-                image.src = j;
+                setTimeout(tim, 100);
                 break;
             case 37:  /* Left arrow was pressed */
                 break;
@@ -391,12 +399,14 @@ function SonicEngine(canvasName) {
         ctx.clearRect(0, 0, that.canvasWidth, that.canvasHeight);
     }
 
-
+    that.canvasItem.mozImageSmoothingEnabled = false;
     that.draw = function () {
         requestAnimFrame(that.draw);
         clear(that.canvasItem);
-        for (var j = 0; j < SonicLevel.TileChunks.length; j++) {
-            SonicLevel.TileChunks[j].draw(that.canvasItem, { x: 25 + j * 150 * pixelWidth, y: 25 });
+        var inc = 0;
+        for (var j = SonicLevel.TileChunks.length - 6; j < SonicLevel.TileChunks.length; j++) {
+            if (j < 0) continue;
+            SonicLevel.TileChunks[j].draw(that.canvasItem, { x: 25 + (inc++) * 150 * pixelWidth, y: 25 });
 
         }
 
@@ -441,19 +451,64 @@ function SonicEngine(canvasName) {
 
 
 };
+function setDataFromColors(data, colors) {
+    var ind = 0;
+    for (var c in colors) {
+        var col = colors[c];
+        data[ind++] = (col.r);
+        data[ind++] = (col.g);
+        data[ind++] = (col.b);
+        data[ind++] = (255);
+    }
+    return data;
+}
 
 
-var pixelWidth = 3;
+function getBase64Image(data) {
+    // Create an empty canvas element
+    var canvas = document.createElement("canvas");
+    canvas.width = data.width;
+    canvas.height = data.height;
+
+    // Copy the image contents to the canvas
+    var ctx = canvas.getContext("2d");
+    ctx.putImageData(data, 0, 0);
+    var dataURL = canvas.toDataURL("image/png");
+    return dataURL;
+}
+
+
+
+var pixelWidth = 1;
 function Tile(colors) {
     this.colors = colors;
 
+    this.imageData = null;
+    this.image = null;
     this.draw = function (canvas, pos) {
-        for (var i = 0; i < this.colors.length; i++) {
-            canvas.fillStyle = this.colors[i].style();
-            canvas.fillRect(pos.x + (i % 8) * pixelWidth, pos.y + Math.floor(i / 8) * pixelWidth, pixelWidth, pixelWidth);
+        if (!this.imageData) {
+            var d = canvas.createImageData(8, 8);
+            setDataFromColors(d.data, this.colors);
+            this.imageData = d;
+            this.image = new Image();
+            this.image.src = getBase64Image(d);
+            var image = this.image;
+            this.image.onload = function() {
+                image.loaded = true;
+            };
         }
-        canvas.fillStyle = "#FFFFFF";
-        canvas.fillText(SonicLevel.Tiles.indexOf(this), pos.x + 4 * pixelWidth, pos.y + 4 * pixelWidth);
+        if(this.image.loaded)
+            canvas.drawImage(this.image, pos.x, pos.y, 8 * pixelWidth, 8 * pixelWidth);
+        
+
+        /*for (var i = 0; i < this.colors.length; i++) {
+        canvas.fillStyle = this.colors[i].style();
+        canvas.fillRect(pos.x + (i % 8) * pixelWidth, pos.y + Math.floor(i / 8) * pixelWidth, pixelWidth, pixelWidth);
+        }*/
+        
+        
+        //canvas.fillStyle = "#FFFFFF";
+        //canvas.fillText(SonicLevel.Tiles.indexOf(this), pos.x + 4 * pixelWidth, pos.y + 4 * pixelWidth);
 
 
     };
@@ -478,16 +533,16 @@ function TilePiece(heightMap, tiles) {
             SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: pos.x + (i % 2) * 8 * pixelWidth, y: pos.y + Math.floor(i / 2) * 8 * pixelWidth });
         }
 
-        canvas.fillStyle = "#FFFFFF";
-        canvas.fillText(SonicLevel.TilePieces.indexOf(this), pos.x + 8 * pixelWidth, pos.y + 8 * pixelWidth);
-        
+        //canvas.fillStyle = "#FFFFFF";
+        //canvas.fillText(SonicLevel.TilePieces.indexOf(this), pos.x + 8 * pixelWidth, pos.y + 8 * pixelWidth);
+
         if (showHeightMap)
             this.heightMap.draw(canvas, pos, pixelWidth);
     };
     this.equals = function (tp) {
         for (var i = 0; i < this.tiles.length; i++) {
 
-            if (tp[i]!= this.tiles[i])
+            if (tp[i] != this.tiles[i])
                 return false;
         }
         return true;
@@ -550,6 +605,8 @@ function HeightMap() {
 
 
 function stringify(obj, cc) {
+    return JSON.stringify(obj);
+
     if (cc > 0) return "";
     if (!cc) cc = 0;
     var t = typeof (obj);
