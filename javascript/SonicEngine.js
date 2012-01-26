@@ -349,13 +349,18 @@ function SonicEngine(canvasName) {
     function doKeyDown(evt) {
         switch (evt.keyCode) {
             case 38:  /* Up arrow was pressed */
+                sonicToon.pressJump();
+
                 break;
             case 40:  /* Down arrow was pressed */
+                sonicToon.pressCrouch();
 
                 break;
             case 37:  /* Left arrow was pressed */
+                sonicToon.pressLeft();
                 break;
             case 39:  /* Right arrow was pressed */
+                sonicToon.pressRight();
                 break;
         }
     }
@@ -374,21 +379,25 @@ function SonicEngine(canvasName) {
 
     var scale = { x: 4, y: 4 };
 
+
+    var sonicToon = new Sonic();
+
     that.draw = function () {
         requestAnimFrame(that.draw);
         clear(that.canvasItem);
 
         for (var j = 0; j < SonicLevel.ChunkMap.length; j++) {
-            if (!SonicLevel.TileChunks[SonicLevel.ChunkMap[j]])continue;
+            if (!SonicLevel.TileChunks[SonicLevel.ChunkMap[j]]) continue;
             var pos = { x: (j % 10) * 128 * scale.x, y: Math.floor(j / 10) * 128 * scale.y };
             SonicLevel.TileChunks[SonicLevel.ChunkMap[j]].
-                draw(that.canvasItem, pos, scale,true);
+                draw(that.canvasItem, pos, scale, true);
 
             that.canvasItem.strokeStyle = "#DD0033";
             that.canvasItem.lineWidth = 3;
             that.canvasItem.strokeRect(pos.x, pos.y, 128 * scale.x, 128 * scale.y);
 
         }
+        sonicToon.draw(that.canvasItem,scale);
 
         /*if (img.loaded) {
         for (var j = 0; j < that.canvasWidth / img.width; j++) {
@@ -419,4 +428,7 @@ function SonicEngine(canvasName) {
     this.resizeCanvas();
     requestAnimFrame(that.draw);
 };
+
+
+
 
