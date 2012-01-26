@@ -140,13 +140,14 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
-        if (this.click) this.click();
-
     };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
+if(this.clicking) {
+    if (this.click) this.click();
+}
         this.clicking = false;
-        if(this.mouseUp)this.mouseUp();
+        if (this.mouseUp) this.mouseUp();
     };
     this.onMouseOver = function (e) {
         if (!this.visible) return;
@@ -158,8 +159,52 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
         roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 5, true, true);
         canv.fillStyle = this.clicking ? "#FCA" : "#334";
         if (canv.font != this.font)
-            canv.font = this.font; 
-        canv.fillText(this.text, this.parent.x + this.x + (this.width / 4), this.parent.y + this.y + (this.height / 3) * 2);
+            canv.font = this.font;
+
+        canv.fillText(this.text, this.parent.x + this.x + ((this.width / 2) - (canv.measureText(this.text).width / 2)), this.parent.y + this.y + (this.height / 3) * 2);
+    };
+    return this;
+}
+
+function TilePieceArea(x, y, scale, tilePiece) {
+    this.x = x;
+    this.y = y;
+    this.visible = true;
+    this.scale = scale;
+    this.width = scale.x * 16;
+    this.height = scale.y * 16;
+    this.clicking = false;
+    this.tilePiece = tilePiece;
+    this.parent = null;
+    this.state = 0;
+    this.onClick = function (e) {
+        if (!this.visible) return;
+        this.clicking = true;
+        this.clickHandled = false;
+    };
+    this.onMouseUp = function (e) {
+        if (!this.visible) return;
+
+        if (this.clicking && !this.clickHandled) {
+            this.tilePiece.click(Math.floor(e.x / scale.x), Math.floor(e.y / scale.y), this.state);
+        }
+        this.clickHandled = false;
+        this.clicking = false;
+    };
+    this.clickHandled = false;
+    this.onMouseOver = function (e) {
+        
+        if (this.clicking) {
+            this.clickHandled = true;
+            this.tilePiece.click(Math.floor(e.x / scale.x), Math.floor(e.y / scale.y), this.state);
+        }
+        else
+            this.tilePiece.mouseOver(Math.floor(e.x / scale.x), Math.floor(e.y / scale.y));
+    };
+    this.draw = function (canv) {
+        if (!this.visible) return;
+        
+        this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, true);
     };
     return this;
 };

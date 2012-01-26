@@ -85,7 +85,7 @@ function importChunkFromImage(image) {
             ind = compareTilePieces(SonicLevel.TilePieces, tilePieces, tp);
             if (ind == -1) {
                 tilePieceIndexes.push(startPieces + tilePieces.length);
-                tilePieces.push(new TilePiece(defaultHeightMask(), tp));
+                tilePieces.push(new TilePiece(new HeightMask(RotationMode.Left, 45), tp));
             } else {
                 tilePieceIndexes.push(ind);
             }
@@ -103,62 +103,7 @@ function importChunkFromImage(image) {
 
     SonicLevel.TileChunks.push(new TileChunk(pieces));
 }
-function defaultHeightMask() {
-    var hm = new HeightMask();
-    hm.init();
-    return hm;
-}
 
-
-function defaultTiles(tile) {
-    var tiles = [];
-    for (var x = 0; x < 16; x++) {
-        for (var y = 0; y < 16; y++) {
-            tiles.push(tile);
-        }
-    }
-    return tiles;
-}
-
-function defaultTilePieces(heightMask) {
-    var tilePieces = [];
-    var ind = 0;
-    for (var x = 0; x < 8; x++) {
-        for (var y = 0; y < 8; y++) {
-            tilePieces.push(new TilePiece(heightMask, [ind, ind + 1, ind + 2, ind + 3]));
-            ind += 4;
-        }
-    }
-    return tilePieces;
-}
-function defaultTileChunks() {
-    var tileChunks = [];
-    for (var x = 0; x < 1; x++) {
-        for (var y = 0; y < 1; y++) {
-            var ind = 0;
-            var tilePieces = [];
-            for (var x_ = 0; x_ < 8; x_++) {
-                for (var y_ = 0; y_ < 8; y_++) {
-                    tilePieces.push(ind++);
-                }
-            }
-            tileChunks.push(new TileChunk(tilePieces));
-
-        }
-    }
-
-    return tileChunks;
-}
-
-function defaultColors(col) {
-    var cols = [];
-    for (var x = 0; x < 8; x++) {
-        for (var y = 0; y < 8; y++) {
-            cols.push(col);
-        }
-    }
-    return cols;
-}
 window.requestAnimFrame = (function (ff) {
     /*
     if (window.requestAnimationFrame)
@@ -175,11 +120,6 @@ window.requestAnimFrame = (function (ff) {
 });
 
 
-
-function randColor() {
-    return "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")";
-}
-
 function SonicEngine(canvasName) {
     var that = this;
     that.UIAreas = [];
@@ -191,30 +131,39 @@ function SonicEngine(canvasName) {
     this.canvasWidth = 0;
     this.canvasHeight = 0;
 
-
-    /* var area = new UIArea(40, 40, 250, 220);
+    var modifyTilePieceArea;
+    var area = new UIArea(40, 40, 400, 400);
+    area.visible = false;
     that.UIAreas.push(area);
-    area.addControl(new TextArea(25, 50, "Hi", "15pt Arial bold", "blue"));
-    area.addControl(new Button(50, 50, 120, 22, "New Wire", "13pt Arial bold", "rgb(50,150,50)",
+    area.addControl(new TextArea(30, 25, "Modify Solid Tile", "15pt Arial bold", "blue"));
+    var but;
+    var tpIndex = 0;
+    area.addControl(new Button(50, 35, 25, 22, "<<", "13pt Arial bold", "rgb(50,150,50)",
+        function () {
+            if (tpIndex>0)
+            modifyTilePieceArea.tilePiece = SonicLevel.TilePieces[--tpIndex];
+        }));
+    area.addControl(new Button(80, 35, 25, 22, ">>", "13pt Arial bold", "rgb(50,150,50)",
+        function () {
+            if (tpIndex<SonicLevel.TilePieces.length)
+            modifyTilePieceArea.tilePiece=SonicLevel.TilePieces[++tpIndex];
+        }));
+
+        area.addControl(but = new Button(200, 35, 180, 22, "Modify Height Map", "13pt Arial bold", "rgb(50,150,50)",
     function () {
-    addEmptyWire("rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")");
+        modifyTilePieceArea.state = (modifyTilePieceArea.state + 1) % 3;
+        switch (modifyTilePieceArea.state) {
+            case 0:
+                this.text = "Modify Height Map";
+                break;
+            case 1:
+                this.text = "Modify Tile Direction";
+                break;
+            case 2:
+                this.text = "Modify Tile Colors";
+                break;
+        }
     }));
-    var intv;
- 
-    area.addControl(new Button(30, 75, 180, 22, "Start Random", "13pt Arial bold", "rgb(50,150,50)",
-    function () {
-    if (this.text == "Start Random") {
-    this.text = "Stop Random";
-    intv = setInterval(tick3, 10);
-    } else {
-    this.text = "Start Random";
-    clearInterval(intv);
-    }
-    }));
-    var ctls;
-    
-    area.addControl(ctls = new ScrollBox(30, 100, 25, 4, 100, "rgb(50,60,127)"));
-    */
 
 
 
@@ -231,6 +180,18 @@ function SonicEngine(canvasName) {
         if (print) alert(stringify(event));
         return { x: event.clientX, y: event.clientY };
     }
+    document.getElementById(canvasName).addEventListener('DOMMouseScroll', handleScroll, false);
+    document.getElementById(canvasName).addEventListener('mousewheel', handleScroll, false);
+
+    document.getElementById(canvasName).addEventListener('touchmove', canvasMouseMove);
+    document.getElementById(canvasName).addEventListener('touchstart', canvasOnClick);
+    document.getElementById(canvasName).addEventListener('touchend', canvasMouseUp);
+
+    document.getElementById(canvasName).addEventListener('mousedown', canvasOnClick);
+    document.getElementById(canvasName).addEventListener('mouseup', canvasMouseUp);
+    document.getElementById(canvasName).addEventListener('mousemove', canvasMouseMove);
+
+    window.addEventListener('keydown', doKeyDown, true);
 
 
     function canvasOnClick(e) {
@@ -307,7 +268,7 @@ function SonicEngine(canvasName) {
     }
 
 
-    var handleScroll = function (evt) {
+    function handleScroll(evt) {
         evt.preventDefault();
         var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
 
@@ -323,43 +284,37 @@ function SonicEngine(canvasName) {
         return evt.preventDefault() && false;
     };
 
+    var index = 1;
+    var tim = function () {
+        if (index == 5) {
+            setTimeout(function () {
+                area.addControl(modifyTilePieceArea = new TilePieceArea(30, 70, { x: 4 * 5, y: 4 * 5 }, SonicLevel.TilePieces[0]));
+                area.visible = true;
+            }, 500);
 
-    document.getElementById(canvasName).addEventListener('DOMMouseScroll', handleScroll, false);
-    document.getElementById(canvasName).addEventListener('mousewheel', handleScroll, false);
+            return;
+        }
+        setTimeout(tim, 100);
+        var image = new Image();
+        image.onload = function () {
 
-    document.getElementById(canvasName).addEventListener('touchmove', canvasMouseMove);
-    document.getElementById(canvasName).addEventListener('touchstart', canvasOnClick);
-    document.getElementById(canvasName).addEventListener('touchend', canvasMouseUp);
+            importChunkFromImage(image);
+        };
+        var j = "assets/SonicImages/HiPlane" + index++ + ".png";
+        image.src = j;
 
-    document.getElementById(canvasName).addEventListener('mousedown', canvasOnClick);
-    document.getElementById(canvasName).addEventListener('mouseup', canvasMouseUp);
-    document.getElementById(canvasName).addEventListener('mousemove', canvasMouseMove);
+    };
+    setTimeout(tim, 100);
 
-    window.addEventListener('keydown', doKeyDown, true);
+
 
 
     function doKeyDown(evt) {
         switch (evt.keyCode) {
             case 38:  /* Up arrow was pressed */
-                alert(JSON.stringify(SonicLevel).length);
-
                 break;
             case 40:  /* Down arrow was pressed */
 
-                var index = 0;
-                var tim = function () {
-                    if (index == 5) return;
-                    setTimeout(tim, 30);
-                    var image = new Image();
-                    image.onload = function () {
-
-                        importChunkFromImage(image);
-                    };
-                    var j = "assets/SonicImages/HiPlane" + index++ + ".png";
-                    image.src = j;
-
-                };
-                setTimeout(tim, 100);
                 break;
             case 37:  /* Left arrow was pressed */
                 break;
@@ -386,7 +341,7 @@ function SonicEngine(canvasName) {
         var inc = 0;
         var scale = { x: 4, y: 4 };
 
-        for (var j = SonicLevel.TileChunks.length - 9; j < SonicLevel.TileChunks.length; j++) {
+        for (var j = SonicLevel.TileChunks.length - 5; j < SonicLevel.TileChunks.length; j++) {
             if (j < 0) continue;
             SonicLevel.TileChunks[j].draw(that.canvasItem, { x: 25 + (inc++) * 150 * scale.x, y: 25 }, scale);
         }
