@@ -312,7 +312,8 @@ function SonicEngine(canvasName) {
         for (var ij = 0; ij < that.UIAreas.length; ij++) {
             var are = that.UIAreas[ij];
             if (are.visible && are.y <= evt.y && are.y + are.height > evt.y && are.x <= evt.x && are.x + are.width > evt.x) {
-                evt = { x: evt.x - are.x, y: evt.y - are.y, delta: delta };
+                evt = { x: evt.x - are.x, 
+                    y: evt.y - are.y, delta: delta };
                 return are.scroll(evt);
             }
         }
@@ -322,21 +323,21 @@ function SonicEngine(canvasName) {
 
     var index = 1;
     var tim = function () {
-        if (index == 5) {
+        if (index == 86) {
             setTimeout(function () {
                 modifyTileChunkArea.tileChunk = SonicLevel.TileChunks[0];
                 loadingText.visible = false;
             }, 500);
-
             return;
         }
         setTimeout(tim, 100);
+        
         var image = new Image();
         image.onload = function () {
-
+            loadingText.text="Loading " +index+"/86";
             importChunkFromImage(image);
         };
-        var j = "assets/SonicImages/HiPlane" + index++ + ".png";
+        var j = "assets/TileChunks/HiPlane" + index++ + ".png";
         image.src = j;
 
     };
@@ -378,6 +379,7 @@ function SonicEngine(canvasName) {
         clear(that.canvasItem);
 
         for (var j = 0; j < SonicLevel.ChunkMap.length; j++) {
+            if (!SonicLevel.TileChunks[SonicLevel.ChunkMap[j]])continue;
             var pos = { x: (j % 10) * 128 * scale.x, y: Math.floor(j / 10) * 128 * scale.y };
             SonicLevel.TileChunks[SonicLevel.ChunkMap[j]].
                 draw(that.canvasItem, pos, scale,true);
