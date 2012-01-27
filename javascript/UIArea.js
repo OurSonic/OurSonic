@@ -118,10 +118,16 @@ function TextArea(x, y, text, font, color) {
         canv.fillStyle = this.color;
         if (canv.font != this.font)
             canv.font = this.font;
-        canv.fillText(this.text, this.parent.x + this.x, this.parent.y + this.y);
+        
+
+        canv.fillText(_H.isFunction(this.text)?this.text():this.text, this.parent.x + this.x, this.parent.y + this.y);
     };
+
+
     return this;
 };
+
+
 function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOver) {
     this.x = x;
     this.y = y;

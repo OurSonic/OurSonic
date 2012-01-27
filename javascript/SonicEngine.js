@@ -111,17 +111,16 @@ function importChunkFromImage(image) {
 }
 
 window.requestAnimFrame = (function (ff) {
-    /*
     if (window.requestAnimationFrame)
-    return window.requestAnimationFrame(ff);
+        return window.requestAnimationFrame(ff);
     if (window.webkitRequestAnimationFrame)
-    return window.webkitRequestAnimationFrame(ff);
+        return window.webkitRequestAnimationFrame(ff);
     if (window.mozRequestAnimationFrame)
-    return window.mozRequestAnimationFrame(ff);
+        return window.mozRequestAnimationFrame(ff);
     if (window.oRequestAnimationFrame)
-    return window.oRequestAnimationFrame(ff);
+        return window.oRequestAnimationFrame(ff);
     if (window.msRequestAnimationFrame)
-    return window.msRequestAnimationFrame(ff);*/
+        return window.msRequestAnimationFrame(ff);
     window.setTimeout(ff, 1000 / 60);
 });
 
@@ -134,10 +133,15 @@ function SonicEngine(canvasName) {
     this.canvasItem = document.getElementById(canvasName).getContext("2d");
 
 
+
     this.canvasWidth = 0;
     this.canvasHeight = 0;
 
     var modifyTilePieceArea;
+
+
+
+
     var solidTileArea = new UiArea(40, 40, 400, 400);
     solidTileArea.visible = false;
     that.UIAreas.push(solidTileArea);
@@ -171,14 +175,103 @@ function SonicEngine(canvasName) {
     }));
     solidTileArea.addControl(modifyTilePieceArea = new TilePieceArea(30, 70, { x: 4 * 5, y: 4 * 5 }, null));
 
+
+    var levelInformation = new UiArea(900, 70, 300, 360);
+    levelInformation.visible = true;
+    that.UIAreas.push(levelInformation);
+    levelInformation.addControl(new TextArea(30, 25, "Level Manager", "15pt Arial bold", "blue"));
+    levelInformation.addControl(new TextArea(30, 45, function () {
+        return !curLevelName ? "Level Not Saved" : ("Current Leve:" + curLevelName);
+    }, "15pt Arial bold", "blue"));
+    levelInformation.addControl(new Button(190, 55, 100, 22, "Save Level", "13pt Arial bold", "rgb(50,150,50)",
+    function () {
+        if (curLevelName) {
+            OurSonic.SonicLevels.updateLevel(curLevelName, Base64.encode(_H.stringify(SonicLevel)));
+
+        } else {
+            OurSonic.SonicLevels.saveLevel(Base64.encode(_H.stringify(SonicLevel)), function (j) {
+                addLevelToList(curLevelName);
+            });
+
+        }
+    }));
+    var ctls;
+    levelInformation.addControl(ctls = new ScrollBox(30, 55, 25, 11, 130, "rgb(50,60,127)"));
+
+    var curLevelName;
+    OurSonic.SonicLevels.getLevels(function (lvls) {
+        for (var i = 0; i < lvls.length; i++) {
+            var lvlName = lvls[i];
+            addLevelToList(lvlName);
+        }
+    });
+
+
+    function addLevelToList(name) {
+        ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
+            curLevelName = name;
+            OurSonic.SonicLevels.openLevel(name, function (lvl) {
+                SonicLevel = jQuery.parseJSON(Base64.decode(lvl));
+                var tc = new TileChunk();
+                var tp = new TilePiece();
+                var t = new Tile();
+                var col = new Color();
+                var hm = new HeightMask();
+                var fc;
+                for (var j = 0; j < SonicLevel.TileChunks.length; j++) {
+                    fc = SonicLevel.TileChunks[j];
+                    fc.draw = tc.draw;
+                    fc.constructor = tc.constructor;
+                    fc.getTilePiece = tc.getTilePiece;
+                }
+                var cc;
+                for (var j = 0; j < SonicLevel.TilePieces.length; j++) {
+                    fc = SonicLevel.TilePieces[j];
+                    fc.constructor = tp.constructor;
+                    fc.click = tp.click;
+                    fc.mouseOver = tp.mouseOver;
+                    fc.draw = tp.draw;
+                    fc.equals = tp.equals;
+
+                    cc = fc.heightMask;
+                    cc.setItem = hm.setItem;
+                    cc.draw = hm.draw;
+
+                }
+                for (var j = 0; j < SonicLevel.Tiles.length; j++) {
+                    fc = SonicLevel.Tiles[j];
+                    fc.changeColor = t.changeColor;
+                    fc.draw = t.draw;
+                    fc.equals = t.equals;
+                    for (var d = 0; d < fc.colors.length; d++) {
+                        cc = fc.colors[d];
+                        cc.setData = col.setData;
+                        cc.style = col.style;
+                    }
+                }
+            });
+        }));
+    }
+
     var tileChunkArea = new UiArea(490, 40, 400, 400);
     tileChunkArea.visible = true;
     that.UIAreas.push(tileChunkArea);
     tileChunkArea.addControl(new TextArea(30, 25, "Modify Tile Chunks", "15pt Arial bold", "blue"));
     var loadingText;
-    tileChunkArea.addControl(loadingText=new TextArea(270, 25, "Loading", "15pt Arial bold", "green"));
+    tileChunkArea.addControl(loadingText = new TextArea(270, 25, "Loading", "15pt Arial bold", "green"));
     var modifyTileChunkArea;
     var tcIndex = 0;
+
+
+    tileChunkArea.addControl(new Button(200, 35, 60, 22, "Run", "13pt Arial bold", "rgb(50,150,50)",
+        function () {
+            tileChunkArea.visible = false;
+            solidTileArea.visible = false;
+            levelInformation.visible = false;
+            sonicToon = new Sonic(SonicLevel);
+        }));
+
+
     tileChunkArea.addControl(new Button(50, 35, 25, 22, "<<", "13pt Arial bold", "rgb(50,150,50)",
         function () {
             if (tcIndex > 0)
@@ -222,6 +315,7 @@ function SonicEngine(canvasName) {
     document.getElementById(canvasName).addEventListener('mousemove', canvasMouseMove);
 
     window.addEventListener('keydown', doKeyDown, true);
+    window.addEventListener('keyUp', doKeyUp, true);
 
 
     function canvasOnClick(e) {
@@ -256,8 +350,8 @@ function SonicEngine(canvasName) {
         if (e.shiftKey) {
             var ch = SonicLevel.TileChunks[SonicLevel.ChunkMap[Math.floor(e.x / (128 * scale.x)) + Math.floor(e.y / (128 * scale.y)) * 10]];
 
-            var tp = ch.getTilePiece((e.x - Math.floor(e.x / (128 * scale.x)) * (128 * scale.x)) , (e.y - Math.floor(e.y / (128 * scale.y)) * (128 * scale.y)) , scale);
-            if(tp) {
+            var tp = ch.getTilePiece((e.x - Math.floor(e.x / (128 * scale.x)) * (128 * scale.x)), (e.y - Math.floor(e.y / (128 * scale.y)) * (128 * scale.y)), scale);
+            if (tp) {
                 modifyTilePieceArea.tilePiece = tp;
                 solidTileArea.visible = true;
             }
@@ -312,8 +406,9 @@ function SonicEngine(canvasName) {
         for (var ij = 0; ij < that.UIAreas.length; ij++) {
             var are = that.UIAreas[ij];
             if (are.visible && are.y <= evt.y && are.y + are.height > evt.y && are.x <= evt.x && are.x + are.width > evt.x) {
-                evt = { x: evt.x - are.x, 
-                    y: evt.y - are.y, delta: delta };
+                evt = { x: evt.x - are.x,
+                    y: evt.y - are.y, delta: delta
+                };
                 return are.scroll(evt);
             }
         }
@@ -323,7 +418,8 @@ function SonicEngine(canvasName) {
 
     var index = 1;
     var tim = function () {
-        if (index == 86) {
+        var max = 10;
+        if (index == max) {
             setTimeout(function () {
                 modifyTileChunkArea.tileChunk = SonicLevel.TileChunks[0];
                 loadingText.visible = false;
@@ -331,10 +427,10 @@ function SonicEngine(canvasName) {
             return;
         }
         setTimeout(tim, 100);
-        
+
         var image = new Image();
         image.onload = function () {
-            loadingText.text="Loading " +index+"/86";
+            loadingText.text = "Loading " + index + "/" + max;
             importChunkFromImage(image);
         };
         var j = "assets/TileChunks/HiPlane" + index++ + ".png";
@@ -346,21 +442,49 @@ function SonicEngine(canvasName) {
 
 
 
+
+
     function doKeyDown(evt) {
         switch (evt.keyCode) {
             case 38:  /* Up arrow was pressed */
-                sonicToon.pressJump();
+                if (sonicToon)
+                    sonicToon.pressJump();
 
                 break;
             case 40:  /* Down arrow was pressed */
-                sonicToon.pressCrouch();
+                if (sonicToon)
+                    sonicToon.pressCrouch();
 
                 break;
             case 37:  /* Left arrow was pressed */
-                sonicToon.pressLeft();
+                if (sonicToon)
+                    sonicToon.pressLeft();
                 break;
             case 39:  /* Right arrow was pressed */
-                sonicToon.pressRight();
+                if (sonicToon)
+                    sonicToon.pressRight();
+                break;
+        }
+    }
+    function doKeyUp(evt) {
+        switch (evt.keyCode) {
+            case 38:  /* Up arrow was pressed */
+                if (sonicToon)
+                    sonicToon.releaseJump();
+
+                break;
+            case 40:  /* Down arrow was pressed */
+                if (sonicToon)
+                    sonicToon.releaseCrouch();
+
+                break;
+            case 37:  /* Left arrow was pressed */
+                if (sonicToon)
+                    sonicToon.releaseLeft();
+                break;
+            case 39:  /* Right arrow was pressed */
+                if (sonicToon)
+                    sonicToon.releaseRight();
                 break;
         }
     }
@@ -380,7 +504,11 @@ function SonicEngine(canvasName) {
     var scale = { x: 4, y: 4 };
 
 
-    var sonicToon = new Sonic();
+    var sonicToon;
+    that.tick = function () {
+        if (sonicToon)
+            sonicToon.tick(SonicLevel, scale);
+    };
 
     that.draw = function () {
         requestAnimFrame(that.draw);
@@ -390,14 +518,15 @@ function SonicEngine(canvasName) {
             if (!SonicLevel.TileChunks[SonicLevel.ChunkMap[j]]) continue;
             var pos = { x: (j % 10) * 128 * scale.x, y: Math.floor(j / 10) * 128 * scale.y };
             SonicLevel.TileChunks[SonicLevel.ChunkMap[j]].
-                draw(that.canvasItem, pos, scale, true);
+                draw(that.canvasItem, pos, scale, !sonicToon);
 
             that.canvasItem.strokeStyle = "#DD0033";
             that.canvasItem.lineWidth = 3;
             that.canvasItem.strokeRect(pos.x, pos.y, 128 * scale.x, 128 * scale.y);
 
         }
-        sonicToon.draw(that.canvasItem,scale);
+        if (sonicToon)
+            sonicToon.draw(that.canvasItem, scale);
 
         /*if (img.loaded) {
         for (var j = 0; j < that.canvasWidth / img.width; j++) {
@@ -426,42 +555,8 @@ function SonicEngine(canvasName) {
 
     $(window).resize(this.resizeCanvas);
     this.resizeCanvas();
+    window.setInterval(that.tick, 1000 / 60);
     requestAnimFrame(that.draw);
 };
 
 
-
-
-function Sonic() {
-    this.x = 0;
-    this.y = 0;
-    this.sprite = new Image();
-    var sprite1 = this.sprite;
-    this.sprite.onload = function () {
-        sprite1.loaded = true;
-    };
-    var j = "assets/Sprites/sonic.png";
-    this.sprite.src = j;
-
-
-
-    this.draw = function (canvas, scale) {
-        if(this.sprite.loaded)
-           canvas.drawImage(this.sprite, this.x, this.y);
-    };
-    this.tick = function() {
-
-    };
-    this.pressJump = function () {
-        this.y -= 5;
-    };
-    this.pressCrouch= function () {
-        this.y += 5;
-    };
-    this.pressLeft= function () {
-        this.x -= 5;
-    };
-    this.pressRight= function () {
-        this.x += 5;
-    };
-}

@@ -2,9 +2,10 @@
     this.r = r;
     this.g = g;
     this.b = b;
-    this._style = "#" + (r.toString(16).length == 1 ? "0" + r.toString(16) : r.toString(16))
-        + (g.toString(16).length == 1 ? "0" + g.toString(16) : g.toString(16))
-            + (b.toString(16).length == 1 ? "0" + b.toString(16) : b.toString(16));
+    if (r != undefined)
+        this._style = "#" + (r.toString(16).length == 1 ? "0" + r.toString(16) : r.toString(16))
+            + (g.toString(16).length == 1 ? "0" + g.toString(16) : g.toString(16))
+                + (b.toString(16).length == 1 ? "0" + b.toString(16) : b.toString(16));
 
     this.style = function () {
         return this._style;
