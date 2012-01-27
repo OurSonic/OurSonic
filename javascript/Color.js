@@ -7,13 +7,16 @@
             + (g.toString(16).length == 1 ? "0" + g.toString(16) : g.toString(16))
                 + (b.toString(16).length == 1 ? "0" + b.toString(16) : b.toString(16));
 
-    this.style = function () {
+    Color.prototype.style = function () {
         return this._style;
     };
-    this.setData = function (data, index) {
+    Color.prototype.setData = function (data, index) {
         data[index] = this.r;
         data[index + 1] = this.g;
         data[index + 2] = this.b;
         data[index + 3] = 255;
+    };
+    Color.prototype.equals = function(j) {
+        return j.r == this.r && j.g == this.g && j.b == this.b;
     };
 }

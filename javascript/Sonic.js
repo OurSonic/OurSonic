@@ -10,14 +10,14 @@
     this.ysp = 0;
 
     this.acc = 0.046875;
-    this.dec = 0;
+    this.dec = 0.5;
     this.frc = 0;
 
     this.jmp = 0;
     this.grv = 0.21875;
-    
 
-    
+
+
     this.sprite = new Image();
     var sprite1 = this.sprite;
     this.sprite.onload = function () {
@@ -27,15 +27,43 @@
     this.sprite.src = j;
     this.sonicLevel = sonicLevel;
     this.state = SonicState.Air;
-    
+    this.imageReady = false;
     this.tickCount = 0;
     this.draw = function (canvas, scale) {
 
-        if (this.sprite.loaded)
-            canvas.drawImage(this.sprite, (this.x - 20) * scale.x, (this.y - 10) * scale.y, scale.x * this.sprite.width, scale.y * this.sprite.height);
+        if (this.sprite.loaded && !this.imageReady) {
+            var data = _H.getImageData(this.sprite);
+            var colors = [];
+            for (var f = 0; f < data.length; f += 4) {
+                colors.push(new Color(data[f], data[f + 1], data[f + 2]));
+            }
+
+            var d = canvas.createImageData(this.sprite.width * scale.x, this.sprite.height * scale.y);
+
+            _H.setDataFromColors(d.data, colors, scale, this.sprite.width, new Color(0, 0, 0));
+
+
+            this.sprite = new Image();
+            sprite1 = this.sprite;
+            this.imageReady = true;
+            this.sprite.onload = function () {
+                sprite1.loaded = true;
+            };
+            this.sprite.src = _H.getBase64Image(d);
+
+        }
+
+        if (this.imageReady && this.sprite.loaded)
+            canvas.drawImage(this.sprite, (this.x - 15) * scale.x, (this.y - 20) * scale.y, this.sprite.width, this.sprite.height);
+
+        canvas.fillStyle = "white";
+
+        canvas.fillRect((this.x ) * scale.x, (this.y ) * scale.y, 5, 5);
+
     };
 
-    this.kill = function() {
+    this.runningDir = 0;
+    this.kill = function () {
 
     };
 
@@ -47,11 +75,30 @@
         if (this.state == SonicState.Ground) {
             this.ysp = 0;
             if (this.holdingRight) {
+                this.runningDir = +1;
                 this.xsp += this.acc;
-            }else
-            if (this.holdingLeft) {
-                this.xsp -= this.acc;
+            } else
+                if (this.holdingLeft) {
+                    this.runningDir = -1;
+                    this.xsp -= this.acc;
+                }
+
+            if (!this.holdingRight && !this.holdingLeft && this.runningDir != 0) {
+                if (this.runningDir < 0) {
+                    this.xsp += this.dec;
+                    if (this.xsp > 0) {
+                        this.xsp = 0;
+                        this.runningDir = 0;
+                    }
+                } else if (this.runningDir > 0) {
+                    this.xsp -= this.dec;
+                    if (this.xsp < 0) {
+                        this.xsp = 0;
+                        this.runningDir = 0;
+                    }
+                }
             }
+
             var bad = false;
             while (this.heightInformation[((fx - 10) + (fy + 4) * this.levelWidth)]) {
                 this.x++;
@@ -64,7 +111,6 @@
             }
         } else {
             this.ysp += this.grv;
-
         }
 
 
@@ -72,6 +118,13 @@
             this.state = SonicState.Air;
         } else {
             this.state = SonicState.Ground;
+            this.ysp = 0;
+
+            while (this.heightInformation[((fx - 9) + (fy + 20) * this.levelWidth)] && this.heightInformation[((fx + 9) + (fy + 20) * this.levelWidth)]) {
+                fy -= 1;
+            }
+            this.y = fy+1;
+
         }
 
 
@@ -99,7 +152,7 @@
     this.pressJump = function () {
         this.jumping = true;
     };
-    
+
     this.pressCrouch = function () {
         this.crouching = true;
 
@@ -115,7 +168,7 @@
 
     this.releaseJump = function () {
         this.jumping = false;
-    
+
     };
     this.releaseCrouch = function () {
         this.crouching = false;
@@ -143,7 +196,7 @@
                             for (var __x = 0; __x < 16; __x++) {
                                 //alert((x * 128 + _x * 8 + __x) + " " + (y * 128 + _y * 8 + __y) + " "  + "    " + ((x * 128 + _x * 8 + __x) + (y * 128 + _y * 8 + __y) * (size * 128)));
                                 //                                alert(tp.heightMask.items[__x]+" "+__y);
-                                hmap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (size * 128)] = ( tp.heightMask.items[__x]) > __y;
+                                hmap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (size * 128)] = (tp.heightMask.items[__x]) > 16 - __y;
                             }
                         }
                     }
@@ -157,4 +210,4 @@
 }
 
 
-SonicState={Air:0,Ground:1}
+SonicState = { Air: 0, Ground: 1 }

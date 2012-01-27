@@ -2,7 +2,7 @@
     this.heightMask = heightMask;
     this.tiles = tiles;
 
-    this.click = function (x, y, state) {
+    TilePiece.prototype.click = function (x, y, state) {
         switch (state) {
             case 0:
                 this.heightMask.setItem(x, y);
@@ -17,13 +17,16 @@
 
 
     };
-    this.mouseOver = function (x, y) {
+    TilePiece.prototype.mouseOver = function (x, y) {
         //SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
     };
-    this.draw = function (canvas, position, scale, showHeightMask) {
+    TilePiece.prototype.draw = function (canvas, position, scale, showHeightMask) {
 
         for (var i = 0; i < this.tiles.length; i++) {
-            SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + Math.floor(i / 2) * 8 * scale.y },scale,showHeightMask);
+            SonicLevel.Tiles[this.tiles[i]].tag = this.tag;
+            SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + Math.floor(i / 2) * 8 * scale.y }, scale, showHeightMask);
+            SonicLevel.Tiles[this.tiles[i]].tag = false;
+            
         }
 
         //canvas.fillStyle = "#FFFFFF";
@@ -31,8 +34,9 @@
 
         if (showHeightMask)
             this.heightMask.draw(canvas, position, scale);
+
     };
-    this.equals = function (tp) {
+    TilePiece.prototype.equals = function (tp) {
         for (var i = 0; i < this.tiles.length; i++) {
 
             if (tp[i] != this.tiles[i])

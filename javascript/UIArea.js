@@ -1,21 +1,27 @@
 ﻿
-var WireColor = "rgb(255,255,255)";
 
 
-function UiArea(x, y, w, h) {
+function UiArea(x, y, w, h,closable) {
     this.x = x;
     this.y = y;
+    this.closable = closable;
     this.width = w;
     this.height = h;
     this.depth = 0;
     this.visible = true;
     this.dragging = false;
     this.controls = [];
-    this.addControl = function(control) {
+    this.addControl = function (control) {
         control.parent = this;
         this.controls.push(control);
         return control;
     };
+    var that = this;
+
+    if (closable) {
+        this.addControl(new Button(this.width - 30,  4, 26, 26, "X", buttonFont, "Green", function() { that.visible = false; }));
+    }
+    
     this.click = function (e) {
         if (!this.visible) return;
         for (var ij = 0; ij < this.controls.length; ij++) {
@@ -30,7 +36,7 @@ function UiArea(x, y, w, h) {
         }
         this.dragging = { x: e.x, y: e.y };
 
-        
+
     };
 
     this.mouseMove = function (e) {
@@ -43,11 +49,11 @@ function UiArea(x, y, w, h) {
                 control.onMouseOver(e);
             }
         }
-        
-        
+
+
         if (!this.dragging) return;
         this.x += e.x - this.dragging.x;
-        this.y += e.y - this.dragging.y; 
+        this.y += e.y - this.dragging.y;
 
     };
     this.mouseUp = function (e) {
@@ -68,26 +74,27 @@ function UiArea(x, y, w, h) {
                     e.x -= control.x;
                     e.y -= control.y;
                     control.onScroll(e);
-                    return  false;
+                    return false;
                 }
             }
         }
     };
     this.draw = function (canv) {
         if (!this.visible) return;
-        canv.fillStyle = WireColor;
-        canv.lineWidth = 2;
+        
+        canv.fillStyle = "rgba(33,33,33,0.3)";
+        canv.lineWidth = 9;
         canv.strokeStyle = "#333";
         roundRect(canv, this.x, this.y, this.width, this.height, 5, true, true);
 
-    
 
 
-         for (var j = 0; j < this.controls.length; j++) {
-             var t = this.controls[j];
-             t.draw(canv);
 
-         }
+        for (var j = 0; j < this.controls.length; j++) {
+            var t = this.controls[j];
+            t.draw(canv);
+
+        }
     };
 
     return this;
@@ -115,12 +122,28 @@ function TextArea(x, y, text, font, color) {
 
     this.draw = function (canv) {
         if (!this.visible) return;
-        canv.fillStyle = this.color;
+        var text = _H.isFunction(this.text) ? this.text() : this.text;
         if (canv.font != this.font)
             canv.font = this.font;
-        
 
-        canv.fillText(_H.isFunction(this.text)?this.text():this.text, this.parent.x + this.x, this.parent.y + this.y);
+        var w = canv.measureText(text).width;
+        var h = parseInt(canv.font.split('pt')[0]);
+
+        //   canv.fillStyle = "rgba(255,255,255,0.78)";
+        var pad = 3;
+        //     canv.fillRect(this.parent.x + this.x - pad, this.parent.y + this.y - h - pad, w + (pad * 2), h + (pad * 2));
+
+        canv.strokeStyle = this.color;
+        canv.shadowColor = "#FFF";
+        canv.shadowBlur = 20;
+        canv.lineWidth = 1.5 ;
+        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
+        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
+        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
+        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
+        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
+        canv.shadowBlur = 0;
+
     };
 
 
@@ -149,9 +172,9 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
-if(this.clicking) {
-    if (this.click) this.click();
-}
+        if (this.clicking) {
+            if (this.click) this.click();
+        }
         this.clicking = false;
         if (this.mouseUp) this.mouseUp();
     };
@@ -210,7 +233,10 @@ function TilePieceArea(x, y, scale, tilePiece) {
     this.draw = function (canv) {
         if (!this.visible) return;
         if (!this.tilePiece) return;
+        this.tilePiece.tag = true;
         this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, true);
+        this.tilePiece.tag = false;
+    
     };
     return this;
 }
@@ -225,7 +251,7 @@ function TileChunkArea(x, y, scale, tileChunk) {
     this.clicking = false;
     this.tileChunk = tileChunk;
     this.parent = null;
-    
+
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
@@ -233,7 +259,7 @@ function TileChunkArea(x, y, scale, tileChunk) {
     this.onMouseUp = function (e) {
         if (!this.visible) return;
 
-        if (this.clicking ) {
+        if (this.clicking) {
         }
         this.clickHandled = false;
         this.clicking = false;
@@ -246,33 +272,33 @@ function TileChunkArea(x, y, scale, tileChunk) {
     this.draw = function (canv) {
         if (!this.visible) return;
         if (!this.tileChunk) return;
-        this.tileChunk.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale,true);
+        this.tileChunk.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, true);
     };
     return this;
 };
-function ScrollBox(x, y, itemHeight,visibleItems,itemWidth, backColor, controls) {
+function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, controls) {
     this.x = x;
     this.y = y;
     this.itemWidth = itemWidth;
     this.visible = true;
     var scrollWidth = 14;
-    this.width = itemWidth+scrollWidth;
+    this.width = itemWidth + scrollWidth;
     this.visibleItems = visibleItems;
     this.itemHeight = itemHeight;
     this.backColor = backColor;
 
-    this.height = visibleItems * itemHeight; 
+    this.height = visibleItems * itemHeight;
     this.parent = null;
     this.scrollOffset = 0;
     this.scrollPosition = 0;
     this.dragging = false;
-    
+
     if (controls)
         this.controls = controls;
     else
         this.controls = [];
-    
-    this.scrolling = false; 
+
+    this.scrolling = false;
     this.addControl = function (control) {
         control.parent = this;
         this.controls.push(control);
@@ -313,7 +339,7 @@ function ScrollBox(x, y, itemHeight,visibleItems,itemWidth, backColor, controls)
     this.onMouseUp = function (e) {
         if (!this.visible) return;
         this.dragging = false;
-        
+
         for (var ij = this.scrollOffset; ij < this.controls.length; ij++) {
             var control = this.controls[ij];
             if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
@@ -324,7 +350,7 @@ function ScrollBox(x, y, itemHeight,visibleItems,itemWidth, backColor, controls)
 
             }
         }
-        
+
         if (this.mouseUp) this.mouseUp();
     };
     this.onMouseOver = function (e) {
@@ -339,12 +365,12 @@ function ScrollBox(x, y, itemHeight,visibleItems,itemWidth, backColor, controls)
 
             }
         }
-        if(this.dragging && e.x>this.itemWidth && e.x<this.itemWidth+scrollWidth) {
-            if(this.scrollPosition>e.y) {
+        if (this.dragging && e.x > this.itemWidth && e.x < this.itemWidth + scrollWidth) {
+            if (this.scrollPosition > e.y) {
                 if (this.scrollOffset > 0) {
                     this.scrollOffset--;
                 }
-            }else {
+            } else {
                 if (this.scrollOffset < this.controls.length - this.visibleItems) {
                     this.scrollOffset++;
                 }
@@ -369,7 +395,7 @@ function ScrollBox(x, y, itemHeight,visibleItems,itemWidth, backColor, controls)
                 e.x -= control.x;
                 e.y -= control.y;
                 if (control.onScroll)
-                control.onScroll(e);
+                    control.onScroll(e);
                 return false;
 
             }

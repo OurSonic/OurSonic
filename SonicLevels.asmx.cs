@@ -45,13 +45,16 @@ namespace OurSonic
             return n;
         }
 
+        
+
         [WebMethod]
-        public void updateLevel(string name, string level)
+        public void SaveLevelInformation(string name,string level)
         {
             ((XElement)doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == name).FirstAttribute.NextAttribute.Value = level;
             doc.Save(c);
         }
 
+        
         [WebMethod]
         public string openLevel(string level)
         {

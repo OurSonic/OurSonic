@@ -3,20 +3,20 @@
 
     this.imageData = null;
     this.oldScale = 0;
-    this.changeColor = function(x, y, color) {
+    Tile.prototype.changeColor = function (x, y, color) {
         this.colors[y * 8 + x] = color;
         this.oldScale = 0;
     };
 
-    this.draw = function (canvas, pos, scale, showOutline) {
-
+    Tile.prototype.draw = function (canvas, pos, scale, showOutline) {
+ 
         if (scale != this.oldScale) {
             this.oldScale = scale;
             var d = canvas.createImageData(8 * scale.x, 8 * scale.y);
-            _H.setDataFromColors(d.data, this.colors, scale);
+            _H.setDataFromColors(d.data, this.colors, scale,8);
             this.imageData = d;
         }
-
+         
         canvas.putImageData(this.imageData, pos.x, pos.y);
         if (showOutline) {
             canvas.strokeStyle = "#DD0033";
@@ -35,7 +35,7 @@
 
     };
 
-    this.equals = function (cols) {
+    Tile.prototype.equals = function (cols) {
         for (var i = 0; i < this.colors.length; i++) {
 
             if (cols[i]._style != this.colors[i]._style)

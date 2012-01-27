@@ -8,7 +8,7 @@
         this.items[_x] = 0;
     }
 
-    this.setItem = function(x, y) {
+    HeightMask.prototype.setItem = function (x, y) {
 
         var jx = 0, jy = 0;
         switch (this.rotationMode) {
@@ -36,7 +36,7 @@
 
 
 
-    this.draw = function (canvas, pos, scale) {
+    HeightMask.prototype.draw = function (canvas, pos, scale) {
 
         for (var x = 0; x < 16; x++) {
             for (var y = 0; y < 16; y++) {

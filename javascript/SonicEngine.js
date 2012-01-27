@@ -1,6 +1,7 @@
 ﻿var DEBUGs = true;
 
-
+textFont = "18pt sans-serrif ";
+buttonFont = "13pt Arial bold";
 SonicLevel = {
     Tiles: [],
     TilePieces: [],
@@ -131,7 +132,7 @@ function SonicEngine(canvasName) {
     that.messages = [];
     this.canvas = $("#" + canvasName);
     this.canvasItem = document.getElementById(canvasName).getContext("2d");
-
+    this.canvasItem.font = textFont;
 
 
     this.canvasWidth = 0;
@@ -142,23 +143,24 @@ function SonicEngine(canvasName) {
 
 
 
-    var solidTileArea = new UiArea(40, 40, 400, 400);
+    var solidTileArea = new UiArea(40, 40, 400, 400,true);
     solidTileArea.visible = false;
     that.UIAreas.push(solidTileArea);
-    solidTileArea.addControl(new TextArea(30, 25, "Modify Solid Tile", "15pt Arial bold", "blue"));
+    solidTileArea.addControl(new TextArea(30, 25, "Modify Solid Tile", textFont, "blue"));
     var tpIndex = 0;
-    solidTileArea.addControl(new Button(50, 35, 25, 22, "<<", "13pt Arial bold", "rgb(50,150,50)",
+    
+    solidTileArea.addControl(new Button(50, 35, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
         function () {
             if (tpIndex > 0)
                 modifyTilePieceArea.tilePiece = SonicLevel.TilePieces[--tpIndex];
         }));
-    solidTileArea.addControl(new Button(80, 35, 25, 22, ">>", "13pt Arial bold", "rgb(50,150,50)",
+    solidTileArea.addControl(new Button(80, 35, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
         function () {
             if (tpIndex < SonicLevel.TilePieces.length)
                 modifyTilePieceArea.tilePiece = SonicLevel.TilePieces[++tpIndex];
         }));
 
-    solidTileArea.addControl(new Button(200, 35, 180, 22, "Modify Height Map", "13pt Arial bold", "rgb(50,150,50)",
+    solidTileArea.addControl(new Button(200, 35, 180, 22, "Modify Height Map", buttonFont, "rgb(50,150,50)",
     function () {
         modifyTilePieceArea.state = (modifyTilePieceArea.state + 1) % 3;
         switch (modifyTilePieceArea.state) {
@@ -176,19 +178,19 @@ function SonicEngine(canvasName) {
     solidTileArea.addControl(modifyTilePieceArea = new TilePieceArea(30, 70, { x: 4 * 5, y: 4 * 5 }, null));
 
 
-    var levelInformation = new UiArea(900, 70, 300, 360);
+    var levelInformation = new UiArea(900, 70, 390, 360);
     levelInformation.visible = true;
     that.UIAreas.push(levelInformation);
-    levelInformation.addControl(new TextArea(30, 25, "Level Manager", "15pt Arial bold", "blue"));
+    levelInformation.addControl(new TextArea(30, 25, "Level Manager", textFont, "blue"));
     levelInformation.addControl(new TextArea(30, 45, function () {
         return !curLevelName ? "Level Not Saved" : ("Current Leve:" + curLevelName);
-    }, "15pt Arial bold", "blue"));
-    levelInformation.addControl(new Button(190, 55, 100, 22, "Save Level", "13pt Arial bold", "rgb(50,150,50)",
+    }, textFont, "black"));
+    levelInformation.addControl(new Button(190, 55, 100, 22, "Save Level", buttonFont, "rgb(50,150,50)",
     function () {
         if (curLevelName) {
-            OurSonic.SonicLevels.updateLevel(curLevelName, Base64.encode(_H.stringify(SonicLevel)));
+    OurSonic.SonicLevels.SaveLevelInformation(curLevelName, _H.stringify(SonicLevel), function (c) {  }, function (c) { alert("Failure: " + _H.stringify(c)); });
         } else {
-            OurSonic.SonicLevels.saveLevel(Base64.encode(_H.stringify(SonicLevel)), function (j) {
+            OurSonic.SonicLevels.saveLevel((_H.stringify(SonicLevel)), function (j) {
                 addLevelToList(curLevelName);
             });
 
@@ -210,43 +212,27 @@ function SonicEngine(canvasName) {
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
             curLevelName = name;
             OurSonic.SonicLevels.openLevel(name, function (lvl) {
-                SonicLevel = jQuery.parseJSON(Base64.decode(lvl));
-                var tc = new TileChunk();
-                var tp = new TilePiece();
-                var t = new Tile();
-                var col = new Color();
-                var hm = new HeightMask();
+                
+                SonicLevel = jQuery.parseJSON((lvl));
+
                 var fc;
                 var j;
                 for (j = 0; j < SonicLevel.TileChunks.length; j++) {
                     fc = SonicLevel.TileChunks[j];
-                    fc.draw = tc.draw;
-                    fc.constructor = tc.constructor;
-                    fc.getTilePiece = tc.getTilePiece;
+
+                    fc.__proto__ = TileChunk.prototype;
                 }
                 var cc;
                 for (j = 0; j < SonicLevel.TilePieces.length; j++) {
                     fc = SonicLevel.TilePieces[j];
-                    fc.constructor = tp.constructor;
-                    fc.click = tp.click;
-                    fc.mouseOver = tp.mouseOver;
-                    fc.draw = tp.draw;
-                    fc.equals = tp.equals;
-
-                    cc = fc.heightMask;
-                    cc.setItem = hm.setItem;
-                    cc.draw = hm.draw;
-
+                    fc.__proto__ = TilePiece.prototype;
+                    fc.heightMask.__proto__ = HeightMask.prototype;
                 }
                 for (j = 0; j < SonicLevel.Tiles.length; j++) {
                     fc = SonicLevel.Tiles[j];
-                    fc.changeColor = t.changeColor;
-                    fc.draw = t.draw;
-                    fc.equals = t.equals;
+                    fc.__proto__ = Tile.prototype;
                     for (var d = 0; d < fc.colors.length; d++) {
-                        cc = fc.colors[d];
-                        cc.setData = col.setData;
-                        cc.style = col.style;
+                        fc.colors[d].__proto__ = Color.prototype;
                     }
                 }
             });
@@ -256,14 +242,14 @@ function SonicEngine(canvasName) {
     var tileChunkArea = new UiArea(490, 40, 400, 400);
     tileChunkArea.visible = true;
     that.UIAreas.push(tileChunkArea);
-    tileChunkArea.addControl(new TextArea(30, 25, "Modify Tile Chunks", "15pt Arial bold", "blue"));
+    tileChunkArea.addControl(new TextArea(30, 25, "Modify Tile Chunks", textFont, "blue"));
     var loadingText;
-    tileChunkArea.addControl(loadingText = new TextArea(270, 25, "Loading", "15pt Arial bold", "green"));
+    tileChunkArea.addControl(loadingText = new TextArea(270, 25, "Loading", textFont, "green"));
     var modifyTileChunkArea;
     var tcIndex = 0;
 
 
-    tileChunkArea.addControl(new Button(200, 35, 60, 22, "Run", "13pt Arial bold", "rgb(50,150,50)",
+    tileChunkArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)",
         function () {
             tileChunkArea.visible = false;
             solidTileArea.visible = false;
@@ -272,12 +258,12 @@ function SonicEngine(canvasName) {
         }));
 
 
-    tileChunkArea.addControl(new Button(50, 35, 25, 22, "<<", "13pt Arial bold", "rgb(50,150,50)",
+    tileChunkArea.addControl(new Button(50, 35, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
         function () {
             if (tcIndex > 0)
                 modifyTileChunkArea.tileChunk = SonicLevel.TileChunks[--tcIndex];
         }));
-    tileChunkArea.addControl(new Button(80, 35, 25, 22, ">>", "13pt Arial bold", "rgb(50,150,50)",
+    tileChunkArea.addControl(new Button(80, 35, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
         function () {
             if (tcIndex < SonicLevel.TileChunks.length)
                 modifyTileChunkArea.tileChunk = SonicLevel.TileChunks[++tcIndex];
@@ -314,8 +300,8 @@ function SonicEngine(canvasName) {
     document.getElementById(canvasName).addEventListener('mouseup', canvasMouseUp);
     document.getElementById(canvasName).addEventListener('mousemove', canvasMouseMove);
 
-    window.addEventListener('keydown', doKeyDown, true);
-    window.addEventListener('keyUp', doKeyUp, true);
+    $(document).keydown(doKeyDown);
+    $(document).keyup(doKeyUp);
 
 
     function canvasOnClick(e) {
@@ -519,11 +505,12 @@ function SonicEngine(canvasName) {
             var pos = { x: (j % 10) * 128 * scale.x, y: Math.floor(j / 10) * 128 * scale.y };
             SonicLevel.TileChunks[SonicLevel.ChunkMap[j]].
                 draw(that.canvasItem, pos, scale, !sonicToon);
-
-            that.canvasItem.strokeStyle = "#DD0033";
-            that.canvasItem.lineWidth = 3;
-            that.canvasItem.strokeRect(pos.x, pos.y, 128 * scale.x, 128 * scale.y);
-
+                
+            if (!sonicToon) {
+                that.canvasItem.strokeStyle = "#DD0033";
+                that.canvasItem.lineWidth = 3;
+                that.canvasItem.strokeRect(pos.x, pos.y, 128 * scale.x, 128 * scale.y);
+            }
         }
         if (sonicToon)
             sonicToon.draw(that.canvasItem, scale);

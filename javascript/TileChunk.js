@@ -1,10 +1,10 @@
 ﻿function TileChunk(tilesPieces) {
     this.tilesPieces = tilesPieces;
-    this.getTilePiece = function (x, y, scale) {
+    TileChunk.prototype.getTilePiece = function (x, y, scale) {
         return SonicLevel.TilePieces[this.tilesPieces[Math.floor((x / scale.x / 16)) + Math.floor((y / scale.y / 16)) * 8]];
     };
-    
-    this.draw = function (canvas, position, scale, drawLines) {
+
+    TileChunk.prototype .draw = function (canvas, position, scale, drawLines) {
         for (var i = 0; i < this.tilesPieces.length; i++) {
 
             SonicLevel.TilePieces[this.tilesPieces[i]].draw(canvas, { x: position.x + (i % 8) * 16 * scale.x, y: position.y + Math.floor(i / 8) * 16 * scale.y }, scale, false);

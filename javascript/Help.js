@@ -1,16 +1,23 @@
 ﻿window._H = {
-    setDataFromColors: function (data, colors, scale) {
+    setDataFromColors: function (data, colors, scale, width, transparent) {
 
         for (var i = 0; i < colors.length; i++) {
             //            alert((i % 8) * scale.x + (Math.floor(i / 8) * 16) * scale.y);
-            var curX = (i % 8);
-            var curY = Math.floor(i / 8);
+            var curX = (i % width);
+            var curY = Math.floor(i / width);
 
             for (var j = 0; j < scale.x; j++) {
                 for (var k = 0; k < scale.y; k++) {
                     var x = (curX * scale.x + j);
                     var y = (curY * scale.y + k);
-                    colors[i].setData(data, (x + y * (scale.x * 8)) * 4);
+                    var c = (x + y * (scale.x * width)) * 4;
+                    colors[i].setData(data, c);
+                    if (transparent) {
+                        //alert(_H.stringify(colors[i]) + " " + _H.stringify(transparent) + " " + colors[i].equals(transparent));
+                        if (colors[i].equals(transparent)) {
+                            data[c + 3] = 0;
+                        }
+                    }
                 }
             }
         }
@@ -52,7 +59,12 @@
         return functionToCheck && getType.toString.call(functionToCheck) == '[object Function]';
     },
     stringify: function (obj, cc) {
-        return JSON.stringify(obj);
+        return JSON.stringify(obj, function (key, value) {
+            if (key == "imageData") return undefined;
+            if (key == "oldScale") return undefined;
+            if (key == "sprite") return undefined;
+            else return value;
+        });
 
         if (cc > 0) return "";
         if (!cc) cc = 0;
