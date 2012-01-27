@@ -6,7 +6,7 @@
     <meta name="viewport" content="width = device-width, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, user-scalable = no" />
     <title>Our Sonic</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js" type="text/javascript">
-    </script> 
+    </script>
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Color.js?1" type="text/javascript"> 
@@ -66,6 +66,7 @@
         </Services>
     </asp:ScriptManager>
     <canvas id="build" style="margin: 0px; position: absolute; top: 0px; left: 0px;"></canvas>
+   
     </form>
 </body>
 </html>

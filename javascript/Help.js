@@ -58,11 +58,27 @@
         var getType = {};
         return functionToCheck && getType.toString.call(functionToCheck) == '[object Function]';
     },
+    detect: function (s, dcs) {
+        for (var j in s) {
+            if (typeof (s[j]) == "object") {
+                if (dcs[s[j]]) {
+                    alert("circ");
+                }
+                dcs[s[j]] = true;
+                this.detect(s[j], dcs);
+            }
+
+        }
+    },
     stringify: function (obj, cc) {
+
+
         return JSON.stringify(obj, function (key, value) {
+            
             if (key == "imageData") return undefined;
             if (key == "oldScale") return undefined;
             if (key == "sprite") return undefined;
+            if (key == "sprites") return undefined;
             else return value;
         });
 

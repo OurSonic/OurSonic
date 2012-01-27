@@ -18,11 +18,14 @@ namespace OurSonic
     public class SonicLevels : System.Web.Services.WebService
     {
         private XDocument doc;
-        private string c = "sonicLevels.xml";
+        private string c;
 
         public SonicLevels()
         {
-            if (!File.Exists(c))
+            c =  @"D:\vhosts\dested.com\httpdocs\OurSonic\sonicLevels.xml";
+       
+            c = "sonicLevels.xml";
+             if (!File.Exists(c))
             {
                 var j = File.CreateText(c);
                 j.Write("<soniclevels></soniclevels>");
@@ -51,7 +54,7 @@ namespace OurSonic
         public void SaveLevelInformation(string name,string level)
         {
             ((XElement)doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == name).FirstAttribute.NextAttribute.Value = level;
-            doc.Save(c);
+            doc.Save(c); 
         }
 
         

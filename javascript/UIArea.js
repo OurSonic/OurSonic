@@ -82,7 +82,7 @@ function UiArea(x, y, w, h,closable) {
     this.draw = function (canv) {
         if (!this.visible) return;
         
-        canv.fillStyle = "rgba(33,33,33,0.3)";
+        canv.fillStyle = "rgba(133,133,133,0.6)";
         canv.lineWidth = 9;
         canv.strokeStyle = "#333";
         roundRect(canv, this.x, this.y, this.width, this.height, 5, true, true);

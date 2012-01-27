@@ -1,23 +1,35 @@
 ﻿function Tile(colors) {
     this.colors = colors;
-
-    this.imageData = null;
-    this.oldScale = 0;
+     ;
+    this.sprites =[];
     Tile.prototype.changeColor = function (x, y, color) {
         this.colors[y * 8 + x] = color;
-        this.oldScale = 0;
     };
 
+
+
     Tile.prototype.draw = function (canvas, pos, scale, showOutline) {
- 
-        if (scale != this.oldScale) {
-            this.oldScale = scale;
+        if (!this.sprites) this.sprites = [];
+        var sps = this.sprites[scale.y * 100 + scale.x];
+
+        if (!sps) {
+
             var d = canvas.createImageData(8 * scale.x, 8 * scale.y);
-            _H.setDataFromColors(d.data, this.colors, scale,8);
-            this.imageData = d;
+            _H.setDataFromColors(d.data, this.colors, scale, 8);
+            this.sprites[scale.y * 100 + scale.x] = sps = new Image();
+            var sprite2 = sps;
+            sps.onload = function () {
+                sprite2.loaded = true;
+            };
+            sps.loaded = false;
+            sps.src = _H.getBase64Image(d);
         }
-         
-        canvas.putImageData(this.imageData, pos.x, pos.y);
+
+
+        
+        if (sps.loaded)
+            canvas.drawImage(sps, pos.x, pos.y);
+
         if (showOutline) {
             canvas.strokeStyle = "#DD0033";
             canvas.lineWidth = 3;

@@ -102,17 +102,25 @@
             var bad = false;
             while (this.heightInformation[((fx - 10) + (fy + 4) * this.levelWidth)]) {
                 this.x++;
+                fx++;
                 bad = true;
+                this.xsp = 0;
+
             }
             while (this.heightInformation[((fx + 10) + (fy + 4) * this.levelWidth)]) {
                 if (bad)
                     this.kill();
                 this.x--;
+                fx--;
+                this.xsp = 0;
+
             }
         } else {
             this.ysp += this.grv;
         }
 
+        if (this.ysp >= 16)
+            this.ysp = 16;
 
         if (!this.heightInformation[((fx - 9) + (fy + 20) * this.levelWidth)] && !this.heightInformation[((fx + 9) + (fy + 20) * this.levelWidth)]) {
             this.state = SonicState.Air;
@@ -123,7 +131,7 @@
             while (this.heightInformation[((fx - 9) + (fy + 20) * this.levelWidth)] && this.heightInformation[((fx + 9) + (fy + 20) * this.levelWidth)]) {
                 fy -= 1;
             }
-            this.y = fy+1;
+            this.y = fy + 1;
 
         }
 
