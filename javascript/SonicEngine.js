@@ -176,10 +176,10 @@ function SonicEngine(canvasName) {
                 modifyTilePieceArea.tilePiece = SonicLevel.TilePieces[--tpIndex];
         }));
 
-    solidTileArea.addControl(new Button(50, 35, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
+    solidTileArea.addControl(new Button(75, 35, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
         function () {
-            if (tpIndex > 0)
-                modifyTilePieceArea.tilePiece = SonicLevel.TilePieces[--tpIndex];
+            if (tpIndex < SonicLevel.TilePieces.length)
+                modifyTilePieceArea.tilePiece = SonicLevel.TilePieces[++tpIndex];
         }));
     solidTileArea.addControl(new Button(360, 80, 45, 22, "Full", buttonFont, "rgb(50,150,50)",
         function () {
@@ -233,7 +233,7 @@ function SonicEngine(canvasName) {
         loadingText.visible = true;
         var index = 1;
         var tim = function () {
-            var max = 10;
+            var max = 86;
             if (index == max) {
                 setTimeout(function () {
                     modifyTileChunkArea.tileChunk = SonicLevel.TileChunks[0];
@@ -403,6 +403,8 @@ function SonicEngine(canvasName) {
 
             var tp = ch.getTilePiece((e.x - Math.floor(e.x / (128 * scale.x)) * (128 * scale.x)), (e.y - Math.floor(e.y / (128 * scale.y)) * (128 * scale.y)), scale);
             if (tp) {
+                tpIndex = SonicLevel.TilePieces.indexOf(tp);
+                
                 modifyTilePieceArea.tilePiece = tp;
                 solidTileArea.visible = true;
             }
@@ -419,15 +421,22 @@ function SonicEngine(canvasName) {
         e.preventDefault();
         var cell = getCursorPosition(e);
 
-        for (var ij = 0; ij < that.UIAreas.length; ij++) {
-            var are = that.UIAreas[ij];
-            if (are.visible && are.y <= cell.y &&
+        var cl = JSLINQ(that.UIAreas).OrderBy(function (f) {
+            return -f.depth;
+        });
+         
+
+
+
+        for (var ij = 0; ij < cl.items.length; ij++) {
+            var are = cl.items[ij];
+            if (are.dragging || (are.visible && are.y <= cell.y &&
                     are.y + are.height > cell.y &&
                         are.x <= cell.x &&
-                            are.x + are.width > cell.x) {
+                            are.x + are.width > cell.x)) {
                 cell = { x: cell.x - are.x, y: cell.y - are.y };
-
-                return are.mouseMove(cell);
+               return are.mouseMove(cell);
+               
             }
         }
 

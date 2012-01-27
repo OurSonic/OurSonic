@@ -41,17 +41,19 @@ function UiArea(x, y, w, h,closable) {
 
     this.mouseMove = function (e) {
         if (!this.visible) return;
-        for (var ij = 0; ij < this.controls.length; ij++) {
-            var control = this.controls[ij];
-            if (control.visible && control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
-                e.x -= control.x;
-                e.y -= control.y;
-                control.onMouseOver(e);
+        if (!this.dragging) {
+            for (var ij = 0; ij < this.controls.length; ij++) {
+                var control = this.controls[ij];
+                if (control.visible && control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+                    e.x -= control.x;
+                    e.y -= control.y;
+                    control.onMouseOver(e);
+                }
             }
+
+            return;
         }
-
-
-        if (!this.dragging) return;
+        
         this.x += e.x - this.dragging.x;
         this.y += e.y - this.dragging.y;
 
@@ -234,7 +236,7 @@ function TilePieceArea(x, y, scale, tilePiece) {
         if (!this.visible) return;
         if (!this.tilePiece) return;
         this.tilePiece.tag = true;
-        this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, true);
+        this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, this.state);
         this.tilePiece.tag = false;
     
     };
@@ -361,7 +363,7 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
                 e.x -= control.x;
                 e.y -= control.y;
                 control.onMouseOver(e);
-                return false;
+             break;
 
             }
         }

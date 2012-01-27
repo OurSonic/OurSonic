@@ -4,6 +4,7 @@
     this.sprites =[];
     Tile.prototype.changeColor = function (x, y, color) {
         this.colors[y * 8 + x] = color;
+        this.sprites = [];
     };
 
 
@@ -28,7 +29,7 @@
 
 
         if (sps.loaded)
-            canvas.drawImage(sps, pos.x, pos.y);
+            canvas.drawImage(sps, Math.floor(pos.x), Math.floor(pos.y));
         else return false;
 
         if (showOutline) {

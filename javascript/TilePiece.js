@@ -21,16 +21,32 @@
     TilePiece.prototype.mouseOver = function (x, y) {
         //SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
     };
-    TilePiece.prototype.draw = function (canvas, position, scale, showHeightMask) {
+    TilePiece.prototype.draw = function (canvas, position, scale, state) {
         if (!this.sprites)
             this.sprites = [];
+        for (var i = 0; i < this.tiles.length; i++) {
+            var j = SonicLevel.Tiles[this.tiles[i]].sprites;
+            if (!j || j.length == 0) {
+                this.sprites = [];
+                break;
+            }
+        }
+        if (state < 3) {
+            for (var i = 0; i < this.tiles.length; i++) {
+                if (!SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: Math.floor(position.x) + (i % 2) * 8 * scale.x, y: Math.floor(position.y) + Math.floor(i / 2) * 8 * scale.y }, scale, state != 3))
+                    return false;
+            }
+            this.heightMask.draw(canvas, position, scale, state);
+            return true;
+        }
+
         if (!this.sprites[scale.y * 100 + scale.x]) {
             var cg = document.createElement("canvas");
             cg.width = 2 * 8 * scale.x;
             cg.height = 2 * 8 * scale.y;
             var cv = cg.getContext('2d');
             for (var i = 0; i < this.tiles.length; i++) {
-                if (!SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, showHeightMask))
+                if (!SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state != 3))
                     return false;
             }
             var sprite1;
@@ -45,15 +61,15 @@
         }
 
         if (this.sprites[scale.y * 100 + scale.x].loaded) {
-            canvas.drawImage(this.sprites[scale.y * 100 + scale.x], position.x, position.y);
+            canvas.drawImage(this.sprites[scale.y * 100 + scale.x], Math.floor(position.x), Math.floor(position.y));
         } else return false;
 
 
         //canvas.fillStyle = "#FFFFFF";
         //canvas.fillText(SonicLevel.TilePieces.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);
 
-        if (showHeightMask)
-            this.heightMask.draw(canvas, position, scale);
+
+        this.heightMask.draw(canvas, position, scale, state);
         return true;
     };
     TilePiece.prototype.equals = function (tp) {
