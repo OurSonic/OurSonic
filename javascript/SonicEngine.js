@@ -145,7 +145,7 @@ function SonicEngine(canvasName) {
     debuggerArea.visible = false;
     that.UIAreas.push(debuggerArea);
     debuggerArea.addControl(new TextArea(30, 25, "Debugger", textFont, "blue"));
-    debuggerArea.addControl(new Button(95, 25, 60, 22, "Stop", buttonFont, "rgb(50,150,50)", function () {
+    debuggerArea.addControl(new Button(95, 60, 60, 22, "Stop", buttonFont, "rgb(50,150,50)", function () {
 
         windowLocation.x = 0;
         windowLocation.y = 0;
@@ -158,9 +158,13 @@ function SonicEngine(canvasName) {
     }
     ));
 
+    new TileChunk();
+    new TilePiece();
+    new Tile();
+    new HeightMask();
+    new Color();
 
-
-    var solidTileArea = new UiArea(40, 40, 400, 400, true);
+    var solidTileArea = new UiArea(40, 40, 430, 400, true);
     solidTileArea.visible = false;
     that.UIAreas.push(solidTileArea);
     solidTileArea.addControl(new TextArea(30, 25, "Modify Solid Tile", textFont, "blue"));
@@ -221,6 +225,39 @@ function SonicEngine(canvasName) {
 
         }
     }));
+
+
+    levelInformation.addControl(new Button(190, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
+    function () {
+        tileChunkArea.visible = true;
+        loadingText.visible = true;
+        var index = 1;
+        var tim = function () {
+            var max = 10;
+            if (index == max) {
+                setTimeout(function () {
+                    modifyTileChunkArea.tileChunk = SonicLevel.TileChunks[0];
+                    loadingText.visible = false;
+                }, 500);
+                return;
+            }
+            setTimeout(tim, 100);
+
+            var image = new Image();
+            image.onload = function () {
+                loadingText.text = "Loading " + index + "/" + max;
+                importChunkFromImage(image);
+            };
+            var j = "assets/TileChunks/HiPlane" + index++ + ".png";
+            image.src = j;
+
+        };
+        setTimeout(tim, 100);
+
+
+
+    }));
+
     var ctls;
     levelInformation.addControl(ctls = new ScrollBox(30, 70, 25, 11, 130, "rgb(50,60,127)"));
 
@@ -237,6 +274,8 @@ function SonicEngine(canvasName) {
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
             curLevelName = name;
             OurSonic.SonicLevels.openLevel(name, function (lvl) {
+                tileChunkArea.visible = true;
+
                 SonicLevel = jQuery.parseJSON((lvl));
                 var fc;
                 var j;
@@ -257,16 +296,19 @@ function SonicEngine(canvasName) {
                         fc.colors[d].__proto__ = Color.prototype;
                     }
                 }
+
+                modifyTileChunkArea.tileChunk = SonicLevel.TileChunks[0];
             });
         }));
     }
 
     var tileChunkArea = new UiArea(490, 40, 400, 400);
-    tileChunkArea.visible = true;
+    tileChunkArea.visible = false;
     that.UIAreas.push(tileChunkArea);
     tileChunkArea.addControl(new TextArea(30, 25, "Modify Tile Chunks", textFont, "blue"));
     var loadingText;
     tileChunkArea.addControl(loadingText = new TextArea(270, 25, "Loading", textFont, "green"));
+    loadingText.visible = false;
     var modifyTileChunkArea;
     var tcIndex = 0;
 
@@ -425,28 +467,6 @@ function SonicEngine(canvasName) {
         return evt.preventDefault() && false;
     };
 
-    var index = 1;
-    var tim = function () {
-        var max = 10;
-        if (index == max) {
-            setTimeout(function () {
-                modifyTileChunkArea.tileChunk = SonicLevel.TileChunks[0];
-                loadingText.visible = false;
-            }, 500);
-            return;
-        }
-        setTimeout(tim, 100);
-
-        var image = new Image();
-        image.onload = function () {
-            loadingText.text = "Loading " + index + "/" + max;
-            importChunkFromImage(image);
-        };
-        var j = "assets/TileChunks/HiPlane" + index++ + ".png";
-        image.src = j;
-
-    };
-    setTimeout(tim, 100);
 
 
 
@@ -531,8 +551,9 @@ function SonicEngine(canvasName) {
             that.canvasItem.beginPath();
             that.canvasItem.rect(0, 0, windowLocation.width * scale.x, windowLocation.height * scale.x);
             that.canvasItem.clip();
-            windowLocation.x = sonicToon.x / scale.x - 60;
-            windowLocation.y = sonicToon.y / scale.y - 30;
+            windowLocation.x = Math.floor(sonicToon.x - 160);
+            windowLocation.y = Math.floor(sonicToon.y - 180);
+            if (windowLocation.x < 0) windowLocation.x = 0;
         }
 
         for (var j = 0; j < SonicLevel.ChunkMap.length; j++) {

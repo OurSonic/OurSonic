@@ -1,6 +1,7 @@
 ﻿function TilePiece(heightMask, tiles) {
     this.heightMask = heightMask;
     this.tiles = tiles;
+    this.sprites = [];
 
     TilePiece.prototype.click = function (x, y, state) {
         switch (state) {
@@ -21,20 +22,39 @@
         //SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
     };
     TilePiece.prototype.draw = function (canvas, position, scale, showHeightMask) {
+        if (!this.sprites)
+            this.sprites = [];
+        if (!this.sprites[scale.y * 100 + scale.x]) {
+            var cg = document.createElement("canvas");
+            cg.width = 2 * 8 * scale.x;
+            cg.height = 2 * 8 * scale.y;
+            var cv = cg.getContext('2d');
+            for (var i = 0; i < this.tiles.length; i++) {
+                if (!SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, showHeightMask))
+                    return false;
+            }
+            var sprite1;
+            this.sprites[scale.y * 100 + scale.x] = sprite1 = new Image();
+            sprite1.onload = function () {
+                sprite1.loaded = true;
 
-        for (var i = 0; i < this.tiles.length; i++) {
-            SonicLevel.Tiles[this.tiles[i]].tag = this.tag;
-            SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + Math.floor(i / 2) * 8 * scale.y }, scale, showHeightMask);
-            SonicLevel.Tiles[this.tiles[i]].tag = false;
-            
+            };
+            sprite1.src = cg.toDataURL("image/png");
+
+
         }
+
+        if (this.sprites[scale.y * 100 + scale.x].loaded) {
+            canvas.drawImage(this.sprites[scale.y * 100 + scale.x], position.x, position.y);
+        } else return false;
+
 
         //canvas.fillStyle = "#FFFFFF";
         //canvas.fillText(SonicLevel.TilePieces.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);
 
         if (showHeightMask)
             this.heightMask.draw(canvas, position, scale);
-
+        return true;
     };
     TilePiece.prototype.equals = function (tp) {
         for (var i = 0; i < this.tiles.length; i++) {

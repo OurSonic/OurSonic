@@ -26,9 +26,10 @@
         }
 
 
-        
+
         if (sps.loaded)
             canvas.drawImage(sps, pos.x, pos.y);
+        else return false;
 
         if (showOutline) {
             canvas.strokeStyle = "#DD0033";
@@ -44,7 +45,7 @@
         //canvas.fillStyle = "#FFFFFF";
         //canvas.fillText(SonicLevel.Tiles.indexOf(this), pos.x + 4 * scale.x, pos.y + 4 * scale.y);
 
-
+        return true;
     };
 
     Tile.prototype.equals = function (cols) {

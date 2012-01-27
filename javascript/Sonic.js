@@ -53,12 +53,13 @@
 
         }
 
+        var fx = Math.floor(this.x);
+        var fy = Math.floor(this.y);
+        
+
         if (this.imageReady && this.sprite.loaded)
-            canvas.drawImage(this.sprite, (this.x - 15) * scale.x, (this.y - 20) * scale.y, this.sprite.width, this.sprite.height);
+            canvas.drawImage(this.sprite, (fx - 15) * scale.x, (fy - 20) * scale.y, this.sprite.width, this.sprite.height);
 
-        canvas.fillStyle = "white";
-
-        canvas.fillRect((this.x ) * scale.x, (this.y ) * scale.y, 5, 5);
 
     };
 
@@ -67,13 +68,20 @@
 
     };
 
-    this.tick = function (scale) {
+    this.tick = function () {
         var fx = Math.floor(this.x);
         var fy = Math.floor(this.y);
 
 
         if (this.state == SonicState.Ground) {
             this.ysp = 0;
+
+            if (this.jumping) {
+                
+                this.ysp = -6.5;
+                this.state = SonicState.Air;
+            }
+
             if (this.holdingRight) {
                 this.runningDir = +1;
                 this.xsp += this.acc;
@@ -82,6 +90,7 @@
                     this.runningDir = -1;
                     this.xsp -= this.acc;
                 }
+
 
             if (!this.holdingRight && !this.holdingLeft && this.runningDir != 0) {
                 if (this.runningDir < 0) {
@@ -116,12 +125,49 @@
 
             }
         } else {
+            if (this.holdingRight) {
+                this.runningDir = +1;
+                this.xsp += this.acc;
+            } else
+                if (this.holdingLeft) {
+                    this.runningDir = -1;
+                    this.xsp -= this.acc;
+                }
+
+
+            if (!this.holdingRight && !this.holdingLeft && this.runningDir != 0) {
+                if (this.runningDir < 0) {
+                    this.xsp += this.dec;
+                    if (this.xsp > 0) {
+                        this.xsp = 0;
+                        this.runningDir = 0;
+                    }
+                } else if (this.runningDir > 0) {
+                    this.xsp -= this.dec;
+                    if (this.xsp < 0) {
+                        this.xsp = 0;
+                        this.runningDir = 0;
+                    }
+                }
+            }
+            
+            if (this.jumping) {
+                this.runningDir = -1;
+                this.ysp = -6.5;
+                this.state = SonicState.Air;
+            }
             this.ysp += this.grv;
         }
 
         if (this.ysp >= 16)
             this.ysp = 16;
 
+        this.x += this.xsp;
+        this.y += this.ysp;
+
+        fx = Math.floor(this.x);
+        fy = Math.floor(this.y);
+        
         if (!this.heightInformation[((fx - 9) + (fy + 20) * this.levelWidth)] && !this.heightInformation[((fx + 9) + (fy + 20) * this.levelWidth)]) {
             this.state = SonicState.Air;
         } else {
@@ -136,8 +182,6 @@
         }
 
 
-        this.x += this.xsp;
-        this.y += this.ysp;
 
         /*var x = Math.floor(this.x / 128);
         var y = Math.floor(this.y / 128);
