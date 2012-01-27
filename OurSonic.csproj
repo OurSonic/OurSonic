@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{572D66A8-7713-4763-B263-5AE4181A19AF}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OurSonic</RootNamespace>
+    <AssemblyName>OurSonic</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SonicLevels.asmx" />
+    <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Game.aspx.cs">
+      <DependentUpon>Game.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SonicLevels.asmx.cs">
+      <DependentUpon>SonicLevels.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="assets\Sprites\sonic.png" />
+    <Content Include="assets\TileChunks\HiPlane1.png" />
+    <Content Include="assets\TileChunks\HiPlane10.png" />
+    <Content Include="assets\TileChunks\HiPlane11.png" />
+    <Content Include="assets\TileChunks\HiPlane12.png" />
+    <Content Include="assets\TileChunks\HiPlane13.png" />
+    <Content Include="assets\TileChunks\HiPlane14.png" />
+    <Content Include="assets\TileChunks\HiPlane15.png" />
+    <Content Include="assets\TileChunks\HiPlane16.png" />
+    <Content Include="assets\TileChunks\HiPlane17.png" />
+    <Content Include="assets\TileChunks\HiPlane18.png" />
+    <Content Include="assets\TileChunks\HiPlane19.png" />
+    <Content Include="assets\TileChunks\HiPlane2.png" />
+    <Content Include="assets\TileChunks\HiPlane20.png" />
+    <Content Include="assets\TileChunks\HiPlane21.png" />
+    <Content Include="assets\TileChunks\HiPlane22.png" />
+    <Content Include="assets\TileChunks\HiPlane23.png" />
+    <Content Include="assets\TileChunks\HiPlane24.png" />
+    <Content Include="assets\TileChunks\HiPlane25.png" />
+    <Content Include="assets\TileChunks\HiPlane26.png" />
+    <Content Include="assets\TileChunks\HiPlane27.png" />
+    <Content Include="assets\TileChunks\HiPlane28.png" />
+    <Content Include="assets\TileChunks\HiPlane29.png" />
+    <Content Include="assets\TileChunks\HiPlane3.png" />
+    <Content Include="assets\TileChunks\HiPlane30.png" />
+    <Content Include="assets\TileChunks\HiPlane31.png" />
+    <Content Include="assets\TileChunks\HiPlane32.png" />
+    <Content Include="assets\TileChunks\HiPlane33.png" />
+    <Content Include="assets\TileChunks\HiPlane34.png" />
+    <Content Include="assets\TileChunks\HiPlane35.png" />
+    <Content Include="assets\TileChunks\HiPlane36.png" />
+    <Content Include="assets\TileChunks\HiPlane37.png" />
+    <Content Include="assets\TileChunks\HiPlane38.png" />
+    <Content Include="assets\TileChunks\HiPlane39.png" />
+    <Content Include="assets\TileChunks\HiPlane4.png" />
+    <Content Include="assets\TileChunks\HiPlane40.png" />
+    <Content Include="assets\TileChunks\HiPlane41.png" />
+    <Content Include="assets\TileChunks\HiPlane42.png" />
+    <Content Include="assets\TileChunks\HiPlane43.png" />
+    <Content Include="assets\TileChunks\HiPlane44.png" />
+    <Content Include="assets\TileChunks\HiPlane45.png" />
+    <Content Include="assets\TileChunks\HiPlane46.png" />
+    <Content Include="assets\TileChunks\HiPlane47.png" />
+    <Content Include="assets\TileChunks\HiPlane48.png" />
+    <Content Include="assets\TileChunks\HiPlane49.png" />
+    <Content Include="assets\TileChunks\HiPlane5.png" />
+    <Content Include="assets\TileChunks\HiPlane50.png" />
+    <Content Include="assets\TileChunks\HiPlane51.png" />
+    <Content Include="assets\TileChunks\HiPlane52.png" />
+    <Content Include="assets\TileChunks\HiPlane53.png" />
+    <Content Include="assets\TileChunks\HiPlane54.png" />
+    <Content Include="assets\TileChunks\HiPlane55.png" />
+    <Content Include="assets\TileChunks\HiPlane56.png" />
+    <Content Include="assets\TileChunks\HiPlane57.png" />
+    <Content Include="assets\TileChunks\HiPlane58.png" />
+    <Content Include="assets\TileChunks\HiPlane59.png" />
+    <Content Include="assets\TileChunks\HiPlane6.png" />
+    <Content Include="assets\TileChunks\HiPlane60.png" />
+    <Content Include="assets\TileChunks\HiPlane61.png" />
+    <Content Include="assets\TileChunks\HiPlane62.png" />
+    <Content Include="assets\TileChunks\HiPlane63.png" />
+    <Content Include="assets\TileChunks\HiPlane64.png" />
+    <Content Include="assets\TileChunks\HiPlane65.png" />
+    <Content Include="assets\TileChunks\HiPlane66.png" />
+    <Content Include="assets\TileChunks\HiPlane67.png" />
+    <Content Include="assets\TileChunks\HiPlane68.png" />
+    <Content Include="assets\TileChunks\HiPlane69.png" />
+    <Content Include="assets\TileChunks\HiPlane7.png" />
+    <Content Include="assets\TileChunks\HiPlane70.png" />
+    <Content Include="assets\TileChunks\HiPlane71.png" />
+    <Content Include="assets\TileChunks\HiPlane72.png" />
+    <Content Include="assets\TileChunks\HiPlane73.png" />
+    <Content Include="assets\TileChunks\HiPlane74.png" />
+    <Content Include="assets\TileChunks\HiPlane75.png" />
+    <Content Include="assets\TileChunks\HiPlane76.png" />
+    <Content Include="assets\TileChunks\HiPlane77.png" />
+    <Content Include="assets\TileChunks\HiPlane78.png" />
+    <Content Include="assets\TileChunks\HiPlane79.png" />
+    <Content Include="assets\TileChunks\HiPlane8.png" />
+    <Content Include="assets\TileChunks\HiPlane80.png" />
+    <Content Include="assets\TileChunks\HiPlane81.png" />
+    <Content Include="assets\TileChunks\HiPlane82.png" />
+    <Content Include="assets\TileChunks\HiPlane83.png" />
+    <Content Include="assets\TileChunks\HiPlane84.png" />
+    <Content Include="assets\TileChunks\HiPlane85.png" />
+    <Content Include="assets\TileChunks\HiPlane86.png" />
+    <Content Include="assets\TileChunks\HiPlane87.png" />
+    <Content Include="assets\TileChunks\HiPlane9.png" />
+    <Content Include="Game.aspx" />
+    <Content Include="javascript\Color.js" />
+    <Content Include="javascript\HeightMask.js" />
+    <Content Include="javascript\Help.js" />
+    <Content Include="javascript\linq.js" />
+    <Content Include="javascript\Sonic.js" />
+    <Content Include="javascript\SonicEngine.js" />
+    <Content Include="javascript\Stats.js" />
+    <Content Include="javascript\Tile.js" />
+    <Content Include="javascript\TileChunk.js" />
+    <Content Include="javascript\TilePiece.js" />
+    <Content Include="javascript\UIArea.js" />
+    <Content Include="spoke\codemirror.css" />
+    <Content Include="spoke\codemirror.js" />
+    <Content Include="spoke\default.css" />
+    <Content Include="spoke\index.html" />
+    <Content Include="spoke\Parser.js" />
+    <Content Include="spoke\spoke.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+    <Folder Include="obj\Debug\TempPE\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>60276</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>
+          </IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

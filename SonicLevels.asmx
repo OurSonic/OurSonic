@@ -1,1 +1,1 @@
-﻿<%@ WebService Language="C#" CodeBehind="~/App_Code/SonicLevels.cs" Class="OurSonic.SonicLevels" %>
+﻿<%@ WebService Language="C#" CodeBehind="SonicLevels.asmx.cs" Class="OurSonic.SonicLevels" %>

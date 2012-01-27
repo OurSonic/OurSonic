@@ -35,7 +35,7 @@ namespace OurSonic
         public string saveLevel(string level)
         {
             XElement lv;
-            ((XElement) doc.FirstNode).Add(lv = new XElement("level"));
+            ((XElement)doc.FirstNode).Add(lv = new XElement("level"));
 
             var n = DateTime.Now.ToShortDateString() + DateTime.Now.ToShortTimeString();
             lv.Add(new XAttribute("name", n));
@@ -48,21 +48,21 @@ namespace OurSonic
         [WebMethod]
         public void updateLevel(string name, string level)
         {
-            ((XElement) doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == name).FirstAttribute.NextAttribute.Value = level;
+            ((XElement)doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == name).FirstAttribute.NextAttribute.Value = level;
             doc.Save(c);
         }
 
         [WebMethod]
         public string openLevel(string level)
         {
-            return ((XElement) doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == level).FirstAttribute.NextAttribute.Value;
+            return ((XElement)doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == level).FirstAttribute.NextAttribute.Value;
 
         }
 
         [WebMethod]
         public string[] getLevels()
         {
-            return ((XElement) doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();
+            return ((XElement)doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();
         }
 
     }

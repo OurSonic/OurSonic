@@ -218,14 +218,15 @@ function SonicEngine(canvasName) {
                 var col = new Color();
                 var hm = new HeightMask();
                 var fc;
-                for (var j = 0; j < SonicLevel.TileChunks.length; j++) {
+                var j;
+                for (j = 0; j < SonicLevel.TileChunks.length; j++) {
                     fc = SonicLevel.TileChunks[j];
                     fc.draw = tc.draw;
                     fc.constructor = tc.constructor;
                     fc.getTilePiece = tc.getTilePiece;
                 }
                 var cc;
-                for (var j = 0; j < SonicLevel.TilePieces.length; j++) {
+                for (j = 0; j < SonicLevel.TilePieces.length; j++) {
                     fc = SonicLevel.TilePieces[j];
                     fc.constructor = tp.constructor;
                     fc.click = tp.click;
@@ -238,7 +239,7 @@ function SonicEngine(canvasName) {
                     cc.draw = hm.draw;
 
                 }
-                for (var j = 0; j < SonicLevel.Tiles.length; j++) {
+                for (j = 0; j < SonicLevel.Tiles.length; j++) {
                     fc = SonicLevel.Tiles[j];
                     fc.changeColor = t.changeColor;
                     fc.draw = t.draw;
