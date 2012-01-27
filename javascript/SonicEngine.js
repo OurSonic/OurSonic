@@ -187,7 +187,6 @@ function SonicEngine(canvasName) {
     function () {
         if (curLevelName) {
             OurSonic.SonicLevels.updateLevel(curLevelName, Base64.encode(_H.stringify(SonicLevel)));
-
         } else {
             OurSonic.SonicLevels.saveLevel(Base64.encode(_H.stringify(SonicLevel)), function (j) {
                 addLevelToList(curLevelName);
