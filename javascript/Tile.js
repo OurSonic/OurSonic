@@ -44,7 +44,7 @@
 
 
         //canvas.fillStyle = "#FFFFFF";
-        //canvas.fillText(SonicLevel.Tiles.indexOf(this), pos.x + 4 * scale.x, pos.y + 4 * scale.y);
+        //canvas.fillText(sonicManager.SonicLevel.Tiles.indexOf(this), pos.x + 4 * scale.x, pos.y + 4 * scale.y);
 
         return true;
     };

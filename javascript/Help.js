@@ -1,4 +1,16 @@
 ﻿window._H = {
+    getCursorPosition: function (event, print) {
+        if (event.targetTouches && event.targetTouches.length > 0) event = event.targetTouches[0];
+
+        if (event.pageX != null && event.pageY != null) {
+
+            return { x: event.pageX, y: event.pageY };
+        }
+        if (print) alert(stringify(event));
+        if (event.x != null && event.y != null) return { x: event.x, y: event.y };
+        if (print) alert(stringify(event));
+        return { x: event.clientX, y: event.clientY };
+    },
     setDataFromColors: function (data, colors, scale, width, transparent) {
 
         for (var i = 0; i < colors.length; i++) {
@@ -74,7 +86,7 @@
 
 
         return JSON.stringify(obj, function (key, value) {
-            
+
             if (key == "imageData") return undefined;
             if (key == "oldScale") return undefined;
             if (key == "sprite") return undefined;
@@ -209,8 +221,8 @@ window.Base64 = {
 
         return utftext;
     },
+     
 
-    // private method for UTF-8 decoding
     _utf8_decode: function (utftext) {
         var string = "";
         var i = 0;
@@ -239,6 +251,34 @@ window.Base64 = {
         }
 
         return string;
-    }
+    },
+    compareTiles: function (tiles, tiles2, colors) {
+        var i;
+        for (i = 0; i < tiles.length; i++) {
+            if (tiles[i].equals(colors)) {
+                return i;
+            }
+        }
+        for (i = 0; i < tiles2.length; i++) {
+            if (tiles2[i].equals(colors)) {
+                return tiles.length + i;
+            }
+        }
+        return -1;
+    },
 
+    compareTilePieces: function (tilePieces, tilePieces2, tp) {
+        var i;
+        for (i = 0; i < tilePieces.length; i++) {
+            if (tilePieces[i].equals(tp)) {
+                return i;
+            }
+        }
+        for (i = 0; i < tilePieces2.length; i++) {
+            if (tilePieces2[i].equals(tp)) {
+                return tilePieces.length + i;
+            }
+        }
+        return -1;
+    }
 }

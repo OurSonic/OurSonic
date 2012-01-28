@@ -29,6 +29,10 @@
     </script>
     <script src="javascript/Sonic.js?1" type="text/javascript"> 
     </script>
+    <script src="javascript/SonicManager.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UIManager.js?1" type="text/javascript"> 
+    </script>
     <script src="javascript/SonicEngine.js?1" type="text/javascript"> 
     </script>
     <script type="text/javascript">

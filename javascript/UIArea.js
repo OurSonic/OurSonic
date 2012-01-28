@@ -1,9 +1,10 @@
 ﻿
 
 
-function UiArea(x, y, w, h,closable) {
+function UiArea(x, y, w, h,manager,closable) {
     this.x = x;
     this.y = y;
+    this.manager = manager;
     this.closable = closable;
     this.width = w;
     this.height = h;
@@ -19,7 +20,7 @@ function UiArea(x, y, w, h,closable) {
     var that = this;
 
     if (closable) {
-        this.addControl(new Button(this.width - 30,  4, 26, 26, "X", buttonFont, "Green", function() { that.visible = false; }));
+        this.addControl(new Button(this.width - 30, 4, 26, 26, "X", this.manager.buttonFont, "Green", function () { that.visible = false; }));
     }
     
     this.click = function (e) {

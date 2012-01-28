@@ -2,7 +2,7 @@
     this.tilesPieces = tilesPieces;
     this.sprites = [];
     TileChunk.prototype.getTilePiece = function (x, y, scale) {
-        return SonicLevel.TilePieces[this.tilesPieces[Math.floor((x / scale.x / 16)) + Math.floor((y / scale.y / 16)) * 8]];
+        return sonicManager.SonicLevel.TilePieces[this.tilesPieces[Math.floor((x / scale.x / 16)) + Math.floor((y / scale.y / 16)) * 8]];
     };
 
     TileChunk.prototype.draw = function (canvas, position, scale, drawLines) {
@@ -10,8 +10,9 @@
 
         if (!this.sprites)
             this.sprites = [];
-        for (var i = 0; i < this.tilesPieces.length; i++) {
-            var j = SonicLevel.TilePieces[this.tilesPieces[i]].sprites;
+        var i;
+        for (i = 0; i < this.tilesPieces.length; i++) {
+            var j = sonicManager.SonicLevel.TilePieces[this.tilesPieces[i]].sprites;
             if ( !j || j.length == 0) {
                 this.sprites = [];
                 break;
@@ -24,9 +25,9 @@
             cg.width = 128 * scale.x;
             cg.height = 128 * scale.y;
             var cv = cg.getContext('2d');
-            for (var i = 0; i < this.tilesPieces.length; i++) {
+            for (i = 0; i < this.tilesPieces.length; i++) {
 
-                if (!SonicLevel.TilePieces[this.tilesPieces[i]].draw(cv, { x: (i % 8) * 16 * scale.x, y: Math.floor(i / 8) * 16 * scale.y }, scale,3))
+                if (!sonicManager.SonicLevel.TilePieces[this.tilesPieces[i]].draw(cv, { x: (i % 8) * 16 * scale.x, y: Math.floor(i / 8) * 16 * scale.y }, scale, 3))
                     return false;
                 if (drawLines) {
                     cv.lineWidth = 1;

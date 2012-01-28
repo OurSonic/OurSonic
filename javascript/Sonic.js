@@ -29,8 +29,7 @@
     this.state = SonicState.Air;
     this.imageReady = false;
     this.tickCount = 0;
-    this.draw = function (canvas, scale) {
-
+    this.draw = function (canvas, scale) { 
         if (this.sprite.loaded && !this.imageReady) {
             var data = _H.getImageData(this.sprite);
             var colors = [];
@@ -67,8 +66,9 @@
     this.kill = function () {
 
     };
-
+    this.ticking = false;
     this.tick = function () {
+        this.ticking = true;
         var fx = Math.floor(this.x);
         var fy = Math.floor(this.y);
 
@@ -77,7 +77,7 @@
             this.ysp = 0;
 
             if (this.jumping) {
-                
+
                 this.ysp = -6.5;
                 this.state = SonicState.Air;
             }
@@ -150,7 +150,7 @@
                     }
                 }
             }
-            
+
             if (this.jumping) {
                 this.runningDir = -1;
                 this.ysp = -6.5;
@@ -167,17 +167,17 @@
 
         fx = Math.floor(this.x);
         fy = Math.floor(this.y);
-        
-        if (!this.heightInformation[((fx - 9) + (fy + 20) * this.levelWidth)] && !this.heightInformation[((fx + 9) + (fy + 20) * this.levelWidth)]) {
+
+        if ((!this.heightInformation[((fx - 9) + (fy + 20) * this.levelWidth)] && !this.heightInformation[((fx + 9) + (fy + 20) * this.levelWidth)])) {
             this.state = SonicState.Air;
         } else {
             this.state = SonicState.Ground;
             this.ysp = 0;
 
-            while (this.heightInformation[((fx - 9) + (fy + 20) * this.levelWidth)] && this.heightInformation[((fx + 9) + (fy + 20) * this.levelWidth)]) {
+            while ((!this.heightInformation[((fx - 9) + (fy + 20) * this.levelWidth)] && !this.heightInformation[((fx + 9) + (fy + 20) * this.levelWidth)])) {
                 fy -= 1;
             }
-            this.y = fy + 1;
+            this.y = fy - 1;
 
         }
 
