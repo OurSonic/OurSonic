@@ -272,14 +272,15 @@
     var loadingText;
     tileChunkArea.addControl(loadingText = new TextArea(270, 25, "Loading", textFont, "green"));
     loadingText.visible = false;
-    
+
     tileChunkArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)",
         function () {
             tileChunkArea.visible = false;
             solidTileArea.visible = false;
             levelInformation.visible = false;
             debuggerArea.visible = true;
-            sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel);
+            sonicManager.loading = true;
+            sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
         }));
 
 

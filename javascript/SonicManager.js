@@ -38,19 +38,37 @@
         }
     };
     this.tick = function (that) {
-        if (that.sonicToon)
+
+        if (that.sonicToon) {
+            if (that.loading) {
+                if (!that.sonicToon.isLoading()) {
+                    that.loading = false;
+                }
+            }
             that.sonicToon.tick(that.SonicLevel, scale);
+        }
     };
+    this.loading = true;
     this.draw = function (canvas) {
         canvas.save();
 
+
+
         if (this.sonicToon) {
+            if (this.loading) {
+                canvas.fillStyle = "white";
+                canvas.fillText("Loading...", 60, 60);
+                canvas.restore();
+                return;
+            }
+
             canvas.beginPath();
             canvas.rect(0, 0, this.windowLocation.width * scale.x, this.windowLocation.height * scale.x);
             canvas.clip();
             this.windowLocation.x = Math.floor(this.sonicToon.x - 160);
             this.windowLocation.y = Math.floor(this.sonicToon.y - 180);
             if (this.windowLocation.x < 0) this.windowLocation.x = 0;
+            if (this.windowLocation.y < 0) this.windowLocation.y = 0;
         }
 
         for (var j = 0; j < this.SonicLevel.ChunkMap.length; j++) {
@@ -60,7 +78,7 @@
                 pos.x <= (this.windowLocation.x + 128) * scale.x + this.windowLocation.width * scale.x && pos.y <= (this.windowLocation.y + 128) * scale.y + this.windowLocation.height * scale.y)) {
 
                 var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
-
+                
                 this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]].
                     draw(canvas, posj, scale, !this.sonicToon);
 
@@ -74,11 +92,11 @@
         }
 
         if (this.sonicToon) {
-            this.sonicToon.x -= this.windowLocation.x;
-            this.sonicToon.y -= this.windowLocation.y;
+            //        this.sonicToon.x -= this.windowLocation.x;
+            //        this.sonicToon.y -= this.windowLocation.y;
             this.sonicToon.draw(canvas, scale);
-            this.sonicToon.x += this.windowLocation.x;
-            this.sonicToon.y += this.windowLocation.y;
+            //        this.sonicToon.x += this.windowLocation.x;
+            //        this.sonicToon.y += this.windowLocation.y;
 
             if (this.windowLocation.x < 0) this.windowLocation.x = 0;
             if (this.windowLocation.y < 0) this.windowLocation.y = 0;

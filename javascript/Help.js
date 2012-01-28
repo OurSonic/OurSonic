@@ -1,4 +1,33 @@
 ﻿window._H = {
+    loadSprite: function (name, complete) {
+
+        var sprite1 = new Image();
+
+        sprite1.onload = function () {
+            sprite1.loaded = true;
+            if (complete) complete(sprite1);
+        };
+        sprite1.src = name;
+        return sprite1;
+    },
+    defaultCanvas: function () {
+
+        var canvas = document.createElement("canvas");
+        var ctx = canvas.getContext("2d");
+        return { canvas: canvas, context: ctx };
+    },
+    scaleSprite: function ( sprite, scale,complete) {
+
+        var data = _H.getImageData(sprite);
+        var colors = [];
+        for (var f = 0; f < data.length; f += 4) {
+            colors.push(new Color(data[f], data[f + 1], data[f + 2]));
+        }
+
+        var d = this.defaultCanvas().context.createImageData(sprite.width * scale.x, sprite.height * scale.y);
+        _H.setDataFromColors(d.data, colors, scale, sprite.width, new Color(0, 0, 0));
+        return _H.loadSprite(_H.getBase64Image(d), complete);
+    },
     getCursorPosition: function (event, print) {
         if (event.targetTouches && event.targetTouches.length > 0) event = event.targetTouches[0];
 
@@ -6,9 +35,7 @@
 
             return { x: event.pageX, y: event.pageY };
         }
-        if (print) alert(stringify(event));
         if (event.x != null && event.y != null) return { x: event.x, y: event.y };
-        if (print) alert(stringify(event));
         return { x: event.clientX, y: event.clientY };
     },
     setDataFromColors: function (data, colors, scale, width, transparent) {
@@ -221,7 +248,7 @@ window.Base64 = {
 
         return utftext;
     },
-     
+
 
     _utf8_decode: function (utftext) {
         var string = "";

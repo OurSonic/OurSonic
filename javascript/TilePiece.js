@@ -24,7 +24,8 @@
     TilePiece.prototype.draw = function (canvas, position, scale, state) {
         if (!this.sprites)
             this.sprites = [];
-        for (var i = 0; i < this.tiles.length; i++) {
+        var i;
+        for (i = 0; i < this.tiles.length; i++) {
             var j = sonicManager.SonicLevel.Tiles[this.tiles[i]].sprites;
             if (!j || j.length == 0) {
                 this.sprites = [];
@@ -32,7 +33,7 @@
             }
         }
         if (state < 3) {
-            for (var i = 0; i < this.tiles.length; i++) {
+            for (i = 0; i < this.tiles.length; i++) {
                 if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: Math.floor(position.x) + (i % 2) * 8 * scale.x, y: Math.floor(position.y) + Math.floor(i / 2) * 8 * scale.y }, scale, state != 3))
                     return false;
             }
@@ -45,7 +46,7 @@
             cg.width = 2 * 8 * scale.x;
             cg.height = 2 * 8 * scale.y;
             var cv = cg.getContext('2d');
-            for (var i = 0; i < this.tiles.length; i++) {
+            for (i = 0; i < this.tiles.length; i++) {
                 if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state != 3))
                     return false;
             }
