@@ -21,7 +21,6 @@
     this.air = 0.09375;
 
     this.standStill = true;
-
     this.sonicLevel = sonicLevel;
     this.state = SonicState.Ground;
     this.tickCount = 0;
@@ -35,8 +34,13 @@
 
         switch (this.state) {
             case SonicState.Ground:
+                if (this.wasJumping && !this.jumping) {
+                    this.wasJumping = false;
+                }
 
-                if (this.jumping) {
+                if (this.wasJumping && this.jumping) {
+
+                } else if (this.jumping) {
                     this.wasJumping = true;
                     this.state = SonicState.Air;
                     this.ysp = this.jmp;
@@ -166,61 +170,53 @@
                 this.facing = false;
                 this.breaking = 0;
             }
-        }
-        else if (this.breaking < 0) {
+        } else if (this.breaking < 0) {
             if (this.xsp < 0 || this.xsp == 0 || this.spriteState == "breaking3") {
                 this.breaking = 0;
                 this.facing = true;
             }
         }
 
-        if (absxsp == 0) {
+        if (absxsp == 0 && !this.currentlyBall) {
             this.runningDir = 0;
             this.spriteState = "normal";
             this.standStill = true;
             this.currentlyBall = false;
             this.runningTick = 0;
+        } else if (this.breaking != 0) {
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "breaking") {
+                this.spriteState = "breaking0";
+                this.runningTick = 1;
+            } else if ((this.runningTick++) % (Math.floor(5 - absxsp)) == 0 || (Math.floor(5 - absxsp) == 0)) {
+                this.spriteState = "breaking" + ((j + 1) % 4);
+            }
+
+        } else if (this.currentlyBall) {
+
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "ball") {
+                this.spriteState = "ball0";
+                this.runningTick = 1;
+            } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
+                ;
+                this.spriteState = "ball" + ((j + 1) % 4);
+            }
+        } else if (absxsp < 6) {
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "running") {
+                this.spriteState = "running0";
+                this.runningTick = 1;
+            } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0 || (Math.floor(8 - absxsp) == 0)) {
+                this.spriteState = "running" + ((j + 1) % 8);
+            }
+
+        } else if (absxsp >= 6) {
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "fastrunning") {
+                this.spriteState = "fastrunning0";
+                this.runningTick = 1;
+            } else if ((this.runningTick++) % (Math.ceil(8 - absxsp)) == 0 || (Math.floor(8 - absxsp) == 0)) {
+                this.spriteState = "fastrunning" + ((j + 1) % 4);
+            }
+
         }
-        else
-            if (this.breaking != 0) {
-                if (this.spriteState.substring(0, this.spriteState.length - 1) != "breaking") {
-                    this.spriteState = "breaking0";
-                    this.runningTick = 1;
-                } else
-                    if ((this.runningTick++) % (Math.floor(5 - absxsp)) == 0 || (Math.floor(5 - absxsp) == 0)) {
-                        this.spriteState = "breaking" + ((j + 1) % 4);
-                    }
-
-            } else
-                if (this.currentlyBall) {
-
-                    if (this.spriteState.substring(0, this.spriteState.length - 1) != "ball") {
-                        this.spriteState = "ball0";
-                        this.runningTick = 1;
-                    } else
-                        if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
-                            ;
-                            this.spriteState = "ball" + ((j + 1) % 5);
-                        }
-                } else if (absxsp < 6) {
-                    if (this.spriteState.substring(0, this.spriteState.length - 1) != "running") {
-                        this.spriteState = "running0";
-                        this.runningTick = 1;
-                    } else
-                        if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0 || (Math.floor(8 - absxsp) == 0)) {
-                            this.spriteState = "running" + ((j + 1) % 8);
-                        }
-
-                } else if (absxsp >= 6) {
-                    if (this.spriteState.substring(0, this.spriteState.length - 1) != "fastrunning") {
-                        this.spriteState = "fastrunning0";
-                        this.runningTick = 1;
-                    } else
-                        if ((this.runningTick++) % (Math.ceil(8 - absxsp)) == 0 || (Math.floor(8 - absxsp) == 0)) {
-                            this.spriteState = "fastrunning" + ((j + 1) % 4);
-                        }
-
-                }
 
         this.x += this.xsp;
         this.y += this.ysp;
@@ -237,7 +233,8 @@
                 } else {
                     if (sensorA) {
                         this.y = sensorA - 19;
-                    } if (sensorB) {
+                    }
+                    if (sensorB) {
                         this.y = sensorB - 19;
                     }
                 }
@@ -250,14 +247,15 @@
                     this.state = SonicState.Air;
                 } else {
                     if (sensorA) {
-                        if (this.y > sensorA) {
+                        if (this.y >= sensorA) {
                             this.y = sensorA - 19;
                             this.currentlyBall = false;
                             this.state = SonicState.Ground;
                             this.ysp = 0;
                         }
-                    } if (sensorB) {
-                        if (this.y > sensorB) {
+                    }
+                    if (sensorB) {
+                        if (this.y >= sensorB) {
                             this.y = sensorB - 19;
                             this.currentlyBall = false;
                             this.state = SonicState.Ground;
@@ -268,8 +266,6 @@
 
                 break;
         }
-
-
 
 
     };
@@ -311,47 +307,55 @@
 
     this.spriteState = "normal";
     this.spriteLocations = [];
+    this.imageLength = 0;
+    
     this.spriteLocations["normal"] = "assets/Sprites/sonic.png";
-    for (var j = 0; j < 4; j++)
+    this.imageLength++;
+    
+    for (var j = 0; j < 4; j++) {
         this.spriteLocations["fastrunning" + j] = "assets/Sprites/fastrunning" + j + ".png";
-    for (var j = 0; j < 8; j++)
+        this.imageLength++;
+    }
+    for (var j = 0; j < 8; j++) {
         this.spriteLocations["running" + j] = "assets/Sprites/running" + j + ".png";
-    for (var j = 0; j < 4; j++)
+        this.imageLength++;
+    }
+    for (var j = 0; j < 4; j++) {
         this.spriteLocations["breaking" + j] = "assets/Sprites/breaking" + j + ".png";
-    for (var j = 0; j < 5; j++)
+        this.imageLength++;
+    } for (var j = 0; j < 4; j++) {
         this.spriteLocations["ball" + j] = "assets/Sprites/ball" + j + ".png";
+        this.imageLength++;
+    }
 
     var ci = this.cachedImages;
     var junkContext = _H.defaultCanvas().context;
     var imageLoaded = this.imageLoaded = [0];
     for (var sp in this.spriteLocations) {
         ci[sp] = _H.loadSprite(this.spriteLocations[sp], function (jd) {
-            ci[sp + scale.x + scale.y] = _H.scaleSprite(jd, scale, function (jc) {
+            ci[jd.tag + scale.x + scale.y]=_H.scaleSprite(jd, scale, function (jc) {
                 junkContext.drawImage(jc, 0, 0, jc.width, jc.height);
                 junkContext.drawImage(jd, 0, 0, jd.width, jd.height);
                 imageLoaded[0]++;
+
             });
         });
+        ci[sp].tag = sp;
     }
 
     this.isLoading = function () {
-        return this.imageLoaded[0] == this.spriteLocations.length;
+        return this.imageLoaded[0] < this.imageLength;
     };
 
     this.draw = function (canvas, scale) {
         var fx = Math.floor(this.x);
         var fy = Math.floor(this.y);
-
         var cur;
         if (cur = this.cachedImages[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
-
                 canvas.save();
-
                 var yOffset = this.currentlyBall ? 10 : 0;
-
                 if (!this.facing) {
-
                     canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
                     canvas.scale(-1, 1);
                     canvas.drawImage(cur, 0, 0, cur.width, cur.height);

@@ -140,7 +140,37 @@
             }
             return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
         }
+    },
+    compareTiles: function (tiles, tiles2, colors) {
+        var i;
+        for (i = 0; i < tiles.length; i++) {
+            if (tiles[i].equals(colors)) {
+                return i;
+            }
+        }
+        for (i = 0; i < tiles2.length; i++) {
+            if (tiles2[i].equals(colors)) {
+                return tiles.length + i;
+            }
+        }
+        return -1;
+    },
+
+    compareTilePieces: function (tilePieces, tilePieces2, tp) {
+        var i;
+        for (i = 0; i < tilePieces.length; i++) {
+            if (tilePieces[i].equals(tp)) {
+                return i;
+            }
+        }
+        for (i = 0; i < tilePieces2.length; i++) {
+            if (tilePieces2[i].equals(tp)) {
+                return tilePieces.length + i;
+            }
+        }
+        return -1;
     }
+
 };
 
 
@@ -278,34 +308,4 @@ window.Base64 = {
         }
 
         return string;
-    },
-    compareTiles: function (tiles, tiles2, colors) {
-        var i;
-        for (i = 0; i < tiles.length; i++) {
-            if (tiles[i].equals(colors)) {
-                return i;
-            }
-        }
-        for (i = 0; i < tiles2.length; i++) {
-            if (tiles2[i].equals(colors)) {
-                return tiles.length + i;
-            }
-        }
-        return -1;
-    },
-
-    compareTilePieces: function (tilePieces, tilePieces2, tp) {
-        var i;
-        for (i = 0; i < tilePieces.length; i++) {
-            if (tilePieces[i].equals(tp)) {
-                return i;
-            }
-        }
-        for (i = 0; i < tilePieces2.length; i++) {
-            if (tilePieces2[i].equals(tp)) {
-                return tilePieces.length + i;
-            }
-        }
-        return -1;
-    }
-}
+    }}

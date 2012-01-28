@@ -45,7 +45,8 @@
                     that.loading = false;
                 }
             }
-            that.sonicToon.tick(that.SonicLevel, scale);
+            else
+                that.sonicToon.tick(that.SonicLevel, scale);
         }
     };
     this.loading = true;
