@@ -13,7 +13,10 @@
     this.dec = 0.5;
     this.frc = 0.046875;
 
-    this.jmp = 0;
+    this.rdec = 0.125;
+    this.rfrc = 0.0234375;
+
+    this.jmp = -6.5;
     this.grv = 0.21875;
     this.air = 0.09375;
 
@@ -39,6 +42,11 @@
                     this.ysp = this.jmp;
                 }
 
+                if (this.xsp != 0 && this.crouching) {
+                    this.rolling = true;
+                    this.currentlyBall = true;
+                }
+
                 if (this.holdingLeft && this.standStill) {
                     this.facing = false;
                     this.standStill = false;
@@ -57,32 +65,55 @@
                 if (this.holdingRight) {
                     this.facing = true;
                     if (this.runningDir == 1) {
-                        this.xsp += this.acc;
+
+                        if (this.rolling) {
+
+                        } else {
+                            this.xsp += this.acc;
+                        }
                     } else {
                         if (Math.abs(this.xsp) > 4.5) {
                             this.facing = false;
                             this.breaking = 1;
                             this.runningTick = 0;
                         }
-                        this.xsp += this.dec;
+                        if (this.rolling) {
+                            this.xsp += this.rdec;
+                        } else {
+                            this.xsp += this.dec;
+                        }
                         this.runningDir = 1;
                     }
                 } else if (this.holdingLeft) {
                     this.facing = false;
 
                     if (this.runningDir == -1) {
-                        this.xsp -= this.acc;
+                        if (this.rolling) {
+
+                        } else {
+                            this.xsp -= this.acc;
+                        }
                     } else {
                         if (Math.abs(this.xsp) > 4.5) {
                             this.facing = true;
                             this.breaking = -1;
                             this.runningTick = 0;
                         }
-                        this.xsp -= this.dec;
+                        if (this.rolling) {
+                            this.xsp -= this.rdec;
+                        } else {
+                            this.xsp -= this.dec;
+                        }
                         this.runningDir = -1;
                     }
                 } else {
-                    this.xsp -= Math.min(Math.abs(this.xsp), this.frc) * (this.xsp > 0 ? 1 : -1);
+                    if (!this.rolling) {
+                        this.xsp -= Math.min(Math.abs(this.xsp), this.frc) * (this.xsp > 0 ? 1 : -1);
+                    }
+                }
+                if (this.rolling) {
+                    this.xsp -= Math.min(Math.abs(this.xsp), this.rfrc) * (this.xsp > 0 ? 1 : -1);
+
                 }
 
                 break;
@@ -142,19 +173,15 @@
                 this.facing = true;
             }
         }
-        if (this.currentlyBall) {
 
-            if (this.spriteState.substring(0, this.spriteState.length - 1) != "ball") {
-                this.spriteState = "ball0";
-                this.runningTick = 1;
-            } else
-                if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
-                    ;
-                    this.spriteState = "ball" + ((j + 1) % 5);
-                }
-
-
-        } else
+        if (absxsp == 0) {
+            this.runningDir = 0;
+            this.spriteState = "normal";
+            this.standStill = true;
+            this.currentlyBall = false;
+            this.runningTick = 0;
+        }
+        else
             if (this.breaking != 0) {
                 if (this.spriteState.substring(0, this.spriteState.length - 1) != "breaking") {
                     this.spriteState = "breaking0";
@@ -165,10 +192,16 @@
                     }
 
             } else
-                if (absxsp == 0) {
-                    this.runningDir = 0;
-                    this.spriteState = "normal";
-                    this.standStill = true;
+                if (this.currentlyBall) {
+
+                    if (this.spriteState.substring(0, this.spriteState.length - 1) != "ball") {
+                        this.spriteState = "ball0";
+                        this.runningTick = 1;
+                    } else
+                        if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
+                            ;
+                            this.spriteState = "ball" + ((j + 1) % 5);
+                        }
                 } else if (absxsp < 6) {
                     if (this.spriteState.substring(0, this.spriteState.length - 1) != "running") {
                         this.spriteState = "running0";
@@ -204,10 +237,8 @@
                 } else {
                     if (sensorA) {
                         this.y = sensorA - 19;
-                        this.ysp = 0;
                     } if (sensorB) {
                         this.y = sensorB - 19;
-                        this.ysp = 0;
                     }
                 }
 
@@ -220,7 +251,7 @@
                 } else {
                     if (sensorA) {
                         if (this.y > sensorA) {
-                            this.y = sensorA-19;
+                            this.y = sensorA - 19;
                             this.currentlyBall = false;
                             this.state = SonicState.Ground;
                             this.ysp = 0;
@@ -316,14 +347,16 @@
             if (cur.loaded) {
 
                 canvas.save();
-                
+
+                var yOffset = this.currentlyBall ? 10 : 0;
+
                 if (!this.facing) {
 
-                    canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y) * scale.y));
+                    canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
                     canvas.scale(-1, 1);
                     canvas.drawImage(cur, 0, 0, cur.width, cur.height);
                 } else {
-                    canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y) * scale.y), cur.width, cur.height);
+                    canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
                 }
 
                 canvas.restore();
