@@ -5,7 +5,7 @@
         return sonicManager.SonicLevel.TilePieces[this.tilesPieces[Math.floor((x / scale.x / 16)) + Math.floor((y / scale.y / 16)) * 8]];
     };
 
-    TileChunk.prototype.draw = function (canvas, position, scale, drawLines) {
+    TileChunk.prototype.draw = function (canvas, position, scale, state) {
 
 
         if (!this.sprites)
@@ -19,7 +19,7 @@
             }
         }
 
-        var mx = drawLines * 200 + scale.y * 50 + scale.x;
+        var mx = state * 200 + scale.y * 50 + scale.x;
         if (!this.sprites[mx]) {
             var cg = document.createElement("canvas");
             cg.width = 128 * scale.x;
@@ -27,21 +27,15 @@
             var cv = cg.getContext('2d');
             for (i = 0; i < this.tilesPieces.length; i++) {
 
-                if (!sonicManager.SonicLevel.TilePieces[this.tilesPieces[i]].draw(cv, { x: (i % 8) * 16 * scale.x, y: Math.floor(i / 8) * 16 * scale.y }, scale, 3))
+                if (!sonicManager.SonicLevel.TilePieces[this.tilesPieces[i]].draw(cv, { x: (i % 8) * 16 * scale.x, y: Math.floor(i / 8) * 16 * scale.y }, scale, state==2?4:3))
                     return false;
-                if (drawLines) {
+                if (state==1) {
                     cv.lineWidth = 1;
                     cv.strokeStyle = "#FFFFFF";
                     cv.strokeRect((i % 8) * 16 * scale.x, Math.floor(i / 8) * 16 * scale.y, 16 * scale.x, 16 * scale.y);
                 }
             }
-            var sprite1;
-            this.sprites[mx] = sprite1 = new Image();
-            sprite1.onload = function () {
-                sprite1.loaded = true;
-
-            };
-            sprite1.src = cg.toDataURL("image/png");
+            this.sprites[mx] = _H.loadSprite(cg.toDataURL("image/png"));
 
         }
         if (this.sprites[mx].loaded) {

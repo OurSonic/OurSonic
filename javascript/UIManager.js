@@ -3,7 +3,7 @@
     this.messages = [];
 
     var textFont = this.textFont = "18pt sans-serrif ";
-    var buttonFont=this.buttonFont = "13pt Arial bold";
+    var buttonFont = this.buttonFont = "13pt Arial bold";
     mainCanvas.font = textFont;
 
     this.draw = function (canvas) {
@@ -104,12 +104,11 @@
 
     
 
-
-    var debuggerArea = this.debuggerArea = new UiArea(1300, 40, 200, 170,this, true);
+    var debuggerArea = this.debuggerArea = new UiArea(650, 40, 200, 170, this, true);
     debuggerArea.visible = false;
     this.UIAreas.push(debuggerArea);
     debuggerArea.addControl(new TextArea(30, 25, "Debugger", textFont, "blue"));
-    debuggerArea.addControl(new Button(95, 60, 60, 22, "Stop", buttonFont, "rgb(50,150,50)", function () {
+    debuggerArea.addControl(new Button(40, 60, 60, 22, "Stop", buttonFont, "rgb(50,150,50)", function () {
 
         sonicManager.windowLocation.x = 0;
         sonicManager.windowLocation.y = 0;
@@ -121,14 +120,15 @@
     }
     ));
 
-    var indexes = this.indexes = { tcIndex: 0, tpIndex: 0 };
-    
 
-    var solidTileArea = this.solidTileArea = new UiArea(40, 40, 430, 400,this, true);
+    var indexes = this.indexes = { tcIndex: 0, tpIndex: 0 };
+
+
+    var solidTileArea = this.solidTileArea = new UiArea(40, 450, 430, 400, this, true);
     solidTileArea.visible = false;
     this.UIAreas.push(solidTileArea);
     solidTileArea.addControl(new TextArea(30, 25, "Modify Solid Tile", textFont, "blue"));
-    
+
 
 
     solidTileArea.addControl(new Button(50, 35, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
@@ -169,7 +169,7 @@
     solidTileArea.addControl(modifyTilePieceArea);
 
 
-    var levelInformation = this.levelInformation = new UiArea(900, 70, 420, 360,this);
+    var levelInformation = this.levelInformation = new UiArea(500, 440, 420, 360, this);
     levelInformation.visible = true;
     this.UIAreas.push(levelInformation);
     levelInformation.addControl(new TextArea(30, 25, "Level Manager", textFont, "blue"));
@@ -205,13 +205,10 @@
             }
             setTimeout(tim, 100);
 
-            var image = new Image();
-            image.onload = function () {
+            _H.loadSprite("assets/TileChunks/HiPlane" + index++ + ".png", function (image) {
                 loadingText.text = "Loading " + index + "/" + max;
                 sonicManager.importChunkFromImage(image);
-            };
-            var j = "assets/TileChunks/HiPlane" + index++ + ".png";
-            image.src = j;
+            });
 
         };
         setTimeout(tim, 100);
@@ -236,9 +233,9 @@
         var btn;
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
             curLevelName = name;
+
             OurSonic.SonicLevels.openLevel(name, function (lvl) {
                 tileChunkArea.visible = true;
-
                 sonicManager.SonicLevel = jQuery.parseJSON((lvl));
                 var fc;
                 var j;
@@ -265,7 +262,7 @@
         }));
     }
 
-    var tileChunkArea = this.tileChunkArea = new UiArea(490, 40, 400, 400,this);
+    var tileChunkArea = this.tileChunkArea = new UiArea(500, 25, 400, 400, this);
     tileChunkArea.visible = false;
     this.UIAreas.push(tileChunkArea);
     tileChunkArea.addControl(new TextArea(30, 25, "Modify Tile Chunks", textFont, "blue"));
@@ -273,6 +270,17 @@
     tileChunkArea.addControl(loadingText = new TextArea(270, 25, "Loading", textFont, "green"));
     loadingText.visible = false;
 
+    tileChunkArea.addControl(new Button(30, 350, 150, 22, "Show Height Map", buttonFont, "rgb(50,150,50)", function () {
+        if (this.text == "Show Height Map") {
+            sonicManager.showHeightMap = true;
+            this.text = "Hide Height Map";
+        } else {
+            sonicManager.showHeightMap = false;
+            this.text = "Show Height Map";
+        }
+    }
+    ));
+    
     tileChunkArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)",
         function () {
             tileChunkArea.visible = false;

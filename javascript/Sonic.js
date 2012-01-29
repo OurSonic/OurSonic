@@ -1,5 +1,5 @@
 ﻿function Sonic(sonicLevel, scale) {
-    this.x = 10;
+    this.x = 20;
     this.y = 0;
     this.jumping = false;
     this.crouching = false;
@@ -43,6 +43,7 @@
                 } else if (this.jumping) {
                     this.wasJumping = true;
                     this.state = SonicState.Air;
+                    this.currentlyBall = true;
                     this.ysp = this.jmp;
                 }
 
@@ -122,7 +123,6 @@
 
                 break;
             case SonicState.Air:
-                this.currentlyBall = true;
                 if (this.wasJumping) {
                     if (this.jumping) {
 
@@ -226,37 +226,49 @@
         var fy = Math.floor(this.y);
 
         var sensorA, sensorB;
+
+        if ((sensorA = this.checkCollisionLine(fx - 9, fy + 4, 20, 0)) != -1) {
+            if (sensorA < fx) {
+                this.x = fx = sensorA + 11;
+                this.xsp = 0;
+            } else {
+                this.x = fx = sensorA - 11;
+                this.xsp = 0;
+            }
+        }
+
+
         switch (this.state) {
             case SonicState.Ground:
                 if ((sensorA = this.checkCollisionLine(fx - 9, fy, 20, 1)) == -1 && (sensorB = this.checkCollisionLine(fx + 9, fy, 20, 1)) == -1) {
                     this.state = SonicState.Air;
                 } else {
-                    if (sensorA) {
-                        this.y = sensorA - 19;
-                    }
-                    if (sensorB) {
-                        this.y = sensorB - 19;
+                    if (sensorA > -1) {
+                        this.y = fy = sensorA - 19;
+                    } else 
+                    if (sensorB > -1) {
+                        this.y = fy = sensorB - 19;
                     }
                 }
 
 
                 break;
             case SonicState.Air:
-                this.currentlyBall = true;
+
                 if ((sensorA = this.checkCollisionLine(fx - 9, fy, 20, 1)) == -1 && (sensorB = this.checkCollisionLine(fx + 9, fy, 20, 1)) == -1) {
                     this.state = SonicState.Air;
                 } else {
-                    if (sensorA) {
-                        if (this.y >= sensorA) {
-                            this.y = sensorA - 19;
+                    if (sensorA > -1) {
+                        if (this.y + (20) >= sensorA) {
+                            this.y = fy = sensorA - 19;
                             this.currentlyBall = false;
                             this.state = SonicState.Ground;
                             this.ysp = 0;
                         }
-                    }
-                    if (sensorB) {
-                        if (this.y >= sensorB) {
-                            this.y = sensorB - 19;
+                    } else 
+                    if (sensorB > -1) {
+                        if (this.y + (20) >= sensorB) {
+                            this.y = fy = sensorB - 19;
                             this.currentlyBall = false;
                             this.state = SonicState.Ground;
                             this.ysp = 0;
@@ -274,28 +286,30 @@
     this.checkCollisionLine = function (x, y, length, direction) {
         var start = y * this.levelWidth + x;
         var hlen = this.levelWidth;
+        var i;
+        var m;
         switch (direction) {
             case 0:
                 //left to right
-                for (var i = 0; i < length; i++) {
-                    if (this.heightInformation[start + i]) return x + i;
+                for (i = 0; i < length; i++) {
+                    if (x + i < 0 || this.heightInformation[y * this.levelWidth + (x + i)]) return x + i;
                 }
                 break;
             case 1:
                 //top to bottom
-                for (var i = 0, m = length * hlen; i < m; i += hlen) {
-                    if (this.heightInformation[start + i]) return y + (i / hlen);
+                for (i = 0, m = length * hlen; i < m; i += hlen) {
+                    if ( this.heightInformation[start + i]) return y + (i / hlen);
                 }
                 break;
             case 2:
                 //right to left
-                for (var i = 0; i < length; i++) {
-                    if (this.heightInformation[start - i]) return x - i;
+                for (i = 0; i < length; i++) {
+                    if (x - i < 0 || this.heightInformation[this.heightInformation[y * this.levelWidth + (x - i)]]) return x - i;
                 }
                 break;
             case 3:
                 //bottom to top 
-                for (var i = 0, m = length * hlen; i < m; i += hlen) {
+                for (i = 0, m = length * hlen; i < m; i += hlen) {
                     if (this.heightInformation[start - i]) return y - (i / hlen);
                 }
                 break;
@@ -359,11 +373,15 @@
                     canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
                     canvas.scale(-1, 1);
                     canvas.drawImage(cur, 0, 0, cur.width, cur.height);
-                } else {
+                  } else {
                     canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
-                }
-
+              
+           
+                } 
                 canvas.restore();
+                canvas.fillStyle = "#CF3";
+                canvas.fillRect(((fx - sonicManager.windowLocation.x) * scale.x) - 5, ((fy - sonicManager.windowLocation.y + yOffset) * scale.y) - 5, 10, 10);
+
             }
 
         } else if (cur = this.cachedImages[this.spriteState]) {

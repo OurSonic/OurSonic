@@ -84,12 +84,13 @@ function UiArea(x, y, w, h,manager,closable) {
     this.cachedDrawing = null;
     this.draw = function (canv) {
         if (!this.visible) return;
-
+        var good;
+        var t;
         if (!this.cachedDrawing) {
 
             var cg = document.createElement("canvas");
-            cg.width = this.width+20;
-            cg.height = this.height+20;
+            cg.width = this.width + 20;
+            cg.height = this.height + 20;
 
             var cv = cg.getContext('2d');
 
@@ -104,33 +105,43 @@ function UiArea(x, y, w, h,manager,closable) {
             this.y = 10;
             roundRect(cv, this.x, this.y, this.width, this.height, 5, true, true);
             for (var j = 0; j < this.controls.length; j++) {
-                var t = this.controls[j];
-                if (!t.forceDrawing)
+                t = this.controls[j];
+                good = t.forceDrawing();
+                if (good.redraw)
                     t.draw(cv);
             }
 
             this.x = _x;
             this.y = _y;
 
-            var cd;
-            this.cachedDrawing = cd = new Image();
-            cd.onload = function () {
-                cd.loaded = true;
-
-            };
-            this.cachedDrawing.src = cg.toDataURL("image/png");
-
-
+            this.cachedDrawing = _H.loadSprite(cg.toDataURL("image/png"))
         }
-    
-        if (this.cachedDrawing.loaded)
+
+        if (this.cachedDrawing.loaded) {
             canv.drawImage(this.cachedDrawing, Math.floor(this.x), Math.floor(this.y));
 
-        for (var j = 0; j < this.controls.length; j++) {
-            var t = this.controls[j];
-            if (t.forceDrawing)
+            for (var j = 0; j < this.controls.length; j++) {
+                t = this.controls[j];
+                good = t.forceDrawing();
+                if (!good.redraw)
+                    t.draw(canv);
+                if (good.clearCache)
+                    this.cachedDrawing = null;
+            }
+        } else {
+            canv.fillStyle = "rgba(133,133,133,0.6)";
+            canv.lineWidth = 9;
+            canv.strokeStyle = "#333";
+
+            roundRect(canv, this.x+10, this.y+10, this.width, this.height, 5, true, true);
+            
+            for (var j = 0; j < this.controls.length; j++) {
+                t = this.controls[j];
                 t.draw(canv);
+            }
+
         }
+
     };
 
     return this;
@@ -138,8 +149,15 @@ function UiArea(x, y, w, h,manager,closable) {
 
 
 function TextArea(x, y, text, font, color) {
-    this.forceDrawing = false;
+    this.forceDrawing = function () {
+        if (this.text == this.oldText) {
+            return {redraw:false,clearCache:false};
+        }
+        this.oldText = this.text;
+        return { redraw: false, clearCache: true };
+    };
     this.x = x;
+    this.oldText = text;
     this.y = y;
     this.visible = true;
     this.text = text;
@@ -189,7 +207,9 @@ function TextArea(x, y, text, font, color) {
 
 
 function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOver) {
-    this.forceDrawing = true;
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
     this.x = x;
     this.y = y;
     this.visible = true;
@@ -223,6 +243,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     this.draw = function (canv) {
         if (!this.visible) return;
         canv.fillStyle = this.color;
+        canv.strokeStyle = "#DAC333";
         roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 5, true, true);
         canv.fillStyle = this.clicking ? "#FCA" : "#334";
         if (canv.font != this.font)
@@ -234,7 +255,9 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
 }
 
 function TilePieceArea(x, y, scale, tilePiece) {
-    this.forceDrawing = true;
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
     this.x = x;
     this.y = y;
     this.visible = true;
@@ -281,7 +304,9 @@ function TilePieceArea(x, y, scale, tilePiece) {
 }
 
 function TileChunkArea(x, y, scale, tileChunk) {
-    this.forceDrawing = true;
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
     this.x = x;
     this.y = y;
     this.visible = true;
@@ -317,7 +342,9 @@ function TileChunkArea(x, y, scale, tileChunk) {
     return this;
 };
 function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, controls) {
-    this.forceDrawing = true;
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
     this.x = x;
     this.y = y;
     this.itemWidth = itemWidth;

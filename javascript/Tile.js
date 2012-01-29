@@ -17,13 +17,7 @@
 
             var d = canvas.createImageData(8 * scale.x, 8 * scale.y);
             _H.setDataFromColors(d.data, this.colors, scale, 8);
-            this.sprites[scale.y * 100 + scale.x] = sps = new Image();
-            var sprite2 = sps;
-            sps.onload = function () {
-                sprite2.loaded = true;
-            };
-            sps.loaded = false;
-            sps.src = _H.getBase64Image(d);
+            sps=this.sprites[scale.y * 100 + scale.x] = _H.loadSprite(_H.getBase64Image(d));
         }
 
 

@@ -2,7 +2,7 @@
     this.windowLocation = { x: 0, y: 0, width: 320, height: 240 };
     this.uiManager = new UIManager(this, mainCanvas);
 
-    var scale =this.scale= { x: 2, y: 2 };
+    var scale = this.scale = { x: 2, y: 2 };
 
     this.SonicLevel = {
         Tiles: [],
@@ -13,7 +13,7 @@
 
 
     var lamesauce = new TileChunk() + new TilePiece() + new Tile() + new HeightMask() + new Color();
-    
+
     for (var x_ = 0; x_ < 10; x_++) {
         for (var y_ = 0; y_ < 10; y_++) {
             this.SonicLevel.ChunkMap[y_ * 10 + x_] = 0;
@@ -21,7 +21,7 @@
     }
 
 
-    this.onClick = function(e) {
+    this.onClick = function (e) {
         if (e.shiftKey) {
             var ch = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[Math.floor(e.x / (128 * scale.x)) + Math.floor(e.y / (128 * scale.y)) * 10]];
 
@@ -45,11 +45,16 @@
                     that.loading = false;
                 }
             }
-            else
+            else {
                 that.sonicToon.tick(that.SonicLevel, scale);
+                if (that.sonicToon.y > 128 * 10) {
+                    that.sonicToon.y = 0;
+                }
+            }
         }
     };
     this.loading = true;
+    this.showHeightMap = false;
     this.draw = function (canvas) {
         canvas.save();
 
@@ -70,6 +75,9 @@
             this.windowLocation.y = Math.floor(this.sonicToon.y - 180);
             if (this.windowLocation.x < 0) this.windowLocation.x = 0;
             if (this.windowLocation.y < 0) this.windowLocation.y = 0;
+
+            if (this.windowLocation.x > 128 * 10 - this.windowLocation.width) this.windowLocation.x = 128 * 10 - this.windowLocation.width;
+            if (this.windowLocation.y > 128 * 10 - this.windowLocation.height) this.windowLocation.y = 128 * 10 - this.windowLocation.height;
         }
 
         for (var j = 0; j < this.SonicLevel.ChunkMap.length; j++) {
@@ -79,9 +87,10 @@
                 pos.x <= (this.windowLocation.x + 128) * scale.x + this.windowLocation.width * scale.x && pos.y <= (this.windowLocation.y + 128) * scale.y + this.windowLocation.height * scale.y)) {
 
                 var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
-                
+
+                var state = this.showHeightMap ? 2 : this.sonicToon ? 0 : 1;
                 this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]].
-                    draw(canvas, posj, scale, !this.sonicToon);
+                    draw(canvas, posj, scale, state);
 
                 if (!this.sonicToon) {
                     canvas.strokeStyle = "#DD0033";
@@ -106,7 +115,7 @@
         canvas.restore();
     };
 
-    this.importChunkFromImage = function(image) {
+    this.importChunkFromImage = function (image) {
         var data = _H.getImageData(image);
         if (data.length != 128 * 128 * 4) {
             alert('Chunk size incorrect');

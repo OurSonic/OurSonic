@@ -66,12 +66,15 @@
 
 
                 canvas.lineWidth = 1;
-                if (state==0 && this.items[x] >= 16 - y) {
+                if (state <= 0 && this.items[x] >= 16 - y) {
                     canvas.fillStyle = "rgba(24,98,235,0.6)";
                     canvas.fillRect(_x, _y, scale.x, scale.y);
                 } else {
-                    canvas.strokeStyle = "#0C3146";
-                    canvas.strokeRect(_x, _y, scale.x, scale.y);
+                    if (state != -1) {
+                        
+                        canvas.strokeStyle = "#0C3146";
+                        canvas.strokeRect(_x, _y, scale.x, scale.y);
+                    }
                 }
             }
         }

@@ -41,28 +41,27 @@
             return true;
         }
 
-        if (!this.sprites[scale.y * 100 + scale.x]) {
+
+        var mx = state * 200 + scale.y * 50 + scale.x;
+        if (!this.sprites[mx]) {
             var cg = document.createElement("canvas");
             cg.width = 2 * 8 * scale.x;
             cg.height = 2 * 8 * scale.y;
             var cv = cg.getContext('2d');
             for (i = 0; i < this.tiles.length; i++) {
-                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state != 3))
+                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3))
                     return false;
-            }
-            var sprite1;
-            this.sprites[scale.y * 100 + scale.x] = sprite1 = new Image();
-            sprite1.onload = function () {
-                sprite1.loaded = true;
 
-            };
-            sprite1.src = cg.toDataURL("image/png");
+                if (state == 4)
+                    this.heightMask.draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, -1);
+
+            } this.sprites[mx] = _H.loadSprite(cg.toDataURL("image/png"));
 
 
         }
 
-        if (this.sprites[scale.y * 100 + scale.x].loaded) {
-            canvas.drawImage(this.sprites[scale.y * 100 + scale.x], Math.floor(position.x), Math.floor(position.y));
+        if (this.sprites[mx].loaded) {
+            canvas.drawImage(this.sprites[mx], Math.floor(position.x), Math.floor(position.y));
         } else return false;
 
 
@@ -70,7 +69,6 @@
         //canvas.fillText(sonicManager.SonicLevel.TilePieces.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);
 
 
-        this.heightMask.draw(canvas, position, scale, state);
         return true;
     };
     TilePiece.prototype.equals = function (tp) {
