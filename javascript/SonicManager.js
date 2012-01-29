@@ -1,8 +1,9 @@
 ﻿function SonicManager(mainCanvas) {
     this.windowLocation = { x: 0, y: 0, width: 320, height: 240 };
-    this.uiManager = new UIManager(this, mainCanvas);
-
     var scale = this.scale = { x: 2, y: 2 };
+
+    this.uiManager = new UIManager(this, mainCanvas, this.scale);
+
 
     this.SonicLevel = {
         Tiles: [],
@@ -33,7 +34,7 @@
             }
         } else {
             if (!e.button || e.button == 0) {
-                this.SonicLevel.ChunkMap[Math.floor(e.x / (128 * scale.x)) + Math.floor(e.y / (128 * scale.y)) * 10] = this.uiManager.indexes.tcIndex;
+                this.SonicLevel.ChunkMap[Math.floor(e.x / (128 * scale.x)) + Math.floor(e.y / (128 * scale.y)) * 10] = this.uiManager.indexes.modifyIndex;
             }
         }
     };
@@ -58,6 +59,13 @@
     this.draw = function (canvas) {
         canvas.save();
 
+        if (!this.inds || !this.inds.done) {
+            if (!this.inds) return;
+            canvas.fillStyle = "white";
+            canvas.fillText("Loading...   " + (this.inds.tc + this.inds.tp + this.inds.t) + " / " + (this.inds.total), 95, 95);
+            canvas.restore();
+            return;
+        }
 
 
         if (this.sonicToon) {
@@ -89,8 +97,7 @@
                 var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
 
                 var state = this.showHeightMap ? 2 : this.sonicToon ? 0 : 1;
-                this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]].
-                    draw(canvas, posj, scale, state);
+                this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]].draw(canvas, posj, scale, state);
 
                 if (!this.sonicToon) {
                     canvas.strokeStyle = "#DD0033";
@@ -102,14 +109,13 @@
         }
 
         if (this.sonicToon) {
-            //        this.sonicToon.x -= this.windowLocation.x;
-            //        this.sonicToon.y -= this.windowLocation.y;
             this.sonicToon.draw(canvas, scale);
-            //        this.sonicToon.x += this.windowLocation.x;
-            //        this.sonicToon.y += this.windowLocation.y;
 
             if (this.windowLocation.x < 0) this.windowLocation.x = 0;
             if (this.windowLocation.y < 0) this.windowLocation.y = 0;
+
+            if (this.windowLocation.x > 128 * 10 - this.windowLocation.width) this.windowLocation.x = 128 * 10 - this.windowLocation.width;
+            if (this.windowLocation.y > 128 * 10 - this.windowLocation.height) this.windowLocation.y = 128 * 10 - this.windowLocation.height;
         }
 
         canvas.restore();

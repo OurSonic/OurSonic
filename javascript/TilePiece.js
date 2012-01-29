@@ -7,6 +7,7 @@
         switch (state) {
             case 0:
                 this.heightMask.setItem(x, y);
+                this.sprites = [];
                 break;
             case 1:
                 break;
@@ -20,6 +21,35 @@
     };
     TilePiece.prototype.mouseOver = function (x, y) {
         //sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
+    };
+
+    TilePiece.prototype.cacheImage = function (canvas, scale, state, completed) {
+        if (!this.sprites)
+            this.sprites = [];
+        var i;
+
+
+        var mx = state * 200 + scale.y * 50 + scale.x;
+        if (!this.sprites[mx]) {
+            var cg = document.createElement("canvas");
+            cg.width = 2 * 8 * scale.x;
+            cg.height = 2 * 8 * scale.y;
+            var cv = cg.getContext('2d');
+            for (i = 0; i < this.tiles.length; i++) {
+                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3))
+                    return false;
+
+
+            }
+
+            if (state == 4)
+                this.heightMask.draw(cv, { x: 0, y: 0 }, scale, -1);
+            this.sprites[mx] = _H.loadSprite(cg.toDataURL("image/png"), completed);
+
+
+        }
+
+        return true;
     };
     TilePiece.prototype.draw = function (canvas, position, scale, state) {
         if (!this.sprites)
@@ -51,11 +81,11 @@
             for (i = 0; i < this.tiles.length; i++) {
                 if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3))
                     return false;
+            }
+            if (state == 4)
+                this.heightMask.draw(cv, { x: 0, y: 0 }, scale, -1);
 
-                if (state == 4)
-                    this.heightMask.draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, -1);
-
-            } this.sprites[mx] = _H.loadSprite(cg.toDataURL("image/png"));
+            this.sprites[mx] = _H.loadSprite(cg.toDataURL("image/png"));
 
 
         }

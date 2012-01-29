@@ -138,7 +138,7 @@
                 else if (t == "object" && v !== null) v = stringify(v, cc + 1);
                 json.push((arr ? "" : '"' + n + '":') + String(v));
             }
-            return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+            return (arr ? "[" :  "{") + String(json) + (arr ? "]" : "}");
         }
     },
     compareTiles: function (tiles, tiles2, colors) {

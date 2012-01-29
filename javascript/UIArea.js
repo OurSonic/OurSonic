@@ -191,7 +191,8 @@ function TextArea(x, y, text, font, color) {
         canv.strokeStyle = this.color;
         canv.shadowColor = "#FFF";
         canv.shadowBlur = 20;
-        canv.lineWidth = 1.5 ;
+        canv.lineWidth = 1.5;
+        
         canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
         canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
         canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
@@ -254,7 +255,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     return this;
 }
 
-function TilePieceArea(x, y, scale, tilePiece) {
+function TilePieceArea(x, y, scale, tilePiece,state) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -263,11 +264,11 @@ function TilePieceArea(x, y, scale, tilePiece) {
     this.visible = true;
     this.scale = scale;
     this.width = scale.x * 16;
-    this.height = scale.y * 16;
+    this.height = scale.y * 17;
     this.clicking = false;
     this.tilePiece = tilePiece;
     this.parent = null;
-    this.state = 0;
+    this.state = state;
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
@@ -303,7 +304,7 @@ function TilePieceArea(x, y, scale, tilePiece) {
     return this;
 }
 
-function TileChunkArea(x, y, scale, tileChunk) {
+function TileChunkArea(x, y, scale, tileChunk,state) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -316,7 +317,8 @@ function TileChunkArea(x, y, scale, tileChunk) {
     this.clicking = false;
     this.tileChunk = tileChunk;
     this.parent = null;
-
+    this.state = state;
+    this.setToTile = null;
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
@@ -325,6 +327,10 @@ function TileChunkArea(x, y, scale, tileChunk) {
         if (!this.visible) return;
 
         if (this.clicking) {
+            if (this.setToTile != null) { 
+                this.tileChunk.tilesPieces[((Math.floor(e.x / this.scale.x / 16))) + (Math.floor(e.y / this.scale.y / 16)) * 8] = sonicManager.SonicLevel.TilePieces.indexOf(this.setToTile);
+                this.tileChunk.sprites = [];
+            }
         }
         this.clickHandled = false;
         this.clicking = false;
@@ -332,6 +338,7 @@ function TileChunkArea(x, y, scale, tileChunk) {
     this.clickHandled = false;
     this.onMouseOver = function (e) {
         if (this.clicking) {
+            
         }
     };
     this.draw = function (canv) {

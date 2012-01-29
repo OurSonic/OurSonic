@@ -28,6 +28,9 @@
     this.ticking = false;
     this.breaking = 0;
     this.wasJumping = false;
+    this.ducking = false;
+    this.spinDash = false;
+
     this.tick = function () {
         this.ticking = true;
 
@@ -38,19 +41,33 @@
                     this.wasJumping = false;
                 }
 
+                this.ducking = false;
+                if (this.crouching) {
+                    if (this.xsp != 0) {
+                        this.rolling = true;
+                        this.currentlyBall = true;
+                    } else {
+                        this.ducking = true;
+                    }
+                } else {
+                    this.spinDash = false;
+                }
+
                 if (this.wasJumping && this.jumping) {
 
                 } else if (this.jumping) {
-                    this.wasJumping = true;
-                    this.state = SonicState.Air;
-                    this.currentlyBall = true;
-                    this.ysp = this.jmp;
+
+                    if (this.ducking) {
+                        this.spinDash = true;
+                    }
+                    else {
+                        this.wasJumping = true;
+                        this.state = SonicState.Air;
+                        this.currentlyBall = true;
+                        this.ysp = this.jmp;
+                    }
                 }
 
-                if (this.xsp != 0 && this.crouching) {
-                    this.rolling = true;
-                    this.currentlyBall = true;
-                }
 
                 if (this.holdingLeft && this.standStill) {
                     this.facing = false;
@@ -177,28 +194,47 @@
             }
         }
 
-        if (absxsp == 0 && !this.currentlyBall) {
+        if (absxsp == 0 && this.state == SonicState.Ground) {
+
             this.runningDir = 0;
-            this.spriteState = "normal";
-            this.standStill = true;
-            this.currentlyBall = false;
-            this.runningTick = 0;
+
+            if (this.ducking) {
+
+                if (this.spinDash) {
+                    this.spriteState = "duck0";
+                    this.runningTick = 1;
+
+                } else {
+                    if (this.spriteState.substring(0, this.spriteState.length - 1) != "duck") {
+                        this.spriteState = "duck0";
+                        this.runningTick = 1;
+                    } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
+                        this.spriteState = "duck1";
+                    }
+                }
+
+            } else {
+                this.spriteState = "normal";
+                this.standStill = true;
+                this.currentlyBall = false;
+                this.runningTick = 0;
+            }
         } else if (this.breaking != 0) {
             if (this.spriteState.substring(0, this.spriteState.length - 1) != "breaking") {
                 this.spriteState = "breaking0";
                 this.runningTick = 1;
-            } else if ((this.runningTick++) % (Math.floor(5 - absxsp)) == 0 || (Math.floor(5 - absxsp) == 0)) {
+            } else if ((this.runningTick++) % (7) == 0) {
                 this.spriteState = "breaking" + ((j + 1) % 4);
             }
 
         } else if (this.currentlyBall) {
 
-            if (this.spriteState.substring(0, this.spriteState.length - 1) != "ball") {
-                this.spriteState = "ball0";
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "balls") {
+                this.spriteState = "balls0";
                 this.runningTick = 1;
             } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
                 ;
-                this.spriteState = "ball" + ((j + 1) % 4);
+                this.spriteState = "balls" + ((j + 1) % 5);
             }
         } else if (absxsp < 6) {
             if (this.spriteState.substring(0, this.spriteState.length - 1) != "running") {
@@ -245,10 +281,10 @@
                 } else {
                     if (sensorA > -1) {
                         this.y = fy = sensorA - 19;
-                    } else 
-                    if (sensorB > -1) {
-                        this.y = fy = sensorB - 19;
-                    }
+                    } else
+                        if (sensorB > -1) {
+                            this.y = fy = sensorB - 19;
+                        }
                 }
 
 
@@ -265,15 +301,15 @@
                             this.state = SonicState.Ground;
                             this.ysp = 0;
                         }
-                    } else 
-                    if (sensorB > -1) {
-                        if (this.y + (20) >= sensorB) {
-                            this.y = fy = sensorB - 19;
-                            this.currentlyBall = false;
-                            this.state = SonicState.Ground;
-                            this.ysp = 0;
+                    } else
+                        if (sensorB > -1) {
+                            if (this.y + (20) >= sensorB) {
+                                this.y = fy = sensorB - 19;
+                                this.currentlyBall = false;
+                                this.state = SonicState.Ground;
+                                this.ysp = 0;
+                            }
                         }
-                    }
                 }
 
                 break;
@@ -325,20 +361,25 @@
     
     this.spriteLocations["normal"] = "assets/Sprites/sonic.png";
     this.imageLength++;
-    
-    for (var j = 0; j < 4; j++) {
+    var j;
+    for (j = 0; j < 4; j++) {
         this.spriteLocations["fastrunning" + j] = "assets/Sprites/fastrunning" + j + ".png";
         this.imageLength++;
     }
-    for (var j = 0; j < 8; j++) {
+    for (j = 0; j < 8; j++) {
         this.spriteLocations["running" + j] = "assets/Sprites/running" + j + ".png";
         this.imageLength++;
     }
-    for (var j = 0; j < 4; j++) {
+    for (j = 0; j < 4; j++) {
         this.spriteLocations["breaking" + j] = "assets/Sprites/breaking" + j + ".png";
         this.imageLength++;
-    } for (var j = 0; j < 4; j++) {
-        this.spriteLocations["ball" + j] = "assets/Sprites/ball" + j + ".png";
+    }
+    for (j = 0; j < 5; j++) {
+        this.spriteLocations["balls" + j] = "assets/Sprites/balls" + j + ".png";
+        this.imageLength++;
+    }
+    for (j = 0; j < 2; j++) {
+        this.spriteLocations["duck" + j] = "assets/Sprites/duck" + j + ".png";
         this.imageLength++;
     }
 
@@ -368,16 +409,24 @@
         if (cur = this.cachedImages[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
                 canvas.save();
-                var yOffset = this.currentlyBall ? 10 : 0;
+                var yOffset=0;
+                if (this.spinDash || this.ducking) {
+                    yOffset = 6;
+                } else {
+                    if (this.currentlyBall) {
+                        yOffset = 10;
+                    }
+                }
+
                 if (!this.facing) {
                     canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
                     canvas.scale(-1, 1);
                     canvas.drawImage(cur, 0, 0, cur.width, cur.height);
-                  } else {
+                } else {
                     canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
-              
-           
-                } 
+
+
+                }
                 canvas.restore();
                 canvas.fillStyle = "#CF3";
                 canvas.fillRect(((fx - sonicManager.windowLocation.x) * scale.x) - 5, ((fy - sonicManager.windowLocation.y + yOffset) * scale.y) - 5, 10, 10);
