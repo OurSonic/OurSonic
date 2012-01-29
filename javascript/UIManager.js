@@ -236,9 +236,9 @@
     function addLevelToList(name) {
         var btn;
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
-            curLevelName = name;
+            curLevelName = "Downloading";
 
-            OurSonic.SonicLevels.openLevel(name, function (lvl) { loadGame(lvl, mainCanvas); });
+            OurSonic.SonicLevels.openLevel(name, function (lvl) { curLevelName = name; loadGame(lvl, mainCanvas); });
         }));
     }
      

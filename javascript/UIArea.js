@@ -86,6 +86,7 @@ function UiArea(x, y, w, h,manager,closable) {
         if (!this.visible) return;
         var good;
         var t;
+        var j;
         if (!this.cachedDrawing) {
 
             var cg = document.createElement("canvas");
@@ -104,7 +105,7 @@ function UiArea(x, y, w, h,manager,closable) {
             this.x = 10;
             this.y = 10;
             roundRect(cv, this.x, this.y, this.width, this.height, 5, true, true);
-            for (var j = 0; j < this.controls.length; j++) {
+            for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 good = t.forceDrawing();
                 if (good.redraw)
@@ -120,7 +121,7 @@ function UiArea(x, y, w, h,manager,closable) {
         if (this.cachedDrawing.loaded) {
             canv.drawImage(this.cachedDrawing, Math.floor(this.x), Math.floor(this.y));
 
-            for (var j = 0; j < this.controls.length; j++) {
+            for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 good = t.forceDrawing();
                 if (!good.redraw)
@@ -135,7 +136,7 @@ function UiArea(x, y, w, h,manager,closable) {
 
             roundRect(canv, this.x+10, this.y+10, this.width, this.height, 5, true, true);
             
-            for (var j = 0; j < this.controls.length; j++) {
+            for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 t.draw(canv);
             }

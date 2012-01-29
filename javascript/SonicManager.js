@@ -51,6 +51,9 @@
                 if (that.sonicToon.y > 128 * 10) {
                     that.sonicToon.y = 0;
                 }
+                if (that.sonicToon.x > 128 * 10) {
+                    that.sonicToon.x = 0;
+                }
             }
         }
     };

@@ -196,11 +196,11 @@ jQuery.fn.rotate = function(angle, whence) {
     } else {
         p.angle = angle;
     }
-
+    var rotation;
     if (p.angle >= 0) {
-        var rotation = Math.PI * p.angle / 180;
+        rotation = Math.PI * p.angle / 180;
     } else {
-        var rotation = Math.PI * (360 + p.angle) / 180;
+        rotation = Math.PI * (360 + p.angle) / 180;
     }
     var costheta = Math.cos(rotation);
     var sintheta = Math.sin(rotation);

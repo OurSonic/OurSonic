@@ -217,6 +217,7 @@
                 this.spriteState = "normal";
                 this.standStill = true;
                 this.currentlyBall = false;
+                this.rolling = false;
                 this.runningTick = 0;
             }
         } else if (this.breaking != 0) {
@@ -297,7 +298,7 @@
                     if (sensorA > -1) {
                         if (this.y + (20) >= sensorA) {
                             this.y = fy = sensorA - 19;
-                            this.currentlyBall = false;
+                            this.rolling=this.currentlyBall = false;
                             this.state = SonicState.Ground;
                             this.ysp = 0;
                         }
@@ -305,7 +306,7 @@
                         if (sensorB > -1) {
                             if (this.y + (20) >= sensorB) {
                                 this.y = fy = sensorB - 19;
-                                this.currentlyBall = false;
+                                this.rolling = this.currentlyBall = false;
                                 this.state = SonicState.Ground;
                                 this.ysp = 0;
                             }
@@ -478,7 +479,7 @@
 
     };
 
-    this.buildHeightInfo = function () {
+    this.buildHeightInfo = function() {
         var hmap = [];
         hmap.length = sonicLevel.ChunkMap.length * 128 * 128;
         var size = Math.sqrt(sonicLevel.ChunkMap.length);
@@ -502,9 +503,9 @@
             }
         }
         return hmap;
-    }
+    };
     this.heightInformation = this.buildHeightInfo(sonicLevel);
 }
 
 
-SonicState = { Air: 0, Ground: 1 }
+SonicState = { Air: 0, Ground: 1 };
