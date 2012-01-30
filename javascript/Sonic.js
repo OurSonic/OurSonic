@@ -27,7 +27,8 @@
     this.standStill = true;
     this.sonicLevel = sonicLevel;
     this.state = SonicState.Ground;
-
+    this.haltSmoke = [];
+    
     this.facing = true;
     this.ticking = false;
     this.breaking = 0;
@@ -62,7 +63,7 @@
                     this.currentlyBall = false;
                 }
 
-             
+
 
                 if (this.wasJumping && this.jumping) {
 
@@ -148,7 +149,7 @@
                             this.currentlyBall = true;
                         }
                     }
-                    
+
 
                     if (!this.rolling) {
                         this.xsp -= Math.min(Math.abs(this.xsp), this.frc) * (this.xsp > 0 ? 1 : -1);
@@ -273,6 +274,9 @@
                 this.runningTick = 1;
             } else if ((this.runningTick++) % (7) == 0) {
                 this.spriteState = "breaking" + ((j + 1) % 4);
+                if (j == 0) {
+                    this.haltSmoke.push({ x: Math.floor(this.x), y: Math.floor(this.y) });
+                }
             }
 
         } else if (this.currentlyBall) {
@@ -493,6 +497,15 @@
         this.imageLength++;
     }
 
+    for (j = 0; j < 7; j++) {
+        this.spriteLocations["spinsmoke" + j] = "assets/Sprites/spinsmoke" + j + ".png";
+        this.imageLength++;
+    } 
+    for (j = 0; j < 4; j++) {
+        this.spriteLocations["haltsmoke" + j] = "assets/Sprites/haltsmoke" + j + ".png";
+        this.imageLength++;
+    }
+
     var ci = this.cachedImages;
     var imageLoaded = this.imageLoaded = [0];
     for (var sp in this.spriteLocations) {
@@ -535,12 +548,28 @@
                     canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
                     canvas.scale(-1, 1);
                     canvas.drawImage(cur, 0, 0, cur.width, cur.height);
+                    if (this.spinDash) {
+                        canvas.drawImage(this.cachedImages[("spinsmoke" + Math.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y], -25 * scale.x, 0, cur.width, cur.height);
+                    }
                 } else {
                     canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
-
+                    if (this.spinDash) {
+                        canvas.drawImage(this.cachedImages[("spinsmoke" + Math.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
+                            ((fx - 15 - sonicManager.windowLocation.x - 25) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
+                    }
 
                 }
                 canvas.restore();
+
+                for (var i = 0; i < this.haltSmoke.length; i++) {
+                    var lo = this.haltSmoke[i];
+                    canvas.drawImage(this.cachedImages[("haltsmoke" + Math.floor((sonicManager.drawTickCount % (4 * 6)) / 6)) + scale.x + scale.y],
+                            ((lo.x - sonicManager.windowLocation.x - 25) * scale.x), ((lo.y + 12 - sonicManager.windowLocation.y + yOffset) * scale.y));
+                    if (Math.floor(((sonicManager.drawTickCount+6) % (4 * 6)) / 6) == 0) {
+                        this.haltSmoke.splice( i,1);
+                    }
+                }
+
 
             }
 
