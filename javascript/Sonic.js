@@ -62,22 +62,7 @@
                     this.currentlyBall = false;
                 }
 
-                this.ducking = false;
-                if (this.crouching) {
-                    if (Math.abs(this.xsp) > 1.03125) {
-                        this.rolling = true;
-                        this.currentlyBall = true;
-                    } else {
-                        this.ducking = true;
-                    }
-                } else {
-                    if (this.spinDash) {
-                        this.xsp = (8 + Math.floor(this.spinDashSpeed) / 2) * (this.facing?1:-1);
-                        this.spinDash = false;
-                        this.rolling = true;
-                        this.currentlyBall = true;
-                    }
-                }
+             
 
                 if (this.wasJumping && this.jumping) {
 
@@ -89,7 +74,7 @@
                         this.spinDashSpeed += 2;
                         if (this.spinDashSpeed > 8)
                             this.spinDashSpeed = 8;
-                        
+
                         this.spriteState = "spindash0";
                     }
                     else {
@@ -147,6 +132,24 @@
                         this.runningDir = -1;
                     }
                 } else {
+                    this.ducking = false;
+                    if (this.crouching) {
+                        if (Math.abs(this.xsp) > 1.03125) {
+                            this.rolling = true;
+                            this.currentlyBall = true;
+                        } else {
+                            this.ducking = true;
+                        }
+                    } else {
+                        if (this.spinDash) {
+                            this.xsp = (8 + Math.floor(this.spinDashSpeed) / 2) * (this.facing ? 1 : -1);
+                            this.spinDash = false;
+                            this.rolling = true;
+                            this.currentlyBall = true;
+                        }
+                    }
+                    
+
                     if (!this.rolling) {
                         this.xsp -= Math.min(Math.abs(this.xsp), this.frc) * (this.xsp > 0 ? 1 : -1);
                     }
@@ -191,8 +194,11 @@
                     this.xsp -= this.dec;
                 }
             } else if (this.xsp > -max) {
-                this.xsp -= this.acc;
-                if (this.xsp < -max) this.xsp = -max;
+
+                if (!this.rolling) {
+                    this.xsp -= this.acc;
+                    if (this.xsp < -max) this.xsp = -max;
+                }
             }
         } else if (this.holdingRight) {
             if (this.xsp < 0) {
@@ -201,10 +207,11 @@
                 } else {
                     this.xsp += this.dec;
                 }
-            }
-            else if (this.xsp < max) {
-                this.xsp += this.acc;
-                if (this.xsp > max) this.xsp = max;
+            } else if (this.xsp < max) {
+                if (!this.rolling) {
+                    this.xsp += this.acc;
+                    if (this.xsp > max) this.xsp = max;
+                }
             }
         }
 
@@ -230,70 +237,70 @@
             } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
                 this.spriteState = "hit1";
             }
-        } 
-            else if (absxsp == 0 && this.state == SonicState.Ground) {
+        }
+        else if (absxsp == 0 && this.state == SonicState.Ground) {
 
-                this.runningDir = 0;
+            this.runningDir = 0;
 
-                if (this.ducking) {
+            if (this.ducking) {
 
-                    if (this.spinDash) {
-                        if (this.spriteState.substring(0, this.spriteState.length - 1) != "spindash") {
-                            this.spriteState = "spindash0";
-                            this.runningTick = 1;
-                        } else if ((this.runningTick++) % (Math.floor(2 - absxsp)) == 0) {
-                            this.spriteState = "spindash" + ((j + 1) % 6);
-                        }
-                    } else {
-                        if (this.spriteState.substring(0, this.spriteState.length - 1) != "duck") {
-                            this.spriteState = "duck0";
-                            this.runningTick = 1;
-                        } else if ((this.runningTick++) % (Math.floor(4 - absxsp)) == 0) {
-                            this.spriteState = "duck1";
-                        }
+                if (this.spinDash) {
+                    if (this.spriteState.substring(0, this.spriteState.length - 1) != "spindash") {
+                        this.spriteState = "spindash0";
+                        this.runningTick = 1;
+                    } else if ((this.runningTick++) % (Math.floor(2 - absxsp)) == 0) {
+                        this.spriteState = "spindash" + ((j + 1) % 6);
                     }
-
                 } else {
-                    this.spriteState = "normal";
-                    this.standStill = true;
-                    this.currentlyBall = false;
-                    this.rolling = false;
-                    this.runningTick = 0;
-                }
-            } else if (this.breaking != 0) {
-                if (this.spriteState.substring(0, this.spriteState.length - 1) != "breaking") {
-                    this.spriteState = "breaking0";
-                    this.runningTick = 1;
-                } else if ((this.runningTick++) % (7) == 0) {
-                    this.spriteState = "breaking" + ((j + 1) % 4);
+                    if (this.spriteState.substring(0, this.spriteState.length - 1) != "duck") {
+                        this.spriteState = "duck0";
+                        this.runningTick = 1;
+                    } else if ((this.runningTick++) % (Math.floor(4 - absxsp)) == 0) {
+                        this.spriteState = "duck1";
+                    }
                 }
 
-            } else if (this.currentlyBall) {
-
-                if (this.spriteState.substring(0, this.spriteState.length - 1) != "balls") {
-                    this.spriteState = "balls0";
-                    this.runningTick = 1;
-                } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
-                    ;
-                    this.spriteState = "balls" + ((j + 1) % 5);
-                }
-            } else if (absxsp < 6) {
-                if (this.spriteState.substring(0, this.spriteState.length - 1) != "running") {
-                    this.spriteState = "running0";
-                    this.runningTick = 1;
-                } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0 || (Math.floor(8 - absxsp) == 0)) {
-                    this.spriteState = "running" + ((j + 1) % 8);
-                }
-
-            } else if (absxsp >= 6) {
-                if (this.spriteState.substring(0, this.spriteState.length - 1) != "fastrunning") {
-                    this.spriteState = "fastrunning0";
-                    this.runningTick = 1;
-                } else if (((this.runningTick++) % (Math.ceil(8 - absxsp)) == 0) || (Math.floor(8 - absxsp) == 0)) {
-                    this.spriteState = "fastrunning" + ((j + 1) % 4);
-                }
-
+            } else {
+                this.spriteState = "normal";
+                this.standStill = true;
+                this.currentlyBall = false;
+                this.rolling = false;
+                this.runningTick = 0;
             }
+        } else if (this.breaking != 0) {
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "breaking") {
+                this.spriteState = "breaking0";
+                this.runningTick = 1;
+            } else if ((this.runningTick++) % (7) == 0) {
+                this.spriteState = "breaking" + ((j + 1) % 4);
+            }
+
+        } else if (this.currentlyBall) {
+
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "balls") {
+                this.spriteState = "balls0";
+                this.runningTick = 1;
+            } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
+                ;
+                this.spriteState = "balls" + ((j + 1) % 5);
+            }
+        } else if (absxsp < 6) {
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "running") {
+                this.spriteState = "running0";
+                this.runningTick = 1;
+            } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0 || (Math.floor(8 - absxsp) == 0)) {
+                this.spriteState = "running" + ((j + 1) % 8);
+            }
+
+        } else if (absxsp >= 6) {
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "fastrunning") {
+                this.spriteState = "fastrunning0";
+                this.runningTick = 1;
+            } else if (((this.runningTick++) % (Math.ceil(8 - absxsp)) == 0) || (Math.floor(8 - absxsp) == 0)) {
+                this.spriteState = "fastrunning" + ((j + 1) % 4);
+            }
+
+        }
 
         this.x += this.xsp;
         this.y += this.ysp;
@@ -522,8 +529,8 @@
         if (cur = this.cachedImages[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
                 canvas.save();
-                var yOffset = 40-(cur.height / scale.y);
-                
+                var yOffset = 40 - (cur.height / scale.y);
+
                 if (!this.facing) {
                     canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
                     canvas.scale(-1, 1);
