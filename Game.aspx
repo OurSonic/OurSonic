@@ -17,6 +17,8 @@
     </script>
     <script src="javascript/Tile.js?1" type="text/javascript"> 
     </script>
+    <script src="javascript/Ring.js?1" type="text/javascript"> 
+    </script>
     <script src="javascript/TileChunk.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/TilePiece.js?1" type="text/javascript"> 
@@ -53,7 +55,7 @@
 
             }, 1000 / 60);
 
-
+            
             var myCanv = new SonicEngine("build");
 
 

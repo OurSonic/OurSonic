@@ -15,8 +15,20 @@
         var canvas = document.createElement("canvas");
         var ctx = canvas.getContext("2d");
         return { canvas: canvas, context: ctx };
-    },
-    scaleSprite: function ( sprite, scale,complete) {
+    }, intersectRect: function (r1, r2) {
+        return !(r2.left > r1.right ||
+           r2.right < r1.left ||
+           r2.top > r1.bottom ||
+           r2.bottom < r1.top);
+    }
+, remove: function (ar, elem) {
+    var match = -1;
+
+    while ((match = ar.indexOf(elem)) > -1) {
+        ar.splice(match, 1);
+    }
+},
+    scaleSprite: function (sprite, scale, complete) {
 
         var data = _H.getImageData(sprite);
         var colors = [];
@@ -138,7 +150,7 @@
                 else if (t == "object" && v !== null) v = stringify(v, cc + 1);
                 json.push((arr ? "" : '"' + n + '":') + String(v));
             }
-            return (arr ? "[" :  "{") + String(json) + (arr ? "]" : "}");
+            return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
         }
     },
     compareTiles: function (tiles, tiles2, colors) {
@@ -175,11 +187,11 @@
 
 
 window.Base64 = {
-// private property
+    // private property
     _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
 
     // public method for encoding
-    encode: function(input) {
+    encode: function (input) {
         var output = "";
         var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
         var i = 0;
@@ -213,13 +225,13 @@ window.Base64 = {
     },
 
     // public method for decoding
-    decode: function(input) {
+    decode: function (input) {
         var output = "";
         var chr1, chr2, chr3;
         var enc1, enc2, enc3, enc4;
         var i = 0;
 
-        input = input.replace( /[^A-Za-z0-9\+\/\=]/g , "");
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
 
         while (i < input.length) {
 
@@ -250,8 +262,8 @@ window.Base64 = {
     },
 
     // private method for UTF-8 encoding
-    _utf8_encode: function(string) {
-        string = string.replace( /\r\n/g , "\n");
+    _utf8_encode: function (string) {
+        string = string.replace(/\r\n/g, "\n");
         var utftext = "";
 
         for (var n = 0; n < string.length; n++) {
@@ -274,7 +286,7 @@ window.Base64 = {
         return utftext;
     },
 
-    _utf8_decode: function(utftext) {
+    _utf8_decode: function (utftext) {
         var string = "";
         var i = 0;
         var c = c1 = c2 = 0;
@@ -302,3 +314,4 @@ window.Base64 = {
         return string;
     }
 };
+

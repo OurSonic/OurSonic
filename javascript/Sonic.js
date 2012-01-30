@@ -1,6 +1,9 @@
 ﻿function Sonic(sonicLevel, scale) {
     this.x = 20;
     this.y = 0;
+    this.obtainedRing = [];
+    this.rings = 0;
+
     this.jumping = false;
     this.crouching = false;
     this.holdingLeft = false;
@@ -8,14 +11,14 @@
     this.levelWidth = 0;
     this.xsp = 0;
     this.ysp = 0;
-
+    this.sonicLastHitTick = 0;
     this.acc = 0.046875;
     this.dec = 0.5;
     this.frc = 0.046875;
 
     this.rdec = 0.125;
     this.rfrc = 0.0234375;
-
+    this.runningTick = 0;
     this.jmp = -6.5;
     this.grv = 0.21875;
     this.air = 0.09375;
@@ -23,18 +26,18 @@
     this.standStill = true;
     this.sonicLevel = sonicLevel;
     this.state = SonicState.Ground;
-    this.tickCount = 0;
+
     this.facing = true;
     this.ticking = false;
     this.breaking = 0;
     this.wasJumping = false;
     this.ducking = false;
     this.spinDash = false;
-
+    this.myRec = {};   
     this.tick = function () {
         this.ticking = true;
 
-
+        this.myRec={ left: this.x - 5, right: this.x + 5, top: this.y - 20, bottom: this.y + 20 };
         switch (this.state) {
             case SonicState.Ground:
                 if (this.wasJumping && !this.jumping) {
@@ -249,7 +252,7 @@
             if (this.spriteState.substring(0, this.spriteState.length - 1) != "fastrunning") {
                 this.spriteState = "fastrunning0";
                 this.runningTick = 1;
-            } else if ((this.runningTick++) % (Math.ceil(8 - absxsp)) == 0 || (Math.floor(8 - absxsp) == 0)) {
+            } else if (((this.runningTick++) % (Math.ceil(8 - absxsp)) == 0) || (Math.floor(8 - absxsp) == 0)) {
                 this.spriteState = "fastrunning" + ((j + 1) % 4);
             }
 
@@ -275,6 +278,13 @@
         }
 
 
+        if (sonicManager.tickCount % 4 == 0) {
+            this.checkCollisionWithRing();
+        }
+
+
+
+
         switch (this.state) {
             case SonicState.Ground:
                 if ((sensorA = this.checkCollisionLine(fx - 9, fy, 20, 1)) == -1 && (sensorB = this.checkCollisionLine(fx + 9, fy, 20, 1)) == -1) {
@@ -298,7 +308,7 @@
                     if (sensorA > -1) {
                         if (this.y + (20) >= sensorA) {
                             this.y = fy = sensorA - 19;
-                            this.rolling=this.currentlyBall = false;
+                            this.rolling = this.currentlyBall = false;
                             this.state = SonicState.Ground;
                             this.ysp = 0;
                         }
@@ -318,6 +328,75 @@
 
 
     };
+    this.hit = function () {
+
+        var t = 0;
+        var angle = 101.25;
+        var n = false;
+        var speed = 4;
+        this.sonicLastHitTick = sonicManager.drawTickCount;
+        while (t < this.rings) {
+            var ring = new Ring(true);
+            sonicManager.activeRings.push(ring);
+            ring.x = this.x;
+            ring.y = this.y - 10;
+            ring.ysp = -Math.sin(angle) * speed;
+            ring.xsp = Math.cos(angle) * speed;
+
+            if (n) {
+                ring.ysp *= -1;
+                angle += 22.5;
+            }
+            n = !n;
+            t++;
+            if (t == 16) {
+                speed = 2;
+                angle = 101.25;
+            }
+        }
+        this.rings = 0;
+        /* {
+        let t = 0
+        let angle = 101.25 ; assuming 0=right, 90=up, 180=left, 270=down
+        let n = false
+        let speed = 4
+ 
+        while t is less than the number of rings
+        {
+        create a bouncing ring object
+        set the ring's vertical speed to -sine(angle)*speed
+        set the ring's horizontal speed to cosine(angle)*speed
+        if n is true
+        {
+        multiply the ring's horizontal speed by -1
+        increase angle by 22.5
+        }
+        let n = not n ; if n is false, n becomes true and vice versa
+        increase t by 1
+        if t = 16
+        {
+        let speed = 2 ; we're on the second circle now, so decrease the speed
+        let angle = 101.25 ; and reset the angle
+        }
+        }
+        }*/
+
+    };
+    this.checkCollisionWithRing = function () {
+        var me = this.myRec;
+        for (var ring in sonicManager.SonicLevel.Rings) {
+            var pos = sonicManager.SonicLevel.Rings[ring];
+            if (this.obtainedRing[ring]) continue;
+            var _x = pos.x * 8 * scale.x;
+            var _y = pos.y * 8 * scale.y;
+            if (_H.intersectRect(me, { left: _x - 8 * scale.x, right: _x + 8 * scale.x, top: _y - 8 * scale.y, bottom: _y + 8 * scale.y })) {
+                this.rings++;
+                this.obtainedRing[ring] = true;
+            }
+        }
+    };
+
+    
     this.sensorA = 0;
 
     this.checkCollisionLine = function (x, y, length, direction) {
@@ -335,7 +414,7 @@
             case 1:
                 //top to bottom
                 for (i = 0, m = length * hlen; i < m; i += hlen) {
-                    if ( this.heightInformation[start + i]) return y + (i / hlen);
+                    if (this.heightInformation[start + i]) return y + (i / hlen);
                 }
                 break;
             case 2:
@@ -359,7 +438,7 @@
     this.spriteState = "normal";
     this.spriteLocations = [];
     this.imageLength = 0;
-    
+
     this.spriteLocations["normal"] = "assets/Sprites/sonic.png";
     this.imageLength++;
     var j;
@@ -385,13 +464,10 @@
     }
 
     var ci = this.cachedImages;
-    var junkContext = _H.defaultCanvas().context;
     var imageLoaded = this.imageLoaded = [0];
     for (var sp in this.spriteLocations) {
         ci[sp] = _H.loadSprite(this.spriteLocations[sp], function (jd) {
-            ci[jd.tag + scale.x + scale.y]=_H.scaleSprite(jd, scale, function (jc) {
-                junkContext.drawImage(jc, 0, 0, jc.width, jc.height);
-                junkContext.drawImage(jd, 0, 0, jd.width, jd.height);
+            ci[jd.tag + scale.x + scale.y] = _H.scaleSprite(jd, scale, function (jc) {
                 imageLoaded[0]++;
 
             });
@@ -402,6 +478,11 @@
     this.isLoading = function () {
         return this.imageLoaded[0] < this.imageLength;
     };
+    this.drawUI = function (canvas, pos, scale) {
+        canvas.font = "13pt Arial bold";
+        canvas.fillStyle = "Blue";
+        canvas.fillText("Rings: " + this.rings, pos.x + 30, pos.y + 45);
+    };
 
     this.draw = function (canvas, scale) {
         var fx = Math.floor(this.x);
@@ -410,7 +491,7 @@
         if (cur = this.cachedImages[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
                 canvas.save();
-                var yOffset=0;
+                var yOffset = 0;
                 if (this.spinDash || this.ducking) {
                     yOffset = 6;
                 } else {
@@ -479,7 +560,7 @@
 
     };
 
-    this.buildHeightInfo = function() {
+    this.buildHeightInfo = function () {
         var hmap = [];
         hmap.length = sonicLevel.ChunkMap.length * 128 * 128;
         var size = Math.sqrt(sonicLevel.ChunkMap.length);

@@ -49,6 +49,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Game2.aspx" />
+    <Content Include="javascript\Ring.js" />
+    <Content Include="javascript\curCompress.js" />
     <Content Include="javascript\UIManager.js" />
     <Content Include="javascript\SonicManager.js" />
     <Content Include="SonicLevels.asmx" />
@@ -56,6 +59,10 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game2.aspx.cs">
+      <DependentUpon>Game2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Game.aspx.cs">
       <DependentUpon>Game.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

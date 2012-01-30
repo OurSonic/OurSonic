@@ -24,13 +24,13 @@ function SonicEngine(canvasName) {
 
 
 
-    var sonicManager =window.sonicManager= new SonicManager(this.canvasItem);
+    var sonicManager = window.sonicManager = new SonicManager(this.canvasItem);
 
     this.canvasWidth = 0;
     this.canvasHeight = 0;
-     
 
-   
+
+
     document.getElementById(canvasName).addEventListener('DOMMouseScroll', handleScroll, false);
     document.getElementById(canvasName).addEventListener('mousewheel', handleScroll, false);
 
@@ -59,7 +59,7 @@ function SonicEngine(canvasName) {
         e.preventDefault();
 
         if (sonicManager.uiManager.onMouseMove(e)) return false;
-        
+
         return false;
     }
 
@@ -86,6 +86,10 @@ function SonicEngine(canvasName) {
 
     function doKeyDown(evt) {
         switch (evt.keyCode) {
+            case 66:  /* Up arrow was pressed */
+                if (sonicManager.sonicToon)
+                    sonicManager.sonicToon.hit();
+                break;
             case 38:  /* Up arrow was pressed */
             case 87:  /* Up arrow was pressed */
                 if (sonicManager.sonicToon)
@@ -163,7 +167,7 @@ function SonicEngine(canvasName) {
     this.resizeCanvas();
 
     requestAnimFrame(that.draw);
-    window.setInterval(sonicManager.tick, 1000 / 60,sonicManager);
+    window.setInterval(sonicManager.tick, 1000 / 60, sonicManager);
 
 };
 
