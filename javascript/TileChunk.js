@@ -20,7 +20,7 @@
             var cv = cg.getContext('2d');
             for (i = 0; i < this.tilesPieces.length; i++) {
 
-                if (!sonicManager.SonicLevel.TilePieces[this.tilesPieces[i]].draw(cv, { x: (i % 8) * 16 * scale.x, y: Math.floor(i / 8) * 16 * scale.y }, scale, state == 2 ? 4 : 3))
+                if (!sonicManager.SonicLevel.TilePieces[this.tilesPieces[i]].draw(cv, { x: (i % 8) * 16 * scale.x, y: Math.floor(i / 8) * 16 * scale.y }, scale, state == 2 ? 4 : 3,null,false))
                     return false;
                 if (state == 1) {
                     cv.lineWidth = 1;

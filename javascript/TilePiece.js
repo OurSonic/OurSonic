@@ -13,7 +13,7 @@
                 break;
             case 2:
 
-                sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].changeColor(x % 8, y % 8, new Color(122, 122, 122));
+                sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].changeColor(x % 8, y % 8, new Color(0, 0, 0));
                 break;
         }
 
@@ -51,7 +51,7 @@
 
         return true;
     };
-    TilePiece.prototype.draw = function (canvas, position, scale, state) {
+    TilePiece.prototype.draw = function (canvas, position, scale, state, forceDraw) {
         if (!this.sprites)
             this.sprites = [];
         var i;
@@ -64,7 +64,7 @@
         }
         if (state < 3) {
             for (i = 0; i < this.tiles.length; i++) {
-                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: Math.floor(position.x) + (i % 2) * 8 * scale.x, y: Math.floor(position.y) + Math.floor(i / 2) * 8 * scale.y }, scale, state != 3))
+                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: Math.floor(position.x) + (i % 2) * 8 * scale.x, y: Math.floor(position.y) + Math.floor(i / 2) * 8 * scale.y }, scale, state != 3) && !forceDraw)
                     return false;
             }
             this.heightMask.draw(canvas, position, scale, state);
@@ -79,8 +79,19 @@
             cg.height = 2 * 8 * scale.y;
             var cv = cg.getContext('2d');
             for (i = 0; i < this.tiles.length; i++) {
-                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3))
+                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3)) {
+                    if (forceDraw) {
+                        for (i = i; i < this.tiles.length; i++) {
+                            sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3);
+
+                        }
+
+                        if (state == 4)
+                            this.heightMask.draw(cv, { x: 0, y: 0 }, scale, -1);
+                        return false;
+                    }
                     return false;
+                }
             }
             if (state == 4)
                 this.heightMask.draw(cv, { x: 0, y: 0 }, scale, -1);

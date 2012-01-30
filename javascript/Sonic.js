@@ -33,11 +33,11 @@
     this.wasJumping = false;
     this.ducking = false;
     this.spinDash = false;
-    this.myRec = {};   
+    this.myRec = {};
     this.tick = function () {
         this.ticking = true;
 
-        this.myRec={ left: this.x - 5, right: this.x + 5, top: this.y - 20, bottom: this.y + 20 };
+        this.myRec = { left: this.x - 5, right: this.x + 5, top: this.y - 20, bottom: this.y + 20 };
         switch (this.state) {
             case SonicState.Ground:
                 if (this.wasJumping && !this.jumping) {
@@ -94,7 +94,6 @@
                         if (this.rolling) {
 
                         } else {
-                            this.xsp += this.acc;
                         }
                     } else {
                         if (Math.abs(this.xsp) > 4.5) {
@@ -102,33 +101,21 @@
                             this.breaking = 1;
                             this.runningTick = 0;
                         }
-                        if (this.rolling) {
-                            this.xsp += this.rdec;
-                        } else {
-                            this.xsp += this.dec;
-                        }
+
                         this.runningDir = 1;
                     }
                 } else if (this.holdingLeft) {
                     this.facing = false;
 
                     if (this.runningDir == -1) {
-                        if (this.rolling) {
 
-                        } else {
-                            this.xsp -= this.acc;
-                        }
                     } else {
                         if (Math.abs(this.xsp) > 4.5) {
                             this.facing = true;
                             this.breaking = -1;
                             this.runningTick = 0;
                         }
-                        if (this.rolling) {
-                            this.xsp -= this.rdec;
-                        } else {
-                            this.xsp -= this.dec;
-                        }
+
                         this.runningDir = -1;
                     }
                 } else {
@@ -168,15 +155,25 @@
 
         var max = 6;
         if (this.holdingLeft) {
-            if (this.xsp > 0)
-                this.xsp -= this.dec;
-            else if (this.xsp > -max) {
+            if (this.xsp > 0) {
+
+                if (this.rolling) {
+                    this.xsp -= this.rdec;
+                } else {
+                    this.xsp -= this.dec;
+                } 
+            } else if (this.xsp > -max) {
                 this.xsp -= this.acc;
                 if (this.xsp < -max) this.xsp = -max;
             }
         } else if (this.holdingRight) {
-            if (this.xsp < 0)
-                this.xsp += this.dec;
+            if (this.xsp < 0) {
+                if (this.rolling) {
+                    this.xsp += this.rdec;
+                } else {
+                    this.xsp += this.dec;
+                }
+            }
             else if (this.xsp < max) {
                 this.xsp += this.acc;
                 if (this.xsp > max) this.xsp = max;

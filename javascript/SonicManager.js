@@ -31,7 +31,16 @@ function SonicManager(mainCanvas) {
 
 
     this.onClick = function (e) {
+        if (e.shiftKey) {
+            var ch = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[Math.floor(e.x / (128 * scale.x)) + Math.floor(e.y / (128 * scale.y)) * 10]];
 
+            var tp = ch.getTilePiece((e.x - Math.floor(e.x / (128 * scale.x)) * (128 * scale.x)), (e.y - Math.floor(e.y / (128 * scale.y)) * (128 * scale.y)), scale);
+            if (tp) {
+                this.uiManager.indexes.tpIndex = this.SonicLevel.TilePieces.indexOf(tp);
+                this.uiManager.modifyTilePieceArea.tilePiece = tp;
+                this.uiManager.solidTileArea.visible = true;
+            }
+        } else 
         if (!e.button || e.button == 0) {
             switch (this.clickState) {
                 case ClickState.PlaceChunk:
@@ -57,17 +66,7 @@ function SonicManager(mainCanvas) {
         }
 
 
-        if (e.shiftKey) {
-            var ch = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[Math.floor(e.x / (128 * scale.x)) + Math.floor(e.y / (128 * scale.y)) * 10]];
-
-            var tp = ch.getTilePiece((e.x - Math.floor(e.x / (128 * scale.x)) * (128 * scale.x)), (e.y - Math.floor(e.y / (128 * scale.y)) * (128 * scale.y)), scale);
-            if (tp) {
-                this.uiManager.indexes.tpIndex = this.SonicLevel.TilePieces.indexOf(tp);
-                this.uiManager.modifyTilePieceArea.tilePiece = tp;
-                this.uiManager.solidTileArea.visible = true;
-            }
-        } else {
-        }
+        
     };
 
     this.tickCount = 0;
@@ -256,22 +255,22 @@ function SonicManager(mainCanvas) {
 
 
     this.SpriteCache = { rings: [] };
-    this.preLoadSprites=function (scale, completed) {
+    this.preLoadSprites = function(scale, completed) {
         var ci = this.SpriteCache.rings;
         var inj = 0;
-        
-       var spriteLocations = [];
+
+        var spriteLocations = [];
 
         for (var j = 0; j < 4; j++) {
             spriteLocations[j] = "assets/Sprites/ring" + j + ".png";
             this.imageLength++;
         }
-        
+
         for (var i = 0; i < spriteLocations.length; i++) {
 
-            var sp = i * 200; 
-            ci[sp] = _H.loadSprite(spriteLocations[i], function (jd) {
-                ci[jd.tag * 200 + scale.x * 100 + scale.y] = _H.scaleSprite(jd, scale, function (jc) {
+            var sp = i * 200;
+            ci[sp] = _H.loadSprite(spriteLocations[i], function(jd) {
+                ci[jd.tag * 200 + scale.x * 100 + scale.y] = _H.scaleSprite(jd, scale, function(jc) {
                     inj = inj + 1;
                     if (inj == 4) {
                         if (completed) completed();
@@ -282,7 +281,7 @@ function SonicManager(mainCanvas) {
 
 
         }
-    }
+    };
 }
 
 

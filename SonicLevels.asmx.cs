@@ -30,8 +30,13 @@ namespace OurSonic
                 var j = File.CreateText(c);
                 j.Write("<soniclevels></soniclevels>");
                 j.Close();
+            } try
+            {
+                doc = XDocument.Load(c);
+            }catch(Exception j)
+            {
+                
             }
-            doc = XDocument.Load(c);
         }
 
         [WebMethod]

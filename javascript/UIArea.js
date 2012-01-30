@@ -298,7 +298,7 @@ function TilePieceArea(x, y, scale, tilePiece,state) {
         if (!this.visible) return;
         if (!this.tilePiece) return;
         this.tilePiece.tag = true;
-        this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, this.state);
+        this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, this.state,true);
         this.tilePiece.tag = false;
     
     };

@@ -27,19 +27,27 @@
             this.cacheImage(canvas, scale);
             sps = this.sprites[scale.y * 100 + scale.x];
         }
-        if (sps.loaded)
+        if (sps.loaded) {
             canvas.drawImage(sps, Math.floor(pos.x), Math.floor(pos.y));
-        else return false;
+            if (showOutline) {
+                canvas.strokeStyle = "#DD0033";
+                canvas.lineWidth = 3;
+                canvas.strokeRect(pos.x, pos.y, 8 * scale.x, 8 * scale.y);
+            }
 
-        if (showOutline) {
-            canvas.strokeStyle = "#DD0033";
-            canvas.lineWidth = 3;
-            canvas.strokeRect(pos.x, pos.y, 8 * scale.x, 8 * scale.y);
-        }
-        /*for (var i = 0; i < this.colors.length; i++) {
-        canvas.fillStyle = this.colors[i].style();
-        canvas.fillRect(pos.x + (i % 8) * pixelWidth, pos.y + Math.floor(i / 8) * pixelWidth, pixelWidth, pixelWidth);
-        }*/
+        } else {
+            for (var i = 0; i < this.colors.length; i++) {
+                canvas.fillStyle = this.colors[i].style();
+                canvas.fillRect(pos.x + (i % 8) * scale.x, pos.y + Math.floor(i / 8) * scale.y, scale.x, scale.x);
+            } if (showOutline) {
+                canvas.strokeStyle = "#DD0033";
+                canvas.lineWidth = 3;
+                canvas.strokeRect(pos.x, pos.y, 8 * scale.x, 8 * scale.y);
+            }
+            return false;
+        } 
+
+
 
 
         //canvas.fillStyle = "#FFFFFF";
