@@ -123,6 +123,22 @@
 
 
 
+    debuggerArea.addControl(new Button(40, 95, 90, 22, "Hit Sonic", buttonFont, "rgb(50,150,50)", function () {
+        sonicManager.sonicToon.hit();
+    }
+    ));
+
+    debuggerArea.addControl(new Button(40, 130, 160, 22, "Show Height Map", buttonFont, "rgb(50,150,50)", function () {
+        if (this.text == "Show Height Map") {
+            sonicManager.showHeightMap = true;
+            this.text = "Hide Height Map";
+        } else {
+            sonicManager.showHeightMap = false;
+            this.text = "Show Height Map";
+        }
+    }
+    ));
+
 
     var solidTileArea = this.solidTileArea = new UiArea(40, 450, 430, 400, this, true);
     solidTileArea.visible = false;
