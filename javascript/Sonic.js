@@ -12,6 +12,7 @@
     this.xsp = 0;
     this.ysp = 0;
     this.sonicLastHitTick = 0;
+    this.sonicJustHitTick = 0;
     this.acc = 0.046875;
     this.dec = 0.5;
     this.frc = 0.046875;
@@ -37,9 +38,18 @@
     this.tick = function () {
         this.ticking = true;
 
+
+
         this.myRec = { left: this.x - 5, right: this.x + 5, top: this.y - 20, bottom: this.y + 20 };
         switch (this.state) {
             case SonicState.Ground:
+
+                if (this.justHit) {
+                    this.justHit = false;
+                    this.sonicJustHitTick = sonicManager.drawTickCount;
+                    this.xsp = 0;
+                }
+
                 if (this.wasJumping && !this.jumping) {
                     this.wasJumping = false;
                 }
@@ -142,7 +152,7 @@
                     }
                 }
 
-                this.ysp += this.grv;
+                this.ysp += this.justHit ? 0.1875 : this.grv;
                 if (this.ysp < 0 && this.ysp > -4) {
                     if (Math.abs(this.xsp) > 0.125) {
                         this.xsp *= 0.96875;
@@ -161,7 +171,7 @@
                     this.xsp -= this.rdec;
                 } else {
                     this.xsp -= this.dec;
-                } 
+                }
             } else if (this.xsp > -max) {
                 this.xsp -= this.acc;
                 if (this.xsp < -max) this.xsp = -max;
@@ -194,7 +204,16 @@
             }
         }
 
-        if (absxsp == 0 && this.state == SonicState.Ground) {
+
+        if (this.justHit) {
+            if (this.spriteState.substring(0, this.spriteState.length - 1) != "hit") {
+                this.spriteState = "hit0";
+                this.runningTick = 1;
+            } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
+                this.spriteState = "hit1";
+            }
+        }
+        else if (absxsp == 0 && this.state == SonicState.Ground) {
 
             this.runningDir = 0;
 
@@ -208,7 +227,7 @@
                     if (this.spriteState.substring(0, this.spriteState.length - 1) != "duck") {
                         this.spriteState = "duck0";
                         this.runningTick = 1;
-                    } else if ((this.runningTick++) % (Math.floor(8 - absxsp)) == 0) {
+                    } else if ((this.runningTick++) % (Math.floor(4 - absxsp)) == 0) {
                         this.spriteState = "duck1";
                     }
                 }
@@ -326,12 +345,16 @@
 
     };
     this.hit = function () {
-
+        if (sonicManager.drawTickCount - this.sonicJustHitTick < 120)
+            return;
+        this.justHit = true;
+        this.ysp = -4;
+        this.xsp = 2 * (-1);
+        this.sonicLastHitTick = sonicManager.drawTickCount;
         var t = 0;
         var angle = 101.25;
         var n = false;
         var speed = 4;
-        this.sonicLastHitTick = sonicManager.drawTickCount;
         while (t < this.rings) {
             var ring = new Ring(true);
             sonicManager.activeRings.push(ring);
@@ -352,31 +375,6 @@
             }
         }
         this.rings = 0;
-        /* {
-        let t = 0
-        let angle = 101.25 ; assuming 0=right, 90=up, 180=left, 270=down
-        let n = false
-        let speed = 4
- 
-        while t is less than the number of rings
-        {
-        create a bouncing ring object
-        set the ring's vertical speed to -sine(angle)*speed
-        set the ring's horizontal speed to cosine(angle)*speed
-        if n is true
-        {
-        multiply the ring's horizontal speed by -1
-        increase angle by 22.5
-        }
-        let n = not n ; if n is false, n becomes true and vice versa
-        increase t by 1
-        if t = 16
-        {
-        let speed = 2 ; we're on the second circle now, so decrease the speed
-        let angle = 101.25 ; and reset the angle
-        }
-        }
-        }*/
 
     };
     this.checkCollisionWithRing = function () {
@@ -393,7 +391,7 @@
         }
     };
 
-    
+
     this.sensorA = 0;
 
     this.checkCollisionLine = function (x, y, length, direction) {
@@ -459,6 +457,10 @@
         this.spriteLocations["duck" + j] = "assets/Sprites/duck" + j + ".png";
         this.imageLength++;
     }
+    for (j = 0; j < 2; j++) {
+        this.spriteLocations["hit" + j] = "assets/Sprites/hit" + j + ".png";
+        this.imageLength++;
+    }
 
     var ci = this.cachedImages;
     var imageLoaded = this.imageLoaded = [0];
@@ -485,6 +487,14 @@
         var fx = Math.floor(this.x);
         var fy = Math.floor(this.y);
         var cur;
+
+        var mc = sonicManager.drawTickCount - this.sonicJustHitTick;
+        if (mc < 120) {
+            if (mc % 8 < 4) {
+                return;
+            }
+        }
+
         if (cur = this.cachedImages[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
                 canvas.save();
@@ -507,9 +517,7 @@
 
                 }
                 canvas.restore();
-                canvas.fillStyle = "#CF3";
-                canvas.fillRect(((fx - sonicManager.windowLocation.x) * scale.x) - 5, ((fy - sonicManager.windowLocation.y + yOffset) * scale.y) - 5, 10, 10);
-
+       
             }
 
         } else if (cur = this.cachedImages[this.spriteState]) {
@@ -526,19 +534,23 @@
 
     };
     this.pressJump = function () {
-        this.jumping = true;
+        if (!this.justHit)
+            this.jumping = true;
     };
 
     this.pressCrouch = function () {
-        this.crouching = true;
+        if (!this.justHit)
+            this.crouching = true;
 
     };
     this.pressLeft = function () {
-        this.holdingLeft = true;
+        if (!this.justHit)
+            this.holdingLeft = true;
 
     };
     this.pressRight = function () {
-        this.holdingRight = true;
+        if (!this.justHit)
+            this.holdingRight = true;
 
     };
 
