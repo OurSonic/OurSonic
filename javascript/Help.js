@@ -10,10 +10,27 @@
         sprite1.src = name;
         return sprite1;
     },
-    defaultCanvas: function () {
+    defaultWindowLocation: function (state) {
+        switch (state) {
+            case 0:
+                return { x: 0, y: 0, width: 320, height: 240 };
+            case 1:
+                return { x: 0, y: 0, width: 900, height: 240 * 2 };
+        }
+        return null;
+    },
+    defaultCanvas: function (w, h) {
 
         var canvas = document.createElement("canvas");
+
+        canvas.width = w;
+        canvas.height = h;
+
+
         var ctx = canvas.getContext("2d");
+
+        ctx.width = w;
+        ctx.height = h;
         return { canvas: canvas, context: ctx };
     }, intersectRect: function (r1, r2) {
         return !(r2.left > r1.right ||
@@ -40,11 +57,10 @@
         var data = _H.getImageData(sprite);
         var colors = [];
         for (var f = 0; f < data.length; f += 4) {
-            colors.push(new Color(data[f], data[f + 1], data[f + 2]));
+            colors.push(_H.colorObjectFromData(data, f));
         }
-
         var d = this.defaultCanvas().context.createImageData(sprite.width * scale.x, sprite.height * scale.y);
-        _H.setDataFromColors(d.data, colors, scale, sprite.width, new Color(0, 0, 0));
+        _H.setDataFromColors(d.data, colors, scale, sprite.width, { r: 0, g: 0, b: 0 });
         return _H.loadSprite(_H.getBase64Image(d), complete);
     },
     getCursorPosition: function (event, print) {
@@ -66,18 +82,72 @@
         var _r = r.toString(16);
         var _g = g.toString(16);
         var _b = b.toString(16);
-        return (_r.length == 1 ? "0" + _r : _r)
+        return "#" + (_r.length == 1 ? "0" + _r : _r)
                 + (_g.length == 1 ? "0" + _g : _g)
                     + (_b.length == 1 ? "0" + _b : _b);
 
 
+    }, colorObjectFromData: function (data, c) {
+        var r = data[c];
+        var g = data[c + 1];
+        var b = data[c + 2];
+
+        return { r: r, g: g, b: b }
+
+
     },
+    parseNumber: function (dn) {
+        switch (dn) {
+            case '0':
+                return 0;
+            case '1':
+                return 1;
+            case '2':
+                return 2;
+            case '3':
+                return 3;
+            case '4':
+                return 4;
+            case '5':
+                return 5;
+            case '6':
+                return 6;
+            case '7':
+                return 7;
+            case '8':
+                return 8;
+            case '9':
+                return 9;
+            case 'a':
+                return 10;
+            case 'b':
+                return 11;
+            case 'c':
+                return 12;
+            case 'd':
+                return 13;
+            case 'e':
+                return 14;
+            case 'f':
+                return 15;
+            case 'g':
+                return 16;
+        }
+    }
+,
     setDataFromColors: function (data, colors, scale, width, transparent) {
 
         for (var i = 0; i < colors.length; i++) {
             //            alert((i % 8) * scale.x + (Math.floor(i / 8) * 16) * scale.y);
             var curX = (i % width);
             var curY = Math.floor(i / width);
+            var g = colors[i];
+            var isTrans = false;
+            if (transparent) {
+                if (g.r == transparent.r && g.g == transparent.g && g.b == transparent.b) {
+                    isTrans = true;
+                }
+            }
 
             for (var j = 0; j < scale.x; j++) {
                 for (var k = 0; k < scale.y; k++) {
@@ -85,13 +155,27 @@
                     var y = (curY * scale.y + k);
                     var c = (x + y * (scale.x * width)) * 4;
 
-                    colors[i] = colorFromData(data, c);
+                    if (isTrans) {
+                        data[c + 0] = 0;
+                        data[c + 1] = 0;
+                        data[c + 2] = 0;
+                        data[c + 3] = 0;
+                        continue;
+
+                    }
+
+
+                    data[c] = g.r;
+                    data[c + 1] = g.g;
+                    data[c + 2] = g.b;
+                    data[c + 3] = 255;
+                    //colors[i] = _H.colorFromData(data, c);
                     /*
                     if (transparent) {
-                        //alert(_H.stringify(colors[i]) + " " + _H.stringify(transparent) + " " + colors[i].equals(transparent));
-                        if (colors[i].equals(transparent)) {
-                            data[c + 3] = 0;
-                        }
+                    //alert(_H.stringify(colors[i]) + " " + _H.stringify(transparent) + " " + colors[i].equals(transparent));
+                    if (colors[i].equals(transparent)) {
+                    data[c + 3] = 0;
+                    }
                     }*/
                 }
             }
@@ -154,6 +238,7 @@
             if (key == "oldScale") return undefined;
             if (key == "sprite") return undefined;
             if (key == "sprites") return undefined;
+            if (key == "index") return undefined;
             if (key == "_style") return undefined;
 
             else return value;

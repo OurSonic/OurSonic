@@ -1921,7 +1921,7 @@ var CodeMirror = (function () {
         }
     }
 
-    // The history object 'chunks' changes that are made close together
+    // The history object 'TileChunks' changes that are made close together
     // and at almost the same time into bigger undoable units.
     function History() {
         this.time = 0;

@@ -1,22 +1,11 @@
-﻿function TilePiece(heightMask, tiles) {
-    this.heightMask = heightMask;
+function TilePiece(heightMask, tiles) {
     this.tiles = tiles;
-    this.sprites = [];
 
     TilePiece.prototype.click = function (x, y, state) {
-        switch (state) {
-            case 0:
-                this.heightMask.setItem(x, y);
-                this.sprites = [];
-                break;
-            case 1:
-                this.heightMask.angle = (360 - ((Math.atan2(8 - y, 8 - x) * 180 / Math.PI + 180 - 90) % 360));
-                break;
-            case 2:
 
-                sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].changeColor(x % 8, y % 8, "#000000");
-                break;
-        }
+
+        //sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].changeColor(x % 8, y % 8, new Color(0, 0, 0));
+
 
 
     };
@@ -24,88 +13,26 @@
         //sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
     };
 
-    TilePiece.prototype.cacheImage = function (canvas, scale, state, completed) {
-        if (!this.sprites)
-            this.sprites = [];
-        var i;
+
+    TilePiece.prototype.draw = function (canvas, position, scale) {
 
 
-        var mx = state * 200 + scale.y * 50 + scale.x;
-        if (!this.sprites[mx]) {
-            var cg = document.createElement("canvas");
-            cg.width = 2 * 8 * scale.x;
-            cg.height = 2 * 8 * scale.y;
-            var cv = cg.getContext('2d');
+
+        var fd;
+        if ((fd = sonicManager.SpriteCache.tilePeices[this.index * 9000 + scale.y * 10 + scale.x]) != null) {
+            if (fd.loaded) {
+                canvas.drawImage(fd, position.x, position.y);
+            }
+        } else {
             for (i = 0; i < this.tiles.length; i++) {
-                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3))
-                    return false;
-
-
-            }
-
-            if (state == 4)
-                this.heightMask.draw(cv, { x: 0, y: 0 }, scale, -1);
-            this.sprites[mx] = _H.loadSprite(cg.toDataURL("image/png"), completed);
-
-
+                var mj = this.tiles[i];
+                sonicManager.SonicLevel.TileData[mj.TileIndex].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + Math.floor(i / 2) * 8 * scale.y }, scale, mj.State, false);
+            } 
         }
-
-        return true;
-    };
-    TilePiece.prototype.draw = function (canvas, position, scale, state, forceDraw) {
-        if (!this.sprites)
-            this.sprites = [];
-        var i;
-        for (i = 0; i < this.tiles.length; i++) {
-            var j = sonicManager.SonicLevel.Tiles[this.tiles[i]].sprites;
-            if (!j || j.length == 0) {
-                this.sprites = [];
-                break;
-            }
-        }
-        if (state < 3) {
-            for (i = 0; i < this.tiles.length; i++) {
-                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(canvas, { x: Math.floor(position.x) + (i % 2) * 8 * scale.x, y: Math.floor(position.y) + Math.floor(i / 2) * 8 * scale.y }, scale, state != 3) && !forceDraw)
-                    return false;
-            }
-            this.heightMask.draw(canvas, position, scale, state);
-
-            return true;
-        }
+        
 
 
-        var mx = state * 200 + scale.y * 50 + scale.x;
-        if (!this.sprites[mx]) {
-            var cg = document.createElement("canvas");
-            cg.width = 2 * 8 * scale.x;
-            cg.height = 2 * 8 * scale.y;
-            var cv = cg.getContext('2d');
-            for (i = 0; i < this.tiles.length; i++) {
-                if (!sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3)) {
-                    if (forceDraw) {
-                        for (i = i; i < this.tiles.length; i++) {
-                            sonicManager.SonicLevel.Tiles[this.tiles[i]].draw(cv, { x: (i % 2) * 8 * scale.x, y: Math.floor(i / 2) * 8 * scale.y }, scale, state < 3);
-
-                        }
-
-                        if (state == 4)
-                            this.heightMask.draw(cv, { x: 0, y: 0 }, scale, -1);
-                        return false;
-                    }
-                    return false;
-                }
-            }
-            if (state == 4)
-                this.heightMask.draw(cv, { x: 0, y: 0 }, scale, -1);
-
-            this.sprites[mx] = _H.loadSprite(cg.toDataURL("image/png"));
-
-        }
-
-        if (this.sprites[mx].loaded) {
-            canvas.drawImage(this.sprites[mx], Math.floor(position.x), Math.floor(position.y));
-        } else return false;
-
+    
 
         //canvas.fillStyle = "#FFFFFF";
         //canvas.fillText(sonicManager.SonicLevel.TilePieces.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);

@@ -1,16 +1,16 @@
 ﻿function Sonic(sonicLevel, scale) {
-    this.x = 20;
-    this.y = 0;
+    this.x = 280;
+    this.y = 130;
     this.obtainedRing = [];
     this.rings = 0;
     this.angleInformation = [];
     this.heightInformation = [];
-
+    this.debugging = false;
     this.jumping = false;
     this.crouching = false;
     this.holdingLeft = false;
     this.holdingRight = false;
-    this.levelWidth = 0;
+    this.LevelWidth = 0;
     this.xsp = 0;
     this.ysp = 0;
     this.sonicLastHitTick = 0;
@@ -43,9 +43,9 @@
     this.angle = 180;
 
     this.tick = function () {
+        if (this.debugging) return;
+
         this.ticking = true;
-
-
 
         this.myRec = { left: this.x - 5, right: this.x + 5, top: this.y - 20, bottom: this.y + 20 };
         switch (this.state) {
@@ -344,31 +344,30 @@
                     this.state = SonicState.Air;
                 } else {
 
-                if(!!sensorA && !!sensorB) {
-                    this.angle = sensorA.angle;
-                    if (sensorA.pos > sensorB.pos) {
+                    if (!!sensorA && !!sensorB) {
                         this.angle = sensorA.angle;
-                        this.y = fy = sensorA.pos - 19;
-                    } else {
-                        this.angle = sensorB.angle;
-                        this.y = fy = sensorB.pos - 19;
-                    }
-                }
-                else
-                    if (sensorA.pos > -1) {
-                        this.angle = sensorA.angle;
-                        this.y = fy = sensorA.pos - 19;
-                    } else
-                        if (sensorB.pos > -1) {
+                        if (sensorA.pos > sensorB.pos) {
+                            this.angle = sensorA.angle;
+                            this.y = fy = sensorA.pos - 19;
+                        } else {
                             this.angle = sensorB.angle;
                             this.y = fy = sensorB.pos - 19;
                         }
+                    }
+                    else
+                        if (sensorA.pos > -1) {
+                            this.angle = sensorA.angle;
+                            this.y = fy = sensorA.pos - 19;
+                        } else
+                            if (sensorB.pos > -1) {
+                                this.angle = sensorB.angle;
+                                this.y = fy = sensorB.pos - 19;
+                            }
                 }
 
 
                 break;
             case SonicState.Air:
-
                 if ((sensorA = this.checkCollisionLine(fx - 9, fy, 20, 1)) == -1 && (sensorB = this.checkCollisionLine(fx + 9, fy, 20, 1)) == -1) {
                     this.state = SonicState.Air;
                 } else {
@@ -394,10 +393,36 @@
                         }
                 }
 
+
+                if (((sensorA = this.checkCollisionLine(fx - 9, fy, 20, 3)) == -1 && (sensorB = this.checkCollisionLine(fx + 9, fy, 20, 3)) == -1)) {
+
+                } else {
+                    if (sensorA.pos > -1) {
+                        if (this.y + (20) >= sensorA.pos) {
+                            this.angle = sensorA.angle;
+                            this.y = fy = sensorA.pos + 20;
+                            this.ysp = 0;
+                        }
+                    } else
+                        if (sensorB.pos > -1) {
+                            if (this.y + (20) >= sensorB.pos) {
+                                this.angle = sensorB.angle;
+                                this.y = fy = sensorB.pos + 20;
+                                this.ysp = 0;
+                            }
+                        }
+                }
+
                 break;
         }
 
 
+    };
+    this.debug = function () {
+        this.debugging = !this.debugging;
+        this.xsp = 0;
+        this.ysp = 0;
+        this.spriteState="normal";
     };
     this.hit = function () {
         if (sonicManager.drawTickCount - this.sonicJustHitTick < 120)
@@ -450,97 +475,40 @@
     this.sensorA = 0;
 
     this.checkCollisionLine = function (x, y, length, direction) {
-        var start = y * this.levelWidth + x;
-        var hlen = this.levelWidth;
+        var start = y * this.LevelWidth + x;
+        var hlen = this.LevelWidth;
         var i;
         var m;
         switch (direction) {
             case 0:
                 //left to right
                 for (i = 0; i < length; i++) {
-                    if (x + i < 0 || this.heightInformation[y * this.levelWidth + (x + i)]) return { pos: x + i, angle: this.angleInformation[y * this.levelWidth + (x + i)] };
+                    if (x + i < 0 || this.heightInformation[y * this.LevelWidth + (x + i)]) return { pos: x + i, angle: this.angleInformation[y * this.LevelWidth + (x + i)] };
                 }
                 break;
             case 1:
                 //top to bottom
                 for (i = 0, m = length * hlen; i < m; i += hlen) {
-                    if (this.heightInformation[start + i]) return { pos: y + (i / hlen), angle: this.angleInformation[y * this.levelWidth + (x + i)] };
+                    if (this.heightInformation[start + i]) return { pos: y + (i / hlen), angle: this.angleInformation[y * this.LevelWidth + (x + i)] };
                 }
                 break;
             case 2:
                 //right to left
                 for (i = 0; i < length; i++) {
-                    if (x - i < 0 || this.heightInformation[this.heightInformation[y * this.levelWidth + (x - i)]]) return { pos: x - i, angle: this.angleInformation[y * this.levelWidth + (x + i)] };
+                    if (x - i < 0 || this.heightInformation[this.heightInformation[y * this.LevelWidth + (x - i)]]) return { pos: x - i, angle: this.angleInformation[y * this.LevelWidth + (x + i)] };
                 }
                 break;
             case 3:
                 //bottom to top 
                 for (i = 0, m = length * hlen; i < m; i += hlen) {
-                    if (this.heightInformation[start - i]) return { pos: y - (i / hlen), angle: this.angleInformation[y * this.levelWidth + (x + i)] };
+                    if (this.heightInformation[start - i]) return { pos: y - (i / hlen), angle: this.angleInformation[y * this.LevelWidth + (x + i)] };
                 }
                 break;
         }
         return -1;
     };
 
-    this.cachedImages = [];
-
     this.spriteState = "normal";
-    this.spriteLocations = [];
-    this.imageLength = 0;
-
-    this.spriteLocations["normal"] = "assets/Sprites/sonic.png";
-    this.imageLength++;
-    var j;
-    for (j = 0; j < 4; j++) {
-        this.spriteLocations["fastrunning" + j] = "assets/Sprites/fastrunning" + j + ".png";
-        this.imageLength++;
-    }
-    for (j = 0; j < 8; j++) {
-        this.spriteLocations["running" + j] = "assets/Sprites/running" + j + ".png";
-        this.imageLength++;
-    }
-    for (j = 0; j < 4; j++) {
-        this.spriteLocations["breaking" + j] = "assets/Sprites/breaking" + j + ".png";
-        this.imageLength++;
-    }
-    for (j = 0; j < 5; j++) {
-        this.spriteLocations["balls" + j] = "assets/Sprites/balls" + j + ".png";
-        this.imageLength++;
-    }
-    for (j = 0; j < 2; j++) {
-        this.spriteLocations["duck" + j] = "assets/Sprites/duck" + j + ".png";
-        this.imageLength++;
-    }
-    for (j = 0; j < 2; j++) {
-        this.spriteLocations["hit" + j] = "assets/Sprites/hit" + j + ".png";
-        this.imageLength++;
-    } for (j = 0; j < 6; j++) {
-        this.spriteLocations["spindash" + j] = "assets/Sprites/spindash" + j + ".png";
-        this.imageLength++;
-    }
-
-    for (j = 0; j < 7; j++) {
-        this.spriteLocations["spinsmoke" + j] = "assets/Sprites/spinsmoke" + j + ".png";
-        this.imageLength++;
-    }
-    for (j = 0; j < 4; j++) {
-        this.spriteLocations["haltsmoke" + j] = "assets/Sprites/haltsmoke" + j + ".png";
-        this.imageLength++;
-    }
-
-    var ci = this.cachedImages;
-    var imageLoaded = this.imageLoaded = [0];
-    for (var sp in this.spriteLocations) {
-        ci[sp] = _H.loadSprite(this.spriteLocations[sp], function (jd) {
-            ci[jd.tag + scale.x + scale.y] = _H.scaleSprite(jd, scale, function (jc) {
-                imageLoaded[0]++;
-
-            });
-        });
-        ci[sp].tag = sp;
-    }
-
     this.isLoading = function () {
         return this.imageLoaded[0] < this.imageLength;
     };
@@ -562,34 +530,35 @@
             }
         }
 
-        if (cur = this.cachedImages[this.spriteState + scale.x + scale.y]) {
+        if (cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
                 canvas.save();
                 var yOffset = 40 - (cur.height / scale.y);
-                canvas.strokeStyle = "#FFF";
-                canvas.strokeText(((180 + this.angle) % 360), ((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 50 - sonicManager.windowLocation.y + yOffset) * scale.y));
+           //     canvas.strokeStyle = "#FFF";
+              //  canvas.strokeText(((180 + this.angle) % 360), ((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 50 - sonicManager.windowLocation.y + yOffset) * scale.y));
                 //                
-                canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
-                var ang = ((180 + this.angle) % 360);
+              //  canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
+            
+                /*      var ang = ((180 + this.angle) % 360);
                 if (ang != 0) {
-                    canvas.translate(-cur.width / 2, -cur.height / 2);
+                canvas.translate(-cur.width / 2, -cur.height / 2);
                 }
 
                 if (!this.facing) {
 
-                      canvas.rotate(-(ang) * (Math.PI / 180));
+                 //     canvas.rotate(-(ang) * (Math.PI / 180));
                     canvas.scale(-1, 1);
-                    canvas.drawImage(cur, -cur.width, 0, cur.width, cur.height);
+                    canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x) - cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
                     if (this.spinDash) {
                         canvas.drawImage(this.cachedImages[("spinsmoke" + Math.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y], -25 * scale.x, 0, cur.width, cur.height);
                     }
                 } else {
 
-                    canvas.rotate(-(ang) * (Math.PI / 180));
-                    canvas.drawImage(cur, 0, 0, cur.width, cur.height);
+                //    canvas.rotate(-(ang) * (Math.PI / 180));
+                    canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
                     if (this.spinDash) {
                         canvas.drawImage(this.cachedImages[("spinsmoke" + Math.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
-                            ((fx - 15 - sonicManager.windowLocation.x - 25) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
+                            -25, 0, cur.width, cur.height);
                     }
 
                 }
@@ -602,16 +571,47 @@
                     if (Math.floor(((sonicManager.drawTickCount + 6) % (4 * 6)) / 6) == 0) {
                         this.haltSmoke.splice(i, 1);
                     }
+                }*/
+
+
+
+
+
+                if (!this.facing) {
+                    canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
+                    canvas.scale(-1, 1);
+                    canvas.drawImage(cur, 0, 0, cur.width, cur.height);
+                    if (this.spinDash) {
+                        canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + Math.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y], -25 * scale.x, 0, cur.width, cur.height);
+                    }
+                } else {
+                    canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
+                    if (this.spinDash) {
+                        canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + Math.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
+                            ((fx - 15 - sonicManager.windowLocation.x - 25) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
+                    }
+
                 }
+                canvas.restore();
+
+                for (var i = 0; i < this.haltSmoke.length; i++) {
+                    var lo = this.haltSmoke[i];
+                    canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("haltsmoke" + Math.floor((sonicManager.drawTickCount % (4 * 6)) / 6)) + scale.x + scale.y],
+                            ((lo.x - sonicManager.windowLocation.x - 25) * scale.x), ((lo.y + 12 - sonicManager.windowLocation.y + yOffset) * scale.y));
+                    if (Math.floor(((sonicManager.drawTickCount + 6) % (4 * 6)) / 6) == 0) {
+                        this.haltSmoke.splice(i, 1);
+                    }
+                }
+
 
 
             }
 
-        } else if (cur = this.cachedImages[this.spriteState]) {
+        } else if (cur = sonicManager.SpriteCache.sonicSprites[this.spriteState]) {
             if (cur.loaded)
-                this.cachedImages[this.spriteState + scale.x + scale.y] = _H.scaleSprite(cur, scale);
+                sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y] = _H.scaleSprite(cur, scale);
         } else {
-            this.cachedImages[this.spriteState] = _H.loadSprite(this.spriteLocations[this.spriteState]);
+            sonicManager.SpriteCache.sonicSprites[this.spriteState] = _H.loadSprite(this.spriteLocations[this.spriteState]);
         }
 
     };
@@ -621,21 +621,40 @@
 
     };
     this.pressJump = function () {
+        if (this.debugging) {
+            this.y -= 15;
+            return;
+        }
         if (!this.justHit)
             this.jumping = true;
     };
 
     this.pressCrouch = function () {
+        if (this.debugging) {
+            this.y += 15;
+            return;
+        }
+
         if (!this.justHit)
             this.crouching = true;
 
     };
     this.pressLeft = function () {
+        if (this.debugging) {
+            this.x -= 15;
+            return;
+        }
+
         if (!this.justHit)
             this.holdingLeft = true;
 
     };
     this.pressRight = function () {
+        if (this.debugging) {
+            this.x += 15;
+            return;
+        }
+
         if (!this.justHit)
             this.holdingRight = true;
 
@@ -655,25 +674,31 @@
         this.holdingRight = false;
 
     };
-
     this.buildHeightInfo = function () {
         var hmap = [];
         var imap = [];
         hmap.length = sonicLevel.ChunkMap.length * 128 * 128;
         imap.length = sonicLevel.ChunkMap.length * 128 * 128;
 
-        var size = Math.sqrt(sonicLevel.ChunkMap.length);
-        this.levelWidth = size * 128;
-        for (var y = 0; y < size; y++) {
-            for (var x = 0; x < size; x++) {
-                var chunk = sonicLevel.TileChunks[sonicLevel.ChunkMap[y * size + x]];
+        this.LevelWidth = sonicLevel.LevelWidth * 128;
+        for (var y = 0; y < sonicLevel.LevelHeight; y++) {
+            for (var x = 0; x < sonicLevel.LevelWidth; x++) {
+                var chunk = sonicLevel.TileChunks[sonicLevel.ChunkMap[y * sonicLevel.LevelWidth + x]];
                 for (var _y = 0; _y < 8; _y++) {
                     for (var _x = 0; _x < 8; _x++) {
                         var tp = sonicLevel.TilePieces[chunk.tilesPieces[_y * 8 + _x]];
+
+                        var mp = sonicLevel.heightMap1[((x * 8) + _x) + ((y * 8) + _y) * sonicLevel.LevelWidth * 8];
+                      
+
                         for (var __y = 0; __y < 16; __y++) {
                             for (var __x = 0; __x < 16; __x++) {
-                                hmap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (this.levelWidth)] = (tp.heightMask.items[__x]) > 16 - __y;
-                                imap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (this.levelWidth)] = tp.heightMask.angle;
+
+
+                                var mj = _H.parseNumber(mp[__x]); 
+
+                                hmap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (this.LevelWidth)] = mj > 15 - __y;
+                                //imap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (this.LevelWidth)] = tp.heightMask.angle;
                             }
                         }
                     }

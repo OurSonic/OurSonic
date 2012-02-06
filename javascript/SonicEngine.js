@@ -86,29 +86,40 @@ function SonicEngine(canvasName) {
 
     function doKeyDown(evt) {
         switch (evt.keyCode) {
-            case 66:  /* Up arrow was pressed */
+            case 66:
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.hit();
                 break;
+            case 67:
+                if (sonicManager.sonicToon)
+                    sonicManager.sonicToon.debug();
+                break;
             case 38:  /* Up arrow was pressed */
             case 87:  /* Up arrow was pressed */
+                sonicManager.windowLocation.y -= 128;
+                
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.pressJump();
 
                 break;
             case 40:  /* Down arrow was pressed */
             case 83:  /* Down arrow was pressed */
+                sonicManager.windowLocation.y += 128;
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.pressCrouch();
 
                 break;
             case 37:  /* Left arrow was pressed */
             case 65:  /* Left arrow was pressed */
+                sonicManager.windowLocation.x -= 128;
+
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.pressLeft();
                 break;
             case 39:  /* Right arrow was pressed */
             case 68:  /* Right arrow was pressed */
+                sonicManager.windowLocation.x += 128;
+                
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.pressRight();
                 break;

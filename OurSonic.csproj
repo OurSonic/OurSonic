@@ -59,7 +59,9 @@
     <Content Include="javascript\SonicManager.js" />
     <Content Include="SonicLevels.asmx" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game2.aspx.cs">
