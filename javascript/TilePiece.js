@@ -10,10 +10,11 @@
                 this.sprites = [];
                 break;
             case 1:
+                this.heightMask.angle = (360 - ((Math.atan2(8 - y, 8 - x) * 180 / Math.PI + 180 - 90) % 360));
                 break;
             case 2:
 
-                sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].changeColor(x % 8, y % 8, new Color(0, 0, 0));
+                sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].changeColor(x % 8, y % 8, "#000000");
                 break;
         }
 
@@ -68,6 +69,7 @@
                     return false;
             }
             this.heightMask.draw(canvas, position, scale, state);
+
             return true;
         }
 
@@ -97,7 +99,6 @@
                 this.heightMask.draw(cv, { x: 0, y: 0 }, scale, -1);
 
             this.sprites[mx] = _H.loadSprite(cg.toDataURL("image/png"));
-
 
         }
 

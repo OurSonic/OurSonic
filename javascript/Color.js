@@ -2,12 +2,17 @@
     this.r = r;
     this.g = g;
     this.b = b;
-    if (r != undefined)
-        this._style = "#" + (r.toString(16).length == 1 ? "0" + r.toString(16) : r.toString(16))
-            + (g.toString(16).length == 1 ? "0" + g.toString(16) : g.toString(16))
-                + (b.toString(16).length == 1 ? "0" + b.toString(16) : b.toString(16));
 
     Color.prototype.style = function () {
+        if (!this._style) {
+            var _r = r.toString(16);
+            var _g = g.toString(16);
+            var _b = b.toString(16);
+            this._style = "#" + (_r.length == 1 ? "0" + _r : _r)
+                + (_g.length == 1 ? "0" + _g : _g)
+                    + (_b.length == 1 ? "0" + _b : _b);
+        }
+        
         return this._style;
     };
     Color.prototype.setData = function (data, index) {

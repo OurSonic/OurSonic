@@ -19,7 +19,7 @@ function SonicManager(mainCanvas) {
     };
 
 
-    var lamesauce = new TileChunk() + new TilePiece() + new Tile() + new HeightMask() + new Color();
+    var lamesauce = new TileChunk() + new TilePiece() + new Tile() + new HeightMask();
 
     for (var x_ = 0; x_ < 10; x_++) {
         for (var y_ = 0; y_ < 10; y_++) {
@@ -204,7 +204,8 @@ function SonicManager(mainCanvas) {
                 for (y = 0; y < 8; y++) {
                     for (x = 0; x < 8; x++) {
                         var f = ((tY * 8 + y) * 128) * 4 + (tX * 8 + x) * 4;
-                        colors.push(new Color(data[f], data[f + 1], data[f + 2]));
+
+                        colors.push(_H.colorFromData(data, f));
                     }
                 }
                 ind = _H.compareTiles(this.SonicLevel.Tiles, tiles, colors);
@@ -233,7 +234,7 @@ function SonicManager(mainCanvas) {
                 ind = _H.compareTilePieces(this.SonicLevel.TilePieces, tilePieces, tp);
                 if (ind == -1) {
                     tilePieceIndexes.push(startPieces + tilePieces.length);
-                    tilePieces.push(new TilePiece(new HeightMask(RotationMode.Ground, 45), tp));
+                    tilePieces.push(new TilePiece(new HeightMask(RotationMode.Ground, 180), tp));
                 } else {
                     tilePieceIndexes.push(ind);
                 }

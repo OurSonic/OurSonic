@@ -71,12 +71,25 @@
                     canvas.fillRect(_x, _y, scale.x, scale.y);
                 } else {
                     if (state != -1) {
-                        
+                        canvas.lineWidth = 1;   
                         canvas.strokeStyle = "#0C3146";
                         canvas.strokeRect(_x, _y, scale.x, scale.y);
                     }
                 }
+
+
             }
         }
+
+
+        if (state == 1) {
+
+            canvas.strokeStyle = "#DC4146";
+            canvas.lineWidth = 4;
+            canvas.moveTo(pos.x + 8 * scale.x, pos.y + 8 * scale.y);
+            canvas.lineTo(pos.x + 8 * scale.x + Math.sin((this.angle) * (Math.PI / 180)) * 6 * scale.x, pos.y + 8 * scale.y + Math.cos((this.angle) * (Math.PI / 180)) * 6 * scale.y);
+            canvas.stroke();
+        }
+
     };
 }

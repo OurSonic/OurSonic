@@ -50,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game2.aspx" />
+    <Content Include="javascript\archive-min.js" />
+    <Content Include="javascript\compression.js" />
+    <Content Include="javascript\hpack.js" />
     <Content Include="javascript\Ring.js" />
     <Content Include="javascript\curCompress.js" />
     <Content Include="javascript\UIManager.js" />
@@ -184,6 +187,12 @@
     <Folder Include="bin\" />
     <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SonicImageParser\SonicImageParser.csproj">
+      <Project>{1F50AA1B-FA7F-48F4-813E-6B52BF5AE3E4}</Project>
+      <Name>SonicImageParser</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <ProjectExtensions>
@@ -192,7 +201,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>60276</DevelopmentServerPort>
+          <DevelopmentServerPort>63697</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

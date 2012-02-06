@@ -3,6 +3,8 @@
     this.y = 0;
     this.obtainedRing = [];
     this.rings = 0;
+    this.angleInformation = [];
+    this.heightInformation = [];
 
     this.jumping = false;
     this.crouching = false;
@@ -28,7 +30,7 @@
     this.sonicLevel = sonicLevel;
     this.state = SonicState.Ground;
     this.haltSmoke = [];
-    
+
     this.facing = true;
     this.ticking = false;
     this.breaking = 0;
@@ -37,6 +39,9 @@
     this.spinDash = false;
     this.myRec = {};
     this.spinDashSpeed = 0;
+
+    this.angle = 180;
+
     this.tick = function () {
         this.ticking = true;
 
@@ -198,8 +203,8 @@
 
                 if (!this.rolling) {
                     this.xsp -= this.acc;
-                    if (this.xsp < -max) this.xsp = -max;
                 }
+                if (this.xsp < -max) this.xsp = -max;
             }
         } else if (this.holdingRight) {
             if (this.xsp < 0) {
@@ -211,8 +216,8 @@
             } else if (this.xsp < max) {
                 if (!this.rolling) {
                     this.xsp += this.acc;
-                    if (this.xsp > max) this.xsp = max;
                 }
+                if (this.xsp > max) this.xsp = max;
             }
         }
 
@@ -316,11 +321,11 @@
         var sensorA, sensorB;
 
         if ((sensorA = this.checkCollisionLine(fx - 9, fy + 4, 20, 0)) != -1) {
-            if (sensorA < fx) {
-                this.x = fx = sensorA + 11;
+            if (sensorA.pos < fx) {
+                this.x = fx = sensorA.pos + 11;
                 this.xsp = 0;
             } else {
-                this.x = fx = sensorA - 11;
+                this.x = fx = sensorA.pos - 11;
                 this.xsp = 0;
             }
         }
@@ -335,14 +340,28 @@
 
         switch (this.state) {
             case SonicState.Ground:
-                if ((sensorA = this.checkCollisionLine(fx - 9, fy, 20, 1)) == -1 && (sensorB = this.checkCollisionLine(fx + 9, fy, 20, 1)) == -1) {
+                if ((sensorA = this.checkCollisionLine(fx - 9, fy, 36, 1)) == -1 && (sensorB = this.checkCollisionLine(fx + 9, fy, 36, 1)) == -1) {
                     this.state = SonicState.Air;
                 } else {
-                    if (sensorA > -1) {
-                        this.y = fy = sensorA - 19;
+
+                if(!!sensorA && !!sensorB) {
+                    this.angle = sensorA.angle;
+                    if (sensorA.pos > sensorB.pos) {
+                        this.angle = sensorA.angle;
+                        this.y = fy = sensorA.pos - 19;
+                    } else {
+                        this.angle = sensorB.angle;
+                        this.y = fy = sensorB.pos - 19;
+                    }
+                }
+                else
+                    if (sensorA.pos > -1) {
+                        this.angle = sensorA.angle;
+                        this.y = fy = sensorA.pos - 19;
                     } else
-                        if (sensorB > -1) {
-                            this.y = fy = sensorB - 19;
+                        if (sensorB.pos > -1) {
+                            this.angle = sensorB.angle;
+                            this.y = fy = sensorB.pos - 19;
                         }
                 }
 
@@ -353,17 +372,21 @@
                 if ((sensorA = this.checkCollisionLine(fx - 9, fy, 20, 1)) == -1 && (sensorB = this.checkCollisionLine(fx + 9, fy, 20, 1)) == -1) {
                     this.state = SonicState.Air;
                 } else {
-                    if (sensorA > -1) {
-                        if (this.y + (20) >= sensorA) {
-                            this.y = fy = sensorA - 19;
+
+
+                    if (sensorA.pos > -1) {
+                        if (this.y + (20) >= sensorA.pos) {
+                            this.angle = sensorA.angle;
+                            this.y = fy = sensorA.pos - 19;
                             this.rolling = this.currentlyBall = false;
                             this.state = SonicState.Ground;
                             this.ysp = 0;
                         }
                     } else
-                        if (sensorB > -1) {
-                            if (this.y + (20) >= sensorB) {
-                                this.y = fy = sensorB - 19;
+                        if (sensorB.pos > -1) {
+                            if (this.y + (20) >= sensorB.pos) {
+                                this.angle = sensorB.angle;
+                                this.y = fy = sensorB.pos - 19;
                                 this.rolling = this.currentlyBall = false;
                                 this.state = SonicState.Ground;
                                 this.ysp = 0;
@@ -435,25 +458,25 @@
             case 0:
                 //left to right
                 for (i = 0; i < length; i++) {
-                    if (x + i < 0 || this.heightInformation[y * this.levelWidth + (x + i)]) return x + i;
+                    if (x + i < 0 || this.heightInformation[y * this.levelWidth + (x + i)]) return { pos: x + i, angle: this.angleInformation[y * this.levelWidth + (x + i)] };
                 }
                 break;
             case 1:
                 //top to bottom
                 for (i = 0, m = length * hlen; i < m; i += hlen) {
-                    if (this.heightInformation[start + i]) return y + (i / hlen);
+                    if (this.heightInformation[start + i]) return { pos: y + (i / hlen), angle: this.angleInformation[y * this.levelWidth + (x + i)] };
                 }
                 break;
             case 2:
                 //right to left
                 for (i = 0; i < length; i++) {
-                    if (x - i < 0 || this.heightInformation[this.heightInformation[y * this.levelWidth + (x - i)]]) return x - i;
+                    if (x - i < 0 || this.heightInformation[this.heightInformation[y * this.levelWidth + (x - i)]]) return { pos: x - i, angle: this.angleInformation[y * this.levelWidth + (x + i)] };
                 }
                 break;
             case 3:
                 //bottom to top 
                 for (i = 0, m = length * hlen; i < m; i += hlen) {
-                    if (this.heightInformation[start - i]) return y - (i / hlen);
+                    if (this.heightInformation[start - i]) return { pos: y - (i / hlen), angle: this.angleInformation[y * this.levelWidth + (x + i)] };
                 }
                 break;
         }
@@ -500,7 +523,7 @@
     for (j = 0; j < 7; j++) {
         this.spriteLocations["spinsmoke" + j] = "assets/Sprites/spinsmoke" + j + ".png";
         this.imageLength++;
-    } 
+    }
     for (j = 0; j < 4; j++) {
         this.spriteLocations["haltsmoke" + j] = "assets/Sprites/haltsmoke" + j + ".png";
         this.imageLength++;
@@ -543,16 +566,27 @@
             if (cur.loaded) {
                 canvas.save();
                 var yOffset = 40 - (cur.height / scale.y);
+                canvas.strokeStyle = "#FFF";
+                canvas.strokeText(((180 + this.angle) % 360), ((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 50 - sonicManager.windowLocation.y + yOffset) * scale.y));
+                //                
+                canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
+                var ang = ((180 + this.angle) % 360);
+                if (ang != 0) {
+                    canvas.translate(-cur.width / 2, -cur.height / 2);
+                }
 
                 if (!this.facing) {
-                    canvas.translate(((fx - 15 - sonicManager.windowLocation.x) * scale.x) + cur.width, ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y));
+
+                      canvas.rotate(-(ang) * (Math.PI / 180));
                     canvas.scale(-1, 1);
-                    canvas.drawImage(cur, 0, 0, cur.width, cur.height);
+                    canvas.drawImage(cur, -cur.width, 0, cur.width, cur.height);
                     if (this.spinDash) {
                         canvas.drawImage(this.cachedImages[("spinsmoke" + Math.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y], -25 * scale.x, 0, cur.width, cur.height);
                     }
                 } else {
-                    canvas.drawImage(cur, ((fx - 15 - sonicManager.windowLocation.x) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
+
+                    canvas.rotate(-(ang) * (Math.PI / 180));
+                    canvas.drawImage(cur, 0, 0, cur.width, cur.height);
                     if (this.spinDash) {
                         canvas.drawImage(this.cachedImages[("spinsmoke" + Math.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
                             ((fx - 15 - sonicManager.windowLocation.x - 25) * scale.x), ((fy - 20 - sonicManager.windowLocation.y + yOffset) * scale.y), cur.width, cur.height);
@@ -565,8 +599,8 @@
                     var lo = this.haltSmoke[i];
                     canvas.drawImage(this.cachedImages[("haltsmoke" + Math.floor((sonicManager.drawTickCount % (4 * 6)) / 6)) + scale.x + scale.y],
                             ((lo.x - sonicManager.windowLocation.x - 25) * scale.x), ((lo.y + 12 - sonicManager.windowLocation.y + yOffset) * scale.y));
-                    if (Math.floor(((sonicManager.drawTickCount+6) % (4 * 6)) / 6) == 0) {
-                        this.haltSmoke.splice( i,1);
+                    if (Math.floor(((sonicManager.drawTickCount + 6) % (4 * 6)) / 6) == 0) {
+                        this.haltSmoke.splice(i, 1);
                     }
                 }
 
@@ -624,7 +658,10 @@
 
     this.buildHeightInfo = function () {
         var hmap = [];
+        var imap = [];
         hmap.length = sonicLevel.ChunkMap.length * 128 * 128;
+        imap.length = sonicLevel.ChunkMap.length * 128 * 128;
+
         var size = Math.sqrt(sonicLevel.ChunkMap.length);
         this.levelWidth = size * 128;
         for (var y = 0; y < size; y++) {
@@ -635,9 +672,8 @@
                         var tp = sonicLevel.TilePieces[chunk.tilesPieces[_y * 8 + _x]];
                         for (var __y = 0; __y < 16; __y++) {
                             for (var __x = 0; __x < 16; __x++) {
-                                //alert((x * 128 + _x * 8 + __x) + " " + (y * 128 + _y * 8 + __y) + " "  + "    " + ((x * 128 + _x * 8 + __x) + (y * 128 + _y * 8 + __y) * (size * 128)));
-                                //                                alert(tp.heightMask.items[__x]+" "+__y);
                                 hmap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (this.levelWidth)] = (tp.heightMask.items[__x]) > 16 - __y;
+                                imap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (this.levelWidth)] = tp.heightMask.angle;
                             }
                         }
                     }
@@ -645,9 +681,10 @@
 
             }
         }
-        return hmap;
+        this.heightInformation = hmap;
+        this.angleInformation = imap;
     };
-    this.heightInformation = this.buildHeightInfo(sonicLevel);
+    this.buildHeightInfo(sonicLevel);
 }
 
 

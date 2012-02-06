@@ -37,7 +37,7 @@
 
         } else {
             for (var i = 0; i < this.colors.length; i++) {
-                canvas.fillStyle = this.colors[i].style();
+                canvas.fillStyle = this.colors[i];
                 canvas.fillRect(pos.x + (i % 8) * scale.x, pos.y + Math.floor(i / 8) * scale.y, scale.x, scale.x);
             } if (showOutline) {
                 canvas.strokeStyle = "#DD0033";
@@ -58,8 +58,9 @@
 
     Tile.prototype.equals = function (cols) {
         for (var i = 0; i < this.colors.length; i++) {
-
-            if (cols[i]._style != this.colors[i]._style)
+            var j = cols[i];
+            var c = this.colors[i];
+            if (j!=c)
                 return false;
         }
         return true;

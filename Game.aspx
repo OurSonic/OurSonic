@@ -9,7 +9,10 @@
     </script>
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script>
+    <script src="javascript/compression.js?1" type="text/javascript"> 
+    </script>
     <script src="javascript/Color.js?1" type="text/javascript"> 
+    </script> <script src="javascript/archive-min.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Help.js?1" type="text/javascript"> 
     </script>

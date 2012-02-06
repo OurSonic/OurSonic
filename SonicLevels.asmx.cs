@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Services;
 using System.Xml.Linq;
+using SonicImageParser;
 
 namespace OurSonic
 {
@@ -66,8 +67,25 @@ namespace OurSonic
         [WebMethod]
         public string openLevel(string level)
         {
-            return ((XElement)doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == level).FirstAttribute.NextAttribute.Value;
+            var sd = new ChunkConsumer().getString();
+            return sd;
+            File.WriteAllText("B:\\mmc.txt", "AAAAA"); 
+            var fm = File.OpenRead("b:\\mmd.txt");
+            byte[] fmc = new byte[fm.Length];
+            fm.Read(fmc, 0, (int)fm.Length);
+            fm.Close();
 
+          //  return Convert.ToBase64String(fmc);
+
+
+            //var sd = new ChunkConsumer().getString();
+            
+            //return Convert.ToBase64String(sd);
+            //return Convert.ToBase64String(sd);
+
+
+            //return ((XElement)doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == level).FirstAttribute.NextAttribute.Value;
+            
         }
 
         [WebMethod]

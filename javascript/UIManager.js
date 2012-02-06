@@ -196,9 +196,9 @@
     levelInformation.addControl(new Button(190, 70, 100, 22, "Save Level", buttonFont, "rgb(50,150,50)",
     function () {
         if (curLevelName) {
-            OurSonic.SonicLevels.SaveLevelInformation(curLevelName, _H.stringify(sonicManager.SonicLevel), function (c) { }, function (c) { alert("Failure: " + _H.stringify(c)); });
+            OurSonic.SonicLevels.SaveLevelInformation(curLevelName, Base64.encode(_H.stringify(sonicManager.SonicLevel)), function (c) { }, function (c) { alert("Failure: " + _H.stringify(c)); });
         } else {
-            OurSonic.SonicLevels.saveLevel((_H.stringify(sonicManager.SonicLevel)), function (j) {
+            OurSonic.SonicLevels.saveLevel(Base64.encode(_H.stringify(sonicManager.SonicLevel)), function (j) {
                 addLevelToList(curLevelName);
             });
 
@@ -208,22 +208,23 @@
 
     levelInformation.addControl(new Button(190, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
     function () {
-        
+
         levelManagerArea.visible = true;
         loadingText.visible = true;
-        var index = 1;
+        var index = 0;
         var tim = function () {
-            var max = 86;
+            var max = 188;
             if (index == max) {
                 setTimeout(function () {
-                    loadGame(_H.stringify(sonicManager.SonicLevel),mainCanvas);
+                    alert(_H.stringify(sonicManager.SonicLevel));
+                    loadGame(_H.stringify(sonicManager.SonicLevel), mainCanvas);
                     loadingText.visible = false;
                 }, 500);
                 return;
             }
             setTimeout(tim, 100);
 
-            _H.loadSprite("assets/TileChunks/HiPlane" + index++ + ".png", function (image) {
+            _H.loadSprite("assets/TileChunks/Tile" + index++ + ".png", function (image) {
                 loadingText.text = "Loading " + index + "/" + max;
                 sonicManager.importChunkFromImage(image);
                 if (index == max) {
@@ -253,9 +254,11 @@
     function addLevelToList(name) {
         var btn;
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
-            curLevelName = "Downloading";
+            curLevelName = "Downloading"; 
+            OurSonic.SonicLevels.openLevel(name, function (lvl) {
 
-            OurSonic.SonicLevels.openLevel(name, function (lvl) { curLevelName = name; loadGame(lvl, mainCanvas); });
+                curLevelName = name; loadGame(lvl, mainCanvas);
+            });
         }));
     }
      
@@ -286,7 +289,9 @@
 
     levelManagerArea.addControl(new Button(200, 150, 160, 22, "Place Chunks", buttonFont, "rgb(50,150,50)",
         function () {
-            switch (++sonicManager.clickState) {
+
+            sonicManager.clickState = (sonicManager.clickState + 1) % 2;
+            switch (sonicManager.clickState) {
                 case ClickState.PlaceChunk:
                     this.text = "Place Chunks";
                     break;
@@ -387,7 +392,18 @@
 
     function loadGame(lvl, mainCanvas) {
         levelManagerArea.visible = true;
-        sonicManager.SonicLevel = jQuery.parseJSON((lvl));
+        alert(":start");
+
+        var name = 'assets/tilechunks/chunks43.zip';
+        var loader = new ZipLoader(name);
+ 
+        var md = loader.load(name + '://chunks43.js');
+
+        sonicManager.SonicLevel = jQuery.parseJSON(md);
+
+        alert(":done");
+
+        alert(_H.stringify(sonicManager.SonicLevel));
         var fc;
         var j;
         if (!sonicManager.SonicLevel.TileChunks)
