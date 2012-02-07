@@ -427,20 +427,52 @@
 
         sonicManager.SonicLevel.curHeightMap=true;
 
-        for (j = 0; j < sonicManager.SonicLevel.heightMap1.length; j++) {
-            fc = sonicManager.SonicLevel.heightMap1[j];
-            sonicManager.SonicLevel.heightMap1[j] = sonicManager.SonicLevel.heightIndexes[fc];
+        var fd;
+        var je;
+
+        for (var i = 0; i < sonicManager.SonicLevel.heightIndexes.length; i++) {
+            var m = [];
+            if (sonicManager.SonicLevel.heightIndexes[i] == "0000000000000000") {
+                sonicManager.SonicLevel.heightIndexes[i] = 0;
+                continue;
+            }
+            if (sonicManager.SonicLevel.heightIndexes[i] == "gggggggggggggggg") {
+                sonicManager.SonicLevel.heightIndexes[i] = 1;
+                continue;
+            }
+            for (var k = 1; k < 17; k++) {
+                m[k-1] = _H.parseNumber(sonicManager.SonicLevel.heightIndexes[i][k]);
+            }
+
+            var rot = parseInt(sonicManager.SonicLevel.heightIndexes[i][0]);
+            switch (rot) {
+                case 0:
+                    rot = RotationMode.Floor; break;
+                case 1:
+                    rot = RotationMode.RightWall; break;
+                case 2:
+                    rot = RotationMode.Ceiling; break;
+                case 3:
+                    rot = RotationMode.LeftWall; break;
+            default:
+            }
+
+            sonicManager.SonicLevel.heightIndexes[i] = new HeightMask(rot,0,m);
         }
-        for (j = 0; j < sonicManager.SonicLevel.heightMap2.length; j++) {
-            fc = sonicManager.SonicLevel.heightMap2[j];
-            sonicManager.SonicLevel.heightMap2[j] = sonicManager.SonicLevel.heightIndexes[fc];
-        }
-        
 
         for (j = 0; j < sonicManager.SonicLevel.TileChunks.length; j++) {
             fc = sonicManager.SonicLevel.TileChunks[j];
             fc.__proto__ = TileChunk.prototype;
             fc.index = j;
+            
+            for (je = 0; je < fc.heightMap1.length; je++) {
+                fd = fc.heightMap1[je];
+                fc.heightMap1[je] = sonicManager.SonicLevel.heightIndexes[fd];
+            }
+            for (je = 0; je < fc.heightMap2.length; je++) {
+                fd = fc.heightMap2[je];
+                fc.heightMap2[je] = sonicManager.SonicLevel.heightIndexes[fd];
+            }
 
         }
         for (j = 0; j < sonicManager.SonicLevel.TilePieces.length; j++) {

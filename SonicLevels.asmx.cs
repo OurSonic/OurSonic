@@ -68,6 +68,7 @@ namespace OurSonic
         [WebMethod]
         public string getLevel(string level)
         {
+            return File.ReadAllText("b:\\casino1chunks.js");
             return File.ReadAllText(directory + "mush1Chunks.js");
         }
 

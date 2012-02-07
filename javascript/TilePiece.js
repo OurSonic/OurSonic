@@ -53,10 +53,10 @@ function TilePiece(heightMask, tiles) {
 
 
 RotationMode = {
-    Ground: 134,
-    Right: 224,
+    Floor: 134,
+    RightWall: 224,
     Ceiling: 314,
-    Left: 44
+    LeftWall: 44
 }; /*
 function defaultHeightMask() {
     var hm = new HeightMask();
@@ -80,7 +80,7 @@ function defaultTilePieces(heightMask) {
     var ind = 0;
     for (var x = 0; x < 8; x++) {
         for (var y = 0; y < 8; y++) {
-            tilePieces.push(new TilePiece(heightMask, [ind, ind + 1, ind + 2, ind + 3],RotationMode.Ground));
+            tilePieces.push(new TilePiece(heightMask, [ind, ind + 1, ind + 2, ind + 3],RotationMode.Floor));
             ind += 4;
         }
     }
