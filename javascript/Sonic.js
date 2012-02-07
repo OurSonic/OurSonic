@@ -1,6 +1,6 @@
 ﻿function Sonic(sonicLevel, scale) {
-    this.x = 280;
-    this.y = 130;
+    this.x = 80;
+    this.y = 1960;
     this.obtainedRing = [];
     this.rings = 0;
     this.angleInformation1 = [];
@@ -790,9 +790,8 @@
     this.buildHeightInfo = function () {
 
         this.LevelWidth = sonicLevel.LevelWidth * 128;
-        for (var y = 0; y < sonicLevel.LevelHeight; y++) {
-            for (var x = 0; x < sonicLevel.LevelWidth; x++) {
-                var chunk = sonicLevel.TileChunks[sonicLevel.ChunkMap[y * sonicLevel.LevelWidth + x]];
+        for (var mc = 0; mc < sonicLevel.TileChunks.length; mc++) {
+                var chunk = sonicLevel.TileChunks[mc];
                 var hm1 = chunk.heightMap1;
                 var hm2 = chunk.heightMap2;
 
@@ -836,7 +835,7 @@
                             }
                         }
                     }
-                }
+                
 
             }
         }

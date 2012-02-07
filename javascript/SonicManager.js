@@ -92,7 +92,10 @@ function SonicManager(mainCanvas) {
 
 
         if (this.sonicToon) {
+            canvas.translate(canvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, canvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2);
 
+            canvas.fillStyle = "#000000";
+            canvas.fillRect(0, 0, this.windowLocation.width * scale.x, this.windowLocation.height * scale.x);
 
             canvas.beginPath();
             canvas.rect(0, 0, this.windowLocation.width * scale.x, this.windowLocation.height * scale.x);
@@ -183,7 +186,7 @@ function SonicManager(mainCanvas) {
 
 
                     var fd;
-                    if ((fd = sonicManager.SpriteCache.heightMapChunks[(this.SonicLevel.curHeightMap ? 1 : 2) +" "+chunk.index+ " " + scale.y + " " + scale.x])) {
+                    if ((fd = sonicManager.SpriteCache.heightMapChunks[(this.SonicLevel.curHeightMap ? 1 : 2) + " " + chunk.index + " " + scale.y + " " + scale.x])) {
                         if (fd.loaded) {
                             canvas.drawImage(fd, posj.x, posj.y);
                         }
