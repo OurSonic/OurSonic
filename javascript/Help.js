@@ -169,14 +169,8 @@
                     data[c + 1] = g.g;
                     data[c + 2] = g.b;
                     data[c + 3] = 255;
-                    //colors[i] = _H.colorFromData(data, c);
-                    /*
-                    if (transparent) {
-                    //alert(_H.stringify(colors[i]) + " " + _H.stringify(transparent) + " " + colors[i].equals(transparent));
-                    if (colors[i].equals(transparent)) {
-                    data[c + 3] = 0;
-                    }
-                    }*/
+                 
+
                 }
             }
         }

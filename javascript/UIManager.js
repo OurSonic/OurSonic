@@ -105,7 +105,7 @@
 
 
 
-    var debuggerArea = this.debuggerArea = new UiArea(650, 40, 200, 170, this, true);
+    var debuggerArea = this.debuggerArea = new UiArea(650, 40, 200, 240, this, true);
     debuggerArea.visible = false;
     this.UIAreas.push(debuggerArea);
     debuggerArea.addControl(new TextArea(30, 25, "Debugger", textFont, "blue"));
@@ -135,6 +135,21 @@
             sonicManager.showHeightMap = false;
             this.text = "Show Height Map";
         }
+    }
+    ));
+    debuggerArea.addControl(new Button(40, 160, 160, 22, "Switch Height Map", buttonFont, "rgb(50,150,50)", function () {
+        sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
+    }
+    ));
+    debuggerArea.addControl(new Button(40, 190, 160, 22, "Debug Sonic", buttonFont, "rgb(50,150,50)", function () {
+        if (this.text == "Debug Sonic") {
+            sonicManager.sonicToon.debugging = true;
+            this.text = "Normal Sonic";
+        } else {
+            sonicManager.sonicToon.debugging = false;
+            this.text = "Debug Sonic";
+        }
+
     }
     ));
 
@@ -254,7 +269,7 @@
         var btn;
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
             curLevelName = "Downloading"; 
-            OurSonic.SonicLevels.openLevel(name, function (lvl) {
+            OurSonic.SonicLevels.getLevel(name, function (lvl) {
                 curLevelName = "loading"; 
                 curLevelName = name; loadGame(lvl, mainCanvas);
             });
@@ -301,6 +316,10 @@
 
         }));
 
+        levelManagerArea.addControl(new Button(200, 180, 160, 22, "Switch Height Map", buttonFont, "rgb(50,150,50)", function () {
+            sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
+        }
+    ));
 
     levelManagerArea.addControl(new Button(35, 150, 160, 22, "Modify Chunks", buttonFont, "rgb(50,150,50)",
         function () {
@@ -390,10 +409,9 @@
     modifyTileArea.addControl(new TextArea(30, 25, "Modify Tile", textFont, "blue"));
 
     function loadGame(lvl, mainCanvas) {
-        levelManagerArea.visible = true; 
-         
-        sonicManager.SonicLevel = jQuery.parseJSON(lvl);
+        levelManagerArea.visible = true;
         sonicManager.loading = true;
+        sonicManager.SonicLevel = jQuery.parseJSON(lvl);
          
         var fc;
         var j;
@@ -406,6 +424,18 @@
         if (!sonicManager.SonicLevel.Rings)
             sonicManager.SonicLevel.Rings = {};
 
+
+        sonicManager.SonicLevel.curHeightMap=true;
+
+        for (j = 0; j < sonicManager.SonicLevel.heightMap1.length; j++) {
+            fc = sonicManager.SonicLevel.heightMap1[j];
+            sonicManager.SonicLevel.heightMap1[j] = sonicManager.SonicLevel.heightIndexes[fc];
+        }
+        for (j = 0; j < sonicManager.SonicLevel.heightMap2.length; j++) {
+            fc = sonicManager.SonicLevel.heightMap2[j];
+            sonicManager.SonicLevel.heightMap2[j] = sonicManager.SonicLevel.heightIndexes[fc];
+        }
+        
 
         for (j = 0; j < sonicManager.SonicLevel.TileChunks.length; j++) {
             fc = sonicManager.SonicLevel.TileChunks[j];

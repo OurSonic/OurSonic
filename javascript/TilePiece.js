@@ -14,19 +14,19 @@ function TilePiece(heightMask, tiles) {
     };
 
 
-    TilePiece.prototype.draw = function (canvas, position, scale) {
+    TilePiece.prototype.draw = function (canvas, position, scale,layer) {
 
 
 
         var fd;
-        if ((fd = sonicManager.SpriteCache.tilePeices[this.index * 9000 + scale.y * 10 + scale.x]) != null) {
+        if ((fd = sonicManager.SpriteCache.tilePeices[layer + " " + this.index + " " + scale.y + " " + scale.x])) {
             if (fd.loaded) {
                 canvas.drawImage(fd, position.x, position.y);
             }
         } else {
             for (i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
-                sonicManager.SonicLevel.TileData[mj.TileIndex].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + Math.floor(i / 2) * 8 * scale.y }, scale, mj.State, false);
+                sonicManager.SonicLevel.TileData[mj.TileIndex].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + Math.floor(i / 2) * 8 * scale.y }, scale, mj.State, false, layer);
             } 
         }
         

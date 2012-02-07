@@ -43,7 +43,25 @@
     this.angle = 180;
 
     this.tick = function () {
-        if (this.debugging) return;
+        if (this.debugging) {
+            var debugSpeed = 10;
+
+            if (this.holdingRight) {
+                this.x += debugSpeed;
+            }  if (this.holdingLeft) {
+                this.x -= debugSpeed;
+            }  if (this.crouching) {
+                this.y += debugSpeed;
+            } 
+            if (this.jumping) {
+                this.y -= debugSpeed;
+            }
+
+
+
+
+            return;
+        }
 
         this.ticking = true;
 
@@ -621,39 +639,27 @@
 
     };
     this.pressJump = function () {
-        if (this.debugging) {
-            this.y -= 15;
-            return;
-        }
+    
         if (!this.justHit)
             this.jumping = true;
     };
 
     this.pressCrouch = function () {
-        if (this.debugging) {
-            this.y += 15;
-            return;
-        }
+       
 
         if (!this.justHit)
             this.crouching = true;
 
     };
     this.pressLeft = function () {
-        if (this.debugging) {
-            this.x -= 15;
-            return;
-        }
+       
 
         if (!this.justHit)
             this.holdingLeft = true;
 
     };
     this.pressRight = function () {
-        if (this.debugging) {
-            this.x += 15;
-            return;
-        }
+    
 
         if (!this.justHit)
             this.holdingRight = true;
@@ -688,7 +694,11 @@
                     for (var _x = 0; _x < 8; _x++) {
                         var tp = sonicLevel.TilePieces[chunk.tilesPieces[_y * 8 + _x]];
 
-                        var mp = sonicLevel.heightMap1[((x * 8) + _x) + ((y * 8) + _y) * sonicLevel.LevelWidth * 8];
+                        var hm = sonicManager.SonicLevel.curHeightMap ? sonicManager.SonicLevel.heightMap1 : sonicManager.SonicLevel.heightMap2;
+
+
+
+                        var mp = hm[((x * 8) + _x) + ((y * 8) + _y) * sonicLevel.LevelWidth * 8];
                       
 
                         for (var __y = 0; __y < 16; __y++) {

@@ -9,11 +9,14 @@
 
 
 
-    Tile.prototype.draw = function (canvas, pos, scale,state, showOutline) {
+    Tile.prototype.draw = function (canvas, pos, scale, state, showOutline,layer) {
 
 
         for (var i = 0; i < this.colors.length; i++) {
-            canvas.fillStyle ="#"+this.colors[i];
+            var m = sonicManager.SonicLevel.pallet[this.colors[i]];
+
+            if (m == "000000") continue; 
+            canvas.fillStyle = "#" + m;
             switch (state) {
                 case 0:
                     canvas.fillRect(pos.x + ((i % 8)) * scale.x, pos.y + (Math.floor(i / 8)) * scale.y, scale.x, scale.x);
@@ -35,7 +38,7 @@
             canvas.lineWidth = 3;
             canvas.strokeRect(pos.x, pos.y, 8 * scale.x, 8 * scale.y);
         }
-         
+
 
     };
 
