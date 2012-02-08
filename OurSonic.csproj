@@ -50,9 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game2.aspx" />
-    <Content Include="javascript\archive-min.js" />
-    <Content Include="javascript\compression.js" />
-    <Content Include="javascript\hpack.js" />
     <Content Include="javascript\Ring.js" />
     <Content Include="javascript\curCompress.js" />
     <Content Include="javascript\UIManager.js" />
@@ -178,12 +175,6 @@
     <Content Include="javascript\TileChunk.js" />
     <Content Include="javascript\TilePiece.js" />
     <Content Include="javascript\UIArea.js" />
-    <Content Include="spoke\codemirror.css" />
-    <Content Include="spoke\codemirror.js" />
-    <Content Include="spoke\default.css" />
-    <Content Include="spoke\index.html" />
-    <Content Include="spoke\Parser.js" />
-    <Content Include="spoke\spoke.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\" />

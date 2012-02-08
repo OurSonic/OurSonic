@@ -21,7 +21,7 @@ namespace OurSonic
         private XDocument doc;
         private string c;
 
-     // private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
+//      private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
        private string directory = @"B:\code\oursonic\";
         public SonicLevels()
         {
@@ -68,7 +68,7 @@ namespace OurSonic
         [WebMethod]
         public string getLevel(string level)
         {
-            return File.ReadAllText(directory + "musho.js");
+            return File.ReadAllText(directory + "casino1chunks.js");
         }
 
         [WebMethod]

@@ -119,7 +119,7 @@ function UiArea(x, y, w, h,manager,closable) {
         }
 
         if (this.cachedDrawing.loaded) {
-            canv.drawImage(this.cachedDrawing, Math.floor(this.x), Math.floor(this.y));
+            canv.drawImage(this.cachedDrawing, _H.floor(this.x), _H.floor(this.y));
 
             for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
@@ -279,7 +279,7 @@ function TilePieceArea(x, y, scale, tilePiece,state) {
         if (!this.visible) return;
 
         if (this.tilePiece && this.clicking && !this.clickHandled) {
-            this.tilePiece.click(Math.floor(e.x / scale.x), Math.floor(e.y / scale.y), this.state);
+            this.tilePiece.click(_H.floor(e.x / scale.x), _H.floor(e.y / scale.y), this.state);
         }
         this.clickHandled = false;
         this.clicking = false;
@@ -289,10 +289,10 @@ function TilePieceArea(x, y, scale, tilePiece,state) {
         if (!this.tilePiece) return;
         if (this.clicking) {
             this.clickHandled = true;
-            this.tilePiece.click(Math.floor(e.x / scale.x), Math.floor(e.y / scale.y), this.state);
+            this.tilePiece.click(_H.floor(e.x / scale.x), _H.floor(e.y / scale.y), this.state);
         }
         else
-            this.tilePiece.mouseOver(Math.floor(e.x / scale.x), Math.floor(e.y / scale.y));
+            this.tilePiece.mouseOver(_H.floor(e.x / scale.x), _H.floor(e.y / scale.y));
     };
     this.draw = function (canv) {
         if (!this.visible) return;
@@ -329,7 +329,7 @@ function TileChunkArea(x, y, scale, tileChunk,state) {
 
         if (this.clicking) {
             if (this.setToTile != null) { 
-                this.tileChunk.tilesPieces[((Math.floor(e.x / this.scale.x / 16))) + (Math.floor(e.y / this.scale.y / 16)) * 8] = sonicManager.SonicLevel.TilePieces.indexOf(this.setToTile);
+                this.tileChunk.tilesPieces[((_H.floor(e.x / this.scale.x / 16))) + (_H.floor(e.y / this.scale.y / 16)) * 8] = sonicManager.SonicLevel.TilePieces.indexOf(this.setToTile);
                 this.tileChunk.sprites = [];
             }
         }

@@ -4,13 +4,13 @@ function TilePiece(heightMask, tiles) {
     TilePiece.prototype.click = function (x, y, state) {
 
 
-        //sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].changeColor(x % 8, y % 8, new Color(0, 0, 0));
+        //sonicManager.SonicLevel.Tiles[this.tiles[_H.floor(x / 8) + _H.floor(y / 8) * 2]].changeColor(x % 8, y % 8, new Color(0, 0, 0));
 
 
 
     };
     TilePiece.prototype.mouseOver = function (x, y) {
-        //sonicManager.SonicLevel.Tiles[this.tiles[Math.floor(x / 8) + Math.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
+        //sonicManager.SonicLevel.Tiles[this.tiles[_H.floor(x / 8) + _H.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
     };
 
 
@@ -26,7 +26,7 @@ function TilePiece(heightMask, tiles) {
         } else {
             for (i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
-                sonicManager.SonicLevel.TileData[mj.TileIndex].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + Math.floor(i / 2) * 8 * scale.y }, scale, mj.State, false, layer);
+                sonicManager.SonicLevel.TileData[mj.TileIndex].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + _H.floor(i / 2) * 8 * scale.y }, scale, mj.State, false, layer);
             } 
         }
         
@@ -116,6 +116,6 @@ function defaultColors(col) {
 
 
 function randColor() {
-    return "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")";
+    return "rgb(" + _H.floor(Math.random() * 255) + "," + _H.floor(Math.random() * 255) + "," + _H.floor(Math.random() * 255) + ")";
 }
 */

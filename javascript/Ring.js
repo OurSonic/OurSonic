@@ -20,11 +20,11 @@ function Ring(active) {
                 this.tickCount = 0xffffffff;
                 return false;
             }
-            if (sonicManager.sonicToon.checkCollisionLine(Math.floor(this.x) + 8, Math.floor(this.y) + 8, 16, 1) != -1) {
+            if (sonicManager.sonicToon.checkCollisionLine(_H.floor(this.x) + 8, _H.floor(this.y) + 8, 16, 1) != -1) {
                 this.ysp *= -0.75;
             }
 
-            if (sonicManager.sonicToon.checkCollisionLine(Math.floor(this.x) - 8, Math.floor(this.y) + 8, 26, 0) != -1) {
+            if (sonicManager.sonicToon.checkCollisionLine(_H.floor(this.x) - 8, _H.floor(this.y) + 8, 26, 0) != -1) {
                 this.xsp *= -0.75;
             }
 
@@ -38,7 +38,7 @@ function Ring(active) {
         }
 
         if (sonicManager.sonicToon)
-            this.animationIndex = Math.floor((sonicManager.drawTickCount % ((active ? 4 : 8) * 4)) / (active ? 4 : 8));
+            this.animationIndex = _H.floor((sonicManager.drawTickCount % ((active ? 4 : 8) * 4)) / (active ? 4 : 8));
         else this.animationIndex = 0;
         var sprites;
         if (sonicManager.SpriteCache.rings)
@@ -53,7 +53,7 @@ function Ring(active) {
             return;
         }
         if (sps.loaded) {
-            canvas.drawImage(sps, Math.floor(pos.x * scale.x), Math.floor(pos.y * scale.y));
+            canvas.drawImage(sps, _H.floor(pos.x * scale.x), _H.floor(pos.y * scale.y));
         }
         else return false;
 

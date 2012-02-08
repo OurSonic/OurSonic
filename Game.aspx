@@ -4,16 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta name="viewport" content="width = device-width, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, user-scalable = no" />
-    <title>Our Sonic</title>
+    <title>Our Sonic</title> 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js" type="text/javascript">
     </script>
     <script src="javascript/linq.js?1" type="text/javascript"> 
-    </script>
-    <script src="javascript/compression.js?1" type="text/javascript"> 
-    </script>
+    </script> 
     <script src="javascript/Color.js?1" type="text/javascript"> 
-    </script> <script src="javascript/archive-min.js?1" type="text/javascript"> 
-    </script>
+    </script> 
+
     <script src="javascript/Help.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Stats.js?1" type="text/javascript"> 
@@ -64,7 +62,7 @@
 
 
         }); 
-                        //]]>
+    //]]>
     </script>
 </head>
 <body style="background-color: #000080;">

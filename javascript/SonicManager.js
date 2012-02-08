@@ -26,9 +26,9 @@ function SonicManager(mainCanvas) {
 
     this.onClick = function (e) {
         if (e.shiftKey) {
-            var ch = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[Math.floor(e.x / (128 * scale.x)) + Math.floor(e.y / (128 * scale.y)) * sonicManager.SonicLevel.LevelWidth]];
+            var ch = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)) + _H.floor(e.y / (128 * scale.y)) * sonicManager.SonicLevel.LevelWidth]];
 
-            var tp = ch.getTilePiece((e.x - Math.floor(e.x / (128 * scale.x)) * (128 * scale.x)), (e.y - Math.floor(e.y / (128 * scale.y)) * (128 * scale.y)), scale);
+            var tp = ch.getTilePiece((e.x - _H.floor(e.x / (128 * scale.x)) * (128 * scale.x)), (e.y - _H.floor(e.y / (128 * scale.y)) * (128 * scale.y)), scale);
             if (tp) {
                 this.uiManager.indexes.tpIndex = this.SonicLevel.TilePieces.indexOf(tp);
                 this.uiManager.modifyTilePieceArea.tilePiece = tp;
@@ -38,14 +38,14 @@ function SonicManager(mainCanvas) {
             if (!e.button || e.button == 0) {
                 switch (this.clickState) {
                     case ClickState.PlaceChunk:
-                        this.SonicLevel.ChunkMap[Math.floor(e.x / (128 * scale.x)) + Math.floor(e.y / (128 * scale.y)) * sonicManager.SonicLevel.LevelWidth] = this.uiManager.indexes.modifyIndex;
+                        this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)) + _H.floor(e.y / (128 * scale.y)) * sonicManager.SonicLevel.LevelWidth] = this.uiManager.indexes.modifyIndex;
                         break;
                     case ClickState.PlaceRing:
-                        var ex = Math.floor((e.x - Math.floor(e.x / (128 * scale.x)) * (128 * scale.x)) / (scale.x));
-                        var ey = Math.floor((e.y - Math.floor(e.y / (128 * scale.y)) * (128 * scale.y)) / (scale.y));
+                        var ex = _H.floor((e.x - _H.floor(e.x / (128 * scale.x)) * (128 * scale.x)) / (scale.x));
+                        var ey = _H.floor((e.y - _H.floor(e.y / (128 * scale.y)) * (128 * scale.y)) / (scale.y));
 
-                        var es = (Math.floor(ex / 16)) + (Math.floor(e.x / (128 * scale.x))) * 8;
-                        var ek = (Math.floor(ey / 16)) + (Math.floor(e.y / (128 * scale.y))) * 8;
+                        var es = (_H.floor(ex / 16)) + (_H.floor(e.x / (128 * scale.x))) * 8;
+                        var ek = (_H.floor(ey / 16)) + (_H.floor(e.y / (128 * scale.y))) * 8;
 
                         if (this.SonicLevel.Rings[ek * 8 * sonicManager.SonicLevel.LevelWidth + es]) {
                             delete this.SonicLevel.Rings[ek * 8 * sonicManager.SonicLevel.LevelWidth + es];
@@ -65,6 +65,8 @@ function SonicManager(mainCanvas) {
 
     this.tickCount = 0;
     this.drawTickCount = 0;
+    var backgroundd = new Image();
+    backgroundd.src = 'http://dested.com/oursonic/assets/TileChunks/plane b.png';
 
     this.tick = function (that) {
         if (that.loading) return;
@@ -79,8 +81,8 @@ function SonicManager(mainCanvas) {
             }
         }
     };
-
-    this.draw = function (canvas) {
+    this.screenOffset = { x: mainCanvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: mainCanvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
+    this.draw = function(canvas) {
         canvas.save();
         this.drawTickCount++;
         if (this.loading) {
@@ -89,10 +91,11 @@ function SonicManager(mainCanvas) {
             canvas.restore();
             return;
         }
-
+        this.screenOffset = { x: canvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: canvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
+  
 
         if (this.sonicToon) {
-            canvas.translate(canvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, canvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2);
+            canvas.translate(this.screenOffset.x, this.screenOffset.y);
 
             canvas.fillStyle = "#000000";
             canvas.fillRect(0, 0, this.windowLocation.width * scale.x, this.windowLocation.height * scale.x);
@@ -100,8 +103,12 @@ function SonicManager(mainCanvas) {
             canvas.beginPath();
             canvas.rect(0, 0, this.windowLocation.width * scale.x, this.windowLocation.height * scale.x);
             canvas.clip();
-            this.windowLocation.x = Math.floor(this.sonicToon.x - 160);
-            this.windowLocation.y = Math.floor(this.sonicToon.y - 180);
+            this.windowLocation.x = _H.floor(this.sonicToon.x - 160);
+            this.windowLocation.y = _H.floor(this.sonicToon.y - 180);
+
+            var wOffset = _H.floor(this.windowLocation.x / 4 * scale.x / (backgroundd.width * scale.x)) * backgroundd.width * scale.x;
+            canvas.drawImage(backgroundd, -this.windowLocation.x / 4 * scale.x + wOffset, -(_H.floor(this.windowLocation.y / 4)) * scale.x, backgroundd.width * scale.x, backgroundd.height * scale.y)
+            canvas.drawImage(backgroundd, -this.windowLocation.x / 4 * scale.x + backgroundd.width * scale.x + wOffset, -(_H.floor(this.windowLocation.y / 4)) * scale.x, backgroundd.width * scale.x, backgroundd.height * scale.y)
         }
 
 
@@ -111,12 +118,33 @@ function SonicManager(mainCanvas) {
         if (this.windowLocation.x > 128 * sonicManager.SonicLevel.LevelWidth - this.windowLocation.width) this.windowLocation.x = 128 * sonicManager.SonicLevel.LevelWidth - this.windowLocation.width;
         if (this.windowLocation.y > 128 * sonicManager.SonicLevel.LevelHeight - this.windowLocation.height) this.windowLocation.y = 128 * sonicManager.SonicLevel.LevelHeight - this.windowLocation.height;
 
+        /* var chunks = [this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x) / 128 + (this.windowLocation.y) / 128 * sonicManager.SonicLevel.LevelWidth]],
+        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x - 128) / 128 + (this.windowLocation.y) / 128 * sonicManager.SonicLevel.LevelWidth]],
+        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x + 128) / 128 + (this.windowLocation.y) / 128 * sonicManager.SonicLevel.LevelWidth]],
+        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x) / 128 + (this.windowLocation.y - 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
+        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x - 128) / 128 + (this.windowLocation.y - 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
+        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x + 128) / 128 + (this.windowLocation.y - 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
+        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x) / 128 + (this.windowLocation.y + 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
+        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x - 128) / 128 + (this.windowLocation.y + 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
+        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x + 128) / 128 + (this.windowLocation.y + 128) / 128 * sonicManager.SonicLevel.LevelWidth]]
+        ];
+
+ 
+        for (var k = 0; k < chunks.length; k++) {
+        chunks[k].draw(canvas, posj, scale, 0);
+        if (!this.sonicToon) {
+        canvas.strokeStyle = "#DD0033";
+        canvas.lineWidth = 3;
+        canvas.strokeRect(posj.x, posj.y, 128 * scale.x, 128 * scale.y);
+        }
+        }
+        */
 
 
         for (var j = 0; j < this.SonicLevel.ChunkMap.length; j++) {
             if (!this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]]) continue;
             var cX = (j % sonicManager.SonicLevel.LevelWidth);
-            var cY = Math.floor(j / sonicManager.SonicLevel.LevelWidth);
+            var cY = _H.floor(j / sonicManager.SonicLevel.LevelWidth);
 
             var pos = { x: cX * 128 * scale.x, y: cY * 128 * scale.y };
             if ((pos.x >= (this.windowLocation.x - 128) * scale.x && pos.y >= (this.windowLocation.y - 128) * scale.y &&
@@ -134,8 +162,6 @@ function SonicManager(mainCanvas) {
                 }
             }
         }
-
-
 
 
         for (var ring in this.SonicLevel.Rings) {
@@ -169,7 +195,7 @@ function SonicManager(mainCanvas) {
         for (var j = 0; j < this.SonicLevel.ChunkMap.length; j++) {
             if (!this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]]) continue;
             var cX = (j % sonicManager.SonicLevel.LevelWidth);
-            var cY = Math.floor(j / sonicManager.SonicLevel.LevelWidth);
+            var cY = _H.floor(j / sonicManager.SonicLevel.LevelWidth);
 
             var pos = { x: cX * 128 * scale.x, y: cY * 128 * scale.y };
             if ((pos.x >= (this.windowLocation.x - 128) * scale.x && pos.y >= (this.windowLocation.y - 128) * scale.y &&
@@ -178,8 +204,6 @@ function SonicManager(mainCanvas) {
                 var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
                 var chunk = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]];
                 chunk.draw(canvas, posj, scale, 1);
-
-
 
 
                 if (this.showHeightMap) {
@@ -225,18 +249,10 @@ function SonicManager(mainCanvas) {
         }
 
 
-
-
-
-
-
-
-
         canvas.restore();
 
         if (this.sonicToon) {
-            this.sonicToon.drawUI(canvas, { x: 0, y: 0 }, scale);
-
+            this.sonicToon.drawUI(canvas, { x: this.screenOffset.x, y: this.screenOffset.y }, scale);
         }
 
     };
@@ -449,7 +465,7 @@ function SonicManager(mainCanvas) {
 
                 var fc = canv.canvas.toDataURL("image/png");
                 this.SpriteCache.heightMapChunks[1 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.hmc++; done(); });
-                 
+
 
 
                 canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);

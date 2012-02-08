@@ -19,16 +19,16 @@
             canvas.fillStyle = "#" + m;
             switch (state) {
                 case 0:
-                    canvas.fillRect(pos.x + ((i % 8)) * scale.x, pos.y + (Math.floor(i / 8)) * scale.y, scale.x, scale.x);
+                    canvas.fillRect(pos.x + ((i % 8)) * scale.x, pos.y + (_H.floor(i / 8)) * scale.y, scale.x, scale.x);
                     break;
                 case 1:
-                    canvas.fillRect(pos.x + (7 - (i % 8)) * scale.x, pos.y + (Math.floor(i / 8)) * scale.y, scale.x, scale.x);
+                    canvas.fillRect(pos.x + (7 - (i % 8)) * scale.x, pos.y + (_H.floor(i / 8)) * scale.y, scale.x, scale.x);
                     break;
                 case 2:
-                    canvas.fillRect(pos.x + ((i % 8)) * scale.x, pos.y + (7 - Math.floor(i / 8)) * scale.y, scale.x, scale.x);
+                    canvas.fillRect(pos.x + ((i % 8)) * scale.x, pos.y + (7 - _H.floor(i / 8)) * scale.y, scale.x, scale.x);
                     break;
                 case 3:
-                    canvas.fillRect(pos.x + (7 - (i % 8)) * scale.x, pos.y + (7 - Math.floor(i / 8)) * scale.y, scale.x, scale.x);
+                    canvas.fillRect(pos.x + (7 - (i % 8)) * scale.x, pos.y + (7 - _H.floor(i / 8)) * scale.y, scale.x, scale.x);
                     break;
             }
         }

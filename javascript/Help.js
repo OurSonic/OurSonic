@@ -1,4 +1,10 @@
 ﻿window._H = {
+    floor: function (f) {
+        if (f > 0) {
+            return ~ ~f;
+        }
+        return Math.floor(f);
+    },
     loadSprite: function (name, complete) {
 
         var sprite1 = new Image();
@@ -138,9 +144,9 @@
     setDataFromColors: function (data, colors, scale, width, transparent) {
 
         for (var i = 0; i < colors.length; i++) {
-            //            alert((i % 8) * scale.x + (Math.floor(i / 8) * 16) * scale.y);
+            //            alert((i % 8) * scale.x + (_H.floor(i / 8) * 16) * scale.y);
             var curX = (i % width);
-            var curY = Math.floor(i / width);
+            var curY = _H.floor(i / width);
             var g = colors[i];
             var isTrans = false;
             if (transparent) {
@@ -169,7 +175,7 @@
                     data[c + 1] = g.g;
                     data[c + 2] = g.b;
                     data[c + 3] = 255;
-                 
+
 
                 }
             }

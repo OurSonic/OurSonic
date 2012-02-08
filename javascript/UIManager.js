@@ -464,6 +464,14 @@
             fc = sonicManager.SonicLevel.TileChunks[j];
             fc.__proto__ = TileChunk.prototype;
             fc.index = j;
+
+            for (var l = 0; l < fc.angleMap1.length; l++)
+                if (fc.angleMap1 != null)
+                    fc.angleMap1[l] = (256 - parseInt(fc.angleMap1[l], 16)) * 1.4062;
+
+            for (l = 0; l < fc.angleMap2.length; l++)
+                if (fc.angleMap2!=null)
+                    fc.angleMap2[l] = (256 - parseInt(fc.angleMap2[l], 16)) * 1.4062;
             
             for (je = 0; je < fc.heightMap1.length; je++) {
                 fd = fc.heightMap1[je];
