@@ -28,6 +28,7 @@
             break;
         default:
         }
+
         this.items[jx] = 16-jy;
 
     };

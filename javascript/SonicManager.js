@@ -82,7 +82,7 @@ function SonicManager(mainCanvas) {
         }
     };
     this.screenOffset = { x: mainCanvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: mainCanvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
-    this.draw = function(canvas) {
+    this.draw = function (canvas) {
         canvas.save();
         this.drawTickCount++;
         if (this.loading) {
@@ -92,7 +92,7 @@ function SonicManager(mainCanvas) {
             return;
         }
         this.screenOffset = { x: canvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: canvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
-  
+
 
         if (this.sonicToon) {
             canvas.translate(this.screenOffset.x, this.screenOffset.y);
@@ -217,6 +217,7 @@ function SonicManager(mainCanvas) {
 
                     } else {
                         var hm = this.SonicLevel.curHeightMap ? chunk.heightMap1 : chunk.heightMap2;
+                        var md = this.SonicLevel.curHeightMap ? chunk.angleMap1 : chunk.angleMap2;
 
                         for (var _y = 0; _y < 8; _y++) {
                             for (var _x = 0; _x < 8; _x++) {
@@ -230,7 +231,25 @@ function SonicManager(mainCanvas) {
                                     canvas.fillRect(posj.x + (_x * 16) * scale.x, posj.y + (_y * 16) * scale.y, scale.x * 16, scale.y * 16);
                                     continue;
                                 }
-                                hd.draw(canvas, { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y }, scale, -1);
+                                var posm = { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y };
+                                hd.draw(canvas, posm, scale, -1);
+
+
+                                if (md[_x + _y * 8] != null) {
+
+                                    var vangle = md[_x + _y * 8];
+                                    posm.x += 16 * scale.x / 2;
+                                    posm.y += 16 * scale.y / 2;
+
+                                    canvas.moveTo(posm.x, posm.y);
+                                    //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
+
+                                    canvas.lineTo(posm.x + Math.sin((vangle) * (Math.PI / 180)) * 10 * scale.x, posm.y + Math.cos((vangle) * (Math.PI / 180)) * 10 * scale.y);
+
+                                    canvas.strokeStyle = "#D141FF";
+                                    canvas.lineWidth = 4;
+                                    canvas.stroke();
+                                }
 
                             }
                         }
@@ -450,6 +469,7 @@ function SonicManager(mainCanvas) {
                 ctx.clearRect(0, 0, canv.width, canv.height);
 
                 var hm = md.heightMap1;
+
                 for (var _y = 0; _y < 8; _y++) {
                     for (var _x = 0; _x < 8; _x++) {
                         var hd = hm[_x + _y * 8];
@@ -459,7 +479,25 @@ function SonicManager(mainCanvas) {
                             ctx.fillRect(posj.x + (_x * 16) * scale.x, posj.y + (_y * 16) * scale.y, scale.x * 16, scale.y * 16);
                             continue;
                         }
-                        hd.draw(ctx, { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y }, scale, -1);
+                        var posm = { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y };
+                        hd.draw(ctx, posm, scale, -1);
+
+                        if (md.angleMap1[_x + _y * 8] != null) {
+
+                            var vangle = md.angleMap1[_x + _y * 8];
+
+                            posm.x += 16 * scale.x / 2;
+                            posm.y += 16 * scale.y / 2;
+
+                            ctx.moveTo(posm.x, posm.y);
+                            //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
+
+                            ctx.lineTo(posm.x + Math.sin((-vangle) * (Math.PI / 180)) * 10 * scale.x, posm.y+ Math.cos((-vangle) * (Math.PI / 180)) * 10 * scale.y);
+
+                            ctx.strokeStyle = "#D141FF";
+                            ctx.lineWidth = 2;
+                            ctx.stroke();
+                        }
                     }
                 }
 

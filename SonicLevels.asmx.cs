@@ -75,8 +75,8 @@ namespace OurSonic
         public string openLevel(string level)
         {
             return File.ReadAllText(directory + "mush2Chunks.js");
-            var sd = new ChunkConsumer().getString();
-            return sd;
+            //var sd = new ChunkConsumer().getString();
+            //return sd;
             File.WriteAllText("B:\\mmc.txt", "AAAAA"); 
             var fm = File.OpenRead("b:\\mmd.txt");
             byte[] fmc = new byte[fm.Length];

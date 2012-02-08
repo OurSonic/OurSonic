@@ -27,12 +27,15 @@ function TilePiece(heightMask, tiles) {
             for (i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
                 sonicManager.SonicLevel.TileData[mj.TileIndex].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + _H.floor(i / 2) * 8 * scale.y }, scale, mj.State, false, layer);
-            } 
+            }
+           /* canvas.lineWidth = 2;
+            canvas.strokeStyle = "#D142AA";
+            canvas.strokeRect(position.x, position.y, 16 * scale.x, 16 * scale.y);*/
         }
-        
 
 
-    
+
+
 
         //canvas.fillStyle = "#FFFFFF";
         //canvas.fillText(sonicManager.SonicLevel.TilePieces.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);

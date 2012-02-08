@@ -16,10 +16,15 @@
     this.acc = 0.046875;
     this.dec = 0.5;
     this.frc = 0.046875;
-
+    this.gsp = 0;
     this.rdec = 0.125;
     this.rfrc = 0.0234375;
     this.runningTick = 0;
+
+    this.slp = 0.125;
+    this.slpRollingUp = 0.078125;
+    this.slpRollingDown = 0.3125;
+
     this.jmp = -6.5;
     this.grv = 0.21875;
     this.air = 0.09375;
@@ -64,10 +69,23 @@
         switch (this.state) {
             case SonicState.Ground:
 
+
+                if (this.rolling) {
+                    var ang = Math.sin(-this.angle * Math.PI / 180);
+                    
+                    if ((ang > 0) != (this.gsp > 0))
+                        this.gsp += this.slpRollingUp* ang;
+                    else
+                        this.gsp += this.slpRollingDown * ang;
+                } else {
+                    this.gsp += this.slp * Math.sin(-this.angle * Math.PI / 180)
+                }
+                
+
                 if (this.justHit) {
                     this.justHit = false;
                     this.sonicJustHitTick = sonicManager.drawTickCount;
-                    this.xsp = 0;
+                    this.gsp = 0;
                 }
                 if (this.spinDash) {
                     this.spinDashSpeed -= (_H.floor(this.spinDashSpeed / 125)) / 256;
@@ -76,7 +94,7 @@
                 if (this.wasJumping && !this.jumping) {
                     this.wasJumping = false;
                 }
-                if (Math.abs(this.xsp) < .5) {
+                if (Math.abs(this.gsp) < .5) {
                     this.rolling = false;
                     this.currentlyBall = false;
                 }
@@ -100,7 +118,8 @@
                     else {
                         this.state = SonicState.Air;
                         this.currentlyBall = true;
-                        this.ysp = this.jmp;
+                        this.xsp += this.jmp * Math.sin(-this.angle*Math.PI/180);
+                        this.ysp += this.jmp * Math.cos(-this.angle*Math.PI/180);
                     }
                 }
 
@@ -108,14 +127,14 @@
                 if (this.holdingLeft && this.standStill) {
                     this.facing = false;
                     this.standStill = false;
-                    this.xsp -= this.acc;
+                    this.gsp -= this.acc;
                     this.runningDir = -1;
                     break;
                 }
                 if (this.holdingRight && this.standStill) {
                     this.facing = true;
                     this.standStill = false;
-                    this.xsp += this.acc;
+                    this.gsp += this.acc;
                     this.runningDir = 1;
                     break;
                 }
@@ -129,7 +148,7 @@
                         } else {
                         }
                     } else {
-                        if (Math.abs(this.xsp) > 4.5) {
+                        if (Math.abs(this.gsp) > 4.5) {
                             this.facing = false;
                             this.breaking = 1;
                             this.runningTick = 0;
@@ -143,7 +162,7 @@
                     if (this.runningDir == -1) {
 
                     } else {
-                        if (Math.abs(this.xsp) > 4.5) {
+                        if (Math.abs(this.gsp) > 4.5) {
                             this.facing = true;
                             this.breaking = -1;
                             this.runningTick = 0;
@@ -154,7 +173,7 @@
                 } else {
                     this.ducking = false;
                     if (this.crouching) {
-                        if (Math.abs(this.xsp) > 1.03125) {
+                        if (Math.abs(this.gsp) > 1.03125) {
                             this.rolling = true;
                             this.currentlyBall = true;
                         } else {
@@ -162,7 +181,7 @@
                         }
                     } else {
                         if (this.spinDash) {
-                            this.xsp = (8 + _H.floor(this.spinDashSpeed) / 2) * (this.facing ? 1 : -1);
+                            this.gsp = (8 + _H.floor(this.spinDashSpeed) / 2) * (this.facing ? 1 : -1);
                             this.spinDash = false;
                             this.rolling = true;
                             this.currentlyBall = true;
@@ -171,11 +190,11 @@
 
 
                     if (!this.rolling) {
-                        this.xsp -= Math.min(Math.abs(this.xsp), this.frc) * (this.xsp > 0 ? 1 : -1);
+                        this.gsp -= Math.min(Math.abs(this.gsp), this.frc) * (this.gsp > 0 ? 1 : -1);
                     }
                 }
                 if (this.rolling) {
-                    this.xsp -= Math.min(Math.abs(this.xsp), this.rfrc) * (this.xsp > 0 ? 1 : -1);
+                    this.gsp -= Math.min(Math.abs(this.gsp), this.rfrc) * (this.gsp > 0 ? 1 : -1);
 
                 }
 
@@ -195,8 +214,8 @@
 
                 this.ysp += this.justHit ? 0.1875 : this.grv;
                 if (this.ysp < 0 && this.ysp > -4) {
-                    if (Math.abs(this.xsp) > 0.125) {
-                        this.xsp *= 0.96875;
+                    if (Math.abs(this.gsp) > 0.125) {
+                        this.gsp *= 0.96875;
                     }
                 }
 
@@ -206,34 +225,48 @@
 
         var max = 6;
         if (this.holdingLeft) {
-            if (this.xsp > 0) {
+            if (this.gsp > 0) {
 
                 if (this.rolling) {
-                    this.xsp -= this.rdec;
+                    this.gsp -= this.rdec;
                 } else {
-                    this.xsp -= this.dec;
+                    this.gsp -= this.dec;
                 }
-            } else if (this.xsp > -max) {
+            } else if (this.gsp > -max) {
 
                 if (!this.rolling) {
-                    this.xsp -= this.acc;
+                    this.gsp -= this.acc;
                 }
-                if (this.xsp < -max) this.xsp = -max;
+                if (this.gsp < -max) this.gsp = -max;
             }
         } else if (this.holdingRight) {
-            if (this.xsp < 0) {
+            if (this.gsp < 0) {
                 if (this.rolling) {
-                    this.xsp += this.rdec;
+                    this.gsp += this.rdec;
                 } else {
-                    this.xsp += this.dec;
+                    this.gsp += this.dec;
                 }
-            } else if (this.xsp < max) {
+            } else if (this.gsp < max) {
                 if (!this.rolling) {
-                    this.xsp += this.acc;
+                    this.gsp += this.acc;
                 }
-                if (this.xsp > max) this.xsp = max;
+                if (this.gsp > max) this.gsp = max;
             }
         }
+        switch (this.state) {
+            case SonicState.Ground:
+                this.xsp = this.gsp * Math.cos(-this.angle * Math.PI / 180);
+                this.ysp = this.gsp * -Math.sin(-this.angle * Math.PI / 180);
+                break;
+            case SonicState.Air:
+                this.xsp = this.gsp * Math.cos(-this.angle * Math.PI / 180);
+                break;
+        }
+
+
+        this.x += this.xsp;
+        this.y += this.ysp;
+
 
         var absxsp = Math.abs(this.xsp);
         j = parseInt(this.spriteState.substring(this.spriteState.length - 1, this.spriteState.length));
@@ -325,8 +358,6 @@
 
         }
 
-        this.x += this.xsp;
-        this.y += this.ysp;
 
 
         var fx = _H.floor(this.x);
@@ -337,10 +368,10 @@
         if ((sensorA = this.checkCollisionLine(fx - 9, fy + 4, 20, 0)) != -1) {
             if (sensorA.pos < fx) {
                 this.x = fx = sensorA.pos + 11;
-                this.xsp = 0;
+                this.gsp = 0;
             } else {
                 this.x = fx = sensorA.pos - 11;
-                this.xsp = 0;
+                this.gsp = 0;
             }
         }
 
@@ -482,6 +513,7 @@
     this.debug = function () {
         this.debugging = !this.debugging;
         this.xsp = 0;
+        this.gsp = 0;
         this.ysp = 0;
         this.spriteState = "normal";
     };
@@ -538,6 +570,21 @@
     this.checkCollisionLine = function (x, y, length, direction) {
 
 
+        var m = this.checkCollisionLineWrap(x, y, length, direction);
+
+        if (m != -1 && m.angle == null) {
+            alert(_H.stringify(m));
+            m = this.checkCollisionLineWrap(x, y, length, direction);
+
+        }
+
+        return m;
+    };
+
+
+    this.checkCollisionLineWrap = function (x, y, length, direction) {
+
+
 
         var _x = _H.floor(x / 128);
         var _y = _H.floor(y / 128);
@@ -590,10 +637,11 @@
                         __y -= 128;
                         start -= 128 * 128;
                     }
-                    curc++;
                     if (curh[start + i]) {
                         return { pos: y + (i / hlen), angle: cura[_H.floor((__y + curc) / 16) * 8 + _H.floor((__x) / 16)] };
                     }
+
+                    curc++;
                 }
                 break;
             case 2:
@@ -631,10 +679,11 @@
                         __y += 128;
                         start += 128 * 128;
                     }
-                    curc++;
 
                     if (curh[start - i])
                         return { pos: y - (i / hlen), angle: cura[_H.floor((__y - curc) / 16) * 8 + _H.floor((__x) / 16)] };
+
+                    curc++;
                 }
                 break;
         }
@@ -669,7 +718,7 @@
         if (cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
                 canvas.save();
-                var yOffset = 0;// 40 - (cur.height / scale.y);
+                var yOffset = 0; // 40 - (cur.height / scale.y);
 
 
                 canvas.translate(((fx - sonicManager.windowLocation.x) * scale.x), ((fy - sonicManager.windowLocation.y + yOffset) * scale.y));
@@ -687,7 +736,7 @@
 
                     if (this.spinDash) {
                         canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + _H.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
-                            (-cur.width / 2) - 25 * scale.x, -cur.height / 2+(yOffset * scale.y), cur.width, cur.height);
+                            (-cur.width / 2) - 25 * scale.x, -cur.height / 2 + (yOffset * scale.y), cur.width, cur.height);
                     }
                 } else {
                     canvas.rotate(-this.angle * Math.PI / 180);
@@ -696,7 +745,7 @@
 
                     if (this.spinDash) {
                         canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + _H.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
-                           (-cur.width / 2) - 25 * scale.x, -cur.height / 2+(yOffset * scale.y), cur.width, cur.height);
+                           (-cur.width / 2) - 25 * scale.x, -cur.height / 2 + (yOffset * scale.y), cur.width, cur.height);
                     }
 
                 }

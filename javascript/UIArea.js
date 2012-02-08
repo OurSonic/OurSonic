@@ -151,10 +151,10 @@ function UiArea(x, y, w, h,manager,closable) {
 
 function TextArea(x, y, text, font, color) {
     this.forceDrawing = function () {
-        if (this.text == this.oldText) {
+        if ((_H.isFunction(this.text) ? this.text() : this.text )== this.oldText) {
             return {redraw:true,clearCache:false};
         }
-        this.oldText = this.text;
+        this.oldText = _H.isFunction(this.text) ? this.text() : this.text;
         return { redraw: true, clearCache: true };
     };
     this.x = x;
