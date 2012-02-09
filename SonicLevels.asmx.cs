@@ -21,7 +21,7 @@ namespace OurSonic
         private XDocument doc;
         private string c;
 
-//      private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
+    // private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
        private string directory = @"B:\code\oursonic\";
         public SonicLevels()
         {
@@ -68,13 +68,13 @@ namespace OurSonic
         [WebMethod]
         public string getLevel(string level)
         {
-            return File.ReadAllText(directory + "mush2chunks.js");
+            return File.ReadAllText(directory + level+".js");
         }
 
         [WebMethod]
         public string openLevel(string level)
         {
-            return File.ReadAllText(directory + "mush2Chunks.js");
+            return File.ReadAllText(directory + level+".js");
             //var sd = new ChunkConsumer().getString();
             //return sd;
             File.WriteAllText("B:\\mmc.txt", "AAAAA"); 
@@ -99,7 +99,9 @@ namespace OurSonic
         [WebMethod]
         public string[] getLevels()
         {
-            return ((XElement)doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();
+
+            return new DirectoryInfo(directory).GetFiles().Where(a => a.Extension==(".js")).Select(a => a.Name.Replace(".js","")).ToArray();
+//            return ((XElement)doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();
         }
 
     }

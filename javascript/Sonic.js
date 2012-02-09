@@ -104,10 +104,13 @@
                 this.gsp = this.xsp;
             } else if ((this.angle >= 0xE0 && this.angle <= 0xEF) ||
                 (this.angle >= 0x10 && this.angle <= 0x1F)) {
-                this.gsp = -this.gsp;
-            } else if ((this.angle >= 0xC0 && this.angle <= 0xDF) ||
+                this.gsp = this.ysp;
+            } else if ((this.angle >= 0xC0 && this.angle <= 0xDF)) {
+                this.gsp = -this.ysp;
+            }
+            else if (
                 (this.angle >= 0x20 && this.angle <= 0x3F)) {
-                this.gsp = -this.gsp;
+                this.gsp = this.ysp;
             }
 
 
@@ -554,8 +557,10 @@
             }
             this.updateMode();
 
-            sensorA = this.checkCollisionLine(fx - 9, fy, 20, 3);
-            sensorB = this.checkCollisionLine(fx + 9, fy, 20, 3);
+            var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
+            var __h = cur.height / scale.y / 2;
+            sensorA = this.checkCollisionLine(fx - 9, fy, __h, 3);
+            sensorB = this.checkCollisionLine(fx + 9, fy, __h, 3);
 
             if ((sensorA == -1 && sensorB == -1)) {
 
@@ -563,28 +568,28 @@
                 if (sensorA.pos >= 0 && sensorB.pos >= 0) {
                     this.angle = sensorA.angle;
                     if (sensorA.pos < sensorB.pos) {
-                        if (this.y + (20) >= sensorA.pos) {
+                        if (this.y + (__h) >= sensorA.pos) {
                             this.angle = sensorA.angle;
-                            this.y = fy = sensorA.pos + 20;
+                            this.y = fy = sensorA.pos + __h;
                             this.ysp = 0;
                         }
                     } else {
-                        if (this.y + (20) >= sensorB.pos) {
+                        if (this.y + (__h) >= sensorB.pos) {
                             this.angle = sensorB.angle;
-                            this.y = fy = sensorB.pos + 20;
+                            this.y = fy = sensorB.pos + __h;
                             this.ysp = 0;
                         }
                     }
                 } else if (sensorA.pos > -1) {
-                    if (this.y + (20) >= sensorA.pos) {
+                    if (this.y + (__h) >= sensorA.pos) {
                         this.angle = sensorA.angle;
-                        this.y = fy = sensorA.pos + 20;
+                        this.y = fy = sensorA.pos + __h;
                         this.ysp = 0;
                     }
                 } else if (sensorB.pos > -1) {
-                    if (this.y + (20) >= sensorB.pos) {
+                    if (this.y + (__h) >= sensorB.pos) {
                         this.angle = sensorB.angle;
-                        this.y = fy = sensorB.pos + 20;
+                        this.y = fy = sensorB.pos + __h;
                         this.ysp = 0;
                     }
                 }

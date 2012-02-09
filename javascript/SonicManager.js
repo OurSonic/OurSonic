@@ -1,7 +1,7 @@
 ﻿
 
 function SonicManager(mainCanvas) {
-    var scale = this.scale = { x: 2, y: 2 };
+    var scale = this.scale = { x: 4, y: 4 };
     this.windowLocation = _H.defaultWindowLocation(1);
     this.showHeightMap = false;
     this.goodRing = new Ring(false);

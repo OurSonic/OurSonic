@@ -8,12 +8,14 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js" type="text/javascript">
     </script>
     <script src="javascript/linq.js?1" type="text/javascript"> 
+    </script>  
+      <script src="javascript/stats.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/curCompress.js?1" type="text/javascript"> 
     </script> 
     <script type="text/javascript">
                                 //<![CDATA[
-        $(function () {
+        $(function () { 
             var stats = new Stats();
 
             // Align top-left
