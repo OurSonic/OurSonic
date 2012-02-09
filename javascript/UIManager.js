@@ -467,11 +467,11 @@
 
             for (var l = 0; l < fc.angleMap1.length; l++)
                 if (fc.angleMap1 != null)
-                    fc.angleMap1[l] = (256 - parseInt(fc.angleMap1[l], 16)) * 1.4062;
+                    fc.angleMap1[l] = _H.fixAngle(parseInt(fc.angleMap1[l], 16));
 
             for (l = 0; l < fc.angleMap2.length; l++)
-                if (fc.angleMap2!=null)
-                    fc.angleMap2[l] = (256 - parseInt(fc.angleMap2[l], 16)) * 1.4062;
+                if (fc.angleMap2 != null)
+                    fc.angleMap2[l] = _H.fixAngle(parseInt(fc.angleMap2[l], 16));
             
             for (je = 0; je < fc.heightMap1.length; je++) {
                 fd = fc.heightMap1[je];

@@ -5,6 +5,12 @@
         }
         return Math.floor(f);
     },
+    min: function (f1, f2) {
+        return f1 > f2 ? f2 : f1;
+    },
+    max: function (f1, f2) {
+        return f1 < f2 ? f2 : f1;
+    },
     loadSprite: function (name, complete) {
 
         var sprite1 = new Image();
@@ -15,6 +21,17 @@
         };
         sprite1.src = name;
         return sprite1;
+    },
+    fixAngle: function (angle) {
+        var fixedAng = Math.floor((256 - angle) * 1.4062) % 256;
+        var flop = 360 - fixedAng;
+        return _H.degtorad(flop );
+    },
+    degtorad: function (angle) {
+        return angle * Math.PI / 180;
+    },
+    sign: function (m) {
+        return m == 0 ? 0 : (m < 0 ? -1 : 1);
     },
     defaultWindowLocation: function (state) {
         switch (state) {

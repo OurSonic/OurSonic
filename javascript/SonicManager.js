@@ -72,7 +72,13 @@ function SonicManager(mainCanvas) {
         if (that.loading) return;
         if (that.sonicToon) {
             that.tickCount++;
-            that.sonicToon.tick(that.SonicLevel, scale);
+
+            that.sonicToon.ticking = true;
+            try {
+                that.sonicToon.tick(that.SonicLevel, scale);
+            } finally {
+                that.sonicToon.ticking = false;
+            }
             if (that.sonicToon.y > 128 * sonicManager.SonicLevel.LevelHeight) {
                 that.sonicToon.y = 0;
             }
@@ -95,6 +101,11 @@ function SonicManager(mainCanvas) {
 
 
         if (this.sonicToon) {
+            if (this.sonicToon.ticking) {
+                while (true) {
+                    if(!this.sonicToon.ticking)break;
+                }
+            }
             canvas.translate(this.screenOffset.x, this.screenOffset.y);
 
             canvas.fillStyle = "#000000";
@@ -244,7 +255,7 @@ function SonicManager(mainCanvas) {
                                     canvas.moveTo(posm.x, posm.y);
                                     //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
 
-                                    canvas.lineTo(posm.x + Math.sin((vangle) * (Math.PI / 180)) * 10 * scale.x, posm.y + Math.cos((vangle) * (Math.PI / 180)) * 10 * scale.y);
+                                    canvas.lineTo(posm.x + Math.sin((vangle) ) * 10 * scale.x, posm.y + Math.cos((vangle)) * 10 * scale.y);
 
                                     canvas.strokeStyle = "#D141FF";
                                     canvas.lineWidth = 4;
