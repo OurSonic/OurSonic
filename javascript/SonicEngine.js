@@ -94,6 +94,9 @@ function SonicEngine(canvasName) {
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.debug();
                 break;
+            case 68:
+                sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
+                break;
             case 38:  /* Up arrow was pressed */
             case 87:  /* Up arrow was pressed */
                 if (sonicManager.sonicToon)
@@ -123,7 +126,7 @@ function SonicEngine(canvasName) {
             case 39:  /* Right arrow was pressed */
             case 68:  /* Right arrow was pressed */
                 sonicManager.windowLocation.x += 128;
-                
+
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.pressRight(); else {
                     sonicManager.windowLocation.x += 128;

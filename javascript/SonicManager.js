@@ -255,7 +255,7 @@ function SonicManager(mainCanvas) {
                                     canvas.moveTo(posm.x, posm.y);
                                     //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
 
-                                    canvas.lineTo(posm.x + Math.sin((vangle) ) * 10 * scale.x, posm.y + Math.cos((vangle)) * 10 * scale.y);
+                                    canvas.lineTo(posm.x + _H.sin((vangle)) * 10 * scale.x, posm.y + _H.cos((vangle)) * 10 * scale.y);
 
                                     canvas.strokeStyle = "#D141FF";
                                     canvas.lineWidth = 4;
@@ -470,8 +470,7 @@ function SonicManager(mainCanvas) {
                 md.draw(ctx, { x: 0, y: 0 }, scale, 1);
                 var fc = canv.canvas.toDataURL("image/png");
                 this.SpriteCache.tileChunks[1 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.tcs++; done(); });
-
-
+                
                 var posj = { x: 0, y: 0 };
 
 
@@ -493,7 +492,7 @@ function SonicManager(mainCanvas) {
                         var posm = { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y };
                         hd.draw(ctx, posm, scale, -1);
 
-                        if (md.angleMap1[_x + _y * 8] != null) {
+                      /*  if (md.angleMap1[_x + _y * 8] != null) {
 
                             var vangle = md.angleMap1[_x + _y * 8];
 
@@ -503,12 +502,12 @@ function SonicManager(mainCanvas) {
                             ctx.moveTo(posm.x, posm.y);
                             //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
 
-                            ctx.lineTo(posm.x + Math.sin((-vangle) * (Math.PI / 180)) * 10 * scale.x, posm.y+ Math.cos((-vangle) * (Math.PI / 180)) * 10 * scale.y);
+                            ctx.lineTo(posm.x + _H.sin((-vangle) * (Math.PI / 180)) * 10 * scale.x, posm.y + _H.cos((-vangle) * (Math.PI / 180)) * 10 * scale.y);
 
                             ctx.strokeStyle = "#D141FF";
                             ctx.lineWidth = 2;
                             ctx.stroke();
-                        }
+                        }*/
                     }
                 }
 
@@ -537,7 +536,7 @@ function SonicManager(mainCanvas) {
 
                 var fc = canv.canvas.toDataURL("image/png");
                 this.SpriteCache.heightMapChunks[2 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.hmc++; done(); });
-
+                
             }
         };
 
