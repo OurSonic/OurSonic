@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game2.aspx" />
+    <Content Include="javascript\ParallaxBG.js" />
     <Content Include="javascript\Ring.js" />
     <Content Include="javascript\curCompress.js" />
     <Content Include="javascript\UIManager.js" />
@@ -164,7 +165,6 @@
     <Content Include="assets\TileChunks\HiPlane87.png" />
     <Content Include="assets\TileChunks\HiPlane9.png" />
     <Content Include="Game.aspx" />
-    <Content Include="javascript\Color.js" />
     <Content Include="javascript\HeightMask.js" />
     <Content Include="javascript\Help.js" />
     <Content Include="javascript\linq.js" />

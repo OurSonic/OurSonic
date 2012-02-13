@@ -1,9 +1,9 @@
 ﻿function TileChunk(tilesPieces) {
     this.tilesPieces = tilesPieces;
-    this.hLayer = [];
+    this.hLayer = [[]];
     this.sprites = [];
     TileChunk.prototype.getTilePiece = function (x, y, scale) {
-        return sonicManager.SonicLevel.TilePieces[this.tilesPieces[_H.floor((x / scale.x / 16)) + _H.floor((y / scale.y / 16)) * 8]];
+        return sonicManager.SonicLevel.TilePieces[this.tilesPieces[_H.floor((x / scale.x / 16)) ][_H.floor((y / scale.y / 16)) ]];
     };
 
     TileChunk.prototype.draw = function (canvas, position, scale, layer) {
@@ -14,13 +14,15 @@
             }
         } else {
             for (var i = 0; i < this.tilesPieces.length; i++) {
+                for (var j = 0; j < this.tilesPieces[i].length; j++) {
 
-                if (this.hLayer[i] == layer) {
-                    sonicManager.SonicLevel.TilePieces[this.tilesPieces[i]].draw(canvas, { x: position.x + (i % 8) * 16 * scale.x, y: position.y + _H.floor(i / 8) * 16 * scale.y }, scale, layer);
+                    if (this.hLayer[i][j] == layer) {
+                        sonicManager.SonicLevel.TilePieces[this.tilesPieces[i][j]].draw(canvas, { x: position.x + i * 16 * scale.x, y: position.y + j * 16 * scale.y }, scale, layer);
+                    }
                 }
             }
         }
-    
+
         return true;
     };
 

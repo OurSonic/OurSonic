@@ -3,7 +3,7 @@
     ;
     this.sprites = [];
     Tile.prototype.changeColor = function (x, y, color) {
-        this.colors[y * 8 + x] = color;
+        this.colors[x][y] = color;
         this.sprites = [];
     };
 
@@ -13,25 +13,28 @@
 
 
         for (var i = 0; i < this.colors.length; i++) {
-            var m = sonicManager.SonicLevel.pallet[this.colors[i]];
+            for (var j = 0; j < this.colors[i].length; j++) {
+            var m = sonicManager.SonicLevel.palletIndexes[this.colors[i][j]];
 
             if (m == "000000") continue; 
             canvas.fillStyle = "#" + m;
             switch (state) {
                 case 0:
-                    canvas.fillRect(pos.x + ((i % 8)) * scale.x, pos.y + (_H.floor(i / 8)) * scale.y, scale.x, scale.x);
+                    canvas.fillRect(pos.x + ((i)) * scale.x, pos.y + (j) * scale.y, scale.x, scale.x);
                     break;
                 case 1:
-                    canvas.fillRect(pos.x + (7 - (i % 8)) * scale.x, pos.y + (_H.floor(i / 8)) * scale.y, scale.x, scale.x);
+                    canvas.fillRect(pos.x + (7 - (i)) * scale.x, pos.y + (j) * scale.y, scale.x, scale.x);
                     break;
                 case 2:
-                    canvas.fillRect(pos.x + ((i % 8)) * scale.x, pos.y + (7 - _H.floor(i / 8)) * scale.y, scale.x, scale.x);
+                    canvas.fillRect(pos.x + ((i)) * scale.x, pos.y + (7 - j) * scale.y, scale.x, scale.x);
                     break;
                 case 3:
-                    canvas.fillRect(pos.x + (7 - (i % 8)) * scale.x, pos.y + (7 - _H.floor(i / 8)) * scale.y, scale.x, scale.x);
+                    canvas.fillRect(pos.x + (7 - (i )) * scale.x, pos.y + (7 - j) * scale.y, scale.x, scale.x);
                     break;
             }
         }
+    }
+
 
         if (showOutline) {
             canvas.strokeStyle = "#DD0033";
@@ -41,14 +44,5 @@
 
 
     };
-
-    Tile.prototype.equals = function (cols) {
-        for (var i = 0; i < this.colors.length; i++) {
-            var j = cols[i];
-            var c = this.colors[i];
-            if (j != c)
-                return false;
-        }
-        return true;
-    };
+     
 }

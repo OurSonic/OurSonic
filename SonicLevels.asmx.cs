@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -22,7 +23,7 @@ namespace OurSonic
         private string c;
 
     // private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
-       private string directory = @"B:\code\oursonic\";
+       private string directory = ConfigurationManager.AppSettings["Directory"];
         public SonicLevels()
         {
        

@@ -120,7 +120,9 @@ function UiArea(x, y, w, h,manager,closable) {
 
         if (this.cachedDrawing.loaded) {
             canv.drawImage(this.cachedDrawing, _H.floor(this.x), _H.floor(this.y));
-
+            if (this.cachedDrawing.width != this.width + 20 || this.cachedDrawing.height != this.height + 20)
+                this.cachedDrawing = null;
+            
             for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 good = t.forceDrawing();
@@ -134,8 +136,8 @@ function UiArea(x, y, w, h,manager,closable) {
             canv.lineWidth = 9;
             canv.strokeStyle = "#333";
 
-            roundRect(canv, this.x+10, this.y+10, this.width, this.height, 5, true, true);
-            
+            roundRect(canv, this.x + 10, this.y + 10, this.width, this.height, 5, true, true);
+
             for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 t.draw(canv);
@@ -256,7 +258,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     return this;
 }
 
-function TilePieceArea(x, y, scale, tilePiece,state) {
+function TilePieceArea(x, y, scale, tilePiece, state) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -298,9 +300,74 @@ function TilePieceArea(x, y, scale, tilePiece,state) {
         if (!this.visible) return;
         if (!this.tilePiece) return;
         this.tilePiece.tag = true;
-        this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, this.state,true);
+        this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, this.state, true);
         this.tilePiece.tag = false;
-    
+
+    };
+    return this;
+}
+function TileBGEditArea(x, y, parallaxBG) {
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
+    this.x = x;
+    this.y = y;
+    this.visible = true;
+    this.clicking = false;
+    this.parallaxBG = parallaxBG;
+    this.parent = null;
+    this.lowestClickedY = -1;
+    this.highestClickedY = -1;
+    this.onClick = function (e) {
+        if (!this.visible) return;
+        this.clicking = true;
+
+        if (e.x > 0 && e.y > 0 && e.y < parallaxBG.height && e.x < parallaxBG.width) {
+            var bar;
+            if ((bar = this.parallaxBG.onBar(e.x, e.y))) {
+                this.lowestClickedY = bar.top;
+                this.highestClickedY = bar.bottom;
+            } else {
+                this.lowestClickedY = e.y;
+                this.highestClickedY = e.y;
+            }
+
+        }
+        this.clickHandled = false;
+    };
+    this.onMouseUp = function (e) {
+        if (!this.visible) return;
+
+        this.highestClickedY = -1;
+        this.lowestClickedY = -1;
+
+        this.clickHandled = false;
+        this.clicking = false;
+    };
+    this.clickHandled = false;
+    this.onMouseOver = function (e) {
+        if (!this.clicking) return;
+        if (e.x > 0 && e.y > 0 && e.y < parallaxBG.height && e.x < parallaxBG.width) {
+            if (e.y > this.highestClickedY) this.highestClickedY = e.y;
+            if (e.y < this.lowestClickedY) this.lowestClickedY = e.y;
+            for (var i = this.lowestClickedY; i < this.highestClickedY; i++) {
+                this.parallaxBG.click(e.x, i);
+            }
+        }
+        return false;
+    };
+    this.draw = function (canv) {
+        if (!this.visible) return;
+        if (!this.parallaxBG) return;
+        this.width = parallaxBG.width;
+        this.height = parallaxBG.height;
+        this.parent.width = this.width + 70;
+        this.parent.height = this.height + 50;
+        
+        var scale = { x: 1, y: 1 };
+        this.parallaxBG.drawUI(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, scale);
+
+
     };
     return this;
 }
@@ -328,8 +395,8 @@ function TileChunkArea(x, y, scale, tileChunk,state) {
         if (!this.visible) return;
 
         if (this.clicking) {
-            if (this.setToTile != null) { 
-                this.tileChunk.tilesPieces[((_H.floor(e.x / this.scale.x / 16))) + (_H.floor(e.y / this.scale.y / 16)) * 8] = sonicManager.SonicLevel.TilePieces.indexOf(this.setToTile);
+            if (this.setToTile != null) {
+                this.tileChunk.tilesPieces[((_H.floor(e.x / this.scale.x / 16)))][(_H.floor(e.y / this.scale.y / 16))] = sonicManager.SonicLevel.TilePieces.indexOf(this.setToTile);
                 this.tileChunk.sprites = [];
             }
         }

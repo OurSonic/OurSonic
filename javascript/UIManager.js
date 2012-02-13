@@ -200,6 +200,15 @@
     solidTileArea.addControl(modifyTilePieceArea);
 
 
+    var bgEditor = this.bgEditor = new UiArea(100, 440, 420, 360, this,true);
+     bgEditor.visible = true;
+     this.UIAreas.push(bgEditor);
+     bgEditor.addControl(new TextArea(30, 25, "BG Editor", textFont, "blue"));
+     bgEditor.addControl(new TileBGEditArea(60, 35, sonicManager.background));
+ 
+    
+    
+
     var levelInformation = this.levelInformation = new UiArea(500, 440, 420, 360, this);
     levelInformation.visible = true;
     this.UIAreas.push(levelInformation);
@@ -353,6 +362,7 @@
             modifyTileChunkArea.visible = false;
             solidTileArea.visible = false;
             debuggerArea.visible = true;
+            sonicManager.background.cache(sonicManager.scale);
             sonicManager.windowLocation = _H.defaultWindowLocation(0);
             sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
         }));
@@ -463,25 +473,32 @@
         for (j = 0; j < sonicManager.SonicLevel.TileChunks.length; j++) {
             fc = sonicManager.SonicLevel.TileChunks[j];
             fc.__proto__ = TileChunk.prototype;
-            fc.index = j;
+            fc.index = j; 
+             
+            for (je = 0; je < fc.angleMap1.length; je++) {
+                for (jc = 0; jc < fc.angleMap1[je].length; jc++) {
+                    fc.angleMap1[je][jc] = parseInt(fc.angleMap1[je][jc], 16);
+                }
+            }
+            for (je = 0; je < fc.angleMap2.length; je++) {
+                for (jc = 0; jc < fc.angleMap2[je].length; jc++) {
+                    fc.angleMap2[je][jc] = parseInt(fc.angleMap2[je][jc], 16);
+                }
+            }
 
-            for (var l = 0; l < fc.angleMap1.length; l++)
-                if (fc.angleMap1 != null)
-                    fc.angleMap1[l] = parseInt(fc.angleMap1[l], 16);
 
-            for (l = 0; l < fc.angleMap2.length; l++)
-                if (fc.angleMap2 != null)
-                    fc.angleMap2[l] = parseInt(fc.angleMap2[l], 16);
-            
             for (je = 0; je < fc.heightMap1.length; je++) {
-                fd = fc.heightMap1[je];
-                fc.heightMap1[je] = sonicManager.SonicLevel.heightIndexes[fd];
-            }
-            for (je = 0; je < fc.heightMap2.length; je++) {
-                fd = fc.heightMap2[je];
-                fc.heightMap2[je] = sonicManager.SonicLevel.heightIndexes[fd];
+                for (jc = 0; jc < fc.heightMap1[je].length; jc++) {
+                    fc.heightMap1[je][jc] = sonicManager.SonicLevel.heightIndexes[fc.heightMap1[je][jc]];
+                }
             }
 
+            for (je = 0; je < fc.heightMap2.length; je++) {
+                for (jc = 0; jc < fc.heightMap2[je].length; jc++) {
+                    fc.heightMap2[je][jc] = sonicManager.SonicLevel.heightIndexes[fc.heightMap2[je][jc]];
+                }
+            }
+ 
         }
         for (j = 0; j < sonicManager.SonicLevel.TilePieces.length; j++) {
             fc = sonicManager.SonicLevel.TilePieces[j];

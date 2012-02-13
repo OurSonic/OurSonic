@@ -11,7 +11,7 @@
     max: function (f1, f2) {
         return f1 < f2 ? f2 : f1;
     },
-    loadSprite: function (name, complete) {
+    loadSprite: function (src, complete) {
 
         var sprite1 = new Image();
 
@@ -19,12 +19,12 @@
             sprite1.loaded = true;
             if (complete) complete(sprite1);
         };
-        sprite1.src = name;
+        sprite1.src = src;
         return sprite1;
     },
     fixAngle: function (angle) {
         var fixedAng = Math.floor((256 - angle) * 1.4062) % 360;
-        var flop = 360-fixedAng;
+        var flop = 360 - fixedAng;
         return _H.degtorad(flop);
     },
     degtorad: function (angle) {
@@ -115,7 +115,7 @@
         var g = data[c + 1];
         var b = data[c + 2];
 
-        return { r: r, g: g, b: b }
+        return { r: r, g: g, b: b };
 
 
     },
@@ -281,41 +281,12 @@
             }
             return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
         }
-    },
-    compareTiles: function (tiles, tiles2, colors) {
-        var i;
-        for (i = 0; i < tiles.length; i++) {
-            if (tiles[i].equals(colors)) {
-                return i;
-            }
-        }
-        for (i = 0; i < tiles2.length; i++) {
-            if (tiles2[i].equals(colors)) {
-                return tiles.length + i;
-            }
-        }
-        return -1;
-    },
+    } 
+    , sin: function (f) {
 
-    compareTilePieces: function (tilePieces, tilePieces2, tp) {
-        var i;
-        for (i = 0; i < tilePieces.length; i++) {
-            if (tilePieces[i].equals(tp)) {
-                return i;
-            }
-        }
-        for (i = 0; i < tilePieces2.length; i++) {
-            if (tilePieces2[i].equals(tp)) {
-                return tilePieces.length + i;
-            }
-        }
-        return -1;
+        return cos_table[(f + 0x40) & 0xFF];
     }
-    , sin:function(f) {
-        
-        return cos_table[(f+0x40) & 0xFF];
-    }
-    , cos:function(f) {
+    , cos: function (f) {
         return cos_table[(f) & 0xFF];
     }
 };

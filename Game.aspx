@@ -9,9 +9,6 @@
     </script>
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script> 
-    <script src="javascript/Color.js?1" type="text/javascript"> 
-    </script> 
-
     <script src="javascript/Help.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Stats.js?1" type="text/javascript"> 
@@ -19,6 +16,7 @@
     <script src="javascript/Tile.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Ring.js?1" type="text/javascript"> 
+    </script>    <script src="javascript/ParallaxBG.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/TileChunk.js?1" type="text/javascript"> 
     </script>

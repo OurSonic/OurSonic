@@ -20,7 +20,6 @@
     this.rdec = 0.125;
     this.rfrc = 0.0234375;
     this.runningTick = 0;
-
     this.slp = 0.125;
     this.slpRollingUp = 0.078125;
     this.slpRollingDown = 0.3125;
@@ -690,7 +689,7 @@
 
         var _x = _H.floor(x / 128);
         var _y = _H.floor(y / 128);
-        var tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x + _y * sonicManager.SonicLevel.LevelWidth]];
+        var tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
         var curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
         var cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
 
@@ -698,8 +697,7 @@
         var __y = y - _y * 128;
 
 
-
-        var start = __y * 128 + __x;
+         
         var hlen = 128;
         var i;
         var m;
@@ -715,32 +713,31 @@
                 for (i = 0; i < length; i++) {
 
                     if (__x + i >= 128) {
-                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x + 1 + _y * sonicManager.SonicLevel.LevelWidth]];
+                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x + 1][_y]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                         __x -= 128;
                     }
 
-                    if (x + i > this.LevelWidth || curh[__y * 128 + (__x + i)])
-                        return { pos: x + i, angle: cura[_H.floor((__y) / 16) * 8 + _H.floor((__x + i) / 16)] };
+                    if (x + i > this.LevelWidth || curh[(__x + i)][ __y ])
+                        return { pos: x + i, angle: cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)] };
                 }
                 break;
             case 1:
                 //top to bottom
                 if (y + length > sonicManager.SonicLevel.LevelHeight * 128)
                     return { pos: sonicManager.SonicLevel.LevelHeight * 128 - 20, angle: null };
-                for (i = 0, m = length * hlen; i < m; i += hlen) {
+                for (i = 0; i < length; i += 1) {
 
                     if (__y + curc >= 128) {
-                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x + (_y + 1) * sonicManager.SonicLevel.LevelWidth]];
+                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x][ (_y + 1)]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
 
                         __y -= 128;
-                        start -= 128 * 128;
                     }
-                    if (curh[start + i]) {
-                        return { pos: y + (i / hlen), angle: cura[_H.floor((__y + curc) / 16) * 8 + _H.floor((__x) / 16)] };
+                    if (curh[__x][__y+i]) {
+                        return { pos: y + i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y + curc) / 16)] };
                     }
 
                     curc++;
@@ -753,7 +750,7 @@
 
                 for (i = 0; i < length; i++) {
                     if (__x - i < 0) {
-                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[(_x - 1) + _y * sonicManager.SonicLevel.LevelWidth]];
+                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[(_x - 1), _y]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
 
@@ -762,8 +759,8 @@
                     }
 
 
-                    if (x - i < 0 || curh[__y * 128 + (__x - i)])
-                        return { pos: x - i, angle: cura[_H.floor((__y) / 16) * 8 + _H.floor((__x - i) / 16)] };
+                    if (x - i < 0 || curh[(__x - i)][ __y])
+                        return { pos: x - i, angle: cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)] };
                 }
                 break;
             case 3:
@@ -772,18 +769,17 @@
                     return { pos: 20, angle: null };
 
 
-                for (i = 0, m = length * hlen; i < m; i += hlen) {
+                for (i = 0; i < length; i += 1) {
                     if (__y - curc < 0) {
-                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x + (_y - 1) * sonicManager.SonicLevel.LevelWidth]];
+                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x][ (_y - 1)]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
 
                         __y += 128;
-                        start += 128 * 128;
                     }
 
-                    if (curh[start - i])
-                        return { pos: y - (i / hlen), angle: cura[_H.floor((__y - curc) / 16) * 8 + _H.floor((__x) / 16)] };
+                    if (curh[__x ][ __y-i])
+                        return { pos: y - i, angle: cura[_H.floor((__x) / 16) ][ _H.floor((__y - curc) / 16)] };
 
                     curc++;
                 }
@@ -959,24 +955,29 @@
             var dd;
             var hb1 = chunk.heightBlocks1 = [];
             var hb2 = chunk.heightBlocks2 = [];
-            hb1.length = 128 * 128;
-            hb2.length = 128 * 128;
+            hb1.length = 128;
+            hb2.length = 128;
+            for (var _1 = 0; _1 < 128; _1++) {
+                hb1[_1] = [];
+                hb2[_1] = [];
+                hb2[_1].length = hb1[_1].length = 128;
+            }
+
 
             for (var _y = 0; _y < 8; _y++) {
                 for (var _x = 0; _x < 8; _x++) {
                     //  var tp = sonicLevel.TilePieces[chunk.tilesPieces[_y * 8 + _x]];
-                    var hd1 = hm1[_x + _y * 8];
-                    var hd2 = hm2[_x + _y * 8];
+                    var hd1 = hm1[_x][_y];
+                    var hd2 = hm2[_x][_y];
                     if (hd1 == 0) continue;
                     var __x;
                     var __y;
 
                     if (hd1 == 1) {
                         for (__y = 0; __y < 16; __y++) {
-                            for (__x = 0; __x < 16; __x++) {
-                                dd = (_x * 16 + __x) + (_y * 16 + __y) * (128);
-                                hb1[dd] = true;
-                                hb2[dd] = true;
+                            for (__x = 0; __x < 16; __x++) { 
+                                hb1[(_x * 16 + __x)][(_y * 16 + __y)] = true;
+                                hb2[(_x * 16 + __x)][(_y * 16 + __y)] = true;
                             }
                         }
                         continue;
@@ -985,11 +986,9 @@
                     hd2 = hd2.items;
 
                     for (__y = 0; __y < 16; __y++) {
-                        for (__x = 0; __x < 16; __x++) {
-                            dd = (_x * 16 + __x) + (_y * 16 + __y) * (128);
-
-                            hb1[dd] = hd1[__x] > 16 - __y;
-                            hb2[dd] = hd2[__x] > 16 - __y;
+                        for (__x = 0; __x < 16; __x++) {  
+                            hb1[(_x * 16 + __x)][(_y * 16 + __y)] = hd1[__x] > 16 - __y;
+                            hb2[(_x * 16 + __x)][(_y * 16 + __y)] = hd2[__x] > 16 - __y;
 
                             //imap[(x * 128 + _x * 16 + __x) + (y * 128 + _y * 16 + __y) * (this.LevelWidth)] = tp.heightMask.angle;
                         }

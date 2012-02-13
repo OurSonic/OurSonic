@@ -1,11 +1,13 @@
 ﻿
 
 function SonicManager(mainCanvas) {
-    var scale = this.scale = { x: 4, y: 4 };
+    var scale = this.scale = { x: 2, y: 2 };
     this.windowLocation = _H.defaultWindowLocation(1);
     this.showHeightMap = false;
     this.goodRing = new Ring(false);
     this.activeRings = [];
+
+    this.background = new ParallaxBG("http://localhost:63697/assets/TileChunks/plane b.png", { x: 1, y: 1 });
 
     this.uiManager = new UIManager(this, mainCanvas, this.scale);
 
@@ -13,20 +15,20 @@ function SonicManager(mainCanvas) {
         Tiles: [],
         TilePieces: [],
         TileChunks: [],
-        ChunkMap: [],
+        ChunkMap: [[]],
         Rings: {},
         curHeightMap: true, LevelWidth: 0, LevelHeight: 0
     };
 
 
     var lamesauce = new TileChunk() + new TilePiece() + new Tile() + new HeightMask();
-    this.SonicLevel.ChunkMap = [];
+    this.SonicLevel.ChunkMap = [[]];
     this.clickState = ClickState.PlaceChunk;
 
 
     this.onClick = function (e) {
         if (e.shiftKey) {
-            var ch = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)) + _H.floor(e.y / (128 * scale.y)) * sonicManager.SonicLevel.LevelWidth]];
+            var ch = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)),_H.floor(e.y / (128 * scale.y)) ]];
 
             var tp = ch.getTilePiece((e.x - _H.floor(e.x / (128 * scale.x)) * (128 * scale.x)), (e.y - _H.floor(e.y / (128 * scale.y)) * (128 * scale.y)), scale);
             if (tp) {
@@ -38,7 +40,7 @@ function SonicManager(mainCanvas) {
             if (!e.button || e.button == 0) {
                 switch (this.clickState) {
                     case ClickState.PlaceChunk:
-                        this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)) + _H.floor(e.y / (128 * scale.y)) * sonicManager.SonicLevel.LevelWidth] = this.uiManager.indexes.modifyIndex;
+                        this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)),_H.floor(e.y / (128 * scale.y)) ] = this.uiManager.indexes.modifyIndex;
                         break;
                     case ClickState.PlaceRing:
                         var ex = _H.floor((e.x - _H.floor(e.x / (128 * scale.x)) * (128 * scale.x)) / (scale.x));
@@ -103,7 +105,7 @@ function SonicManager(mainCanvas) {
         if (this.sonicToon) {
             if (this.sonicToon.ticking) {
                 while (true) {
-                    if(!this.sonicToon.ticking)break;
+                    if (!this.sonicToon.ticking) break;
                 }
             }
             canvas.translate(this.screenOffset.x, this.screenOffset.y);
@@ -117,10 +119,12 @@ function SonicManager(mainCanvas) {
             this.windowLocation.x = _H.floor(this.sonicToon.x - 160);
             this.windowLocation.y = _H.floor(this.sonicToon.y - 180);
 
-            var wOffset = _H.floor(this.windowLocation.x / 4 * scale.x / (backgroundd.width * scale.x)) * backgroundd.width * scale.x;
-            canvas.drawImage(backgroundd, -this.windowLocation.x / 4 * scale.x + wOffset, -(_H.floor(this.windowLocation.y / 4)) * scale.x, backgroundd.width * scale.x, backgroundd.height * scale.y)
-            canvas.drawImage(backgroundd, -this.windowLocation.x / 4 * scale.x + backgroundd.width * scale.x + wOffset, -(_H.floor(this.windowLocation.y / 4)) * scale.x, backgroundd.width * scale.x, backgroundd.height * scale.y)
-        }
+            var wOffset = _H.floor(this.windowLocation.x /    scale.x  )  ;
+
+            this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x /2) * scale.x, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
+            this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x / 2) * scale.x + backgroundd.width * scale.x, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
+
+          }
 
 
         if (this.windowLocation.x < 0) this.windowLocation.x = 0;
@@ -152,24 +156,27 @@ function SonicManager(mainCanvas) {
         */
 
 
+
+
         for (var j = 0; j < this.SonicLevel.ChunkMap.length; j++) {
-            if (!this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]]) continue;
-            var cX = (j % sonicManager.SonicLevel.LevelWidth);
-            var cY = _H.floor(j / sonicManager.SonicLevel.LevelWidth);
 
-            var pos = { x: cX * 128 * scale.x, y: cY * 128 * scale.y };
-            if ((pos.x >= (this.windowLocation.x - 128) * scale.x && pos.y >= (this.windowLocation.y - 128) * scale.y &&
-                pos.x <= (this.windowLocation.x + 128) * scale.x + this.windowLocation.width * scale.x && pos.y <= (this.windowLocation.y + 128) * scale.y + this.windowLocation.height * scale.y)) {
+            for (var k = 0; k < this.SonicLevel.ChunkMap[j].length; k++) {
 
-                var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
+                var mj = this.SonicLevel.ChunkMap[j][k];
+                if (!this.SonicLevel.TileChunks[mj]) continue;
 
-                this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]].draw(canvas, posj, scale, 0);
+                var pos = { x: j * 128 * scale.x, y: k * 128 * scale.y };
+                if ((pos.x >= (this.windowLocation.x - 128) * scale.x && pos.y >= (this.windowLocation.y - 128) * scale.y &&
+                    pos.x <= (this.windowLocation.x + 128) * scale.x + this.windowLocation.width * scale.x && pos.y <= (this.windowLocation.y + 128) * scale.y + this.windowLocation.height * scale.y)) {
 
+                    var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
 
-                if (!this.sonicToon) {
-                    canvas.strokeStyle = "#DD0033";
-                    canvas.lineWidth = 3;
-                    canvas.strokeRect(posj.x, posj.y, 128 * scale.x, 128 * scale.y);
+                    this.SonicLevel.TileChunks[mj].draw(canvas, posj, scale, 0);
+                    if (!this.sonicToon) {
+                        canvas.strokeStyle = "#DD0033";
+                        canvas.lineWidth = 3;
+                        canvas.strokeRect(posj.x, posj.y, 128 * scale.x, 128 * scale.y);
+                    }
                 }
             }
         }
@@ -204,77 +211,81 @@ function SonicManager(mainCanvas) {
 
 
         for (var j = 0; j < this.SonicLevel.ChunkMap.length; j++) {
-            if (!this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]]) continue;
-            var cX = (j % sonicManager.SonicLevel.LevelWidth);
-            var cY = _H.floor(j / sonicManager.SonicLevel.LevelWidth);
 
-            var pos = { x: cX * 128 * scale.x, y: cY * 128 * scale.y };
-            if ((pos.x >= (this.windowLocation.x - 128) * scale.x && pos.y >= (this.windowLocation.y - 128) * scale.y &&
-                pos.x <= (this.windowLocation.x + 128) * scale.x + this.windowLocation.width * scale.x && pos.y <= (this.windowLocation.y + 128) * scale.y + this.windowLocation.height * scale.y)) {
+            for (var k = 0; k < this.SonicLevel.ChunkMap[j].length; k++) {
 
-                var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
-                var chunk = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[j]];
-                chunk.draw(canvas, posj, scale, 1);
+                var mj = this.SonicLevel.ChunkMap[j][k];
 
+                if (!this.SonicLevel.TileChunks[mj]) continue;
 
-                if (this.showHeightMap) {
+                var pos = { x: j * 128 * scale.x, y: k * 128 * scale.y };
+                if ((pos.x >= (this.windowLocation.x - 128) * scale.x && pos.y >= (this.windowLocation.y - 128) * scale.y &&
+                    pos.x <= (this.windowLocation.x + 128) * scale.x + this.windowLocation.width * scale.x && pos.y <= (this.windowLocation.y + 128) * scale.y + this.windowLocation.height * scale.y)) {
 
-
-                    var fd;
-                    if ((fd = sonicManager.SpriteCache.heightMapChunks[(this.SonicLevel.curHeightMap ? 1 : 2) + " " + chunk.index + " " + scale.y + " " + scale.x])) {
-                        if (fd.loaded) {
-                            canvas.drawImage(fd, posj.x, posj.y);
-                        }
-
-                    } else {
-                        var hm = this.SonicLevel.curHeightMap ? chunk.heightMap1 : chunk.heightMap2;
-                        var md = this.SonicLevel.curHeightMap ? chunk.angleMap1 : chunk.angleMap2;
-
-                        for (var _y = 0; _y < 8; _y++) {
-                            for (var _x = 0; _x < 8; _x++) {
+                    var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
+                    var chunk = this.SonicLevel.TileChunks[mj];
+                    chunk.draw(canvas, posj, scale, 1);
 
 
-                                var hd = hm[_x + _y * 8];
+                    if (this.showHeightMap) {
 
-                                if (hd == 0) continue;
-                                if (hd == 1) {
-                                    canvas.fillStyle = "rgba(24,98,235,0.6)";
-                                    canvas.fillRect(posj.x + (_x * 16) * scale.x, posj.y + (_y * 16) * scale.y, scale.x * 16, scale.y * 16);
-                                    continue;
+
+                        var fd;
+                        if ((fd = sonicManager.SpriteCache.heightMapChunks[(this.SonicLevel.curHeightMap ? 1 : 2) + " " + chunk.index + " " + scale.y + " " + scale.x])) {
+                            if (fd.loaded) {
+                                canvas.drawImage(fd, posj.x, posj.y);
+                            }
+
+                        } else {
+                            var hm = this.SonicLevel.curHeightMap ? chunk.heightMap1 : chunk.heightMap2;
+                            var md = this.SonicLevel.curHeightMap ? chunk.angleMap1 : chunk.angleMap2;
+
+                            for (var _y = 0; _y < 8; _y++) {
+                                for (var _x = 0; _x < 8; _x++) {
+
+
+                                    var hd = hm[_x][_y];
+
+                                    if (hd == 0) continue;
+                                    if (hd == 1) {
+                                        canvas.fillStyle = "rgba(24,98,235,0.6)";
+                                        canvas.fillRect(posj.x + (_x * 16) * scale.x, posj.y + (_y * 16) * scale.y, scale.x * 16, scale.y * 16);
+                                        continue;
+                                    }
+                                    var posm = { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y };
+                                    hd.draw(canvas, posm, scale, -1);
+
+
+                                    if (md[_x][_y] != null) {
+
+                                        var vangle = md[_x][_y];
+                                        posm.x += 16 * scale.x / 2;
+                                        posm.y += 16 * scale.y / 2;
+
+                                        canvas.moveTo(posm.x, posm.y);
+                                        //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
+
+                                        canvas.lineTo(posm.x + _H.sin((vangle)) * 10 * scale.x, posm.y + _H.cos((vangle)) * 10 * scale.y);
+
+                                        canvas.strokeStyle = "#D141FF";
+                                        canvas.lineWidth = 4;
+                                        canvas.stroke();
+                                    }
+
                                 }
-                                var posm = { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y };
-                                hd.draw(canvas, posm, scale, -1);
-
-
-                                if (md[_x + _y * 8] != null) {
-
-                                    var vangle = md[_x + _y * 8];
-                                    posm.x += 16 * scale.x / 2;
-                                    posm.y += 16 * scale.y / 2;
-
-                                    canvas.moveTo(posm.x, posm.y);
-                                    //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
-
-                                    canvas.lineTo(posm.x + _H.sin((vangle)) * 10 * scale.x, posm.y + _H.cos((vangle)) * 10 * scale.y);
-
-                                    canvas.strokeStyle = "#D141FF";
-                                    canvas.lineWidth = 4;
-                                    canvas.stroke();
-                                }
-
                             }
                         }
                     }
+
+
+                    if (!this.sonicToon) {
+                        canvas.strokeStyle = "#DD0033";
+                        canvas.lineWidth = 3;
+                        canvas.strokeRect(posj.x, posj.y, 128 * scale.x, 128 * scale.y);
+                    }
+
+
                 }
-
-
-                if (!this.sonicToon) {
-                    canvas.strokeStyle = "#DD0033";
-                    canvas.lineWidth = 3;
-                    canvas.strokeRect(posj.x, posj.y, 128 * scale.x, 128 * scale.y);
-                }
-
-
             }
         }
 
@@ -482,7 +493,7 @@ function SonicManager(mainCanvas) {
 
                 for (var _y = 0; _y < 8; _y++) {
                     for (var _x = 0; _x < 8; _x++) {
-                        var hd = hm[_x + _y * 8];
+                        var hd = hm[_x ][_y ];
                         if (hd == 0) continue;
                         if (hd == 1) {
                             ctx.fillStyle = "rgba(24,98,235,0.6)";
@@ -523,7 +534,7 @@ function SonicManager(mainCanvas) {
                 var hm = md.heightMap2;
                 for (var _y = 0; _y < 8; _y++) {
                     for (var _x = 0; _x < 8; _x++) {
-                        var hd = hm[_x + _y * 8];
+                        var hd = hm[_x ][ _y ];
                         if (hd == 0) continue;
                         if (hd == 1) {
                             ctx.fillStyle = "rgba(24,98,235,0.6)";
@@ -608,10 +619,6 @@ function SonicManager(mainCanvas) {
 
 
     };
-}
-
-
-
-
+} 
 
 ClickState = { PlaceChunk: 0, PlaceRing: 1 };
