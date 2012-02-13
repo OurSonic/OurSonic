@@ -183,7 +183,7 @@ function ParallaxBGSlot() {
 
         for (var i = 0; i < this.colors.length; i++) {
             var m = this.colors[i];
-            if (m == "#000000") continue;
+            //if (m == "#000000") continue;
             canvas.fillStyle = m;
             canvas.fillRect(pos.x + (i) * scale.x, pos.y, scale.x, scale.y);
         }

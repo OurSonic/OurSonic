@@ -7,7 +7,7 @@ function SonicManager(mainCanvas) {
     this.goodRing = new Ring(false);
     this.activeRings = [];
 
-    this.background = new ParallaxBG("http://localhost:63697/assets/TileChunks/plane b.png", { x: 1, y: 1 });
+    this.background = new ParallaxBG("assets/TileChunks/plane b.png", { x: 1, y: 1 });
 
     this.uiManager = new UIManager(this, mainCanvas, this.scale);
 
@@ -67,9 +67,7 @@ function SonicManager(mainCanvas) {
 
     this.tickCount = 0;
     this.drawTickCount = 0;
-    var backgroundd = new Image();
-    backgroundd.src = 'http://dested.com/oursonic/assets/TileChunks/plane b.png';
-
+    
     this.tick = function (that) {
         if (that.loading) return;
         if (that.sonicToon) {
@@ -122,7 +120,7 @@ function SonicManager(mainCanvas) {
             var wOffset = _H.floor(this.windowLocation.x / scale.x);
 
             this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x / 2) * scale.x, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
-            this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x / 2) * scale.x + backgroundd.width * scale.x, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
+            this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x / 2) * scale.x + this.background.width * scale.x, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
 
         }
 
@@ -133,17 +131,42 @@ function SonicManager(mainCanvas) {
         if (this.windowLocation.x > 128 * sonicManager.SonicLevel.LevelWidth - this.windowLocation.width) this.windowLocation.x = 128 * sonicManager.SonicLevel.LevelWidth - this.windowLocation.width;
         if (this.windowLocation.y > 128 * sonicManager.SonicLevel.LevelHeight - this.windowLocation.height) this.windowLocation.y = 128 * sonicManager.SonicLevel.LevelHeight - this.windowLocation.height;
 
-        /* var chunks = [this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x) / 128 + (this.windowLocation.y) / 128 * sonicManager.SonicLevel.LevelWidth]],
-        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x - 128) / 128 + (this.windowLocation.y) / 128 * sonicManager.SonicLevel.LevelWidth]],
-        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x + 128) / 128 + (this.windowLocation.y) / 128 * sonicManager.SonicLevel.LevelWidth]],
-        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x) / 128 + (this.windowLocation.y - 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
-        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x - 128) / 128 + (this.windowLocation.y - 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
-        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x + 128) / 128 + (this.windowLocation.y - 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
-        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x) / 128 + (this.windowLocation.y + 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
-        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x - 128) / 128 + (this.windowLocation.y + 128) / 128 * sonicManager.SonicLevel.LevelWidth]],
-        this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[(this.windowLocation.x + 128) / 128 + (this.windowLocation.y + 128) / 128 * sonicManager.SonicLevel.LevelWidth]]
-        ];
+        var offs = [{ x: 0, y: 0 },
+        { x: -128, y: 0 },
+        { x: 128, y: 0 },
+        { x: 0, y: -128 },
+        { x: -128, y: -128 },
+        { x: 128, y: -128 },
+        { x: 0, y: 128 },
+        { x: -128, y: 128 },
+        { x: 128, y: 128}];
+        for (var off in offs) {
+            var xP = (this.windowLocation.x + offs[off].x) / 128;
+            var yP = (this.windowLocation.y + offs[off].y) / 128;
+            var _xP = _H.floor(xP);
+            var _yP = _H.floor(yP);
 
+            var chunk = this.SonicLevel.TileChunks[this.SonicLevel.ChunkMap[_xP][_yP]];
+
+            if (!chunk) continue;
+
+            var pos = { x: _xP * 128 * scale.x, y: _yP * 128 * scale.y };
+            
+                     var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
+
+                    chunk.draw(canvas, posj, scale, 0);
+                    if (!this.sonicToon) {
+                        canvas.strokeStyle = "#DD0033";
+                        canvas.lineWidth = 3;
+                        canvas.strokeRect(posj.x, posj.y, 128 * scale.x, 128 * scale.y);
+                    }
+
+        }
+
+
+
+
+        /*
  
         for (var k = 0; k < chunks.length; k++) {
         chunks[k].draw(canvas, posj, scale, 0);
@@ -238,7 +261,7 @@ function SonicManager(mainCanvas) {
 
                         } else {
                             var hm = this.SonicLevel.curHeightMap ? sonicManager.SonicLevel.CollisionIndexes1 : sonicManager.SonicLevel.CollisionIndexes2;
-//                            var md = this.SonicLevel.curHeightMap ? chunk.angleMap1 : chunk.angleMap2;
+                            //                            var md = this.SonicLevel.curHeightMap ? chunk.angleMap1 : chunk.angleMap2;
 
                             for (var _y = 0; _y < 8; _y++) {
                                 for (var _x = 0; _x < 8; _x++) {
@@ -509,9 +532,9 @@ function SonicManager(mainCanvas) {
                         var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                         hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip,tp.Solid1);
 
-                        /*if (sonicManager.SonicLevel.Angles[mjj] != null) {
+                        var vangle = sonicManager.SonicLevel.Angles[mjj];
+                        if (vangle != 0xFF) {
 
-                            var vangle = sonicManager.SonicLevel.Angles[mjj];
 
                             posm.x += 16 * scale.x / 2;
                             posm.y += 16 * scale.y / 2;
@@ -524,7 +547,7 @@ function SonicManager(mainCanvas) {
                             ctx.strokeStyle = "#D141FF";
                             ctx.lineWidth = 2;
                             ctx.stroke();
-                        }*/
+                        }
                     }
                 }
 

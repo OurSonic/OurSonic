@@ -979,23 +979,27 @@
                     ab1[_x][_y] = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
                     ab2[_x][_y] = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
 
-                    /*if (tp.XFlip) {
+                    if (tp.XFlip) {
                         if (tp.YFlip) {
-                            ab1[_x][_y] = (ab1[_x][_y] +_H.floor(256 / 4 * 1)) % 256;
-                            ab2[_x][_y] = (ab2[_x][_y] +_H.floor(256 / 4 * 1)) % 256;
+                            ab1[_x][_y] = (ab1[_x][_y] + (0x7f - ab1[_x][_y]) * 2) % 0xff;
+                            ab2[_x][_y] = (ab2[_x][_y] + (0x7f - ab2[_x][_y]) * 2) % 0xff;
+
+                            ab1[_x][_y] = (0xff - ab1[_x][_y]) % 0xff;
+                            ab2[_x][_y] = (0xff - ab2[_x][_y]) % 0xff;
+
                         } else {
-                            ab1[_x][_y] = (ab1[_x][_y] + _H.floor(256 / 4 * 2)) % 256;
-                            ab2[_x][_y] = (ab2[_x][_y] + _H.floor(256 / 4 * 2)) % 256;
+                            ab1[_x][_y] = (0xff-ab1[_x][_y]) % 0xff;
+                            ab2[_x][_y] = (0xff-ab2[_x][_y]) % 0xff;
                         }
                     } else {
                         if (tp.YFlip) {
-                            ab1[_x][_y] = (ab1[_x][_y] + _H.floor(256 / 4 * 3)) % 256;
-                            ab2[_x][_y] = (ab2[_x][_y] + _H.floor(256 / 4 * 3)) % 256;
+                            ab1[_x][_y] = (ab1[_x][_y] + (0x7f - ab1[_x][_y]) * 2) % 0xff;
+                            ab2[_x][_y] = (ab2[_x][_y] + (0x7f - ab2[_x][_y]) * 2) % 0xff;
                         } else {
-                            ab1[_x][_y] = (ab1[_x][_y] + _H.floor(256 / 4 * 0));
-                            ab2[_x][_y] = (ab2[_x][_y] + _H.floor(256 / 4 * 0));
+                            ab1[_x][_y] = (ab1[_x][_y]);
+                            ab2[_x][_y] = (ab2[_x][_y]);
                         }
-                    }*/
+                    }
                     hd1 = hd1.items;
                     hd2 = hd2.items;
 
