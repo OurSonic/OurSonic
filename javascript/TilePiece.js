@@ -14,21 +14,36 @@ function TilePiece(heightMask, tiles) {
     };
 
 
-    TilePiece.prototype.draw = function (canvas, position, scale,layer) {
+    TilePiece.prototype.draw = function (canvas, position, scale, layer, xflip, yflip) {
 
-
-
+        var drawOrder;
+        if (xflip) {
+            if (yflip) {
+                drawOrder = [3, 2, 1, 0];
+            } else {
+                drawOrder = [1, 0, 3, 2];
+            }
+        } else {
+            if (yflip) {
+                drawOrder = [2, 3, 0, 1];
+            } else {
+                drawOrder = [0, 1, 2, 3];
+            }
+        }
         var fd;
         if ((fd = sonicManager.SpriteCache.tilePeices[layer + " " + this.index + " " + scale.y + " " + scale.x])) {
             if (fd.loaded) {
                 canvas.drawImage(fd, position.x, position.y);
             }
         } else {
-            for (i = 0; i < this.tiles.length; i++) {
+            for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
-                sonicManager.SonicLevel.TileData[mj.TileIndex].draw(canvas, { x: position.x + (i % 2) * 8 * scale.x, y: position.y + _H.floor(i / 2) * 8 * scale.y }, scale, mj.State, false, layer);
+                if (sonicManager.SonicLevel.TileData[mj.Tile])
+                    sonicManager.SonicLevel.TileData[mj.Tile].draw(canvas,
+                        { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
+                        _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, false, layer);
             }
-           /* canvas.lineWidth = 2;
+            /* canvas.lineWidth = 2;
             canvas.strokeStyle = "#D142AA";
             canvas.strokeRect(position.x, position.y, 16 * scale.x, 16 * scale.y);*/
         }

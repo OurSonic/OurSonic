@@ -11,6 +11,10 @@
     max: function (f1, f2) {
         return f1 < f2 ? f2 : f1;
     },
+    xor: function (x1, x2) {
+//        return x1 || x2;
+        return (x1 && !x2) || (!x1 && x2);
+    },
     loadSprite: function (src, complete) {
 
         var sprite1 = new Image();
@@ -281,7 +285,7 @@
             }
             return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
         }
-    } 
+    }
     , sin: function (f) {
 
         return cos_table[(f + 0x40) & 0xFF];
@@ -326,6 +330,33 @@ window.cos_table = [
      0.83147,  0.84485,  0.85773,  0.87009,  0.88192,  0.89322,  0.90399,  0.91421, 
      0.92388,  0.93299,  0.94154,  0.94953,  0.95694,  0.96378,  0.97003,  0.97570, 
      0.98079,  0.98528,  0.98918,  0.99248,  0.99518,  0.99729,  0.99880,  0.99970];
+
+
+
+var base64chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split("");
+var base64inv = {};
+for (var i = 0; i < base64chars.length; i++) {
+    base64inv[base64chars[i]] = i;
+}
+window.decodeNumeric = function(s) {
+    s = s.replace(new RegExp('[^' + base64chars.join("") + '=]', 'g'), "");
+
+    var p = (s.charAt(s.length - 1) == '=' ?
+        (s.charAt(s.length - 2) == '=' ? 'AA' : 'A') : "");
+    var r = [];
+    s = s.substr(0, s.length - p.length) + p;
+
+    for (var c = 0; c < s.length; c += 4) {
+        var n = (base64inv[s.charAt(c)] << 18) + (base64inv[s.charAt(c + 1)] << 12) +
+            (base64inv[s.charAt(c + 2)] << 6) + base64inv[s.charAt(c + 3)];
+
+        r.push((n >>> 16) & 255);
+        r.push((n >>> 8) & 255);
+        r.push(n & 255);
+    }
+    return r.slice(0, r.length - 1);
+};
+
 
 window.Base64 = {
     // private property
