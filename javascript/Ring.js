@@ -53,7 +53,7 @@ function Ring(active) {
             return;
         }
         if (sps.loaded) {
-            canvas.drawImage(sps, _H.floor(pos.x * scale.x), _H.floor(pos.y * scale.y));
+            canvas.drawImage(sps, _H.floor((pos.x - 8) * scale.x), _H.floor((pos.y - 8) * scale.y));
         }
         else return false;
 

@@ -5,7 +5,7 @@
     var textFont = this.textFont = "18pt sans-serrif ";
     var buttonFont = this.buttonFont = "13pt Arial bold";
     mainCanvas.font = textFont;
-    var indexes = this.indexes = {   tpIndex: 0, modifyIndex: 0, modifyTPIndex: 0 };
+    var indexes = this.indexes = { tpIndex: 0, modifyIndex: 0, modifyTPIndex: 0 };
 
     this.draw = function (canvas) {
         canvas.save();
@@ -36,8 +36,8 @@
             var are = this.UIAreas[ij];
             if (are.visible && are.y <= evt.y && are.y + are.height > evt.y && are.x <= evt.x && are.x + are.width > evt.x) {
                 evt = {
-                    x: evt.x - are.x-10,
-                    y: evt.y - are.y-10,
+                    x: evt.x - are.x - 10,
+                    y: evt.y - are.y - 10,
                     delta: delta
                 };
                 return are.scroll(evt);
@@ -79,7 +79,7 @@
         var cell = _H.getCursorPosition(e);
         cell.x -= 10;
         cell.y -= 10;
-        
+
         var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
             return -f.depth;
         });
@@ -102,7 +102,7 @@
         var cell = _H.getCursorPosition(e, true);
         cell.x -= 10;
         cell.y -= 10;
-        
+
         for (var ij = 0; ij < this.UIAreas.length; ij++) {
             var are = this.UIAreas[ij];
             var ec = { x: cell.x - are.x, y: cell.y - are.y };
@@ -119,7 +119,7 @@
     debuggerArea.addControl(new TextArea(30, 25, "Debugger", textFont, "blue"));
     debuggerArea.addControl(new Button(40, 60, 60, 22, "Stop", buttonFont, "rgb(50,150,50)", function () {
         sonicManager.windowLocation = _H.defaultWindowLocation(1);
- 
+
         debuggerArea.visible = false;
         solidTileArea.visible = false;
         levelInformation.visible = true;
@@ -172,13 +172,13 @@
     solidTileArea.addControl(new Button(50, 35, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
         function () {
             if (indexes.tpIndex > 0)
-                modifyTilePieceArea.tilePiece = sonicManager.SonicLevel.TilePieces[--indexes.tpIndex];
+                modifyTilePieceArea.tilePiece = sonicManager.SonicLevel.Blocks[--indexes.tpIndex];
         }));
 
     solidTileArea.addControl(new Button(75, 35, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
         function () {
-            if (indexes.tpIndex < sonicManager.SonicLevel.TilePieces.length)
-                modifyTilePieceArea.tilePiece = sonicManager.SonicLevel.TilePieces[++indexes.tpIndex];
+            if (indexes.tpIndex < sonicManager.SonicLevel.Blocks.length)
+                modifyTilePieceArea.tilePiece = sonicManager.SonicLevel.Blocks[++indexes.tpIndex];
         }));
     solidTileArea.addControl(new Button(360, 80, 45, 22, "Full", buttonFont, "rgb(50,150,50)",
         function () {
@@ -204,25 +204,25 @@
                 break;
         }
     }));
-    var modifyTilePieceArea = this.modifyTilePieceArea = new TilePieceArea(30, 70, { x: 4 * 5, y: 4 * 5 }, null,0);
+    var modifyTilePieceArea = this.modifyTilePieceArea = new TilePieceArea(30, 70, { x: 4 * 5, y: 4 * 5 }, null, 0);
     solidTileArea.addControl(modifyTilePieceArea);
 
 
-    var bgEditor = this.bgEditor = new UiArea(100, 440, 420, 360, this,true);
-     bgEditor.visible = false;
-     this.UIAreas.push(bgEditor);
-     bgEditor.addControl(new TextArea(30, 25, "BG Editor", textFont, "blue"));
-     bgEditor.addControl(new TileBGEditArea(60, 35, sonicManager.background));
- 
-    
-    
+    var bgEditor = this.bgEditor = new UiArea(100, 440, 420, 360, this, true);
+    bgEditor.visible = false;
+    this.UIAreas.push(bgEditor);
+    bgEditor.addControl(new TextArea(30, 25, "BG Editor", textFont, "blue"));
+    bgEditor.addControl(new TileBGEditArea(60, 35, sonicManager.background));
+
+
+
 
     var levelInformation = this.levelInformation = new UiArea(500, 440, 470, 360, this);
     levelInformation.visible = true;
     this.UIAreas.push(levelInformation);
     levelInformation.addControl(new TextArea(30, 25, "Level Selector", textFont, "blue"));
     levelInformation.addControl(new TextArea(30, 52, function () {
-        return !curLevelName ? "Level Not Saved" : ( curLevelName);
+        return !curLevelName ? "Level Not Saved" : (curLevelName);
     }, textFont, "black"));
     levelInformation.addControl(new Button(250, 70, 100, 22, "Save Level", buttonFont, "rgb(50,150,50)",
     function () {
@@ -237,7 +237,7 @@
     }));
 
     var tb;
-    levelInformation.addControl(tb=new Button(250, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
+    levelInformation.addControl(tb = new Button(250, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
     function () {
 
         levelManagerArea.visible = true;
@@ -255,7 +255,7 @@
             }
             setTimeout(tim, 100);
 
-            _H.loadSprite("assets/TileChunks/Tile" + index++ + ".png", function (image) {
+            _H.loadSprite("assets/Chunks/Tile" + index++ + ".png", function (image) {
                 loadingText.text = "Loading " + index + "/" + max;
                 sonicManager.importChunkFromImage(image);
                 if (index == max) {
@@ -286,14 +286,14 @@
     function addLevelToList(name) {
         var btn;
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
-            curLevelName = "Downloading"; 
+            curLevelName = "Downloading";
             OurSonic.SonicLevels.getLevel(name, function (lvl) {
-                curLevelName = "loading"; 
+                curLevelName = "loading";
                 curLevelName = name; loadGame(lvl, mainCanvas);
             });
         }));
     }
-     
+
 
 
 
@@ -334,9 +334,9 @@
 
         }));
 
-        levelManagerArea.addControl(new Button(200, 180, 160, 22, "Switch Height Map", buttonFont, "rgb(50,150,50)", function () {
-            sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
-        }
+    levelManagerArea.addControl(new Button(200, 180, 160, 22, "Switch Height Map", buttonFont, "rgb(50,150,50)", function () {
+        sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
+    }
     ));
 
     levelManagerArea.addControl(new Button(35, 150, 160, 22, "Modify Chunks", buttonFont, "rgb(50,150,50)",
@@ -362,7 +362,7 @@
         }));
 
 
-        levelManagerArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)",
+    levelManagerArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)",
         function () {
             levelManagerArea.visible = false;
             solidTileArea.visible = false;
@@ -374,6 +374,7 @@
             sonicManager.background.cache(sonicManager.scale);
             sonicManager.windowLocation = _H.defaultWindowLocation(0);
             sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
+            sonicManager.sonicToon.obtainedRing = [];
         }));
 
 
@@ -393,28 +394,28 @@
     modifyTileChunkArea.addControl(new Button(50, 35, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
         function () {
             if (indexes.modifyIndex > 0)
-                modifyTC.tileChunk = sonicManager.SonicLevel.TileChunks[--indexes.modifyIndex];
+                modifyTC.tileChunk = sonicManager.SonicLevel.Chunks[--indexes.modifyIndex];
         }));
     modifyTileChunkArea.addControl(new Button(80, 35, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
         function () {
-            if (indexes.modifyIndex < sonicManager.SonicLevel.TileChunks.length)
-                modifyTC.tileChunk = sonicManager.SonicLevel.TileChunks[++indexes.modifyIndex];
+            if (indexes.modifyIndex < sonicManager.SonicLevel.Chunks.length)
+                modifyTC.tileChunk = sonicManager.SonicLevel.Chunks[++indexes.modifyIndex];
         }));
 
 
-    var modifyTP = this.modifyTP = new TilePieceArea(300, 160, { x: 2*3, y: 2*3 }, null,3);
+    var modifyTP = this.modifyTP = new TilePieceArea(300, 160, { x: 2 * 3, y: 2 * 3 }, null, 3);
 
     modifyTileChunkArea.addControl(modifyTP);
 
     modifyTileChunkArea.addControl(new Button(300, 100, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
         function () {
             if (indexes.modifyTPIndex > 0)
-                modifyTP.tilePiece = modifyTC.setToTile = sonicManager.SonicLevel.TilePieces[--indexes.modifyTPIndex];
+                modifyTP.tilePiece = modifyTC.setToTile = sonicManager.SonicLevel.Blocks[--indexes.modifyTPIndex];
         }));
     modifyTileChunkArea.addControl(new Button(330, 100, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
         function () {
-            if (indexes.modifyTPIndex < sonicManager.SonicLevel.TilePieces.length)
-                modifyTP.tilePiece = modifyTC.setToTile = sonicManager.SonicLevel.TilePieces[++indexes.modifyTPIndex];
+            if (indexes.modifyTPIndex < sonicManager.SonicLevel.Blocks.length)
+                modifyTP.tilePiece = modifyTC.setToTile = sonicManager.SonicLevel.Blocks[++indexes.modifyTPIndex];
         }));
 
 
@@ -431,20 +432,24 @@
         levelManagerArea.visible = true;
         sonicManager.loading = true;
         sonicManager.SonicLevel = jQuery.parseJSON(lvl);
-         
+
         var fc;
         var j;
-        if (!sonicManager.SonicLevel.TileChunks)
-            sonicManager.SonicLevel.TileChunks = [];
-        if (!sonicManager.SonicLevel.TilePieces)
-            sonicManager.SonicLevel.TilePieces = [];
-        if (!sonicManager.SonicLevel.TileData)
-            sonicManager.SonicLevel.TileData = [];
+        if (!sonicManager.SonicLevel.Chunks)
+            sonicManager.SonicLevel.Chunks = [];
+        if (!sonicManager.SonicLevel.Blocks)
+            sonicManager.SonicLevel.Blocks = [];
+        if (!sonicManager.SonicLevel.Tiles)
+            sonicManager.SonicLevel.Tiles = [];
         if (!sonicManager.SonicLevel.Rings)
-            sonicManager.SonicLevel.Rings = {};
+            sonicManager.SonicLevel.Rings = [];
 
-        sonicManager.SonicLevel.LevelWidth = sonicManager.SonicLevel.ForegroundWidth
+
+        sonicManager.SonicLevel.LevelWidth = sonicManager.SonicLevel.ForegroundWidth;
         sonicManager.SonicLevel.LevelHeight = sonicManager.SonicLevel.ForegroundHeight;
+
+
+
         var mf = decodeNumeric(sonicManager.SonicLevel.Foreground);
         sonicManager.SonicLevel.ChunkMap = [];
         sonicManager.SonicLevel.ChunkMap.length = sonicManager.SonicLevel.ForegroundWidth;
@@ -455,21 +460,46 @@
                 sonicManager.SonicLevel.ChunkMap[q][r] = mf[q + r * sonicManager.SonicLevel.ForegroundWidth];
             }
         }
-         
-        
-        sonicManager.SonicLevel.curHeightMap=true;
-        for (j = 0; j < sonicManager.SonicLevel.TileData.length; j++) {
-            fc = sonicManager.SonicLevel.TileData[j];
-            sonicManager.SonicLevel.TileData[j] = decodeNumeric(fc);
+        var mf = decodeNumeric(sonicManager.SonicLevel.Background);
+        sonicManager.SonicLevel.BGChunkMap = [];
+        sonicManager.SonicLevel.BGChunkMap.length = sonicManager.SonicLevel.BackgroundWidth;
+        for (var q = 0; q < sonicManager.SonicLevel.BackgroundWidth; q++) {
+            sonicManager.SonicLevel.BGChunkMap[q] = [];
+            sonicManager.SonicLevel.BGChunkMap[q].length = sonicManager.SonicLevel.BackgroundHeight;
+            for (var r = 0; r < sonicManager.SonicLevel.BackgroundHeight; r++) {
+                sonicManager.SonicLevel.BGChunkMap[q][r] = mf[q + r * sonicManager.SonicLevel.BackgroundWidth];
+            }
+        }
+        for (var l = 0; l < sonicManager.SonicLevel.Objects.length;l++ ) {
+            var o = sonicManager.SonicLevel.Objects[l];
+            sonicManager.SonicLevel.Objects[l]=_H.ObjectParse(o);
+        }
+
+        /*
+        var jm = [];
+        jm[0] = [];
+        jm[1] = [];
+        jm[2] = [];
+        jm[3] = [];
+        for (var qc = 0; qc < sonicManager.SonicLevel.Palette.length;qc++ ) {
+        jm[_H.floor(qc / 16)][qc % 16] = sonicManager.SonicLevel.Palette[qc];
+        }
+        sonicManager.SonicLevel.Palette=jm;*/
+
+
+            sonicManager.SonicLevel.curHeightMap = true;
+        for (j = 0; j < sonicManager.SonicLevel.Tiles.length; j++) {
+            fc = sonicManager.SonicLevel.Tiles[j];
+            sonicManager.SonicLevel.Tiles[j] = decodeNumeric(fc);
 
             var mj = [];
-            for (var l = 0; l < sonicManager.SonicLevel.TileData[j].length; l++) {
-                var value = sonicManager.SonicLevel.TileData[j][l];
+            for (var l = 0; l < sonicManager.SonicLevel.Tiles[j].length; l++) {
+                var value = sonicManager.SonicLevel.Tiles[j][l];
                 mj.push(value >> 4);
                 mj.push(value & 0xF);
             }
-            sonicManager.SonicLevel.TileData[j] = { colors: mj };
-            var td = sonicManager.SonicLevel.TileData[j];
+            sonicManager.SonicLevel.Tiles[j] = { colors: mj };
+            var td = sonicManager.SonicLevel.Tiles[j];
             var mf = [];
             mf.length = 8;
             for (var o = 0; o < 8; o++) {
@@ -485,8 +515,8 @@
 
         }
 
-        for (j = 0; j < sonicManager.SonicLevel.TilePieces.length; j++) {
-            fc = sonicManager.SonicLevel.TilePieces[j];
+        for (j = 0; j < sonicManager.SonicLevel.Blocks.length; j++) {
+            fc = sonicManager.SonicLevel.Blocks[j];
             var mj = {};
             mj.__proto__ = TilePiece.prototype;
             mj.index = j;
@@ -495,22 +525,22 @@
                 mj.tiles.push(fc[p]);
                 fc[p].__proto__ = TileItem.prototype;
             }
-            sonicManager.SonicLevel.TilePieces[j] = mj;
+            sonicManager.SonicLevel.Blocks[j] = mj;
         }
- 
+
 
         var je;
 
-        for (var i = 0; i < sonicManager.SonicLevel.heightIndexes.length; i++) {
-            sonicManager.SonicLevel.heightIndexes[i] = new HeightMask(0, sonicManager.SonicLevel.heightIndexes[i]);
+        for (var i = 0; i < sonicManager.SonicLevel.HeightMaps.length; i++) {
+            sonicManager.SonicLevel.HeightMaps[i] = new HeightMask(0, sonicManager.SonicLevel.HeightMaps[i]);
         }
 
         sonicManager.SonicLevel.Angles = decodeNumeric(sonicManager.SonicLevel.Angles);
         sonicManager.SonicLevel.CollisionIndexes1 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes1);
         sonicManager.SonicLevel.CollisionIndexes2 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes2);
-        var jc ;
-        for (j = 0; j < sonicManager.SonicLevel.TileChunks.length; j++) {
-            fc = sonicManager.SonicLevel.TileChunks[j];
+        var jc;
+        for (j = 0; j < sonicManager.SonicLevel.Chunks.length; j++) {
+            fc = sonicManager.SonicLevel.Chunks[j];
 
             var mj = {};
             mj.__proto__ = TileChunk.prototype;
@@ -522,95 +552,95 @@
                 mj.tilePieces[i].length = 8;
             }
             for (var p = 0; p < fc.length; p++) {
-                mj.tilePieces[p%8][_H.floor(p/8)]=(fc[p]);
+                mj.tilePieces[p % 8][_H.floor(p / 8)] = (fc[p]);
 
             }
-            sonicManager.SonicLevel.TileChunks[j] = mj;
-             
-             
+            sonicManager.SonicLevel.Chunks[j] = mj;
+
+
             /*for (je = 0; je < fc.angleMap1.length; je++) {
-                for (jc = 0; jc < fc.angleMap1[je].length; jc++) {
-                    fc.angleMap1[je][jc] = parseInt(fc.angleMap1[je][jc], 16);
-                }
+            for (jc = 0; jc < fc.angleMap1[je].length; jc++) {
+            fc.angleMap1[je][jc] = parseInt(fc.angleMap1[je][jc], 16);
+            }
             }
             for (je = 0; je < fc.angleMap2.length; je++) {
-                for (jc = 0; jc < fc.angleMap2[je].length; jc++) {
-                    fc.angleMap2[je][jc] = parseInt(fc.angleMap2[je][jc], 16);
-                }
+            for (jc = 0; jc < fc.angleMap2[je].length; jc++) {
+            fc.angleMap2[je][jc] = parseInt(fc.angleMap2[je][jc], 16);
+            }
             }
 
 
             for (je = 0; je < fc.heightMap1.length; je++) {
-                for (jc = 0; jc < fc.heightMap1[je].length; jc++) {
-                    fc.heightMap1[je][jc] = sonicManager.SonicLevel.heightIndexes[fc.heightMap1[je][jc]];
-                }
+            for (jc = 0; jc < fc.heightMap1[je].length; jc++) {
+            fc.heightMap1[je][jc] = sonicManager.SonicLevel.HeightMaps[fc.heightMap1[je][jc]];
+            }
             }
 
             for (je = 0; je < fc.heightMap2.length; je++) {
-                for (jc = 0; jc < fc.heightMap2[je].length; jc++) {
-                    fc.heightMap2[je][jc] = sonicManager.SonicLevel.heightIndexes[fc.heightMap2[je][jc]];
-                }
+            for (jc = 0; jc < fc.heightMap2[je].length; jc++) {
+            fc.heightMap2[je][jc] = sonicManager.SonicLevel.HeightMaps[fc.heightMap2[je][jc]];
+            }
             }*/
- 
+
         }
 
 
         var finished = function () {
 
             sonicManager.loading = false;
-            modifyTC.tileChunk = sonicManager.SonicLevel.TileChunks[0];
-            modifyTilePieceArea.tilePiece = modifyTP.tilePiece = sonicManager.SonicLevel.TilePieces[0];
+            modifyTC.tileChunk = sonicManager.SonicLevel.Chunks[0];
+            modifyTilePieceArea.tilePiece = modifyTP.tilePiece = sonicManager.SonicLevel.Blocks[0];
 
         };
 
-//        var inds = sonicManager.inds = { r:0,t: 0, tp: 0, tc: 0, total: (sonicManager.SonicLevel.TileChunks.length * 2 + sonicManager.SonicLevel.TilePieces.length * 5 + sonicManager.SonicLevel.TileData.length), done: false };
+        //        var inds = sonicManager.inds = { r:0,t: 0, tp: 0, tc: 0, total: (sonicManager.SonicLevel.Chunks.length * 2 + sonicManager.SonicLevel.Blocks.length * 5 + sonicManager.SonicLevel.Tiles.length), done: false };
         curLevelName = "preloading sprites";
 
         sonicManager.preLoadSprites(scale, function () {
-  //          inds.r = 1;
+            //          inds.r = 1;
             finished();
             curLevelName = "level loaded";
         }, function (str) {
             curLevelName = str;
         });
-        
+
 
         /*
         var scal = scale;
         for (j = 0; j < sonicManager.SonicLevel.Tiles.length; j++) {
-            fc = sonicManager.SonicLevel.Tiles[j];
-            fc.cacheImage(mainCanvas, scal, function (j) {
-                inds.t++;
-                var done1 = function (c) {
-                    inds.tp++;
-                    if (inds.tp == sonicManager.SonicLevel.TilePieces.length * 5) {
+        fc = sonicManager.SonicLevel.Tiles[j];
+        fc.cacheImage(mainCanvas, scal, function (j) {
+        inds.t++;
+        var done1 = function (c) {
+        inds.tp++;
+        if (inds.tp == sonicManager.SonicLevel.Blocks.length * 5) {
 
-                        var done2 = function (c2) {
-                            inds.tc++;
+        var done2 = function (c2) {
+        inds.tc++;
 
-                            finished();
-                        };
+        finished();
+        };
 
-                        for (j = 0; j < sonicManager.SonicLevel.TileChunks.length; j++) {
-                            fc = sonicManager.SonicLevel.TileChunks[j];
-                            fc.cacheImage(mainCanvas, scal, 1, done2);
-                            fc.cacheImage(mainCanvas, scal, 2, done2);
-                        }
-                    }
-                };
-                if (inds.t == sonicManager.SonicLevel.Tiles.length) {
-                    for (j = 0; j < sonicManager.SonicLevel.TilePieces.length; j++) {
-                        fc = sonicManager.SonicLevel.TilePieces[j];
-                        fc.cacheImage(mainCanvas, scal, 0, done1);
-                        fc.cacheImage(mainCanvas, scal, 1, done1);
-                        fc.cacheImage(mainCanvas, scal, 2, done1);
-                        fc.cacheImage(mainCanvas, scal, 3, done1);
-                        fc.cacheImage(mainCanvas, scal, 4, done1);
-                    }
-                }
-            });
+        for (j = 0; j < sonicManager.SonicLevel.Chunks.length; j++) {
+        fc = sonicManager.SonicLevel.Chunks[j];
+        fc.cacheImage(mainCanvas, scal, 1, done2);
+        fc.cacheImage(mainCanvas, scal, 2, done2);
+        }
+        }
+        };
+        if (inds.t == sonicManager.SonicLevel.Tiles.length) {
+        for (j = 0; j < sonicManager.SonicLevel.Blocks.length; j++) {
+        fc = sonicManager.SonicLevel.Blocks[j];
+        fc.cacheImage(mainCanvas, scal, 0, done1);
+        fc.cacheImage(mainCanvas, scal, 1, done1);
+        fc.cacheImage(mainCanvas, scal, 2, done1);
+        fc.cacheImage(mainCanvas, scal, 3, done1);
+        fc.cacheImage(mainCanvas, scal, 4, done1);
+        }
+        }
+        });
         }*/
-        
+
 
     }
 

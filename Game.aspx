@@ -15,6 +15,8 @@
     </script>
     <script src="javascript/Tile.js?1" type="text/javascript"> 
     </script>
+    <script src="javascript/LevelObject.js?1" type="text/javascript"> 
+    </script>
     <script src="javascript/Ring.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/ParallaxBG.js?1" type="text/javascript"> 

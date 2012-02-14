@@ -15,7 +15,7 @@ function TilePiece(heightMask, tiles) {
     TilePiece.prototype.onlyBackground = function () {
         for (var i = 0; i < this.tiles.length; i++) {
             var mj = this.tiles[i];
-            if (sonicManager.SonicLevel.TileData[mj.Tile]) {
+            if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
                 if (mj.Priority == true) {
                     return false;
                 }
@@ -48,10 +48,10 @@ function TilePiece(heightMask, tiles) {
         } else {
             for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
-                if (sonicManager.SonicLevel.TileData[mj.Tile]) {
+                if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
                     if (mj.Priority == layer) {
 
-                        sonicManager.SonicLevel.TileData[mj.Tile].draw(canvas,
+                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas,
                         { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
                         _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, false, layer);
                     }
@@ -67,7 +67,7 @@ function TilePiece(heightMask, tiles) {
 
 
         //canvas.fillStyle = "#FFFFFF";
-        //canvas.fillText(sonicManager.SonicLevel.TilePieces.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);
+        //canvas.fillText(sonicManager.SonicLevel.Blocks.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);
 
 
         return true;
@@ -107,7 +107,7 @@ function defaultTiles(tile) {
     return tiles;
 }
 
-function defaultTilePieces(heightMask) {
+function defaultBlocks(heightMask) {
     var tilePieces = [];
     var ind = 0;
     for (var x = 0; x < 8; x++) {
@@ -118,7 +118,7 @@ function defaultTilePieces(heightMask) {
     }
     return tilePieces;
 }
-function defaultTileChunks() {
+function defaultChunks() {
     var tileChunks = [];
     for (var x = 0; x < 1; x++) {
         for (var y = 0; y < 1; y++) {

@@ -1,6 +1,6 @@
 ﻿function Sonic(sonicLevel, scale) {
-    this.x = 104;
-    this.y = 1584;
+    this.x = sonicLevel.StartPositions[0].X;
+    this.y = sonicLevel.StartPositions[0].Y;
     this.obtainedRing = [];
     this.rings = 0;
     this.debugging = false;
@@ -391,6 +391,7 @@
 
         if (sonicManager.tickCount % 4 == 0) {
             this.checkCollisionWithRing();
+            this.checkCollisionWithObjects();
         }
 
         if (this.inAir) {
@@ -636,16 +637,27 @@
         this.rings = 0;
 
     };
-    this.checkCollisionWithRing = function () {
+    this.checkCollisionWithRing = function() {
         var me = this.myRec;
         for (var ring in sonicManager.SonicLevel.Rings) {
             var pos = sonicManager.SonicLevel.Rings[ring];
             if (this.obtainedRing[ring]) continue;
-            var _x = pos.x * 8 * scale.x;
-            var _y = pos.y * 8 * scale.y;
-            if (_H.intersectRect(me, { left: _x - 8 * scale.x, right: _x + 8 * scale.x, top: _y - 8 * scale.y, bottom: _y + 8 * scale.y })) {
+            var _x = pos.X;
+            var _y = pos.Y;
+            if (_H.intersectRect(me, { left: _x - 8, right: _x + 8, top: _y - 8, bottom: _y + 8 })) {
                 this.rings++;
                 this.obtainedRing[ring] = true;
+            }
+        }
+    };
+    this.checkCollisionWithObjects = function () {
+        var me = this.myRec;
+        for (var obj in sonicManager.SonicLevel.Objects) {
+            var ob = sonicManager.SonicLevel.Objects[obj];
+            var _x = ob.X;
+            var _y = ob.Y;
+            if (_H.intersectRect(me, ob.getRect())) {
+                ob.collide();
             }
         }
     };
@@ -689,7 +701,7 @@
 
         var _x = _H.floor(x / 128);
         var _y = _H.floor(y / 128);
-        var tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
+        var tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
         var curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
         var cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
 
@@ -713,7 +725,7 @@
                 for (i = 0; i < length; i++) {
 
                     if (__x + i >= 128) {
-                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x + 1][_y]];
+                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x + 1][_y]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                         __x -= 128;
@@ -730,7 +742,7 @@
                 for (i = 0; i < length; i += 1) {
 
                     if (__y + curc >= 128) {
-                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x][(_y + 1)]];
+                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y + 1)]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
 
@@ -750,7 +762,7 @@
 
                 for (i = 0; i < length; i++) {
                     if (__x - i < 0) {
-                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[(_x - 1), _y]];
+                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[(_x - 1), _y]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
 
@@ -771,7 +783,7 @@
 
                 for (i = 0; i < length; i += 1) {
                     if (__y - curc < 0) {
-                        tc = sonicManager.SonicLevel.TileChunks[sonicManager.SonicLevel.ChunkMap[_x][(_y - 1)]];
+                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y - 1)]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
 
@@ -947,8 +959,8 @@
     this.buildHeightInfo = function () {
 
         this.LevelWidth = sonicLevel.LevelWidth * 128;
-        for (var mc = 0; mc < sonicLevel.TileChunks.length; mc++) {
-            var chunk = sonicLevel.TileChunks[mc];
+        for (var mc = 0; mc < sonicLevel.Chunks.length; mc++) {
+            var chunk = sonicLevel.Chunks[mc];
 
             var dd;
             var hb1 = chunk.heightBlocks1 = [];
@@ -970,8 +982,8 @@
             for (var _y = 0; _y < 8; _y++) {
                 for (var _x = 0; _x < 8; _x++) {
                     var tp = chunk.tilePieces[_x][_y];
-                    var hd1 = sonicManager.SonicLevel.heightIndexes[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
-                    var hd2 = sonicManager.SonicLevel.heightIndexes[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
+                    var hd1 = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
+                    var hd2 = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
                     if (hd1 == 0) continue;
                     var __x;
                     var __y;

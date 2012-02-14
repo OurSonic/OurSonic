@@ -14,9 +14,9 @@
 
         for (var i = 0; i < this.colors.length; i++) {
             for (var j = 0; j < this.colors[i].length; j++) {
-                var m = sonicManager.SonicLevel.palletIndexes[palette][this.colors[i][j]];
-
-                if (m == "000000") continue;
+                var gj = this.colors[i][j];
+                if (gj==0) continue;
+                var m = sonicManager.SonicLevel.Palette[palette][gj];
                 canvas.fillStyle = "#" + m;
                 if (xflip) {
                     if (yflip) {
@@ -37,10 +37,10 @@
         }
 
 
-      /*  if (showOutline) {
-            canvas.strokeStyle = "#DD0033";
-            canvas.lineWidth = 3;
-            canvas.strokeRect(pos.x, pos.y, 8 * scale.x, 8 * scale.y);
+        /*  if (showOutline) {
+        canvas.strokeStyle = "#DD0033";
+        canvas.lineWidth = 3;
+        canvas.strokeRect(pos.x, pos.y, 8 * scale.x, 8 * scale.y);
         }*/
 
 

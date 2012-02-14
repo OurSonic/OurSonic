@@ -402,7 +402,7 @@ function TileChunkArea(x, y, scale, tileChunk,state) {
 
         if (this.clicking) {
             if (this.setToTile != null) {
-                this.tileChunk.tilePieces[((_H.floor(e.x / this.scale.x / 16)))][(_H.floor(e.y / this.scale.y / 16))] = sonicManager.SonicLevel.TilePieces.indexOf(this.setToTile);
+                this.tileChunk.tilePieces[((_H.floor(e.x / this.scale.x / 16)))][(_H.floor(e.y / this.scale.y / 16))] = sonicManager.SonicLevel.Blocks.indexOf(this.setToTile);
                 this.tileChunk.sprites = [];
             }
         }
