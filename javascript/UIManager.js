@@ -36,8 +36,8 @@
             var are = this.UIAreas[ij];
             if (are.visible && are.y <= evt.y && are.y + are.height > evt.y && are.x <= evt.x && are.x + are.width > evt.x) {
                 evt = {
-                    x: evt.x - are.x,
-                    y: evt.y - are.y,
+                    x: evt.x - are.x-10,
+                    y: evt.y - are.y-10,
                     delta: delta
                 };
                 return are.scroll(evt);
@@ -47,6 +47,8 @@
     };
     this.onClick = function (e) {
         var cell = _H.getCursorPosition(e);
+        cell.x -= 10;
+        cell.y -= 10;
         var goodArea = null;
         var are;
         var ij;
@@ -75,6 +77,9 @@
     this.onMouseMove = function (e) {
 
         var cell = _H.getCursorPosition(e);
+        cell.x -= 10;
+        cell.y -= 10;
+        
         var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
             return -f.depth;
         });
@@ -95,6 +100,9 @@
     };
     this.onMouseUp = function (e) {
         var cell = _H.getCursorPosition(e, true);
+        cell.x -= 10;
+        cell.y -= 10;
+        
         for (var ij = 0; ij < this.UIAreas.length; ij++) {
             var are = this.UIAreas[ij];
             var ec = { x: cell.x - are.x, y: cell.y - are.y };

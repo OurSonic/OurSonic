@@ -53,7 +53,7 @@ function UiArea(x, y, w, h,manager,closable) {
 
             return;
         }
-        
+
         this.x += e.x - this.dragging.x;
         this.y += e.y - this.dragging.y;
 

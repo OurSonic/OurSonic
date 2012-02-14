@@ -12,7 +12,17 @@ function TilePiece(heightMask, tiles) {
     TilePiece.prototype.mouseOver = function (x, y) {
         //sonicManager.SonicLevel.Tiles[this.tiles[_H.floor(x / 8) + _H.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
     };
-
+    TilePiece.prototype.onlyBackground = function () {
+        for (var i = 0; i < this.tiles.length; i++) {
+            var mj = this.tiles[i];
+            if (sonicManager.SonicLevel.TileData[mj.Tile]) {
+                if (mj.Priority == true) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }; 
 
     TilePiece.prototype.draw = function (canvas, position, scale, layer, xflip, yflip) {
 
