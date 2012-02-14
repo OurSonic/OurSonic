@@ -327,8 +327,9 @@ function TileBGEditArea(x, y, parallaxBG) {
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
+        this.parallaxBG = sonicManager.background;
 
-        if (e.x > 0 && e.y > 0 && e.y < parallaxBG.height && e.x < parallaxBG.width) {
+        if (e.x > 0 && e.y > 0 && e.y < this.parallaxBG.height && e.x < this.parallaxBG.width) {
             var bar;
             if ((bar = this.parallaxBG.onBar(e.x, e.y))) {
                 this.lowestClickedY = bar.top;
@@ -344,6 +345,7 @@ function TileBGEditArea(x, y, parallaxBG) {
     this.onMouseUp = function (e) {
         if (!this.visible) return;
 
+        this.parallaxBG = sonicManager.background;
         this.highestClickedY = -1;
         this.lowestClickedY = -1;
 
@@ -353,7 +355,8 @@ function TileBGEditArea(x, y, parallaxBG) {
     this.clickHandled = false;
     this.onMouseOver = function (e) {
         if (!this.clicking) return;
-        if (e.x > 0 && e.y > 0 && e.y < parallaxBG.height && e.x < parallaxBG.width) {
+        this.parallaxBG = sonicManager.background;
+        if (e.x > 0 && e.y > 0 && e.y < this.parallaxBG.height && e.x < this.parallaxBG.width) {
             if (e.y > this.highestClickedY) this.highestClickedY = e.y;
             if (e.y < this.lowestClickedY) this.lowestClickedY = e.y;
             for (var i = this.lowestClickedY; i < this.highestClickedY; i++) {
@@ -364,9 +367,12 @@ function TileBGEditArea(x, y, parallaxBG) {
     };
     this.draw = function (canv) {
         if (!this.visible) return;
+
+        this.parallaxBG = sonicManager.background;
         if (!this.parallaxBG) return;
-        this.width = parallaxBG.width;
-        this.height = parallaxBG.height;
+        
+        this.width = this.parallaxBG.width;
+        this.height = this.parallaxBG.height;
         this.parent.width = this.width + 70;
         this.parent.height = this.height + 50;
         

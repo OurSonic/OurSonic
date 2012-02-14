@@ -1,25 +1,8 @@
 ﻿function ParallaxBG(bgLocation, scl) {
     var that = this;
-    var img = new Image();
-    img.onload = function () {
-        that.width = img.width;
-        that.height = img.height;
-        var data = _H.getImageData(img);
-        var colors = [];
-        for (var i = 0; i < img.height; i++) {
-            colors[i] = [];
-            colors[i].length = img.width;
-        }
+    var img = bgLocation;
 
-        for (var f = 0; f < data.length; f += 4) {
-            colors[_H.floor(f / 4 / img.width)][f / 4 % img.width] = (_H.colorFromData(data, f));
-        }
-        that.colors = colors;
-        that.sprite = img;
-        that.sprite.loaded = true;
-        that.init(scl);
-    };
-    img.src = bgLocation;
+
 
     ParallaxBG.prototype.click = function (x, y) {
         this.slots[y].rotateSpeed = x / this.width * 2;
@@ -71,7 +54,7 @@
         sprites[lastI] = (_H.loadSprite(cur.canvas.toDataURL("image/png")));
         this.sprites = sprites;
     };
-    
+
     ParallaxBG.prototype.init = function (scale) {
 
         var w = this.colors[0].length;
@@ -141,31 +124,48 @@
         for (var ind in this.sprites) {
             var pm = { x: pos.x + (Math.floor(offsetX * this.slots[ind].rotateSpeed)), y: pos.y + ind * scale.y };
 
-            if (pm.y < 0 || pm.y > h)
-                continue;
-            if (pm.x > sonicManager.windowLocation.width || pm.x + w < 0)
-                continue;
-
-            if (this.sprite && this.sprite.loaded)
-                canvas.drawImage(this.sprite, pm.x, pm.y, this.sprite.width * scale.x, this.sprite.height * scale.y);
+            if (pm.y > sonicManager.windowLocation.y * scale.y || pm.y < h + sonicManager.windowLocation.y * scale.y) {
+                if (pm.x > sonicManager.windowLocation.width || pm.x + w < 0)
+                    continue;
+                if (this.sprite && this.sprite.loaded)
+                    canvas.drawImage(this.sprite, pm.x, pm.y, this.sprite.width, this.sprite.height);
+            }
         }
-  
-  
-        
-/*        for (var i = 0; i < this.slots.length; i++) {
-            var pm = { x: pos.x + (Math.floor(offsetX * this.slots[i].rotateSpeed)), y: pos.y + i * scale.y }; 
 
-            if (pm.y < 0 || pm.y > h)
-                continue;
-            if (pm.x > sonicManager.windowLocation.width || pm.x + w < 0)
-                continue;
 
-            this.slots[i].draw(canvas, pm, scale);
+
+        /*        for (var i = 0; i < this.slots.length; i++) {
+        var pm = { x: pos.x + (Math.floor(offsetX * this.slots[i].rotateSpeed)), y: pos.y + i * scale.y }; 
+
+        if (pm.y < 0 || pm.y > h)
+        continue;
+        if (pm.x > sonicManager.windowLocation.width || pm.x + w < 0)
+        continue;
+
+        this.slots[i].draw(canvas, pm, scale);
         }*/
 
 
     };
 
+
+
+    that.width = img.width;
+    that.height = img.height;
+    var data = _H.getImageData(img);
+    var colors = [];
+    for (var i = 0; i < img.height; i++) {
+        colors[i] = [];
+        colors[i].length = img.width;
+    }
+
+    for (var f = 0; f < data.length; f += 4) {
+        colors[_H.floor(f / 4 / img.width)][f / 4 % img.width] = (_H.colorFromData(data, f));
+    }
+    that.colors = colors;
+    that.sprite = img;
+    that.sprite.loaded = true;
+    that.init(scl);
 }
 
 

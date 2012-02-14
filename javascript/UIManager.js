@@ -6,8 +6,13 @@
     var buttonFont = this.buttonFont = "13pt Arial bold";
     mainCanvas.font = textFont;
     var indexes = this.indexes = { tpIndex: 0, modifyIndex: 0, modifyTPIndex: 0 };
-
+    this.dragger = new Dragger(function (xsp, ysp) {
+        sonicManager.windowLocation.x += xsp;
+        sonicManager.windowLocation.y += ysp;
+    });
     this.draw = function (canvas) {
+        this.dragger.tick();
+
         canvas.save();
 
         var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
@@ -52,12 +57,16 @@
         var goodArea = null;
         var are;
         var ij;
-        for (ij = 0; ij < this.UIAreas.length; ij++) {
-            are = this.UIAreas[ij];
+        var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
+            return -f.depth;
+        });
+        for (var ij = 0; ij < cl.items.length; ij++) {
+            var are = cl.items[ij];
             if (are.visible && are.y <= cell.y && are.y + are.height > cell.y && are.x <= cell.x && are.x + are.width > cell.x) {
                 goodArea = are;
                 var ec = { x: cell.x - are.x, y: cell.y - are.y };
                 are.click(ec);
+                break;
             }
         }
 
@@ -71,6 +80,7 @@
 
             return true;
         }
+        this.dragger.click(e);
         return false;
     };
 
@@ -95,6 +105,7 @@
 
             }
         }
+        this.dragger.mouseMove(e);
         return false;
 
     };
@@ -108,6 +119,7 @@
             var ec = { x: cell.x - are.x, y: cell.y - are.y };
             are.mouseUp(ec);
         }
+        this.dragger.mouseUp(e);
     };
 
 
@@ -212,12 +224,12 @@
     bgEditor.visible = false;
     this.UIAreas.push(bgEditor);
     bgEditor.addControl(new TextArea(30, 25, "BG Editor", textFont, "blue"));
-    bgEditor.addControl(new TileBGEditArea(60, 35, sonicManager.background));
+    bgEditor.addControl(new TileBGEditArea(60, 35));
 
 
 
 
-    var levelInformation = this.levelInformation = new UiArea(500, 440, 470, 360, this);
+    var levelInformation = this.levelInformation = new UiArea(70, 70, 470, 360, this);
     levelInformation.visible = true;
     this.UIAreas.push(levelInformation);
     levelInformation.addControl(new TextArea(30, 25, "Level Selector", textFont, "blue"));
@@ -360,6 +372,10 @@
             modifyTileArea.visible = true;
 
         }));
+    levelManagerArea.addControl(new Button(35, 240, 160, 22, "Modify Background", buttonFont, "rgb(50,150,50)",
+        function () {
+            bgEditor.visible = true;
+        }));
 
 
     levelManagerArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)",
@@ -470,9 +486,9 @@
                 sonicManager.SonicLevel.BGChunkMap[q][r] = mf[q + r * sonicManager.SonicLevel.BackgroundWidth];
             }
         }
-        for (var l = 0; l < sonicManager.SonicLevel.Objects.length;l++ ) {
+        for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
             var o = sonicManager.SonicLevel.Objects[l];
-            sonicManager.SonicLevel.Objects[l]=_H.ObjectParse(o);
+            sonicManager.SonicLevel.Objects[l] = _H.ObjectParse(o);
         }
 
         /*
@@ -487,7 +503,7 @@
         sonicManager.SonicLevel.Palette=jm;*/
 
 
-            sonicManager.SonicLevel.curHeightMap = true;
+        sonicManager.SonicLevel.curHeightMap = true;
         for (j = 0; j < sonicManager.SonicLevel.Tiles.length; j++) {
             fc = sonicManager.SonicLevel.Tiles[j];
             sonicManager.SonicLevel.Tiles[j] = decodeNumeric(fc);
@@ -527,6 +543,7 @@
             }
             sonicManager.SonicLevel.Blocks[j] = mj;
         }
+
 
 
         var je;
@@ -646,3 +663,50 @@
 
 }
 
+
+
+
+
+function Dragger(onFling) {
+    this.lastPos = null;
+    this.xsp = 0;
+    this.ysp = 0;
+    this.lag = 1;
+    this.click = function (e) {
+        this.lastPos = { x: e.x, y: e.y };
+    
+    };
+    this.mouseUp = function (e) {
+        this.lastPos = null;
+    };
+    this.mouseMove = function (e) {
+        if (!this.lastPos) {
+            return;
+        }
+
+        this.xsp += (this.lastPos.x - e.x) * .4;
+        this.ysp += (this.lastPos.y - e.y) * .4;
+        this.xsp = (this.xsp > 0 ? 1 : -1) * Math.min(Math.abs(this.xsp),30);
+        this.ysp = (this.ysp > 0 ? 1 : -1) * Math.min(Math.abs(this.ysp), 30);
+        this.lastPos = { x: e.x, y: e.y };
+    };
+    this.tick = function () {
+
+        onFling(this.xsp, this.ysp);
+           if (this.xsp > 0)
+            this.xsp -= this.lag;
+        else
+            this.xsp += this.lag;
+
+        if (this.ysp > 0)
+            this.ysp -= this.lag;
+        else
+            this.ysp += this.lag;
+        
+        if (Math.abs(this.xsp) <= this.lag)
+            this.xsp = 0;
+        if (Math.abs(this.ysp) <= this.lag)
+            this.ysp = 0;
+
+    }
+}

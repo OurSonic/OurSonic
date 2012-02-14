@@ -164,7 +164,7 @@ function SpringObject(o) {
     SpringObject.prototype.getRect = function () {
         var x = this.ObjectData.X - monitor.width / 2;
         var y = this.ObjectData.Y - monitor.height / 2;
-        return { left: x, top: y, right: x + monitor.width, height: y + monitor.height };
+        return { left: x, top: y, right: x + monitor.width, bottom: y + monitor.height };
     };
     SpringObject.prototype.collide = function () {
         if (sonicManager.sonicToon.ysp == 0) {

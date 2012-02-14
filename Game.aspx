@@ -7,6 +7,8 @@
     <title>Our Sonic</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js" type="text/javascript">
     </script>
+ 
+
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Help.js?1" type="text/javascript"> 
@@ -45,7 +47,7 @@
                                 //<![CDATA[
         $(function () {
             var stats = new Stats();
-
+            
             // Align top-left
             stats.getDomElement().style.position = 'absolute';
             stats.getDomElement().style.left = '0px';

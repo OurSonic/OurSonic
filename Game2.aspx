@@ -10,7 +10,7 @@
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script>  
       <script src="javascript/stats.js?1" type="text/javascript"> 
-    </script>
+    </script>    
     <script src="javascript/curCompress.js?1" type="text/javascript"> 
     </script> 
     <script type="text/javascript">
