@@ -209,14 +209,14 @@
     
     
 
-    var levelInformation = this.levelInformation = new UiArea(500, 440, 420, 360, this);
+    var levelInformation = this.levelInformation = new UiArea(500, 440, 470, 360, this);
     levelInformation.visible = true;
     this.UIAreas.push(levelInformation);
     levelInformation.addControl(new TextArea(30, 25, "Level Selector", textFont, "blue"));
     levelInformation.addControl(new TextArea(30, 52, function () {
-        return !curLevelName ? "Level Not Saved" : ("Current Level: " + curLevelName);
+        return !curLevelName ? "Level Not Saved" : ( curLevelName);
     }, textFont, "black"));
-    levelInformation.addControl(new Button(190, 70, 100, 22, "Save Level", buttonFont, "rgb(50,150,50)",
+    levelInformation.addControl(new Button(250, 70, 100, 22, "Save Level", buttonFont, "rgb(50,150,50)",
     function () {
         if (curLevelName) {
             OurSonic.SonicLevels.SaveLevelInformation(curLevelName, Base64.encode(_H.stringify(sonicManager.SonicLevel)), function (c) { }, function (c) { alert("Failure: " + _H.stringify(c)); });
@@ -228,8 +228,8 @@
         }
     }));
 
-
-    levelInformation.addControl(new Button(190, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
+    var tb;
+    levelInformation.addControl(tb=new Button(250, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
     function () {
 
         levelManagerArea.visible = true;
@@ -261,9 +261,10 @@
 
 
     }));
+    tb.visible = false;
 
     var ctls;
-    levelInformation.addControl(ctls = new ScrollBox(30, 70, 25, 11, 130, "rgb(50,60,127)"));
+    levelInformation.addControl(ctls = new ScrollBox(30, 70, 25, 11, 190, "rgb(50,60,127)"));
 
     var curLevelName;
     OurSonic.SonicLevels.getLevels(function (lvls) {

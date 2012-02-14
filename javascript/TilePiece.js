@@ -38,10 +38,14 @@ function TilePiece(heightMask, tiles) {
         } else {
             for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
-                if (sonicManager.SonicLevel.TileData[mj.Tile])
-                    sonicManager.SonicLevel.TileData[mj.Tile].draw(canvas,
+                if (sonicManager.SonicLevel.TileData[mj.Tile]) {
+                    if (mj.Priority == layer) {
+
+                        sonicManager.SonicLevel.TileData[mj.Tile].draw(canvas,
                         { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
                         _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, false, layer);
+                    }
+                }
             }
             /* canvas.lineWidth = 2;
             canvas.strokeStyle = "#D142AA";

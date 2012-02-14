@@ -16,7 +16,7 @@
             for (var j = 0; j < this.colors[i].length; j++) {
                 var m = sonicManager.SonicLevel.palletIndexes[palette][this.colors[i][j]];
 
-//                if (m == "000000") continue;
+                if (m == "000000") continue;
                 canvas.fillStyle = "#" + m;
                 if (xflip) {
                     if (yflip) {

@@ -122,7 +122,9 @@ function UiArea(x, y, w, h,manager,closable) {
             canv.drawImage(this.cachedDrawing, _H.floor(this.x), _H.floor(this.y));
             if (this.cachedDrawing.width != this.width + 20 || this.cachedDrawing.height != this.height + 20)
                 this.cachedDrawing = null;
-            
+
+            canv.save();
+            canv.translate(10, 10);
             for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 good = t.forceDrawing();
@@ -131,17 +133,20 @@ function UiArea(x, y, w, h,manager,closable) {
                 if (good.clearCache)
                     this.cachedDrawing = null;
             }
+            canv.restore();
         } else {
             canv.fillStyle = "rgba(133,133,133,0.6)";
             canv.lineWidth = 9;
             canv.strokeStyle = "#333";
-
-            roundRect(canv, this.x + 10, this.y + 10, this.width, this.height, 5, true, true);
+            canv.save();
+            canv.translate(10, 10);
+            roundRect(canv, this.x, this.y, this.width, this.height, 5, true, true);
 
             for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 t.draw(canv);
             }
+            canv.restore();
 
         }
 
@@ -248,6 +253,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
         if (!this.visible) return;
         canv.fillStyle = this.color;
         canv.strokeStyle = "#DAC333";
+        canv.lineWidth = 2;
         roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 5, true, true);
         canv.fillStyle = this.clicking ? "#FCA" : "#334";
         if (canv.font != this.font)
