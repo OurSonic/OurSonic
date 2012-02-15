@@ -124,7 +124,7 @@ function SonicManager(mainCanvas) {
 
             if (this.background) {
                 this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x / 2) * scale.x, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
-             }
+            }
         }
 
 
@@ -254,7 +254,7 @@ function SonicManager(mainCanvas) {
                                     continue;
                                 }
                                 var posm = { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y };
-                                hd.draw(canvas, posm, scale, -1, tp.XFlip, tp.YFlip);
+                                hd.draw(canvas, posm, scale, -1, tp.XFlip, tp.YFlip, this.SonicLevel.curHeightMap ? tp.Solid1 : tp.Solid2);
 
 
                                 if (false && md[_x][_y] != null) {
@@ -319,7 +319,7 @@ function SonicManager(mainCanvas) {
 
 
         var md;
-        var ind_ = { sprites: 0, tps: 0, tcs: 0, ss: 0, hms: 0, hmc: 0 };
+        var ind_ = { sprites: 0, tps: 0, tcs: 0, ss: 0, hms: 0, hmc: 0, tls: 0, px: 0 };
 
         var sm = this.spriteLoader = new SpriteLoader(completed, update);
         var spriteStep = sm.addStep("Sprites", function (i, done) {
@@ -356,6 +356,9 @@ function SonicManager(mainCanvas) {
         var fc = canv.canvas.toDataURL("image/png");
         that.SpriteCache.tilePeices[false + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, done);
 
+
+
+
         canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
         ctx = canv.context;
         ctx.clearRect(0, 0, canv.width, canv.height);
@@ -366,7 +369,7 @@ function SonicManager(mainCanvas) {
 
         }, function () {
         ind_.tps++;
-        if (ind_.tps == that.SonicLevel.Blocks.length*2) {
+        if (ind_.tps == that.SonicLevel.Blocks.length * 2) {
         return true;
         }
         return false;
@@ -379,19 +382,42 @@ function SonicManager(mainCanvas) {
         }*/
 
 
-
-
         var speed = 1;
         /*
-        var heightStep = sm.addStep("Height Maps", function (k, done) {
+        var pixelStep = sm.addStep("Pixels", function (k, done) {
+
+        var ca = _H.defaultCanvas(1, 1);
+        ca.fillStyle = "#" + sonicManager.SonicLevel.Palette[k.x][k.y];
+        ca.context.fillRect(0, 0, 1, 1);
+        sonicManager.SonicLevel.Palette[k.x][k.y] = _H.loadSprite(ca.canvas.toDataURL("image/png"), done);
+
+
+        }, function () {
+        ind_.px++;
+        if (ind_.px >= 16*4) {
+        return true;
+        }
+        return false;
+        });
+
+        for (var qc = 0; qc < sonicManager.SonicLevel.Palette.length; qc++) {
+        for (var qcc = 0; qcc < sonicManager.SonicLevel.Palette[qc].length; qcc++) {
+        sm.addIterationToStep(pixelStep, { x: qc, y: qcc });
+        }
+        }
+        */
+
+
+        /*        var heightStep = sm.addStep("Height Maps", function (k, done) {
         var canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
         var ctx = canv.context;
         ctx.clearRect(0, 0, canv.width, canv.height);
         md = that.SonicLevel.HeightMaps[k];
         md.index = k;
-        md.draw(ctx, { x: 0, y: 0 }, scale, -1);
+        md.draw(ctx, { x: 0, y: 0 }, scale, -1, false, false, 0);
         var fc = canv.canvas.toDataURL("image/png");
-        that.SpriteCache.heightMaps[md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, done);
+        that.SpriteCache.heightMaps[md.index] = _H.loadSprite(fc, done);
+
 
         }, function () {
         ind_.hms++;
@@ -405,10 +431,33 @@ function SonicManager(mainCanvas) {
         for (var k = 0; k < this.SonicLevel.HeightMaps.length; k++) {
 
         sm.addIterationToStep(heightStep, k);
+        }*/
+
+
+        /*
+        var tileStep = sm.addStep("Tile Maps", function (k, done) {
+        var canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
+        var ctx = canv.context;
+        ctx.clearRect(0, 0, canv.width, canv.height);
+        md = that.SonicLevel.Tiles[k];
+        md.index = k;
+        md.draw(ctx, { x: 0, y: 0 }, scale,  false, false, 0);
+        var fc = canv.canvas.toDataURL("image/png");
+        that.SpriteCache.tiles[md.index] = _H.loadSprite(fc, done);
+
+        }, function () {
+        ind_.tls++;
+        if (ind_.tls >= that.SonicLevel.Tiles.length  / speed) {
+        return true;
+        }
+        return false;
+        });
+
+
+        for (var k = 0; k < this.SonicLevel.Tiles.length; k++) { 
+        sm.addIterationToStep(tileStep, k);
         }
         */
-
-
 
         var chunkStep = sm.addStep("Chunk Maps", function (k, done) {
             var canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
@@ -421,7 +470,9 @@ function SonicManager(mainCanvas) {
                 ind_.tcs++;
                 done();
             });
-             
+
+            canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
+            ctx = canv.context;
             ctx.clearRect(0, 0, canv.width, canv.height);
 
             if (!md.onlyBackground()) {
@@ -439,8 +490,17 @@ function SonicManager(mainCanvas) {
             }
 
             var posj = { x: 0, y: 0 };
-             
+            canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
+            ctx = canv.context;
             ctx.clearRect(0, 0, canv.width, canv.height);
+
+
+
+            var canv2 = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
+            var ctx2 = canv2.context;
+
+            ctx2.clearRect(0, 0, canv2.width, canv2.height);
+
 
             for (var _y = 0; _y < 8; _y++) {
                 for (var _x = 0; _x < 8; _x++) {
@@ -451,56 +511,52 @@ function SonicManager(mainCanvas) {
                     var __x = _x;
                     var __y = _y;
                     if (hd == 1) {
-                        ctx.fillStyle = "rgba(24,98,235,0.6)";
+                        if (tp.Solid1 > 0) {
+                            ctx.fillStyle = HeightMask.colors[tp.Solid1];
+                        }
                         ctx.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
                         continue;
                     }
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                     hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
 
-                    var vangle = sonicManager.SonicLevel.Angles[mjj];
+
+
+                    hd = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
+                    if (hd == 0) continue;
+                    if (hd == 1) {
+                        if (tp.Solid2 > 0) {
+                            ctx.fillStyle = HeightMask.colors[tp.Solid2];
+                        }
+                        ctx2.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
+                        continue;
+                    }
+                    var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
+                    hd.draw(ctx2, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid2);
+
+                    /*   var vangle = sonicManager.SonicLevel.Angles[mjj];
                     if (vangle != 0xFF) {
 
 
-                        posm.x += 16 * scale.x / 2;
-                        posm.y += 16 * scale.y / 2;
+                    posm.x += 16 * scale.x / 2;
+                    posm.y += 16 * scale.y / 2;
 
-                        ctx.moveTo(posm.x, posm.y);
-                        //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
+                    ctx.moveTo(posm.x, posm.y);
 
-                        ctx.lineTo(posm.x + _H.sin((vangle) * (Math.PI / 180)) * 10 * scale.x, posm.y + _H.cos((vangle) * (Math.PI / 180)) * 10 * scale.y);
+                    ctx.lineTo(posm.x + _H.sin((vangle) * (Math.PI / 180)) * 10 * scale.x, posm.y + _H.cos((vangle) * (Math.PI / 180)) * 10 * scale.y);
 
-                        ctx.strokeStyle = "#D141FF";
-                        ctx.lineWidth = 2;
-                        ctx.stroke();
-                    }
+                    ctx.strokeStyle = "#D141FF";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    }*/
                 }
             }
 
             var fc = canv.canvas.toDataURL("image/png");
             that.SpriteCache.heightMapChunks[1 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.hmc++; done(); });
 
-              
-            ctx.clearRect(0, 0, canv.width, canv.height);
 
-            for (var _y = 0; _y < 8; _y++) {
-                for (var _x = 0; _x < 8; _x++) {
-                    var tp = md.tilePieces[_x][_y];
-                    var hd = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
-                    if (hd == 0) continue;
-                    var __x = _x;
-                    var __y = _y;
-                    if (hd == 1) {
-                        ctx.fillStyle = "rgba(24,98,235,0.6)";
-                        ctx.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
-                        continue;
-                    }
-                    var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
-                    hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid2);
-                }
-            }
-
-            var fc = canv.canvas.toDataURL("image/png");
+            fc = canv2.canvas.toDataURL("image/png");
             that.SpriteCache.heightMapChunks[2 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.hmc++; done(); });
 
         }, function () {
@@ -515,32 +571,6 @@ function SonicManager(mainCanvas) {
         }
 
 
-
-
-        var bgStep = sm.addStep("Background data", function (sp, done) {
-
-            var canv = _H.defaultCanvas(that.SonicLevel.BackgroundWidth/2 * 128 * scale.x, that.SonicLevel.BackgroundHeight * 128 * scale.y);
-            var ctx = canv.context;
-            ctx.clearRect(0, 0, canv.width, canv.height);
-
-            for (var x = 0; x < that.SonicLevel.BackgroundWidth/2; x++) {
-                for (var y = 0; y < that.SonicLevel.BackgroundHeight; y++) {
-                    var ck = sonicManager.SonicLevel.Chunks[that.SonicLevel.BGChunkMap[x][y]];
-                    if (ck) {
-                        ck.draw(ctx, { x: x * 128 * scale.x, y: y * 128 * scale.y }, scale, 0);
-                    }
-                }
-            }
-
-            that.SpriteCache.bgImage = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
-
-
-        }, function () {
-            that.background = new ParallaxBG(that.SpriteCache.bgImage, { x: 1, y: 1 });
-            return true;
-
-        });
-        sm.addIterationToStep(bgStep, 0);
 
         var sonicStep = sm.addStep("Sonic Sprites", function (sp, done) {
             var ci = that.SpriteCache.sonicSprites;
@@ -615,6 +645,33 @@ function SonicManager(mainCanvas) {
 
 
 
+        var bgStep = sm.addStep("Background data", function (sp, done) {
+
+            var canv = _H.defaultCanvas(that.SonicLevel.BackgroundWidth * 128 * scale.x, that.SonicLevel.BackgroundHeight * 128 * scale.y);
+            var ctx = canv.context;
+            ctx.clearRect(0, 0, canv.width, canv.height);
+
+            for (var x = 0; x <that.SonicLevel.BackgroundWidth; x++) {
+                for (var y = 0; y < that.SonicLevel.BackgroundHeight; y++) {
+                    var ck = sonicManager.SonicLevel.Chunks[that.SonicLevel.BGChunkMap[x][y]];
+                    if (ck) {
+                        ck.draw(ctx, { x: x * 128 * scale.x, y: y * 128 * scale.y }, scale, 0);
+                    }
+                }
+            }
+
+            that.SpriteCache.bgImage = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
+
+
+        }, function () {
+            that.background = new ParallaxBG(that.SpriteCache.bgImage, { x: 1, y: 1 });
+            return true;
+
+        });
+        sm.addIterationToStep(bgStep, 0);
+        sm.addIterationToStep(bgStep, 0);
+
+
 
 
 
@@ -627,17 +684,23 @@ function SpriteLoader(completed, update) {
     var that = this;
     this.stepIndex = 0;
     this.steps = [];
+    this.done = false;
     this.tickIndex = 0;
     this.tick = function () {
+        //this.stepIndex = this.steps.length;
+
         if (this.stepIndex == this.steps.length) {
-            completed();
+            if (!this.done) {
+                this.done = true;
+                completed();
+            }
             return true;
         }
         var stp = this.steps[this.stepIndex];
         if (!stp) return true;
 
         if (that.tickIndex % 5 == 0)
-            update("Caching: " + stp.title + " " + (that.tickIndex + "/" + stp.iterations.length));
+            update("Caching: " + stp.title + " " + Math.floor(((that.tickIndex / stp.iterations.length) * 100)) + "%");
 
         if (stp.iterations.length > this.tickIndex) {
             stp.method(stp.iterations[this.tickIndex++], function () {

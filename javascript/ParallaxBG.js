@@ -32,7 +32,7 @@
     };
 
     ParallaxBG.prototype.cache = function (scale) {
-        var w = (this.slots[0].colors.length * scale.x);
+        var w = (this.width * scale.x);
         var h = sonicManager.windowLocation.height * scale.y;
         var sprites = [];
         var cur = _H.defaultCanvas();
@@ -57,19 +57,26 @@
 
     ParallaxBG.prototype.init = function (scale) {
 
-        var w = this.colors[0].length;
-        var h = this.colors.length;
+        var w = this.width;
+        var h = this.height;
+
         this.slots = [];
         this.slots.length = h;
         for (var y = 0; y < h; y++) {
             this.slots[y] = new ParallaxBGSlot();
         }
+        var mj = _H.defaultCanvas(w, h);
 
+        var mh = _H.defaultCanvas(w, 1);
+        mj.context.drawImage(this.sprite, 0, 0);
         for (var j = 0; j < h; j++) {
+            //mh.context.clearRect(0, 0, w, 1);
+            
+            var pm = mj.context.getImageData(0, j, w, 1);
+            mh.context.putImageData(pm, 0, 0);
 
-            for (var i = 0; i < w; i++) {
-                this.slots[j].colors[i] = (this.colors[j][i]);
-            }
+
+            this.slots[j].sprite = (_H.loadSprite(mh.canvas.toDataURL("image/png")));
         }
 
         for (var y = 0; y < h; y++) {
@@ -119,7 +126,7 @@
 
     };
     ParallaxBG.prototype.draw = function (canvas, pos, scale, offsetX) {
-        var w = (this.slots[0].colors.length * scale.x);
+        var w = (this.width * scale.x);
         var h = sonicManager.windowLocation.height * scale.y;
         for (var ind in this.sprites) {
             var pm = { x: pos.x + (Math.floor(offsetX * this.slots[ind].rotateSpeed)), y: pos.y + ind * scale.y };
@@ -152,7 +159,7 @@
 
     that.width = img.width;
     that.height = img.height;
-    var data = _H.getImageData(img);
+/*    var data = _H.getImageData(img);
     var colors = [];
     for (var i = 0; i < img.height; i++) {
         colors[i] = [];
@@ -163,6 +170,7 @@
         colors[_H.floor(f / 4 / img.width)][f / 4 % img.width] = (_H.colorFromData(data, f));
     }
     that.colors = colors;
+  */
     that.sprite = img;
     that.sprite.loaded = true;
     that.init(scl);
@@ -170,26 +178,28 @@
 
 
 function ParallaxBGSlot() {
-    this.colors = [];
+    
     this.sprite = null;
     this.rotateSpeed = 1;
     ParallaxBGSlot.prototype.draw = function (canvas, pos, scale) {
         if (this.sprite && this.sprite.loaded)
-            canvas.drawImage(this.sprite, pos.x, pos.y, this.sprite.width * scale.x, this.sprite.height * scale.y);
+            canvas.drawImage(this.sprite, pos.x, pos.y, this.sprite.width, this.sprite.height);
 
     };
 
     ParallaxBGSlot.prototype.drawUI = function (canvas, pos, scale) {
+        if (this.sprite && this.sprite.loaded)
+            canvas.drawImage(this.sprite, pos.x, pos.y, this.sprite.width, this.sprite.height);
 
-        for (var i = 0; i < this.colors.length; i++) {
+      /*  for (var i = 0; i < this.colors.length; i++) {
             var m = this.colors[i];
             if (m == "#000000") continue;
             canvas.fillStyle = m;
             canvas.fillRect(pos.x + (i) * scale.x, pos.y, scale.x, scale.y);
-        }
+        }*/
 
     };
-    ParallaxBGSlot.prototype.load = function (scale) {
+    ParallaxBGSlot.prototype.load = function (scale) {/*
         var pos = { x: 0, y: 0 };
         var v = _H.defaultCanvas(scale.x * this.colors.length, scale.y);
         var canvas = v.context;
@@ -199,7 +209,7 @@ function ParallaxBGSlot() {
             canvas.fillRect(pos.x + i * scale.x, pos.y, scale.x, scale.y);
         }
         var m = v.canvas.toDataURL("image/png");
-        this.sprite = _H.loadSprite(m);
+        this.sprite = _H.loadSprite(m);*/
     };
 
 }

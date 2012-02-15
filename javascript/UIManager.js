@@ -445,7 +445,6 @@
     modifyTileArea.addControl(new TextArea(30, 25, "Modify Tile", textFont, "blue"));
 
     function loadGame(lvl, mainCanvas) {
-        levelManagerArea.visible = true;
         sonicManager.loading = true;
         sonicManager.SonicLevel = jQuery.parseJSON(lvl);
 
@@ -549,7 +548,24 @@
         var je;
 
         for (var i = 0; i < sonicManager.SonicLevel.HeightMaps.length; i++) {
-            sonicManager.SonicLevel.HeightMaps[i] = new HeightMask(0, sonicManager.SonicLevel.HeightMaps[i]);
+
+            var b1 = true;
+            var b2 = true;
+            for (var m = 0; m < sonicManager.SonicLevel.HeightMaps[i].length; m++) {
+                if (b1 && sonicManager.SonicLevel.HeightMaps[i][m] != 0) {
+                    b1 = false;
+                }
+                if (b2 && sonicManager.SonicLevel.HeightMaps[i][m] != 16) {
+                    b2 = false;
+                }
+            }
+
+            if ( b1) {
+                sonicManager.SonicLevel.HeightMaps[i] = 0;
+            } else if ( b2) {
+                sonicManager.SonicLevel.HeightMaps[i] = 1;
+            } else
+                sonicManager.SonicLevel.HeightMaps[i] = new HeightMask(0, sonicManager.SonicLevel.HeightMaps[i]);
         }
 
         sonicManager.SonicLevel.Angles = decodeNumeric(sonicManager.SonicLevel.Angles);
@@ -603,7 +619,7 @@
 
 
         var finished = function () {
-
+            levelManagerArea.visible = true;
             sonicManager.loading = false;
             modifyTC.tileChunk = sonicManager.SonicLevel.Chunks[0];
             modifyTilePieceArea.tilePiece = modifyTP.tilePiece = sonicManager.SonicLevel.Blocks[0];
@@ -674,7 +690,7 @@ function Dragger(onFling) {
     this.lag = 1;
     this.click = function (e) {
         this.lastPos = { x: e.x, y: e.y };
-    
+
     };
     this.mouseUp = function (e) {
         this.lastPos = null;
@@ -686,14 +702,14 @@ function Dragger(onFling) {
 
         this.xsp += (this.lastPos.x - e.x) * .4;
         this.ysp += (this.lastPos.y - e.y) * .4;
-        this.xsp = (this.xsp > 0 ? 1 : -1) * Math.min(Math.abs(this.xsp),30);
+        this.xsp = (this.xsp > 0 ? 1 : -1) * Math.min(Math.abs(this.xsp), 30);
         this.ysp = (this.ysp > 0 ? 1 : -1) * Math.min(Math.abs(this.ysp), 30);
         this.lastPos = { x: e.x, y: e.y };
     };
     this.tick = function () {
 
         onFling(this.xsp, this.ysp);
-           if (this.xsp > 0)
+        if (this.xsp > 0)
             this.xsp -= this.lag;
         else
             this.xsp += this.lag;
@@ -702,7 +718,7 @@ function Dragger(onFling) {
             this.ysp -= this.lag;
         else
             this.ysp += this.lag;
-        
+
         if (Math.abs(this.xsp) <= this.lag)
             this.xsp = 0;
         if (Math.abs(this.ysp) <= this.lag)

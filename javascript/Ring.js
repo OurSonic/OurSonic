@@ -44,12 +44,12 @@ function Ring(active) {
         if (sonicManager.SpriteCache.rings)
             sprites = sonicManager.SpriteCache.rings;
         else {
-            alert("sprite fial");
+         //   alert("sprite fial");
             return;
         }
         var sps = sprites[this.animationIndex * 200 + scale.y * 100 + scale.x];
         if (!sps) {
-            alert("sprite fail");
+         //   alert("sprite fail");
             return;
         }
         if (sps.loaded) {
