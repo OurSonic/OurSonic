@@ -37,12 +37,12 @@
     sign: function (m) {
         return m == 0 ? 0 : (m < 0 ? -1 : 1);
     },
-    defaultWindowLocation: function (state) {
+    defaultWindowLocation: function (state,canvas,scale) {
         switch (state) {
             case 0:
                 return { x: 0, y: 0, width: 320, height: 240, intersects: _H.intersects };
             case 1:
-                return { x: 0, y: 0, width: 900, height: 240 * 2, intersects: _H.intersects };
+                return { x: 0, y: 0, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
         }
         return null;
     },
@@ -58,6 +58,9 @@
         return new LevelObject(o);
     },
     intersects: function (p) {
+
+        if (this.width == undefined || this.height == undefined || this.x == undefined || this.y == undefined || p.Y == undefined || p.X == undefined)
+            alert('');
         if (this.x < p.X && this.x + this.width > p.X &&
             this.y < p.Y && this.y + this.height > p.Y) {
             return true;

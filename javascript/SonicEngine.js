@@ -22,10 +22,6 @@ function SonicEngine(canvasName) {
     this.canvas = $("#" + canvasName);
     this.canvasItem = document.getElementById(canvasName).getContext("2d");
 
-
-
-    var sonicManager = window.sonicManager = new SonicManager(this.canvasItem);
-
     this.canvasWidth = 0;
     this.canvasHeight = 0;
 
@@ -94,8 +90,11 @@ function SonicEngine(canvasName) {
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.debug();
                 break;
-            case 68:
+            case 69:
                 sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
+                break;
+            case 70:
+                sonicManager.showHeightMap = !sonicManager.showHeightMap;
                 break;
             case 38:  /* Up arrow was pressed */
             case 87:  /* Up arrow was pressed */
@@ -171,7 +170,7 @@ function SonicEngine(canvasName) {
     that.resizeCanvas = function () {
         that.canvasWidth = $(window).width();
         that.canvasHeight = $(window).height();
-
+        window.sonicManager.windowLocation = _H.defaultWindowLocation(window.sonicManager.sonicToon ? 0 : 1, that.canvasItem, window.sonicManager.scale)
         that.canvas.attr("width", that.canvasWidth);
         that.canvas.attr("height", that.canvasHeight);
     };
@@ -191,7 +190,11 @@ function SonicEngine(canvasName) {
 
 
     $(window).resize(this.resizeCanvas);
+
+    var sonicManager = window.sonicManager = new SonicManager(this.canvasItem, this.resizeCanvas);
     this.resizeCanvas();
+
+
 
     requestAnimFrame(that.draw);
     window.setInterval(sonicManager.tick, 1000 / 60, sonicManager);

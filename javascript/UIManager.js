@@ -85,7 +85,10 @@
     };
 
     this.onMouseMove = function (e) {
-
+        if (this.dragger.isDragging()) {
+            this.dragger.mouseMove(e);
+            return false;
+        }
         var cell = _H.getCursorPosition(e);
         cell.x -= 10;
         cell.y -= 10;
@@ -130,7 +133,7 @@
     this.UIAreas.push(debuggerArea);
     debuggerArea.addControl(new TextArea(30, 25, "Debugger", textFont, "blue"));
     debuggerArea.addControl(new Button(40, 60, 60, 22, "Stop", buttonFont, "rgb(50,150,50)", function () {
-        sonicManager.windowLocation = _H.defaultWindowLocation(1);
+        sonicManager.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
 
         debuggerArea.visible = false;
         solidTileArea.visible = false;
@@ -331,13 +334,16 @@
     }
     ));
 
-    levelManagerArea.addControl(new Button(200, 150, 160, 22, "Place Chunks", buttonFont, "rgb(50,150,50)",
+    levelManagerArea.addControl(new Button(200, 150, 160, 22, "Dragging", buttonFont, "rgb(50,150,50)",
         function () {
 
-            sonicManager.clickState = (sonicManager.clickState + 1) % 2;
+            sonicManager.clickState = (sonicManager.clickState + 1) % 3;
             switch (sonicManager.clickState) {
                 case ClickState.PlaceChunk:
-                    this.text = "Place Chunks";
+                    this.text = "Modify Chunks";
+                    break;
+                case ClickState.Dragging:
+                    this.text = "Dragging";
                     break;
                 case ClickState.PlaceRing:
                     this.text = "Place Rings";
@@ -389,7 +395,7 @@
             debuggerArea.visible = true;
             if (sonicManager.background)
                 sonicManager.background.cache(sonicManager.scale);
-            sonicManager.windowLocation = _H.defaultWindowLocation(0);
+            sonicManager.windowLocation = _H.defaultWindowLocation(0, mainCanvas, scale);
             sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
             sonicManager.sonicToon.obtainedRing = [];
         }));
@@ -528,8 +534,41 @@
             td.colors = mf;
             td.__proto__ = Tile.prototype;
             td.index = j;
-
         }
+
+
+        for (jc = 0; jc < sonicManager.SonicLevel.AnimatedFiles.length; jc++) {
+            var fcc = sonicManager.SonicLevel.AnimatedFiles[jc];
+            for (j = 0; j < fcc.length; j++) {
+                fc = fcc[j];
+                fcc[j] = decodeNumeric(fc);
+
+                var mj = [];
+                for (var l = 0; l < fcc[j].length; l++) {
+                    var value = fcc[j][l];
+                    mj.push(value >> 4);
+                    mj.push(value & 0xF);
+                }
+                fcc[j] = { colors: mj };
+                var td = fcc[j];
+                var mf = [];
+                mf.length = 8;
+                for (var o = 0; o < 8; o++) {
+                    mf[o] = [];
+                    mf[o].length = 8;
+                }
+                for (var n = 0; n < td.colors.length; n++) {
+                    mf[n % 8][_H.floor(n / 8)] = td.colors[n];
+                }
+                td.colors = mf;
+                td.__proto__ = Tile.prototype;
+                td.index = "A" + j + "_" + jc;
+            }
+        }
+
+
+
+
 
         for (j = 0; j < sonicManager.SonicLevel.Blocks.length; j++) {
             fc = sonicManager.SonicLevel.Blocks[j];
@@ -561,9 +600,9 @@
                 }
             }
 
-            if ( b1) {
+            if (b1) {
                 sonicManager.SonicLevel.HeightMaps[i] = 0;
-            } else if ( b2) {
+            } else if (b2) {
                 sonicManager.SonicLevel.HeightMaps[i] = 1;
             } else
                 sonicManager.SonicLevel.HeightMaps[i] = new HeightMask(0, sonicManager.SonicLevel.HeightMaps[i]);
@@ -629,11 +668,13 @@
 
         //        var inds = sonicManager.inds = { r:0,t: 0, tp: 0, tc: 0, total: (sonicManager.SonicLevel.Chunks.length * 2 + sonicManager.SonicLevel.Blocks.length * 5 + sonicManager.SonicLevel.Tiles.length), done: false };
         curLevelName = "preloading sprites";
-
+        sonicManager.CACHING = true;
         sonicManager.preLoadSprites(scale, function () {
             //          inds.r = 1;
+            sonicManager.CACHING = false;
             finished();
             curLevelName = "level loaded";
+            sonicManager.forceResize();
         }, function (str) {
             curLevelName = str;
         });
@@ -683,15 +724,17 @@
 
 
 
-
 function Dragger(onFling) {
     this.lastPos = null;
     this.xsp = 0;
     this.ysp = 0;
-    this.lag = 1;
+    this.lag = 0.925;
     this.click = function (e) {
         this.lastPos = { x: e.x, y: e.y };
 
+    };
+    this.isDragging = function (e) {
+        return this.lastPos;
     };
     this.mouseUp = function (e) {
         this.lastPos = null;
@@ -701,29 +744,29 @@ function Dragger(onFling) {
             return;
         }
 
-        this.xsp += (this.lastPos.x - e.x) * .4;
-        this.ysp += (this.lastPos.y - e.y) * .4;
-        this.xsp = (this.xsp > 0 ? 1 : -1) * Math.min(Math.abs(this.xsp), 30);
-        this.ysp = (this.ysp > 0 ? 1 : -1) * Math.min(Math.abs(this.ysp), 30);
+        this.xsp += (this.lastPos.x - e.x) * 2.7;
+        this.ysp += (this.lastPos.y - e.y) * 2.7;
+        this.xsp = (this.xsp > 0 ? 1 : -1) * Math.min(Math.abs(this.xsp), 60);
+        this.ysp = (this.ysp > 0 ? 1 : -1) * Math.min(Math.abs(this.ysp), 60);
         this.lastPos = { x: e.x, y: e.y };
     };
     this.tick = function () {
 
         onFling(this.xsp, this.ysp);
         if (this.xsp > 0)
-            this.xsp -= this.lag;
+            this.xsp *= this.lag;
         else
-            this.xsp += this.lag;
+            this.xsp *= this.lag;
 
         if (this.ysp > 0)
-            this.ysp -= this.lag;
+            this.ysp *= this.lag;
         else
-            this.ysp += this.lag;
+            this.ysp *= this.lag;
 
-        if (Math.abs(this.xsp) <= this.lag)
+        if (Math.abs(this.xsp) <= 2)
             this.xsp = 0;
-        if (Math.abs(this.ysp) <= this.lag)
+        if (Math.abs(this.ysp) <= 2)
             this.ysp = 0;
 
-    }
+    };
 }

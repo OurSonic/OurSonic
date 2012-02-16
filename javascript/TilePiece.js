@@ -24,7 +24,7 @@ function TilePiece(heightMask, tiles) {
         return true;
     }; 
 
-    TilePiece.prototype.draw = function (canvas, position, scale, layer, xflip, yflip) {
+    TilePiece.prototype.draw = function (canvas, position, scale, layer, xflip, yflip,animated) {
 
         var drawOrder;
         if (xflip) {
@@ -49,10 +49,13 @@ function TilePiece(heightMask, tiles) {
             for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
                 if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
-                    if (mj.Priority == layer) { 
-                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas,
-                        { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
-                        _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, false, layer);
+                    if (mj.Priority == layer) {
+
+                        if (!animated || (sonicManager.containsAnimatedTile(mj.Tile))) {
+                            sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas,
+                                { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
+                                _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, false, layer);
+                        }
                     }
                 }
             }

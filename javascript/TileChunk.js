@@ -25,6 +25,17 @@
             if (fd == 1) return;
             if (fd.loaded) {
                 canvas.drawImage(fd, position.x, position.y);
+
+
+                for (var i = 0; i < this.tilePieces.length; i++) {
+                    for (var j = 0; j < this.tilePieces[i].length; j++) {
+                        var r = this.tilePieces[i][j];
+                        var pm = sonicManager.SonicLevel.Blocks[r.Block];
+                        if (pm) {
+                            pm.draw(canvas, { x: position.x + i * 16 * scale.x, y: position.y + j * 16 * scale.y }, scale, layer, r.XFlip, r.YFlip,true);
+                        }
+                    }
+                }
             }
         } else {
             for (var i = 0; i < this.tilePieces.length; i++) {
