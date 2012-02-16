@@ -100,11 +100,15 @@ function SonicEngine(canvasName) {
             case 38:  /* Up arrow was pressed */
             case 87:  /* Up arrow was pressed */
                 if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.pressJump();
+                    sonicManager.sonicToon.pressUp();
                 else {
                     sonicManager.windowLocation.y -= 128;
                 }
 
+                break;
+            case 32: //space
+                if (sonicManager.sonicToon)
+                    sonicManager.sonicToon.pressJump();
                 break;
             case 40:  /* Down arrow was pressed */
             case 83:  /* Down arrow was pressed */
@@ -139,8 +143,11 @@ function SonicEngine(canvasName) {
             case 38:  /* Up arrow was pressed */
             case 87:  /* Up arrow was pressed */
                 if (sonicManager.sonicToon)
+                    sonicManager.sonicToon.releaseUp();
+                break;
+            case 32: //space
+                if (sonicManager.sonicToon)
                     sonicManager.sonicToon.releaseJump();
-
                 break;
             case 40:  /* Down arrow was pressed */
             case 83:  /* Down arrow was pressed */

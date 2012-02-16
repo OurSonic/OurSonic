@@ -387,7 +387,8 @@
             modifyTileChunkArea.visible = false;
             solidTileArea.visible = false;
             debuggerArea.visible = true;
-            sonicManager.background.cache(sonicManager.scale);
+            if (sonicManager.background)
+                sonicManager.background.cache(sonicManager.scale);
             sonicManager.windowLocation = _H.defaultWindowLocation(0);
             sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
             sonicManager.sonicToon.obtainedRing = [];

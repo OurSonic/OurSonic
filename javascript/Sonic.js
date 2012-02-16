@@ -8,6 +8,7 @@
     this.crouching = false;
     this.holdingLeft = false;
     this.holdingRight = false;
+    this.holdingUp = false;
     this.LevelWidth = 0;
     this.xsp = 0;
     this.ysp = 0;
@@ -290,7 +291,7 @@
             } if (this.crouching) {
                 this.y += debugSpeed;
             }
-            if (this.jumping) {
+            if (this.holdingUp) {
                 this.y -= debugSpeed;
             }
 
@@ -833,7 +834,7 @@
                     }
 
                 }
-                this.sensorManager.draw(canvas, scale, this);
+           //    this.sensorManager.draw(canvas, scale, this);
                 /*
                 canvas.moveTo(-10 * scale.x, 4 * scale.y);
                 canvas.lineTo(10 * scale.x, 4 * scale.y);
@@ -892,6 +893,12 @@
             this.jumping = true;
         }
     };
+    this.pressUp = function () {
+
+        if (this.debugging || !this.justHit) {
+            this.holdingUp = true;
+        }
+    };
 
     this.pressCrouch = function () {
 
@@ -917,6 +924,11 @@
 
     this.releaseJump = function () {
         this.jumping = false;
+
+    };
+    
+    this.releaseUp= function () {
+        this.holdingUp = false;
 
     };
     this.releaseCrouch = function () {
@@ -1099,12 +1111,20 @@
                 this.spriteState = "spindash" + ((j + 1) % 6);
             }
         } else if (absgsp == 0 && this.inAir == false) {
-            if (this.ducking) {
+          if (this.ducking) {
                 if (this.spriteState.substring(0, this.spriteState.length - 1) != "duck") {
                     this.spriteState = "duck0";
                     this.runningTick = 1;
                 } else if ((this.runningTick++) % (_H.floor(4 - absgsp)) == 0) {
                     this.spriteState = "duck1";
+                }
+
+            } else if (this.holdingUp) {
+                if (this.spriteState.substring(0, this.spriteState.length - 1) != "lookingup") {
+                    this.spriteState = "lookingup0";
+                    this.runningTick = 1;
+                } else if ((this.runningTick++) % (_H.floor(4 - absgsp)) == 0) {
+                    this.spriteState = "lookingup1";
                 }
 
             } else {

@@ -641,11 +641,16 @@ function SonicManager(mainCanvas) {
             that.spriteLocations["haltsmoke" + j] = "assets/Sprites/haltsmoke" + j + ".png";
             that.imageLength++;
             sm.addIterationToStep(sonicStep, "haltsmoke" + j);
+        } 
+        for (j = 0; j < 2; j++) {
+            that.spriteLocations["lookingup" + j] = "assets/Sprites/lookingup" + j + ".png";
+            that.imageLength++;
+            sm.addIterationToStep(sonicStep, "lookingup" + j);
         }
 
 
 
-        var bgStep = sm.addStep("Background data", function (sp, done) {
+        /*var bgStep = sm.addStep("Background data", function (sp, done) {
 
             var canv = _H.defaultCanvas(that.SonicLevel.BackgroundWidth * 128 * scale.x, that.SonicLevel.BackgroundHeight * 128 * scale.y);
             var ctx = canv.context;
@@ -669,9 +674,8 @@ function SonicManager(mainCanvas) {
 
         });
         sm.addIterationToStep(bgStep, 0);
-        sm.addIterationToStep(bgStep, 0);
-
-
+        
+        */
 
 
 
