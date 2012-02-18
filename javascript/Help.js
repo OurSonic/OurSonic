@@ -57,8 +57,8 @@
                 var x = 0;
                 var y = 0;
                 if (sonicManager.SonicLevel && sonicManager.SonicLevel.StartPositions && sonicManager.SonicLevel.StartPositions[0]) {
-                    x = sonicManager.SonicLevel.StartPositions[0].X;
-                    y = sonicManager.SonicLevel.StartPositions[0].Y;
+                    x = sonicManager.SonicLevel.StartPositions[0].X*128*2;
+                    y = sonicManager.SonicLevel.StartPositions[0].Y-128*2;
                 }
 
                 return { x: x, y: y, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
@@ -70,7 +70,10 @@
             case 1: //monitor
                 return new MonitorObject(o);
                 break;
-            case 7: //monitor
+            case 2: //collision switcher
+                return new CollisionSwitcherObject(o);
+                break;
+            case 7: //spring
                 return new SpringObject(o);
                 break;
         }
@@ -82,6 +85,16 @@
             alert('');
         if (this.x < p.X && this.x + this.width > p.X &&
             this.y < p.Y && this.y + this.height > p.Y) {
+            return true;
+        }
+        return false;
+    },
+    intersects2: function (that, p) {
+
+        if (that.width == undefined || that.height == undefined || that.x == undefined || that.y == undefined || p.Y == undefined || p.X == undefined)
+            alert('');
+        if (that.x < p.X && that.x + that.width > p.X &&
+            that.y < p.Y && that.y + that.height > p.Y) {
             return true;
         }
         return false;
@@ -99,11 +112,12 @@
         ctx.width = w;
         ctx.height = h;
         return { canvas: canvas, context: ctx };
-    }, intersectRect: function (r1, r2) {
-        return !(r2.left > r1.right ||
-           r2.right < r1.left ||
-           r2.top > r1.bottom ||
-           r2.bottom < r1.top);
+    },
+    intersectRect: function (r1, r2) {
+        return  !(r2.x > r1.x + r1 .width ||
+           r2.x + r2.width < r1.x ||
+           r2.y > r1.y + r1.height ||
+           r2.y + r2.height < r1.y);
     }
 , remove: function (ar, elem) {
     var match = -1;

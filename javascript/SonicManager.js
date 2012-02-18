@@ -59,22 +59,26 @@ function SonicManager(mainCanvas, resize) {
                             this.uiManager.solidTileArea.visible = true;
                         }
                     } else {
-                        this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)), _H.floor(e.y / (128 * scale.y))] = this.uiManager.indexes.modifyIndex;
+                        //     this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)), _H.floor(e.y / (128 * scale.y))] = this.uiManager.indexes.modifyIndex;
                     }
                     break;
                 case ClickState.PlaceRing:
-                    var ex = _H.floor((e.x - _H.floor(e.x / (128 * scale.x)) * (128 * scale.x)) / (scale.x));
-                    var ey = _H.floor((e.y - _H.floor(e.y / (128 * scale.y)) * (128 * scale.y)) / (scale.y));
+                    var ex = _H.floor((e.x));
+                    var ey = _H.floor((e.y));
+                    this.SonicLevel.Rings.push({ X: ex, Y: ey });
+                    break;
+                case ClickState.PlaceObject:
+                    var ex = _H.floor((e.x));
+                    var ey = _H.floor((e.y));
 
-                    var es = (_H.floor(ex / 16)) + (_H.floor(e.x / (128 * scale.x))) * 8;
-                    var ek = (_H.floor(ey / 16)) + (_H.floor(e.y / (128 * scale.y))) * 8;
+                    for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
+                        var o = sonicManager.SonicLevel.Objects[l];
 
-                    if (this.SonicLevel.Rings[ek * 8 * sonicManager.SonicLevel.LevelWidth + es]) {
-                        delete this.SonicLevel.Rings[ek * 8 * sonicManager.SonicLevel.LevelWidth + es];
-                        //                        this.SonicLevel.Rings = this.SonicLevel.Rings.splice(this.SonicLevel.Rings.indexOf(ek * 8 * sonicManager.SonicLevel.LevelWidth + es), 1);
-                    } else {
-                        this.SonicLevel.Rings[ek * 8 * sonicManager.SonicLevel.LevelWidth + es] = { X: es, Y: ek };
+                        if (_H.intersects2(o.getRect(), { X: ex, Y: ey })) {
+                            alert(_H.stringify(o));
+                        }
                     }
+
 
                     break;
                 default:
@@ -256,7 +260,7 @@ function SonicManager(mainCanvas, resize) {
                             canvas.drawImage(fd, posj.x, posj.y);
                         }
 
-                    } 
+                    }
                 }
 
 
@@ -576,7 +580,7 @@ function SonicManager(mainCanvas, resize) {
                         }
                         ctx.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
 
-                            continue;
+                        continue;
                     }
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                     hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
@@ -602,7 +606,7 @@ function SonicManager(mainCanvas, resize) {
                             ctx.fillStyle = HeightMask.colors[tp.Solid2];
                         }
                         ctx2.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
-                        
+
 
                         continue;
                     }
@@ -757,7 +761,7 @@ function SonicManager(mainCanvas, resize) {
     };
 }
 
-ClickState = { Dragging: 0, PlaceChunk: 1, PlaceRing: 2 };
+ClickState = { Dragging: 0, PlaceChunk: 1, PlaceRing: 2, PlaceObject: 3 };
 
 function SpriteLoader(completed, update) {
     var that = this;

@@ -3,8 +3,16 @@
 function LevelObject(o) {
     this.ObjectData = o;
     this.sprites = [];
+    this.Width = 30;
+    this.Height = 30;
     LevelObject.prototype.getRect = function () {
-        return { left: 0, right: 0, top: 0, bottom: 0 };
+
+        var x = this.ObjectData.X - monitor.width / 2;
+        var y = this.ObjectData.Y - monitor.height / 2;
+        var w = this.Width;
+        var h = this.Height;
+
+        return { x: x, y: y, width: w, height: h };
     };
     LevelObject.prototype.collide = function () {
 
@@ -21,6 +29,33 @@ function LevelObject(o) {
 
 var monitor = _H.loadSprite("assets/Sprites/monitorEmpty.png");
 var monitorBroken = _H.loadSprite("assets/Sprites/monitorBroken.png");
+
+function CollisionSwitcherObject(o) {
+    this.ObjectData = o;
+    this.sprites = [];
+    this.Width = 10;
+    this.Height = 70;
+
+    CollisionSwitcherObject.prototype.getRect = function () {
+        var x = this.ObjectData.X - this.Width/2;
+        var y = this.ObjectData.Y - this.Height/2;
+        return { x: x, y: y, width: this.Width, height: this.Height };
+    };
+    CollisionSwitcherObject.prototype.collide = function () {
+        if (sonicManager.sonicToon.xsp>0) {
+            sonicManager.SonicLevel.curHeightMap = true;
+        } else {
+            sonicManager.SonicLevel.curHeightMap = false;
+        }
+    };
+
+
+    CollisionSwitcherObject.prototype.draw = function (canvas, pos, scale) {
+      //  canvas.fillStyle = "#FFFFFF";
+      //  canvas.fillRect((this.ObjectData.X - 5 - sonicManager.windowLocation.x) * scale.x, (this.ObjectData.Y - 50 - sonicManager.windowLocation.y) * scale.y, 10 * scale.x, 100 * scale.y);
+    };
+
+}
 
 function MonitorObject(o) {
     this.ObjectData = o;
@@ -58,7 +93,7 @@ function MonitorObject(o) {
     MonitorObject.prototype.getRect = function () {
         var x = this.ObjectData.X - monitor.width / 2;
         var y = this.ObjectData.Y - monitor.height / 2;
-        return { left: x, top: y, right: x + monitor.width, bottom: y + monitor.height };
+        return { x: x, y: y, width: monitor.width, height: monitor.height };
     };
     MonitorObject.prototype.collide = function () {
         if (sonicManager.sonicToon.ysp == 0) {
@@ -164,7 +199,7 @@ function SpringObject(o) {
     SpringObject.prototype.getRect = function () {
         var x = this.ObjectData.X - monitor.width / 2;
         var y = this.ObjectData.Y - monitor.height / 2;
-        return { left: x, top: y, right: x + monitor.width, bottom: y + monitor.height };
+        return { x: x, y: y, width: monitor.width, height: monitor.height };
     };
     SpringObject.prototype.collide = function () {
         if (sonicManager.sonicToon.ysp == 0) {
@@ -230,3 +265,4 @@ function SpringObject(o) {
     };
 
 }
+

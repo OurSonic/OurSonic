@@ -28,7 +28,8 @@ function Ring(active) {
                 this.xsp *= -0.75;
             }
 
-            if (sonicManager.drawTickCount>sonicManager.sonicToon.sonicLastHitTick+64 && _H.intersectRect(sonicManager.sonicToon.myRec, { left: this.x - 8 * scale.x, right: this.x + 8 * scale.x, top: this.y - 8 * scale.y, bottom: this.y + 8 * scale.y })) {
+            if (sonicManager.drawTickCount > sonicManager.sonicToon.sonicLastHitTick + 64 && 
+                _H.intersectRect(sonicManager.sonicToon.myRec, { x: this.x - 8 * scale.x, width:  8 *2* scale.x, y: this.y - 8 * scale.y, height: 2* 8 * scale.y })) {
                 this.tickCount = 0xffffffff;
                 sonicManager.sonicToon.rings++;
                 return false;

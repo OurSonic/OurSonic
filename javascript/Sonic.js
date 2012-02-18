@@ -88,7 +88,7 @@
         } else if (this.angle <= 0x5e && this.angle > 0x20) {
         this.mode = RotationMode.LeftWall;
         }  */
-        this.myRec = { left: this.x - 5, right: this.x + 5, top: this.y - 20, bottom: this.y + 20 };
+        this.myRec = { x: this.x - 5, width: 5*2, y: this.y - 20, height: 20*2 };
     };
     this.effectPhysics = function () {
         var max = 6;
@@ -384,7 +384,7 @@
             case RotationMode.RightWall:
                 if (sensorM1 != -1) {
                     this.y = fy = sensorM1.value - 12;
-                    this.gsp = 0; 
+                    this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
                 }
                 if (sensorM2 != -1) {
@@ -630,7 +630,7 @@
             if (this.obtainedRing[ring]) continue;
             var _x = pos.X;
             var _y = pos.Y;
-            if (_H.intersectRect(me, { left: _x - 8, right: _x + 8, top: _y - 8, bottom: _y + 8 })) {
+            if (_H.intersectRect(me, { x: _x - 8, width: 8 * 2, y: _y - 8, height: 8 * 2 })) {
                 this.rings++;
                 this.obtainedRing[ring] = true;
             }

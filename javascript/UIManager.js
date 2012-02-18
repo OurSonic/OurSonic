@@ -337,7 +337,7 @@
     levelManagerArea.addControl(new Button(200, 150, 160, 22, "Dragging", buttonFont, "rgb(50,150,50)",
         function () {
 
-            sonicManager.clickState = (sonicManager.clickState + 1) % 3;
+            sonicManager.clickState = (sonicManager.clickState + 1) % 4;
             switch (sonicManager.clickState) {
                 case ClickState.PlaceChunk:
                     this.text = "Modify Chunks";
@@ -347,6 +347,9 @@
                     break;
                 case ClickState.PlaceRing:
                     this.text = "Place Rings";
+                    break;
+                case ClickState.PlaceObject:
+                    this.text = "Place Object";
                     break;
             }
 
