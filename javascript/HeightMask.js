@@ -37,14 +37,14 @@
     HeightMask.prototype.draw = function (canvas, pos, scale, state, xflip, yflip, solid) {
         _H.save(canvas);
         var oPos = { x: pos.x, y: pos.y };
-        /*if (xflip) {
+        if (xflip) {
             pos.x = -pos.x - 16 * scale.x;
             canvas.scale(-1, 1);
         }
         if (yflip) {
             pos.y = -pos.y - 16 * scale.y;
             canvas.scale(1, -1);
-        }*/
+        }
 
         var fd;
         if ((fd = sonicManager.SpriteCache.heightMaps[this.index])) {

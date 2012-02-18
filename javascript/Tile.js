@@ -19,8 +19,7 @@
                     if (sonicManager.CACHING) return true;
                     var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
                     var frame = an.Frames[ind];
-                    if (!frame) {
-                        alert('bad');
+                    if (!frame) { 
                         continue;
                     }
                     var file = sonicManager.SonicLevel.AnimatedFiles[an.AnimationFile];

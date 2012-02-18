@@ -603,16 +603,14 @@ function SonicManager(mainCanvas, resize) {
                     }
                     posm.x += 16 * scale.x / 2;
                     posm.y += 16 * scale.y / 2;
-
+                    /*
                     ctx.strokeStyle = "#DDD";
                     ctx.font = "18pt courier ";
                     ctx.shadowColor = "";
                     ctx.shadowBlur = 0;
                     ctx.lineWidth = 1;
 
-                    ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
-
-                    /*
+                    ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);*/
 
                     hd = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
                     if (hd == 0) continue;
@@ -627,23 +625,15 @@ function SonicManager(mainCanvas, resize) {
                         posm.x += 16 * scale.x / 2;
                         posm.y += 16 * scale.y / 2;
 
-                        ctx2.strokeStyle = "#DDD";
-                        ctx2.font = "18pt courier ";
-                        ctx2.shadowColor = "";
-                        ctx2.shadowBlur = 0;
-                        ctx2.lineWidth = 1;
-
-                        ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);
-
                         continue;
                     }
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                     hd.draw(ctx2, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid2);
 
+                    /*
 
                     var vangle = sonicManager.SonicLevel.Angles[mjj];
-
-
+                  
                     posm.x += 16 * scale.x / 2;
                     posm.y += 16 * scale.y / 2;
 
@@ -652,8 +642,8 @@ function SonicManager(mainCanvas, resize) {
                     ctx2.shadowColor = "";
                     ctx2.shadowBlur = 0;
                     ctx2.lineWidth = 1;
-                    ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);
-*/
+                    ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);*/
+
                 }
             }
 

@@ -48,7 +48,7 @@
     this.angle = 0xff;
     var oldSign;
 
-    this.sensorManager.createVerticalSensor('a', -9, 0, 36,'#F202F2');
+    this.sensorManager.createVerticalSensor('a', -9, 0, 36, '#F202F2');
     this.sensorManager.createVerticalSensor('b', 9, 0, 36, '#02C2F2');
     this.sensorManager.createVerticalSensor('c', -9, 0, -20, '#2D2C21');
     this.sensorManager.createVerticalSensor('d', 9, 0, -20, '#C242822');
@@ -59,16 +59,16 @@
 
 
     this.updateMode = function () {
-         if (this.angle < 0x20 || this.angle > 0xE0) {
-        this.mode = RotationMode.Floor;
-        } else if (this.angle > 0x20 && this.angle < 0x60) {
-        this.mode = RotationMode.LeftWall;
-        } else if (this.angle > 0x60 && this.angle < 0xA0) {
-        this.mode = RotationMode.Ceiling;
-        } else if (this.angle > 0xA0 && this.angle < 0xE0) {
-        this.mode = RotationMode.RightWall;
+        if (this.angle < 0x20 || this.angle > 0xDE) {
+            this.mode = RotationMode.Floor;
+        } else if (this.angle > 0x20 && this.angle < 0x7B) {
+            this.mode = RotationMode.LeftWall;
+        } else if (this.angle > 0x7B && this.angle < 0xAD) {
+            this.mode = RotationMode.Ceiling;
+        } else if (this.angle > 0xAD && this.angle < 0xDE) {
+            this.mode = RotationMode.RightWall;
         }
-           /* 
+        /* 
         if (this.angle <= 0xff && this.angle > 0xC8) {
         this.mode = RotationMode.Floor;
         } else if (this.angle <= 0xc8 && this.angle > 0x80) {
@@ -214,9 +214,11 @@
             this.ysp = this.gsp * -_H.sin(this.angle);
 
             if (Math.abs(this.gsp) < 2.5 && this.mode != RotationMode.Floor) {
-                if (this.mode == RotationMode.RightWall) this.x += 5;
-                else if (this.mode == RotationMode.LeftWall) this.x -= 4;
-                this.angle = 0x0;
+                if (this.mode == RotationMode.RightWall) this.x -= 5;
+                else if (this.mode == RotationMode.LeftWall) this.x += 4;
+                else if (this.mode == RotationMode.Ceiling) this.y += 5;
+                this.mode = RotationMode.Floor;
+                this.angle = 0xFF;
                 this.updateMode();
                 this.hlock = 30;
             }
@@ -426,7 +428,7 @@
                         break;
                     case RotationMode.LeftWall:
                         if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value <= sensorB.value) {
+                            if (sensorA.value > sensorB.value) {
                                 this.angle = sensorA.angle;
                                 this.x = fx = sensorA.value + 20;
                             } else {
@@ -443,7 +445,7 @@
                         break;
                     case RotationMode.Ceiling:
                         if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value <= sensorB.value) {
+                            if (sensorA.value < sensorB.value) {
                                 this.angle = sensorA.angle;
                                 this.y = fy = sensorA.value + 20;
                             } else {
@@ -460,7 +462,7 @@
                         break;
                     case RotationMode.RightWall:
                         if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value >= sensorB.value) {
+                            if (sensorA.value < sensorB.value) {
                                 this.angle = sensorA.angle;
                                 this.x = fx = sensorA.value - 20;
                             } else {
@@ -881,7 +883,7 @@
                 */
                 _H.restore(canvas);
 
-             //   this.sensorManager.draw(canvas, scale, this);
+                //   this.sensorManager.draw(canvas, scale, this);
                 for (var i = 0; i < this.haltSmoke.length; i++) {
                     var lo = this.haltSmoke[i];
                     canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("haltsmoke" + _H.floor((sonicManager.drawTickCount % (4 * 6)) / 6)) + scale.x + scale.y],
@@ -1381,7 +1383,7 @@ SensorManager = function (sonicManager) {
         this.sensorResults[letter] = false;
         return sensor;
     };
-    this.createHorizontalSensor = function (letter, y, x1, x2,color) {
+    this.createHorizontalSensor = function (letter, y, x1, x2, color) {
         return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color));
     };
     this.createVerticalSensor = function (letter, x, y1, y2, color) {
