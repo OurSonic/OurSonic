@@ -1,4 +1,15 @@
 ﻿window._H = {
+    save: function (canvas) {
+        if (window.StateCount == undefined) {
+            window.StateCount = 0;
+        }
+        window.StateCount++;
+        canvas.save();
+    },
+    restore: function (canvas) {
+        window.StateCount--;
+        canvas.restore();
+    },
     floor: function (f) {
         if (f > 0) {
             return ~ ~f;
@@ -37,7 +48,7 @@
     sign: function (m) {
         return m == 0 ? 0 : (m < 0 ? -1 : 1);
     },
-    defaultWindowLocation: function (state,canvas,scale) {
+    defaultWindowLocation: function (state, canvas, scale) {
         switch (state) {
             case 0:
                 return { x: 0, y: 0, width: 320, height: 240, intersects: _H.intersects };

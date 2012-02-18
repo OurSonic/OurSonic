@@ -28,10 +28,10 @@ function SonicManager(mainCanvas, resize) {
             var anin = an.AnimationTileIndex;
             var num = an.NumberOfTiles;
             if (index >= anin && index < anin + num) {
-                return true;
+                return an;
             }
         }
-        return false;
+        return undefined;
     };
 
     var lamesauce = new TileChunk() + new TilePiece() + new Tile() + new HeightMask();
@@ -109,12 +109,12 @@ function SonicManager(mainCanvas, resize) {
     };
     this.screenOffset = { x: mainCanvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: mainCanvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
     this.draw = function (canvas) {
-        canvas.save();
+        _H.save(canvas);
         this.drawTickCount++;
         if ((this.spriteLoader && !this.spriteLoader.tick()) || this.loading) {
             canvas.fillStyle = "white";
             canvas.fillText("Loading...   " /*+ (this.inds.tc + this.inds.tp + this.inds.t) + " / " + (this.inds.total)*/, 95, 95);
-            canvas.restore();
+            _H.restore(canvas);
             return;
         }
         this.screenOffset = { x: canvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: canvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
@@ -151,18 +151,23 @@ function SonicManager(mainCanvas, resize) {
         if (this.windowLocation.x > 128 * sonicManager.SonicLevel.LevelWidth - this.windowLocation.width) this.windowLocation.x = 128 * sonicManager.SonicLevel.LevelWidth - this.windowLocation.width;
         if (this.windowLocation.y > 128 * sonicManager.SonicLevel.LevelHeight - this.windowLocation.height) this.windowLocation.y = 128 * sonicManager.SonicLevel.LevelHeight - this.windowLocation.height;
         var offs = [];
-        for (var i = -128; i < this.windowLocation.width; i += 128) {
-            for (var a = -128; a < this.windowLocation.height; a += 128) {
+        for (var i = -1; i < this.windowLocation.width / 128; i += 1) {
+            for (var a = -1; a < this.windowLocation.height / 128; a += 1) {
                 offs.push({ x: i, y: a });
             }
         }
 
         if (this.SonicLevel.Chunks && this.SonicLevel.Chunks.length > 0) {
+            var cd = this.SonicLevel.AnimatedChunks;
+            for (var k = 0; k < cd.length; k++) {
+                cd[k].animatedTick();
+            }
+
+            var fxP = _H.floor((this.windowLocation.x + 128) / 128);
+            var fyP = _H.floor((this.windowLocation.y + 128) / 128);
             for (var off in offs) {
-                var xP = (this.windowLocation.x + offs[off].x + 128) / 128;
-                var yP = (this.windowLocation.y + offs[off].y + 128) / 128;
-                var _xP = _H.floor(xP);
-                var _yP = _H.floor(yP);
+                var _xP = fxP + offs[off].x;
+                var _yP = fyP + offs[off].y;
                 if (_xP < 0 || _yP < 0 || _xP >= this.SonicLevel.LevelWidth || _yP >= this.SonicLevel.LevelHeight) continue;
                 var chunk = this.SonicLevel.Chunks[this.SonicLevel.ChunkMap[_xP][_yP]];
 
@@ -222,10 +227,8 @@ function SonicManager(mainCanvas, resize) {
 
             }
             for (var off in offs) {
-                var xP = (this.windowLocation.x + offs[off].x + 128) / 128;
-                var yP = (this.windowLocation.y + offs[off].y + 128) / 128;
-                var _xP = _H.floor(xP);
-                var _yP = _H.floor(yP);
+                var _xP = fxP + offs[off].x;
+                var _yP = fyP + offs[off].y;
                 if (_xP < 0 || _yP < 0 || _xP >= this.SonicLevel.LevelWidth || _yP >= this.SonicLevel.LevelHeight) continue;
                 var chunk = this.SonicLevel.Chunks[this.SonicLevel.ChunkMap[_xP][_yP]];
 
@@ -253,45 +256,7 @@ function SonicManager(mainCanvas, resize) {
                             canvas.drawImage(fd, posj.x, posj.y);
                         }
 
-                    } else {
-                        var hm = this.SonicLevel.curHeightMap ? sonicManager.SonicLevel.CollisionIndexes1 : sonicManager.SonicLevel.CollisionIndexes2;
-                        //                            var md = this.SonicLevel.curHeightMap ? chunk.angleMap1 : chunk.angleMap2;
-
-                        for (var _y = 0; _y < 8; _y++) {
-                            for (var _x = 0; _x < 8; _x++) {
-
-                                var tp = chunk.tilePieces[_x][_y];
-                                var hd = sonicManager.SonicLevel.HeightMaps[hm[tp.Block]];
-
-                                if (hd == 0) continue;
-                                if (hd == 1) {
-                                    canvas.fillStyle = "rgba(24,98,235,0.6)";
-                                    canvas.fillRect(posj.x + (_x * 16) * scale.x, posj.y + (_y * 16) * scale.y, scale.x * 16, scale.y * 16);
-                                    continue;
-                                }
-                                var posm = { x: posj.x + (_x * 16) * scale.x, y: posj.y + (_y * 16) * scale.y };
-                                hd.draw(canvas, posm, scale, -1, tp.XFlip, tp.YFlip, this.SonicLevel.curHeightMap ? tp.Solid1 : tp.Solid2);
-
-
-                                if (false && md[_x][_y] != null) {
-
-                                    var vangle = md[_x][_y];
-                                    posm.x += 16 * scale.x / 2;
-                                    posm.y += 16 * scale.y / 2;
-
-                                    canvas.moveTo(posm.x, posm.y);
-                                    //ctx.lineTo(posj.x + (_x * 16) * scale.x + 16 * scale.x / 2, posj.y + (_y * 16) * scale.y + 16 * scale.y / 2);
-
-                                    canvas.lineTo(posm.x + _H.sin((vangle)) * 10 * scale.x, posm.y + _H.cos((vangle)) * 10 * scale.y);
-
-                                    canvas.strokeStyle = "#D141FF";
-                                    canvas.lineWidth = 4;
-                                    canvas.stroke();
-                                }
-
-                            }
-                        }
-                    }
+                    } 
                 }
 
 
@@ -308,7 +273,7 @@ function SonicManager(mainCanvas, resize) {
             }
 
         }
-        canvas.restore();
+        _H.restore(canvas);
 
         if (this.sonicToon) {
             this.sonicToon.drawUI(canvas, { x: this.screenOffset.x, y: this.screenOffset.y }, scale);
@@ -476,37 +441,39 @@ function SonicManager(mainCanvas, resize) {
         var numOfAnimations = 0;
 
         var aTileStep = sm.addStep("Animated Tile Maps", function (k, done) {
-            var canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
-            var ctx = canv.context;
-            ctx.clearRect(0, 0, canv.width, canv.height);
-            k.draw(ctx, { x: 0, y: 0 }, scale, false, false, 0);
-            k.draw(ctx, { x: 0, y: 0 }, scale, true, false, 0);
-            k.draw(ctx, { x: 0, y: 0 }, scale, false, true, 0);
-            k.draw(ctx, { x: 0, y: 0 }, scale, true, true, 0);
 
-            k.draw(ctx, { x: 0, y: 0 }, scale, false, false, 1);
-            k.draw(ctx, { x: 0, y: 0 }, scale, true, false, 1);
-            k.draw(ctx, { x: 0, y: 0 }, scale, false, true, 1);
-            k.draw(ctx, { x: 0, y: 0 }, scale, true, true, 1);
+            for (var m = 0; m < 4; m++) {
+                var canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+                var ctx = canv.context;
+                k.draw(ctx, { x: 0, y: 0 }, scale, false, false, m);
+                sonicManager.SpriteCache.tiles[k.index + " " + false + " " + false + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
 
-            k.draw(ctx, { x: 0, y: 0 }, scale, false, false, 2);
-            k.draw(ctx, { x: 0, y: 0 }, scale, true, false, 2);
-            k.draw(ctx, { x: 0, y: 0 }, scale, false, true, 2);
-            k.draw(ctx, { x: 0, y: 0 }, scale, true, true, 2);
+                canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+                ctx = canv.context;
+                k.draw(ctx, { x: 0, y: 0 }, scale, true, false, m);
+                sonicManager.SpriteCache.tiles[k.index + " " + true + " " + false + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
 
-            k.draw(ctx, { x: 0, y: 0 }, scale, false, false, 3);
-            k.draw(ctx, { x: 0, y: 0 }, scale, true, false, 3);
-            k.draw(ctx, { x: 0, y: 0 }, scale, false, true, 3);
-            k.draw(ctx, { x: 0, y: 0 }, scale, true, true, 3);
+                canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+                ctx = canv.context;
+                k.draw(ctx, { x: 0, y: 0 }, scale, false, true, m);
+                sonicManager.SpriteCache.tiles[k.index + " " + false + " " + true + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
 
-            done();
+                canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+                ctx = canv.context;
+                k.draw(ctx, { x: 0, y: 0 }, scale, true, true, m);
+                sonicManager.SpriteCache.tiles[k.index + " " + true + " " + true + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
+
+
+
+            }
+
         }, function () {
             ind_.aes++;
-            if (ind_.aes >= numOfAnimations) {
+            if (ind_.aes >= numOfAnimations * 4 * 4) {
                 return true;
             }
             return false;
-        },true);
+        }, true);
 
         for (jc = 0; jc < sonicManager.SonicLevel.AnimatedFiles.length; jc++) {
             var fcc = sonicManager.SonicLevel.AnimatedFiles[jc];
@@ -523,9 +490,12 @@ function SonicManager(mainCanvas, resize) {
             var ctx = canv.context;
             ctx.clearRect(0, 0, canv.width, canv.height);
             md = that.SonicLevel.Chunks[k];
+
+
             md.draw(ctx, { x: 0, y: 0 }, scale, false);
             var fc = canv.canvas.toDataURL("image/png");
-            that.SpriteCache.tileChunks[false + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) {
+
+            that.SpriteCache.tileChunks[false + " " + md.index + " " + scale.y + " " + scale.x + " -"] = _H.loadSprite(fc, function (f) {
                 ind_.tcs++;
                 done();
             });
@@ -534,19 +504,50 @@ function SonicManager(mainCanvas, resize) {
             ctx = canv.context;
             ctx.clearRect(0, 0, canv.width, canv.height);
 
-            if (!md.onlyBackground()) {
 
+            if (!md.onlyBackground()) {
                 md.draw(ctx, { x: 0, y: 0 }, scale, true);
                 var fc = canv.canvas.toDataURL("image/png");
-                that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) {
+                that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x + " -"] = _H.loadSprite(fc, function (f) {
                     ind_.tcs++;
                     done();
                 });
             } else {
-                that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x] = 1;
+                that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x + " -"] = 1;
                 ind_.tcs++;
                 done();
             }
+
+
+            if (md.animated) {
+                sonicManager.drawTickCount = 0;
+                sonicManager.CACHING = false;
+                for (var c = 0; c < md.animated.Frames.length; c++) {
+                    var frame = md.animated.Frames[c];
+
+                    canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
+                    ctx = canv.context;
+                    ctx.clearRect(0, 0, canv.width, canv.height);
+
+                    md.draw(ctx, { x: 0, y: 0 }, scale, true, c);
+                    var fc = canv.canvas.toDataURL("image/png");
+                    that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x + " " + c] = _H.loadSprite(fc, function (f) {
+
+                    });
+
+                    canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
+                    ctx = canv.context;
+                    ctx.clearRect(0, 0, canv.width, canv.height);
+
+                    md.draw(ctx, { x: 0, y: 0 }, scale, false, c);
+                    var fc = canv.canvas.toDataURL("image/png");
+                    that.SpriteCache.tileChunks[false + " " + md.index + " " + scale.y + " " + scale.x + " " + c] = _H.loadSprite(fc, function (f) {
+
+                    });
+                }
+                sonicManager.CACHING = true;
+            }
+
 
             var posj = { x: 0, y: 0 };
             canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
@@ -574,12 +575,44 @@ function SonicManager(mainCanvas, resize) {
                             ctx.fillStyle = HeightMask.colors[tp.Solid1];
                         }
                         ctx.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
-                        continue;
+
+                            continue;
                     }
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                     hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
 
+                    var vangle = sonicManager.SonicLevel.Angles[mjj];
 
+                    if (!vangle) {
+                        alert(vangle);
+                    }
+                    if (tp.XFlip) {
+                        if (tp.YFlip) {
+                            vangle = 192 - vangle + 192;
+
+                            vangle = 128 - vangle + 128;
+
+                        } else {
+                            vangle = 128 - vangle + 128;
+                        }
+                    } else {
+                        if (tp.YFlip) {
+                            vangle = 192 - vangle + 192;
+                        } else {
+                        }
+                    }
+                    posm.x += 16 * scale.x / 2;
+                    posm.y += 16 * scale.y / 2;
+
+                    ctx.strokeStyle = "#DDD";
+                    ctx.font = "18pt courier ";
+                    ctx.shadowColor = "";
+                    ctx.shadowBlur = 0;
+                    ctx.lineWidth = 1;
+
+                    ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
+
+                    /*
 
                     hd = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
                     if (hd == 0) continue;
@@ -588,26 +621,39 @@ function SonicManager(mainCanvas, resize) {
                             ctx.fillStyle = HeightMask.colors[tp.Solid2];
                         }
                         ctx2.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
+                        var vangle = sonicManager.SonicLevel.Angles[mjj];
+
+
+                        posm.x += 16 * scale.x / 2;
+                        posm.y += 16 * scale.y / 2;
+
+                        ctx2.strokeStyle = "#DDD";
+                        ctx2.font = "18pt courier ";
+                        ctx2.shadowColor = "";
+                        ctx2.shadowBlur = 0;
+                        ctx2.lineWidth = 1;
+
+                        ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);
+
                         continue;
                     }
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                     hd.draw(ctx2, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid2);
 
-                    /*   var vangle = sonicManager.SonicLevel.Angles[mjj];
-                    if (vangle != 0xFF) {
+
+                    var vangle = sonicManager.SonicLevel.Angles[mjj];
 
 
                     posm.x += 16 * scale.x / 2;
                     posm.y += 16 * scale.y / 2;
 
-                    ctx.moveTo(posm.x, posm.y);
-
-                    ctx.lineTo(posm.x + _H.sin((vangle) * (Math.PI / 180)) * 10 * scale.x, posm.y + _H.cos((vangle) * (Math.PI / 180)) * 10 * scale.y);
-
-                    ctx.strokeStyle = "#D141FF";
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                    }*/
+                    ctx2.strokeStyle = "#DDD";
+                    ctx2.font = "18pt courier ";
+                    ctx2.shadowColor = "";
+                    ctx2.shadowBlur = 0;
+                    ctx2.lineWidth = 1;
+                    ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);
+*/
                 }
             }
 
@@ -763,7 +809,7 @@ function SpriteLoader(completed, update) {
         var stp = this.steps[this.stepIndex];
         if (!stp) return true;
 
-        if (that.tickIndex % 5 == 0)
+        if (that.tickIndex % _H.floor(stp.iterations.length / 12) == 0)
             update("Caching: " + stp.title + " " + Math.floor(((that.tickIndex / stp.iterations.length) * 100)) + "%");
 
         if (stp.iterations.length > this.tickIndex) {

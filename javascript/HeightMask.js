@@ -32,18 +32,19 @@
 
     };
 
-    
+
 
     HeightMask.prototype.draw = function (canvas, pos, scale, state, xflip, yflip, solid) {
-        canvas.save();
-        if (xflip) {
+        _H.save(canvas);
+        var oPos = { x: pos.x, y: pos.y };
+        /*if (xflip) {
             pos.x = -pos.x - 16 * scale.x;
             canvas.scale(-1, 1);
         }
         if (yflip) {
             pos.y = -pos.y - 16 * scale.y;
             canvas.scale(1, -1);
-        }
+        }*/
 
         var fd;
         if ((fd = sonicManager.SpriteCache.heightMaps[this.index])) {
@@ -55,7 +56,7 @@
             if (solid > 0) {
                 for (var x = 0; x < 16; x++) {
                     var jx = 0, jy = 0;
-                    var y = 16-this.items[x];
+                    var y = 16 - this.items[x];
 
                     jx = x;
                     jy = y;
@@ -70,16 +71,10 @@
             }
         }
 
-        if (state == 1) {
 
-            canvas.strokeStyle = "#DC4146";
-            canvas.lineWidth = 4;
-            canvas.moveTo(pos.x + 8 * scale.x, pos.y + 8 * scale.y);
-            canvas.lineTo(pos.x + 8 * scale.x + _H.sin((this.angle)) * 6 * scale.x, pos.y + 8 * scale.y + _H.cos((this.angle)) * 6 * scale.y);
-            canvas.stroke();
-        }
-        canvas.restore();
-
+        _H.restore(canvas);
+        pos.x = oPos.x;
+        pos.y = oPos.y;
     };
 }
 

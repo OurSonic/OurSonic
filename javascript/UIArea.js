@@ -115,7 +115,7 @@ function UiArea(x, y, w, h,manager,closable) {
             this.x = _x;
             this.y = _y;
 
-            this.cachedDrawing = _H.loadSprite(cg.toDataURL("image/png"))
+            this.cachedDrawing = _H.loadSprite(cg.toDataURL("image/png"));
         }
 
         if (this.cachedDrawing.loaded) {
@@ -123,7 +123,7 @@ function UiArea(x, y, w, h,manager,closable) {
             if (this.cachedDrawing.width != this.width + 20 || this.cachedDrawing.height != this.height + 20)
                 this.cachedDrawing = null;
 
-            canv.save();
+            _H.save(canv);
             canv.translate(10, 10);
             for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
@@ -133,12 +133,12 @@ function UiArea(x, y, w, h,manager,closable) {
                 if (good.clearCache)
                     this.cachedDrawing = null;
             }
-            canv.restore();
+            _H.restore(canv);
         } else {
             canv.fillStyle = "rgba(133,133,133,0.6)";
             canv.lineWidth = 9;
             canv.strokeStyle = "#333";
-            canv.save();
+            _H.save(canv);
             canv.translate(10, 10);
             roundRect(canv, this.x, this.y, this.width, this.height, 5, true, true);
 
@@ -146,7 +146,7 @@ function UiArea(x, y, w, h,manager,closable) {
                 t = this.controls[j];
                 t.draw(canv);
             }
-            canv.restore();
+            _H.restore(canv);
 
         }
 

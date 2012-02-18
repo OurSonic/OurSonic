@@ -13,7 +13,7 @@
     this.draw = function (canvas) {
         this.dragger.tick();
 
-        canvas.save();
+        _H.save(canvas);
 
         var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
             return f.depth;
@@ -29,7 +29,7 @@
                 canvas.fillText(this.messages[i], 10, 25 + i * 30);
             }
         }
-        canvas.restore();
+        _H.restore(canvas);
 
     };
 
@@ -537,6 +537,7 @@
         }
 
 
+        var acs = sonicManager.SonicLevel.AnimatedChunks = [];
         for (jc = 0; jc < sonicManager.SonicLevel.AnimatedFiles.length; jc++) {
             var fcc = sonicManager.SonicLevel.AnimatedFiles[jc];
             for (j = 0; j < fcc.length; j++) {
@@ -629,7 +630,29 @@
 
             }
             sonicManager.SonicLevel.Chunks[j] = mj;
+            mj.animated = undefined;
+            for (var ic = 0; ic < mj.tilePieces.length; ic++) {
+                for (var jc = 0; jc < mj.tilePieces[ic].length; jc++) {
+                    var r = mj.tilePieces[ic][jc];
+                    var pm = sonicManager.SonicLevel.Blocks[r.Block];
+                    if (pm) {
+                        for (var ci = 0; ci < pm.tiles.length; ci++) {
+                            var mjc = pm.tiles[ci];
+                            if (sonicManager.SonicLevel.Tiles[mjc.Tile]) {
+                                var fa = sonicManager.containsAnimatedTile(mjc.Tile);
+                                if (fa!=undefined) {
+                                    mj.animated = fa;
+                                    acs.push(mj);
+                                    break;
+                                }
+                            }
+                        }
+                        if(mj.animated)break;
+                    }
+                    if (mj.animated) break;
 
+                }
+            }
 
             /*for (je = 0; je < fc.angleMap1.length; je++) {
             for (jc = 0; jc < fc.angleMap1[je].length; jc++) {
@@ -656,6 +679,8 @@
             }*/
 
         }
+
+
 
 
         var finished = function () {

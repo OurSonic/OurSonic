@@ -8,33 +8,48 @@
     };
 
 
+    Tile.prototype.checkGood = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
 
-    Tile.prototype.draw = function (canvas, pos, scale, xflip, yflip, palette, layer) {
         if (this.index[0] != 'A') {
             for (var i = 0; i < sonicManager.SonicLevel.Animations.length; i++) {
                 var an = sonicManager.SonicLevel.Animations[i];
                 var anin = an.AnimationTileIndex;
                 var num = an.NumberOfTiles;
                 if (this.index >= anin && this.index < anin + num) {
-                    if (sonicManager.CACHING) return;
-                    var frame = an.Frames[(_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10))];
+                    if (sonicManager.CACHING) return true;
+                    var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
+                    var frame = an.Frames[ind];
+                    if (!frame) {
+                        alert('bad');
+                        continue;
+                    }
                     var file = sonicManager.SonicLevel.AnimatedFiles[an.AnimationFile];
                     var va = file[frame.StartingTileIndex + (this.index - anin)];
                     if (va) {
-                        va.draw(canvas, pos, scale, xflip, yflip, palette, layer);
-                        return;
+                        if (canvas.fillStyle != "rbga(255,255,255,255)") canvas.fillStyle = "rbga(255,255,255,255)";
+                        va.draw(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame);
+                        return true;
                     }
                 }
             }
         }
+        return false;
+    };
 
+    Tile.prototype.draw = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
+        if (this.checkGood(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame)) {
+            return;
+        }
         var fd;
         if ((fd = sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette])) {
-            canvas.putImageData(fd, pos.x, pos.y);
-
+            if (this.index[0] != 'A') {
+                canvas.putImageData(fd, pos.x, pos.y);
+            } else {
+                canvas.drawImage(fd, pos.x, pos.y);
+            }
         } else {
-            canvas.save();
             if (pos.x < 0 || pos.y < 0) return;
+            _H.save(canvas);
             var oPos = { x: pos.x, y: pos.y };
 
             if (xflip) {
@@ -53,7 +68,6 @@
 
                     //canvas.drawImage(sonicManager.SonicLevel.Palette[palette][gj], pos.x + ((i)) * scale.x, pos.y + (j) * scale.y, scale.x, scale.y);
 
-
                     var m = sonicManager.SonicLevel.Palette[palette][gj];
                     if (canvas.fillStyle != "#" + m)
                         canvas.fillStyle = "#" + m;
@@ -63,15 +77,23 @@
                 }
             }
 
-            canvas.restore();
-
+            _H.restore(canvas);
+            pos.x = oPos.x;
+            pos.y = oPos.y;
+            
             var cx = this.colors.length * scale.x;
             var cy = this.colors.length * scale.y;
-            if (this.index[0] == 'A') {
-                //oPos.x += sonicManager.screenOffset.x;
-                //oPos.y += sonicManager.screenOffset.y;
+            if (this.index[0] != 'A') {
+                sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette] = canvas.getImageData(oPos.x, oPos.y, cx, cy);
+            } else {
+
+                /*  var canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+                var ctx = canv.context;
+                ctx.putImageData(canvas.getImageData(oPos.x, oPos.y, scale.x * 8, scale.y * 8), 0, 0);
+                sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette ] = _H.loadSprite(canv.canvas.toDataURL("image/png"));
+                */
             }
-            sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette] = canvas.getImageData(oPos.x, oPos.y, cx, cy);
+
 
         }
 

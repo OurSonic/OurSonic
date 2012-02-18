@@ -48,26 +48,46 @@
     this.angle = 0xff;
     var oldSign;
 
-    this.sensorManager.createVerticalSensor('a', -9, 0, 36);
-    this.sensorManager.createVerticalSensor('b', 9, 0, 36);
-    this.sensorManager.createVerticalSensor('c', -9, 0, -20);
-    this.sensorManager.createVerticalSensor('d', 9, 0, -20);
-    this.sensorManager.createHorizontalSensor('m1', 4, 0, -12);
-    this.sensorManager.createHorizontalSensor('m2', 4, 0, 12);
+    this.sensorManager.createVerticalSensor('a', -9, 0, 36,'#F202F2');
+    this.sensorManager.createVerticalSensor('b', 9, 0, 36, '#02C2F2');
+    this.sensorManager.createVerticalSensor('c', -9, 0, -20, '#2D2C21');
+    this.sensorManager.createVerticalSensor('d', 9, 0, -20, '#C242822');
+    this.sensorManager.createHorizontalSensor('m1', 4, 0, -12, '#212C2E');
+    this.sensorManager.createHorizontalSensor('m2', 4, 0, 12, '#22Ffc1');
 
 
 
 
     this.updateMode = function () {
-        if (this.angle < 0x20 || this.angle > 0xE0) {
-            this.mode = RotationMode.Floor;
+         if (this.angle < 0x20 || this.angle > 0xE0) {
+        this.mode = RotationMode.Floor;
         } else if (this.angle > 0x20 && this.angle < 0x60) {
-            this.mode = RotationMode.LeftWall;
+        this.mode = RotationMode.LeftWall;
         } else if (this.angle > 0x60 && this.angle < 0xA0) {
-            this.mode = RotationMode.Ceiling;
+        this.mode = RotationMode.Ceiling;
         } else if (this.angle > 0xA0 && this.angle < 0xE0) {
-            this.mode = RotationMode.RightWall;
+        this.mode = RotationMode.RightWall;
         }
+           /* 
+        if (this.angle <= 0xff && this.angle > 0xC8) {
+        this.mode = RotationMode.Floor;
+        } else if (this.angle <= 0xc8 && this.angle > 0x80) {
+        this.mode = RotationMode.RightWall;
+        } else if (this.angle <= 0x80 && this.angle > 0x40) {
+        this.mode = RotationMode.Ceiling;
+        } else if (this.angle <= 0x40 && this.angle > 0x0) {
+        this.mode = RotationMode.LeftWall;
+        } */
+        /*
+        if (this.angle <= 0x20 || this.angle > 0xd6) {
+        this.mode = RotationMode.Floor;
+        } else if (this.angle <= 0xd6 && this.angle > 0xa2) {
+        this.mode = RotationMode.RightWall;
+        } else if (this.angle <= 0xa2 && this.angle > 0x5e) {
+        this.mode = RotationMode.Ceiling;
+        } else if (this.angle <= 0x5e && this.angle > 0x20) {
+        this.mode = RotationMode.LeftWall;
+        }  */
         this.myRec = { left: this.x - 5, right: this.x + 5, top: this.y - 20, bottom: this.y + 20 };
     };
     this.effectPhysics = function () {
@@ -193,7 +213,7 @@
             this.xsp = this.gsp * _H.cos(this.angle);
             this.ysp = this.gsp * -_H.sin(this.angle);
 
-            if (Math.abs(this.gsp) < 2.5 && this.angle >= 0x40 && this.angle <= 0xC0) {
+            if (Math.abs(this.gsp) < 2.5 && this.mode != RotationMode.Floor) {
                 if (this.mode == RotationMode.RightWall) this.x += 5;
                 else if (this.mode == RotationMode.LeftWall) this.x -= 4;
                 this.angle = 0x0;
@@ -215,7 +235,7 @@
                     if (this.xsp > max) this.xsp = max;
                 } else {
                     //decelerate 
-                    this.xsp -= this.air;
+                    this.xsp += this.air;
                 }
             }
             if (this.holdingLeft && !this.holdingRight) {
@@ -226,7 +246,7 @@
                     if (this.xsp < -max) this.xsp = -max;
                 } else {
                     //decelerate 
-                    this.xsp += this.air;
+                    this.xsp -= this.air;
                 }
             }
             if (this.wasInAir) {
@@ -388,7 +408,7 @@
                     case RotationMode.Floor:
                         if (sensorA.value >= 0 && sensorB.value >= 0) {
                             this.angle = sensorA.angle;
-                            if (sensorA.value < sensorB.value) {
+                            if (sensorA.value <= sensorB.value) {
                                 this.angle = sensorA.angle;
                                 this.y = fy = sensorA.value - 20;
                             } else {
@@ -406,7 +426,7 @@
                         break;
                     case RotationMode.LeftWall:
                         if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value < sensorB.value) {
+                            if (sensorA.value <= sensorB.value) {
                                 this.angle = sensorA.angle;
                                 this.x = fx = sensorA.value + 20;
                             } else {
@@ -423,24 +443,24 @@
                         break;
                     case RotationMode.Ceiling:
                         if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value < sensorB.value) {
+                            if (sensorA.value <= sensorB.value) {
                                 this.angle = sensorA.angle;
-                                this.y = fy = sensorA.value - 20;
+                                this.y = fy = sensorA.value + 20;
                             } else {
                                 this.angle = sensorB.angle;
-                                this.y = fy = sensorB.value - 20;
+                                this.y = fy = sensorB.value + 20;
                             }
                         } else if (sensorA.value > -1) {
                             this.angle = sensorA.angle;
-                            this.y = fy = sensorA.value - 20;
+                            this.y = fy = sensorA.value + 20;
                         } else if (sensorB.value > -1) {
                             this.angle = sensorB.angle;
-                            this.y = fy = sensorB.value - 20;
+                            this.y = fy = sensorB.value + 20;
                         }
                         break;
                     case RotationMode.RightWall:
                         if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value < sensorB.value) {
+                            if (sensorA.value >= sensorB.value) {
                                 this.angle = sensorA.angle;
                                 this.x = fx = sensorA.value - 20;
                             } else {
@@ -638,13 +658,13 @@
 
             }
             else if (this.mode == RotationMode.LeftWall) {
-                m.angle = Math.floor(256 / 4 * 1);
+                //   m.angle = Math.floor(256 / 4 * 1);
             }
             else if (this.mode == RotationMode.Ceiling) {
-                m.angle = Math.floor(256 / 4 * 2);
+                //   m.angle = Math.floor(256 / 4 * 2);
             }
             else if (this.mode == RotationMode.RightWall) {
-                m.angle = Math.floor(256 / 4 * 3);
+                //     m.angle = Math.floor(256 / 4 * 3);
             }
         }
 
@@ -769,12 +789,12 @@
         canvas.fillText("Position: " + _H.floor(this.x) + ", " + _H.floor(this.y), pos.x + 90, pos.y + 105);
         canvas.fillText("Speed: g: " + this.gsp.toFixed(3) + " x:" + this.xsp.toFixed(3) + " y:" + this.ysp.toFixed(3), pos.x + 90, pos.y + 135);
         canvas.fillText("Mode: " + modeString(this.mode), pos.x + 90, pos.y + 185);
-        if(this.inAir)
-        canvas.fillText("Air " , pos.x + 220, pos.y + 45);
+        if (this.inAir)
+            canvas.fillText("Air ", pos.x + 220, pos.y + 45);
 
     };
     function modeString(st) {
-        switch(st) {
+        switch (st) {
             case RotationMode.Floor:
                 return "Floor";
             case RotationMode.Ceiling:
@@ -800,7 +820,7 @@
 
         if (cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
-                canvas.save();
+                _H.save(canvas);
                 var yOffset = (40 - (cur.height / scale.y)) / 2;
 
 
@@ -834,7 +854,6 @@
                     }
 
                 }
-           //    this.sensorManager.draw(canvas, scale, this);
                 /*
                 canvas.moveTo(-10 * scale.x, 4 * scale.y);
                 canvas.lineTo(10 * scale.x, 4 * scale.y);
@@ -860,8 +879,9 @@
                 canvas.lineWidth = 4;
                 canvas.strokeRect(-cur.width / 2, -cur.height / 2, cur.width, cur.height);
                 */
-                canvas.restore();
+                _H.restore(canvas);
 
+             //   this.sensorManager.draw(canvas, scale, this);
                 for (var i = 0; i < this.haltSmoke.length; i++) {
                     var lo = this.haltSmoke[i];
                     canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("haltsmoke" + _H.floor((sonicManager.drawTickCount % (4 * 6)) / 6)) + scale.x + scale.y],
@@ -926,8 +946,8 @@
         this.jumping = false;
 
     };
-    
-    this.releaseUp= function () {
+
+    this.releaseUp = function () {
         this.holdingUp = false;
 
     };
@@ -972,20 +992,20 @@
 
                     if (tp.XFlip) {
                         if (tp.YFlip) {
-                            ab1[_x][_y] = (ab1[_x][_y] + (0x7f - ab1[_x][_y]) * 2) % 0xff;
-                            ab2[_x][_y] = (ab2[_x][_y] + (0x7f - ab2[_x][_y]) * 2) % 0xff;
+                            ab1[_x][_y] = 192 - ab1[_x][_y] + 192;
+                            ab2[_x][_y] = 192 - ab2[_x][_y] + 192;
 
-                            ab1[_x][_y] = (0xff - ab1[_x][_y]) % 0xff;
-                            ab2[_x][_y] = (0xff - ab2[_x][_y]) % 0xff;
+                            ab1[_x][_y] = 128 - ab1[_x][_y] + 128;
+                            ab2[_x][_y] = 128 - ab2[_x][_y] + 128;
 
                         } else {
-                            ab1[_x][_y] = (0xff - ab1[_x][_y]) % 0xff;
-                            ab2[_x][_y] = (0xff - ab2[_x][_y]) % 0xff;
+                            ab1[_x][_y] = 128 - ab1[_x][_y] + 128;
+                            ab2[_x][_y] = 128 - ab2[_x][_y] + 128;
                         }
                     } else {
                         if (tp.YFlip) {
-                            ab1[_x][_y] = (ab1[_x][_y] + (0x7f - ab1[_x][_y]) * 2) % 0xff;
-                            ab2[_x][_y] = (ab2[_x][_y] + (0x7f - ab2[_x][_y]) * 2) % 0xff;
+                            ab1[_x][_y] = 192 - ab1[_x][_y] + 192;
+                            ab2[_x][_y] = 192 - ab2[_x][_y] + 192;
                         } else {
                             ab1[_x][_y] = (ab1[_x][_y]);
                             ab2[_x][_y] = (ab2[_x][_y]);
@@ -1111,7 +1131,7 @@
                 this.spriteState = "spindash" + ((j + 1) % 6);
             }
         } else if (absgsp == 0 && this.inAir == false) {
-          if (this.ducking) {
+            if (this.ducking) {
                 if (this.spriteState.substring(0, this.spriteState.length - 1) != "duck") {
                     this.spriteState = "duck0";
                     this.runningTick = 1;
@@ -1176,11 +1196,12 @@
 
 
 
-Sensor = function (x1, x2, y1, y2, manager) {
+Sensor = function (x1, x2, y1, y2, manager, color) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
     this.y2 = y2;
+    this.color = color;
     this.manager = manager;
     this.check = function (character) {
         var m;
@@ -1202,20 +1223,21 @@ Sensor = function (x1, x2, y1, y2, manager) {
         }
 
         if (m != -1) {
-            if (m.angle == 255 || m.angle == 0) {
+            if (m.angle == 255 || m.angle == 0 || m.angle == 1) {
                 if (character.mode == RotationMode.Floor) {
                     m.angle = 255;
+                } if (character.mode == RotationMode.LeftWall) {
+                    m.angle = 64;
+                } if (character.mode == RotationMode.Ceiling) {
+                    m.angle = 128;
+                } if (character.mode == RotationMode.RightWall) {
+                    m.angle = 192;
                 }
 
             }
 
-            if (character.mode == RotationMode.LeftWall) {
-                m.angle = (0xff + m.angle - Math.floor(256 / 4 * 3)) % 0xff;
-            } else if (character.mode == RotationMode.Ceiling) {
-                m.angle = (0xff + m.angle - Math.floor(256 / 8 * 2)) % 0xff;
-            } else if (character.mode == RotationMode.RightWall) {
-                m.angle = (0xff + m.angle - Math.floor(256 / 8 * 1)) % 0xff;
-            }
+            m.angle = m.angle;
+
         }
         return m;
     };
@@ -1307,27 +1329,27 @@ Sensor = function (x1, x2, y1, y2, manager) {
         return -1;
     };
     this.draw = function (canvas, scale, character) {
-        var x = _H.floor(character.x);
-        var y = _H.floor(character.y);
-        canvas.strokeStyle = "#ffffff";
-        canvas.lineWidth = 4;
+        var x = _H.floor(character.x) - sonicManager.windowLocation.x;
+        var y = _H.floor(character.y) - sonicManager.windowLocation.y;
+        canvas.strokeStyle = this.color;
+        canvas.lineWidth = 2;
         switch (character.mode) {
             case RotationMode.Floor:
 
                 canvas.moveTo((x + this.x1) * scale.x, (y + this.y1) * scale.y);
-                canvas.lineTo((x + this.x2) * scale.x, (y + this.y2) * scale.y); 
+                canvas.lineTo((x + this.x2) * scale.x, (y + this.y2) * scale.y);
                 break;
             case RotationMode.LeftWall:
                 canvas.moveTo((x - this.y1) * scale.x, (y + this.x1) * scale.y);
-                canvas.lineTo((x - this.y2) * scale.x, (y + this.x2) * scale.y);  
+                canvas.lineTo((x - this.y2) * scale.x, (y + this.x2) * scale.y);
                 break;
-            case RotationMode.Ceiling: 
+            case RotationMode.Ceiling:
                 canvas.moveTo((x - this.x1) * scale.x, (y - this.y1) * scale.y);
-                canvas.lineTo((x - this.x2) * scale.x, (y - this.y2) * scale.y);   
+                canvas.lineTo((x - this.x2) * scale.x, (y - this.y2) * scale.y);
                 break;
             case RotationMode.RightWall:
                 canvas.moveTo((x + this.y1) * scale.x, (y - this.x1) * scale.y);
-                canvas.lineTo((x + this.y2) * scale.x, (y - this.x2) * scale.y); 
+                canvas.lineTo((x + this.y2) * scale.x, (y - this.x2) * scale.y);
                 break;
         }
         canvas.stroke();
@@ -1359,11 +1381,11 @@ SensorManager = function (sonicManager) {
         this.sensorResults[letter] = false;
         return sensor;
     };
-    this.createHorizontalSensor = function (letter, y, x1, x2) {
-        return this.addSensor(letter, new Sensor(x1, x2, y, y, this));
+    this.createHorizontalSensor = function (letter, y, x1, x2,color) {
+        return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color));
     };
-    this.createVerticalSensor = function (letter, x, y1, y2) {
-        return this.addSensor(letter, new Sensor(x, x, y1, y2, this));
+    this.createVerticalSensor = function (letter, x, y1, y2, color) {
+        return this.addSensor(letter, new Sensor(x, x, y1, y2, this, color));
     };
 
 }; 

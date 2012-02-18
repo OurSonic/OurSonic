@@ -226,7 +226,7 @@ jQuery.fn.rotate = function (angle, whence) {
         canvas.style.height = canvas.height = Math.abs(costheta * canvas.oImage.height) + Math.abs(sintheta * canvas.oImage.width);
 
         var context = canvas.getContext('2d');
-        context.save();
+        _H.save(context); ;
         if (rotation <= Math.PI / 2) {
             context.translate(sintheta * canvas.oImage.height, 0);
         } else if (rotation <= Math.PI) {
@@ -238,7 +238,7 @@ jQuery.fn.rotate = function (angle, whence) {
         }
         context.rotate(rotation);
         context.drawImage(canvas.oImage, 0, 0, canvas.oImage.width, canvas.oImage.height);
-        context.restore();
+        _H.restore(context);
     }
     canvas.id = p.id;
     canvas.angle = p.angle;
