@@ -61,9 +61,9 @@
     this.updateMode = function () {
         if (this.angle < 0x20 || this.angle > 0xDE) {
             this.mode = RotationMode.Floor;
-        } else if (this.angle > 0x20 && this.angle < 0x7B) {
+        } else if (this.angle > 0x20 && this.angle < 0x60) {
             this.mode = RotationMode.LeftWall;
-        } else if (this.angle > 0x7B && this.angle < 0xAD) {
+        } else if (this.angle > 0x60 && this.angle < 0xAD) {
             this.mode = RotationMode.Ceiling;
         } else if (this.angle > 0xAD && this.angle < 0xDE) {
             this.mode = RotationMode.RightWall;
@@ -97,9 +97,15 @@
                 this.wasJumping = false;
             }
         }
+        if (this.inAir && !this.wasInAir) {
+            this.wasInAir = true;
+            if ((this.angle >= 0x70 && this.angle <= 0x90)) {
+                this.xsp = this.gsp;
+            }
+        }
         if (!this.inAir && this.wasInAir) {
             this.wasInAir = false;
-            if (this.angle >= 0xF0 || this.angle <= 0x0F) {
+            if ((this.angle >= 0xF0 || this.angle <= 0x0F)) {
                 this.gsp = this.xsp;
             } else if ((this.angle >= 0xE0 && this.angle <= 0xEF) ||
                 (this.angle >= 0x10 && this.angle <= 0x1F)) {
@@ -178,7 +184,7 @@
             }
         }
 
-        if (!this.isAir && this.rolling) {
+        if (!this.inAir && this.rolling) {
             //dec  
             if (this.holdingLeft) {
                 if (this.gsp > 0) {
@@ -214,9 +220,9 @@
             this.ysp = this.gsp * -_H.sin(this.angle);
 
             if (Math.abs(this.gsp) < 2.5 && this.mode != RotationMode.Floor) {
-                if (this.mode == RotationMode.RightWall) this.x -= 5;
-                else if (this.mode == RotationMode.LeftWall) this.x += 4;
-                else if (this.mode == RotationMode.Ceiling) this.y += 5;
+                if (this.mode == RotationMode.RightWall) this.x -= 0;
+                else if (this.mode == RotationMode.LeftWall) this.x += 0;
+                else if (this.mode == RotationMode.Ceiling) this.y += 20;
                 this.mode = RotationMode.Floor;
                 this.angle = 0xFF;
                 this.updateMode();
@@ -281,7 +287,6 @@
 
                 this.spriteState = "spindash0";
             } else {
-                this.wasInAir = true;
                 this.inAir = true;
                 this.currentlyBall = true;
                 this.xsp = this.jmp * _H.sin(this.angle) + this.gsp * _H.cos(this.angle);
@@ -339,6 +344,7 @@
         var sensorM1 = this.sensorManager.getResult('m1');
         var sensorM2 = this.sensorManager.getResult('m2');
 
+
         switch (this.mode) {
             case RotationMode.Floor:
                 if (sensorM1 != -1) {
@@ -367,22 +373,25 @@
                 if (sensorM1 != -1) {
                     this.x = fx = sensorM1.value + 12;
                     this.gsp = 0;
+                    if (this.inAir) this.xsp = 0;
                 }
                 if (sensorM2 != -1) {
                     this.x = fx = sensorM2.value - 12;
                     this.gsp = 0;
+                    if (this.inAir) this.xsp = 0;
                 }
-                if (this.inAir) this.xsp = 0;
                 break;
             case RotationMode.RightWall:
                 if (sensorM1 != -1) {
                     this.y = fy = sensorM1.value - 12;
-                    this.gsp = 0;
+                    this.gsp = 0; 
+                    if (this.inAir) this.xsp = 0;
                 }
                 if (sensorM2 != -1) {
                     this.y = fy = sensorM2.value + 12;
                     this.gsp = 0;
-                } if (this.inAir) this.xsp = 0;
+                    if (this.inAir) this.xsp = 0;
+                }
                 break;
         }
         this.sensorManager.check(this);
@@ -403,7 +412,6 @@
         if (!this.inAir) {
             if (sensorA == -1 && sensorB == -1) {
                 this.inAir = true;
-                this.wasInAir = true;
             } else {
                 this.justHit = false;
                 switch (this.mode) {
@@ -487,7 +495,6 @@
         } else {
             if (sensorA == -1 && sensorB == -1) {
                 this.inAir = true;
-                this.wasInAir = true;
             } else {
 
                 if (sensorA.value >= 0 && sensorB.value >= 0) {

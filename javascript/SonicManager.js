@@ -2,7 +2,7 @@
 
 function SonicManager(mainCanvas, resize) {
     var scale = this.scale = { x: 2, y: 2 };
-
+    window.sonicManager = this;
     this.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
     this.showHeightMap = false;
     this.goodRing = new Ring(false);
@@ -581,29 +581,12 @@ function SonicManager(mainCanvas, resize) {
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                     hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
 
+
+                    /*
+                    
                     var vangle = sonicManager.SonicLevel.Angles[mjj];
-
-                    if (!vangle) {
-                        alert(vangle);
-                    }
-                    if (tp.XFlip) {
-                        if (tp.YFlip) {
-                            vangle = 192 - vangle + 192;
-
-                            vangle = 128 - vangle + 128;
-
-                        } else {
-                            vangle = 128 - vangle + 128;
-                        }
-                    } else {
-                        if (tp.YFlip) {
-                            vangle = 192 - vangle + 192;
-                        } else {
-                        }
-                    }
                     posm.x += 16 * scale.x / 2;
                     posm.y += 16 * scale.y / 2;
-                    /*
                     ctx.strokeStyle = "#DDD";
                     ctx.font = "18pt courier ";
                     ctx.shadowColor = "";
@@ -619,11 +602,7 @@ function SonicManager(mainCanvas, resize) {
                             ctx.fillStyle = HeightMask.colors[tp.Solid2];
                         }
                         ctx2.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
-                        var vangle = sonicManager.SonicLevel.Angles[mjj];
-
-
-                        posm.x += 16 * scale.x / 2;
-                        posm.y += 16 * scale.y / 2;
+                        
 
                         continue;
                     }

@@ -49,11 +49,19 @@
         return m == 0 ? 0 : (m < 0 ? -1 : 1);
     },
     defaultWindowLocation: function (state, canvas, scale) {
+
         switch (state) {
             case 0:
                 return { x: 0, y: 0, width: 320, height: 240, intersects: _H.intersects };
             case 1:
-                return { x: 0, y: 0, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
+                var x = 0;
+                var y = 0;
+                if (sonicManager.SonicLevel && sonicManager.SonicLevel.StartPositions && sonicManager.SonicLevel.StartPositions[0]) {
+                    x = sonicManager.SonicLevel.StartPositions[0].X;
+                    y = sonicManager.SonicLevel.StartPositions[0].Y;
+                }
+
+                return { x: x, y: y, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
         }
         return null;
     },
