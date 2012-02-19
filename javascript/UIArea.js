@@ -306,7 +306,15 @@ function TilePieceArea(x, y, scale, tilePiece, state) {
         if (!this.visible) return;
         if (!this.tilePiece) return;
         this.tilePiece.tag = true;
-        this.tilePiece.draw(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, this.scale, this.state, true);
+        var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
+        this.tilePiece.drawUI(canv, pos, this.scale, this.tpc.XFlip, this.tpc.YFlip);
+        if (sonicManager.showHeightMap) {
+            var hm = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes1[this.tpc.Block]];
+
+            if (hm != 0 && hm != 1) {
+                hm.drawUI(canv, pos, this.scale, 0, this.tpc.XFlip, this.tpc.YFlip, this.tpc.Solid1)
+            }
+        }
         this.tilePiece.tag = false;
 
     };

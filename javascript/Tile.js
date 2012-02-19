@@ -19,7 +19,7 @@
                     if (sonicManager.CACHING) return true;
                     var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
                     var frame = an.Frames[ind];
-                    if (!frame) { 
+                    if (!frame) {
                         continue;
                     }
                     var file = sonicManager.SonicLevel.AnimatedFiles[an.AnimationFile];
@@ -34,13 +34,53 @@
         }
         return false;
     };
+    Tile.prototype.drawUI = function (canvas, pos, scale, xflip, yflip, palette) {
 
+
+        for (var i = 0; i < this.colors.length; i++) {
+            for (var j = 0; j < this.colors[i].length; j++) {
+                var gj = this.colors[i][j];
+                if (gj == 0) continue;
+
+                //canvas.drawImage(sonicManager.SonicLevel.Palette[palette][gj], pos.x + ((i)) * scale.x, pos.y + (j) * scale.y, scale.x, scale.y);
+
+                var m = sonicManager.SonicLevel.Palette[palette][gj];
+                if (canvas.fillStyle != "#" + m)
+                    canvas.fillStyle = "#" + m;  
+
+                if (xflip) {
+                    if (yflip) {
+                        canvas.fillRect(pos.x + (7 - (i)) * scale.x, pos.y + (7 - j) * scale.y, scale.x, scale.y);
+                    } else {
+                        canvas.fillRect(pos.x + (7 - (i)) * scale.x, pos.y + (j) * scale.y, scale.x, scale.y);
+
+                    }
+                } else {
+                    if (yflip) {
+                        canvas.fillRect(pos.x + ((i)) * scale.x, pos.y + (7 - j) * scale.y, scale.x, scale.y);
+                    } else {
+                        canvas.fillRect(pos.x + ((i)) * scale.x, pos.y + (j) * scale.y, scale.x, scale.y);
+                    }
+                }
+
+
+            }
+        }
+
+        /*  if (showOutline) {
+        canvas.strokeStyle = "#DD0033";
+        canvas.lineWidth = 3;
+        canvas.strokeRect(pos.x, pos.y, 8 * scale.x, 8 * scale.y);
+        }*/
+
+
+    }
     Tile.prototype.draw = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
         if (this.checkGood(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame)) {
             return;
         }
         var fd;
-        if ((fd = sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette])) {
+        if ((fd = sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x])) {
             if (this.index[0] != 'A') {
                 canvas.putImageData(fd, pos.x, pos.y);
             } else {
@@ -79,11 +119,11 @@
             _H.restore(canvas);
             pos.x = oPos.x;
             pos.y = oPos.y;
-            
+
             var cx = this.colors.length * scale.x;
             var cy = this.colors.length * scale.y;
             if (this.index[0] != 'A') {
-                sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette] = canvas.getImageData(oPos.x, oPos.y, cx, cy);
+                sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x] = canvas.getImageData(oPos.x, oPos.y, cx, cy);
             } else {
 
                 /*  var canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);

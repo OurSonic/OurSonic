@@ -23,7 +23,46 @@ function TilePiece(heightMask, tiles) {
         }
         return true;
     };
+    TilePiece.prototype.drawUI = function (canvas, position, scale, xflip, yflip) {
 
+        var drawOrder;
+        if (xflip) {
+            if (yflip) {
+                drawOrder = [3, 2, 1, 0];
+            } else {
+                drawOrder = [1, 0, 3, 2];
+            }
+        } else {
+            if (yflip) {
+                drawOrder = [2, 3, 0, 1];
+            } else {
+                drawOrder = [0, 1, 2, 3];
+            }
+        }
+        for (var i = 0; i < this.tiles.length; i++) {
+            var mj = this.tiles[i];
+            if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
+                sonicManager.SonicLevel.Tiles[mj.Tile].drawUI(canvas,
+                                { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
+                                _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette);
+
+
+            }
+            /* canvas.lineWidth = 2;
+            canvas.strokeStyle = "#D142AA";
+            canvas.strokeRect(position.x, position.y, 16 * scale.x, 16 * scale.y);*/
+        }
+
+
+
+
+
+        //canvas.fillStyle = "#FFFFFF";
+        //canvas.fillText(sonicManager.SonicLevel.Blocks.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);
+
+
+        return true;
+    }
     TilePiece.prototype.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame) {
 
         var drawOrder;
@@ -49,11 +88,11 @@ function TilePiece(heightMask, tiles) {
             for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
                 if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
-                    if (mj.Priority == layer) { 
-                            sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas,
+                    if (mj.Priority == layer) {
+                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas,
                                 { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
-                                _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette,  layer, animationFrame);
-                  
+                                _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, layer, animationFrame);
+
                     }
                 }
             }
@@ -89,12 +128,7 @@ RotationMode = {
     RightWall: 224,
     Ceiling: 314,
     LeftWall: 44
-}; /*
-function defaultHeightMask() {
-    var hm = new HeightMask();
-    hm.init();
-    return hm;
-}
+}; /* 
 
 
 function defaultTiles(tile) {

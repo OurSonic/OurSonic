@@ -41,7 +41,7 @@ function SonicManager(mainCanvas, resize) {
 
 
     this.onClick = function (e) {
-        e = { x: e.x + this.windowLocation.x, y: e.y + this.windowLocation.y };
+        e = { x: e.x / scale.x + this.windowLocation.x, y: e.y / scale.y + this.windowLocation.y };
 
         if (!e.button || e.button == 0) {
             switch (this.clickState) {
@@ -49,18 +49,20 @@ function SonicManager(mainCanvas, resize) {
                     return;
                     break;
                 case ClickState.PlaceChunk:
-                    if (e.shiftKey) {
-                        var ch = this.SonicLevel.Chunks[this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)), _H.floor(e.y / (128 * scale.y))]];
+                    var ex, ey;
+                    ex = _H.floor(e.x / (128));
+                    ey = _H.floor(e.y / (128));
+                    var ch = this.SonicLevel.Chunks[this.SonicLevel.ChunkMap[ex][ey]];
 
-                        var tp = ch.getTilePiece((e.x - _H.floor(e.x / (128 * scale.x)) * (128 * scale.x)), (e.y - _H.floor(e.y / (128 * scale.y)) * (128 * scale.y)), scale);
-                        if (tp) {
-                            this.uiManager.indexes.tpIndex = this.SonicLevel.Blocks.indexOf(tp);
-                            this.uiManager.modifyTilePieceArea.tilePiece = tp;
-                            this.uiManager.solidTileArea.visible = true;
-                        }
-                    } else {
-                        //     this.SonicLevel.ChunkMap[_H.floor(e.x / (128 * scale.x)), _H.floor(e.y / (128 * scale.y))] = this.uiManager.indexes.modifyIndex;
+                    var tp = ch.getBlock((e.x - ex * (128)), (e.y - ey * (128)));
+                    if (tp) {
+                        var tpc = ch.getTilePiece((e.x - ex * (128)), (e.y - ey * (128)));
+                        this.uiManager.indexes.tpIndex = this.SonicLevel.Blocks.indexOf(tp);
+                        this.uiManager.modifyTilePieceArea.tilePiece = tp;
+                        this.uiManager.solidTileArea.visible = true;
+                        this.uiManager.modifyTilePieceArea.tpc = tpc;
                     }
+
                     break;
                 case ClickState.PlaceRing:
                     var ex = _H.floor((e.x));
@@ -444,48 +446,48 @@ function SonicManager(mainCanvas, resize) {
 
         var numOfAnimations = 0;
 
-        var aTileStep = sm.addStep("Animated Tile Maps", function (k, done) {
+        /* var aTileStep = sm.addStep("Animated Tile Maps", function (k, done) {
 
-            for (var m = 0; m < 4; m++) {
-                var canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
-                var ctx = canv.context;
-                k.draw(ctx, { x: 0, y: 0 }, scale, false, false, m);
-                sonicManager.SpriteCache.tiles[k.index + " " + false + " " + false + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
+        for (var m = 0; m < 4; m++) {
+        var canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+        var ctx = canv.context;
+        k.draw(ctx, { x: 0, y: 0 }, scale, false, false, m);
+        sonicManager.SpriteCache.tiles[k.index + " " + false + " " + false + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
 
-                canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
-                ctx = canv.context;
-                k.draw(ctx, { x: 0, y: 0 }, scale, true, false, m);
-                sonicManager.SpriteCache.tiles[k.index + " " + true + " " + false + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
+        canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+        ctx = canv.context;
+        k.draw(ctx, { x: 0, y: 0 }, scale, true, false, m);
+        sonicManager.SpriteCache.tiles[k.index + " " + true + " " + false + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
 
-                canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
-                ctx = canv.context;
-                k.draw(ctx, { x: 0, y: 0 }, scale, false, true, m);
-                sonicManager.SpriteCache.tiles[k.index + " " + false + " " + true + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
+        canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+        ctx = canv.context;
+        k.draw(ctx, { x: 0, y: 0 }, scale, false, true, m);
+        sonicManager.SpriteCache.tiles[k.index + " " + false + " " + true + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
 
-                canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
-                ctx = canv.context;
-                k.draw(ctx, { x: 0, y: 0 }, scale, true, true, m);
-                sonicManager.SpriteCache.tiles[k.index + " " + true + " " + true + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
+        canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
+        ctx = canv.context;
+        k.draw(ctx, { x: 0, y: 0 }, scale, true, true, m);
+        sonicManager.SpriteCache.tiles[k.index + " " + true + " " + true + " " + m] = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
 
 
 
-            }
+        }
 
         }, function () {
-            ind_.aes++;
-            if (ind_.aes >= numOfAnimations * 4 * 4) {
-                return true;
-            }
-            return false;
+        ind_.aes++;
+        if (ind_.aes >= numOfAnimations * 4 * 4) {
+        return true;
+        }
+        return false;
         }, true);
 
         for (jc = 0; jc < sonicManager.SonicLevel.AnimatedFiles.length; jc++) {
-            var fcc = sonicManager.SonicLevel.AnimatedFiles[jc];
-            for (j = 0; j < fcc.length; j++) {
-                sm.addIterationToStep(aTileStep, fcc[j]);
-                numOfAnimations++;
-            }
+        var fcc = sonicManager.SonicLevel.AnimatedFiles[jc];
+        for (j = 0; j < fcc.length; j++) {
+        sm.addIterationToStep(aTileStep, fcc[j]);
+        numOfAnimations++;
         }
+        }*/
 
 
         var chunkStep = sm.addStep("Chunk Maps", function (k, done) {
@@ -569,22 +571,23 @@ function SonicManager(mainCanvas, resize) {
             for (var _y = 0; _y < 8; _y++) {
                 for (var _x = 0; _x < 8; _x++) {
                     var tp = md.tilePieces[_x][_y];
-                    var mjj = sonicManager.SonicLevel.CollisionIndexes1[tp.Block];
-                    var hd = sonicManager.SonicLevel.HeightMaps[mjj];
-                    if (hd == 0) continue;
+                    var hd = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
                     var __x = _x;
                     var __y = _y;
-                    if (hd == 1) {
-                        if (tp.Solid1 > 0) {
-                            ctx.fillStyle = HeightMask.colors[tp.Solid1];
+                    if (hd == 0) {
+
+                    } else
+                        if (hd == 1) {
+                            if (tp.Solid1 > 0) {
+                                ctx.fillStyle = HeightMask.colors[tp.Solid1];
+                                ctx.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
+                            }
+
                         }
-                        ctx.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
-
-                        continue;
-                    }
-                    var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
-                    hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
-
+                        else {
+                            var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
+                            hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
+                        }
 
                     /*
                     
@@ -603,9 +606,9 @@ function SonicManager(mainCanvas, resize) {
                     if (hd == 0) continue;
                     if (hd == 1) {
                         if (tp.Solid2 > 0) {
-                            ctx.fillStyle = HeightMask.colors[tp.Solid2];
+                            ctx2.fillStyle = HeightMask.colors[tp.Solid2];
+                            ctx2.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
                         }
-                        ctx2.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
 
 
                         continue;

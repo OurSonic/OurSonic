@@ -61,9 +61,9 @@
     this.updateMode = function () {
         if (this.angle < 0x20 || this.angle > 0xDE) {
             this.mode = RotationMode.Floor;
-        } else if (this.angle > 0x20 && this.angle < 0x60) {
+        } else if (this.angle >= 0x20 && this.angle < 0x70) {
             this.mode = RotationMode.LeftWall;
-        } else if (this.angle > 0x60 && this.angle < 0xAD) {
+        } else if (this.angle >= 0x70 && this.angle < 0xAD) {
             this.mode = RotationMode.Ceiling;
         } else if (this.angle > 0xAD && this.angle < 0xDE) {
             this.mode = RotationMode.RightWall;
@@ -205,13 +205,17 @@
             oldSign = _H.sign(this.gsp);
             //slope
             var ang = _H.sin(this.angle);
-            if ((ang > 0) != (this.gsp > 0))
+            if ((ang > 0) == (this.gsp > 0))
                 this.gsp += -this.slpRollingUp * ang;
             else
                 this.gsp += -this.slpRollingDown * ang;
 
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
+            }
+            if (Math.abs(this.gsp) < 0.53125) {
+                this.rolling = false;
+                this.currentlyBall = false;
             }
         }
 
@@ -1081,7 +1085,7 @@
                                 case 1:
                                 case 2:
                                 case 3:
-                                    hb1[(_x * 16 + jx)][(_y * 16 + jy)] = (hd1[__x] > 16 - __y) ? tp.Solid1 : 0;
+                                    hb1[(_x * 16 + jx)][(_y * 16 + jy)] = (Math.abs(hd1[__x]) > 16 - __y) ? tp.Solid1 : 0;
                                     break;
                             }
 
@@ -1093,7 +1097,7 @@
                                 case 1:
                                 case 2:
                                 case 3:
-                                    hb2[(_x * 16 + jx)][(_y * 16 + jy)] = (hd2[__x] > 16 - __y) ? tp.Solid2 : 0;
+                                    hb2[(_x * 16 + jx)][(_y * 16 + jy)] = (Math.abs(hd2[__x]) > 16 - __y) ? tp.Solid2 : 0;
                                     break;
                             }
 

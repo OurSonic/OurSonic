@@ -2,9 +2,12 @@
     this.tilePieces = tilePieces;
     this.hLayer = [[]];
     this.sprites = [];
-    TileChunk.prototype.getTilePiece = function (x, y, scale) {
-        return sonicManager.SonicLevel.Blocks[this.tilePieces[_H.floor((x / scale.x / 16))][_H.floor((y / scale.y / 16))]];
+    TileChunk.prototype.getTilePiece = function (x, y) {
+        return this.tilePieces[_H.floor((x / 16))][_H.floor((y / 16))];
     };
+    TileChunk.prototype.getBlock= function (x, y) {
+        return sonicManager.SonicLevel.Blocks[this.tilePieces[_H.floor((x / 16))][_H.floor((y / 16))].Block];
+    }; 
     TileChunk.prototype.onlyBackground = function () {
         for (var i = 0; i < this.tilePieces.length; i++) {
             for (var j = 0; j < this.tilePieces[i].length; j++) {

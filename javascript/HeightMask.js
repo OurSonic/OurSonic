@@ -33,6 +33,49 @@
     };
 
 
+    HeightMask.prototype.drawUI = function (canvas, pos, scale, state, xflip, yflip, solid) {
+
+        if (solid > 0) {
+            for (var x = 0; x < 16; x++) {
+                for (var y = 0; y < 16; y++) {
+                    var jx = 0, jy = 0;
+                    if (xflip) {
+                        if (yflip) {
+                            jx = 15 - x;
+                            jy = 15 - y;
+                        } else {
+                            jx = 15 - x;
+                            jy = y;
+                        }
+                    } else {
+                        if (yflip) {
+                            jx = x;
+                            jy = 15 - y;
+                        } else {
+                            jx = x;
+                            jy = y;
+                        }
+                    }
+
+                    var _x = pos.x + (jx * scale.x);
+                    var _y = pos.y + (jy * scale.y);
+                     
+                    canvas.lineWidth = 1;
+                    if (state <= 0 && Math.abs(this.items[x]) >= 16 - y && solid > 0) {
+                        canvas.fillStyle = HeightMask.colors[solid];
+                        canvas.fillRect(_x, _y, scale.x, scale.y);
+                    } else {
+                        if (state != -1) {
+                            canvas.lineWidth = 1;
+                            canvas.strokeStyle = "#0C3146";
+                            canvas.strokeRect(_x, _y, scale.x, scale.y);
+                        }
+                    }  
+                }
+            }
+
+        }
+    };
 
     HeightMask.prototype.draw = function (canvas, pos, scale, state, xflip, yflip, solid) {
         _H.save(canvas);
@@ -56,7 +99,7 @@
             if (solid > 0) {
                 for (var x = 0; x < 16; x++) {
                     var jx = 0, jy = 0;
-                    var y = 16 - this.items[x];
+                    var y = 16 - Math.abs(this.items[x]);
 
                     jx = x;
                     jy = y;
