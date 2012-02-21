@@ -51,6 +51,7 @@
   <ItemGroup>
     <Content Include="Game2.aspx" />
     <Content Include="javascript\LevelObject.js" />
+    <Content Include="javascript\Sensor.js" />
     <Content Include="javascript\TileItem.js" />
     <Content Include="javascript\ParallaxBG.js" />
     <Content Include="javascript\Ring.js" />
@@ -197,7 +198,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>64299</DevelopmentServerPort>
+          <DevelopmentServerPort>55192</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

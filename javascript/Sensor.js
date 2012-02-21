@@ -1,6 +1,6 @@
 ﻿
 
-Sensor = function (x1, x2, y1, y2, manager, color) {
+Sensor = function (x1, x2, y1, y2, manager, color,ignoreSolid) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
@@ -13,16 +13,16 @@ Sensor = function (x1, x2, y1, y2, manager, color) {
         var y = _H.floor(character.y);
         switch (character.mode) {
             case RotationMode.Floor:
-                m = this.checkCollisionLineWrap(x + this.x1, x + this.x2, y + this.y1, y + this.y2);
-                break;
-            case RotationMode.LeftWall:
-                m = this.checkCollisionLineWrap(x - this.y1, x - this.y2, y + this.x1, y + this.x2);
-                break;
-            case RotationMode.Ceiling:
-                m = this.checkCollisionLineWrap(x - this.x1, x - this.x2, y - this.y1, y - this.y2);
-                break;
-            case RotationMode.RightWall:
-                m = this.checkCollisionLineWrap(x + this.y1, x + this.y2, y - this.x1, y - this.x2);
+                m = this.checkCollisionLineWrap(x + this.x1, x + this.x2, y + this.y1, y + this.y2,ignoreSolid);
+                break;                                                                           
+            case RotationMode.LeftWall:                                                          
+                m = this.checkCollisionLineWrap(x - this.y1, x - this.y2, y + this.x1, y + this.x2,ignoreSolid);
+                break;                                                                            
+            case RotationMode.Ceiling:                                                            
+                m = this.checkCollisionLineWrap(x - this.x1, x - this.x2, y - this.y1, y - this.y2,ignoreSolid);
+                break;                                                                            
+            case RotationMode.RightWall:                                                          
+                m = this.checkCollisionLineWrap(x + this.y1, x + this.y2, y - this.x1, y - this.x2,ignoreSolid);
                 break;
         }
 
@@ -49,7 +49,7 @@ Sensor = function (x1, x2, y1, y2, manager, color) {
 
 
 
-    this.checkCollisionLineWrap = function (x1, x2, y1, y2) {
+    this.checkCollisionLineWrap = function (x1, x2, y1, y2, ignoreSolid) {
         var _x = _H.floor(x1 / 128);
         var _y = _H.floor(y1 / 128);
         var tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
@@ -122,7 +122,7 @@ Sensor = function (x1, x2, y1, y2, manager, color) {
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                         __y += 128;
                     }
-                    if (curh[__x][__y - i] >= 1) {
+                    if (curh[__x][__y - i] > 1) {
                         return { value: y1 - i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)] };
                     }
                 }
@@ -191,11 +191,11 @@ SensorManager = function (sonicManager) {
         this.sensorResults[letter] = false;
         return sensor;
     };
-    this.createHorizontalSensor = function (letter, y, x1, x2, color) {
-        return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color));
+    this.createHorizontalSensor = function (letter, y, x1, x2, color, ignoreSolid) {
+        return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color,ignoreSolid));
     };
-    this.createVerticalSensor = function (letter, x, y1, y2, color) {
-        return this.addSensor(letter, new Sensor(x, x, y1, y2, this, color));
+    this.createVerticalSensor = function (letter, x, y1, y2, color, ignoreSolid) {
+        return this.addSensor(letter, new Sensor(x, x, y1, y2, this, color, ignoreSolid));
     };
 
 }; 
