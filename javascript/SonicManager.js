@@ -46,7 +46,7 @@ function SonicManager(mainCanvas, resize) {
         if (!e.button || e.button == 0) {
             switch (this.clickState) {
                 case ClickState.Dragging:
-                    return;
+                    return false;
                     break;
                 case ClickState.PlaceChunk:
                     var ex, ey;
@@ -62,12 +62,13 @@ function SonicManager(mainCanvas, resize) {
                         this.uiManager.solidTileArea.visible = true;
                         this.uiManager.modifyTilePieceArea.tpc = tpc;
                     }
-
+                    return true; 
                     break;
                 case ClickState.PlaceRing:
                     var ex = _H.floor((e.x));
                     var ey = _H.floor((e.y));
                     this.SonicLevel.Rings.push({ X: ex, Y: ey });
+                    return true; 
                     break;
                 case ClickState.PlaceObject:
                     var ex = _H.floor((e.x));
@@ -81,12 +82,14 @@ function SonicManager(mainCanvas, resize) {
                         }
                     }
 
+                    return true; 
 
                     break;
                 default:
             }
         }
 
+        return false; 
 
 
     };
@@ -574,6 +577,7 @@ function SonicManager(mainCanvas, resize) {
                     var hd = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
                     var __x = _x;
                     var __y = _y;
+                    var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                     if (hd == 0) {
 
                     } else
@@ -585,13 +589,10 @@ function SonicManager(mainCanvas, resize) {
 
                         }
                         else {
-                            var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
                             hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
                         }
 
-                    /*
-                    
-                    var vangle = sonicManager.SonicLevel.Angles[mjj];
+                        var vangle = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
                     posm.x += 16 * scale.x / 2;
                     posm.y += 16 * scale.y / 2;
                     ctx.strokeStyle = "#DDD";
@@ -600,7 +601,7 @@ function SonicManager(mainCanvas, resize) {
                     ctx.shadowBlur = 0;
                     ctx.lineWidth = 1;
 
-                    ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);*/
+                    ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
 
                     hd = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
                     if (hd == 0) continue;
@@ -608,17 +609,12 @@ function SonicManager(mainCanvas, resize) {
                         if (tp.Solid2 > 0) {
                             ctx2.fillStyle = HeightMask.colors[tp.Solid2];
                             ctx2.fillRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
-                        }
-
-
+                        }  
                         continue;
-                    }
-                    var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
+                    } 
                     hd.draw(ctx2, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid2);
 
-                    /*
-
-                    var vangle = sonicManager.SonicLevel.Angles[mjj];
+                      vangle = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
                   
                     posm.x += 16 * scale.x / 2;
                     posm.y += 16 * scale.y / 2;
@@ -628,7 +624,7 @@ function SonicManager(mainCanvas, resize) {
                     ctx2.shadowColor = "";
                     ctx2.shadowBlur = 0;
                     ctx2.lineWidth = 1;
-                    ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);*/
+                    ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);
 
                 }
             }

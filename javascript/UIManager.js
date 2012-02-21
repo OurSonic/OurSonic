@@ -80,7 +80,6 @@
 
             return true;
         }
-        this.dragger.click(e);
         return false;
     };
 
@@ -643,19 +642,19 @@
                             var mjc = pm.tiles[ci];
                             if (sonicManager.SonicLevel.Tiles[mjc.Tile]) {
                                 var fa = sonicManager.containsAnimatedTile(mjc.Tile);
-                                if (fa!=undefined) {
+                                if (fa != undefined) {
                                     mj.animated = fa;
                                     acs.push(mj);
                                     break;
                                 }
                             }
                         }
-                        if(mj.animated)break;
+                        if (mj.animated) break;
                     }
                     if (mj.animated) break;
 
                 }
-            }
+            } 
 
             /*for (je = 0; je < fc.angleMap1.length; je++) {
             for (jc = 0; jc < fc.angleMap1[je].length; jc++) {

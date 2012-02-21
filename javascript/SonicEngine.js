@@ -48,6 +48,7 @@ function SonicEngine(canvasName) {
 
         if (sonicManager.onClick(e)) return false;
 
+        sonicManager.uiManager.dragger.click(e);
         return false;
     }
 
