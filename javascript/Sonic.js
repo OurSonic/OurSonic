@@ -59,6 +59,8 @@
 
 
     this.updateMode = function () {
+
+        //if (this.angle == 0xF0) this.angle = 15;
         if (this.angle < 0x20 || this.angle > 0xDE) {
             this.mode = RotationMode.Floor;
         } else if (this.angle >= 0x20 && this.angle < 0x56) {
@@ -67,7 +69,7 @@
             this.mode = RotationMode.Ceiling;
         } else if (this.angle > 0xA1 && this.angle < 0xDE) {
             this.mode = RotationMode.RightWall;
-        }  
+        }
         /* 
         if (this.angle <= 0xff && this.angle > 0xC8) {
         this.mode = RotationMode.Floor;
@@ -328,7 +330,7 @@
 
             return;
         }
-        
+
         this.updateMode();
 
         if (this.hlock > 0) {
@@ -571,7 +573,13 @@
                             if (this.ysp < 0) {
                                 this.angle = sensorC.angle;
                                 this.y = fy = sensorC.value + __h;
-                                this.ysp = 0;
+                                if (sensorC.angle == 0xff) {
+                                    this.ysp = 0;
+                                } else {
+                                    this.gsp = -this.ysp;
+                                    this.inAir = false;
+                                    this.wasInAir = false;
+                                }
                             }
                         }
                     } else {
@@ -579,7 +587,14 @@
                             if (this.ysp < 0) {
                                 this.angle = sensorD.angle;
                                 this.y = fy = sensorD.value + __h;
-                                this.ysp = 0;
+                                if (sensorC.angle == 0xff) {
+                                    this.ysp = 0;
+                                } else {
+                                    this.gsp = -this.ysp;
+
+                                    this.inAir = false;
+                                    this.wasInAir = false;
+                                }
                             }
                         }
                     }
@@ -588,7 +603,14 @@
                         if (this.ysp < 0) {
                             this.angle = sensorC.angle;
                             this.y = fy = sensorC.value + __h;
-                            this.ysp = 0;
+                            if (sensorC.angle == 0xff) {
+                                this.ysp = 0;
+                            } else {
+                                this.gsp = -this.ysp;
+
+                                this.inAir = false;
+                                this.wasInAir = false;
+                            }
                         }
                     }
                 } else if (sensorD.value > -1) {
@@ -596,7 +618,15 @@
                         if (this.ysp < 0) {
                             this.angle = sensorD.angle;
                             this.y = fy = sensorD.value + __h;
-                            this.ysp = 0;
+                            if (sensorC.angle == 0xff) {
+                                this.ysp = 0;
+                            } else {
+                                this.gsp = -this.ysp;
+
+                                this.inAir = false;
+                                this.wasInAir = false;
+                            }
+
                         }
                     }
                 }
@@ -818,9 +848,12 @@
         canvas.fillText("Angle: " + this.angle.toString(16), pos.x + 90, pos.y + 75);
         canvas.fillText("Position: " + _H.floor(this.x) + ", " + _H.floor(this.y), pos.x + 90, pos.y + 105);
         canvas.fillText("Speed: g: " + this.gsp.toFixed(3) + " x:" + this.xsp.toFixed(3) + " y:" + this.ysp.toFixed(3), pos.x + 90, pos.y + 135);
-        canvas.fillText("Mode: " + modeString(this.mode), pos.x + 90, pos.y + 185);
+        canvas.fillText("Mode: " + modeString(this.mode), pos.x + 90, pos.y + 165);
         if (this.inAir)
             canvas.fillText("Air ", pos.x + 220, pos.y + 45);
+        if (this.hlock > 0) {
+            canvas.fillText("HLock: " + this.hlock, pos.x + 90, pos.y + 195);
+        }
 
     };
     function modeString(st) {
@@ -853,7 +886,7 @@
                 _H.save(canvas);
                 var xOffset = 0;
                 var yOffset = 0;
-                if (cur.height != 40*scale.x) {
+                if (cur.height != 40 * scale.x) {
                     switch (this.mode) {
                         case RotationMode.Floor:
 
@@ -872,7 +905,7 @@
                             var n = 20;
                             xOffset = (40 - ((cur.height + n) / scale.x)) / 2;
                             break;
-                    } 
+                    }
                 } canvas.translate((fx - sonicManager.windowLocation.x + xOffset + xOffset) * scale.x, ((fy - sonicManager.windowLocation.y + yOffset) * scale.y));
 
 
@@ -1038,29 +1071,41 @@
                     var tp = chunk.tilePieces[_x][_y];
                     ab1[_x][_y] = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
                     ab2[_x][_y] = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
-
-                    if (ab1[_x][_y] == 1) ab1[_x][_y] = 0;
-                    if (ab2[_x][_y] == 1) ab2[_x][_y] = 0;
+                     
 
                     if (!(ab1[_x][_y] == 0 || ab1[_x][_y] == 255 || ab1[_x][_y] == 1)) {
                         if (tp.XFlip) {
                             if (tp.YFlip) {
-                                ab1[_x][_y] = 191 - ab1[_x][_y] + 192;
-                                ab2[_x][_y] = 191 - ab2[_x][_y] + 192;
+                                ab1[_x][_y] = 192 - ab1[_x][_y] + 192; 
 
-                                ab1[_x][_y] = 127 - ab1[_x][_y] + 128;
-                                ab2[_x][_y] = 127 - ab2[_x][_y] + 128;
+                                ab1[_x][_y] = 128 - ab1[_x][_y] + 128; 
 
                             } else {
-                                ab1[_x][_y] = 127 - ab1[_x][_y] + 128;
-                                ab2[_x][_y] = 127 - ab2[_x][_y] + 128;
+                                ab1[_x][_y] = 128 - ab1[_x][_y] + 128; 
                             }
                         } else {
                             if (tp.YFlip) {
-                                ab1[_x][_y] = 191 - ab1[_x][_y] + 192;
-                                ab2[_x][_y] = 191 - ab2[_x][_y] + 192;
+                                ab1[_x][_y] = 192 - ab1[_x][_y] + 192; 
                             } else {
-                                ab1[_x][_y] = (ab1[_x][_y]);
+                                ab1[_x][_y] = (ab1[_x][_y]); 
+                            }
+                        }
+                    }
+
+                    if (!(ab2[_x][_y] == 0 || ab2[_x][_y] == 255 || ab2[_x][_y] == 1)) {
+                        if (tp.XFlip) {
+                            if (tp.YFlip) {
+                                ab2[_x][_y] = 192 - ab2[_x][_y] + 192;
+
+                                ab2[_x][_y] = 128 - ab2[_x][_y] + 128;
+
+                            } else {
+                                ab2[_x][_y] = 128 - ab2[_x][_y] + 128;
+                            }
+                        } else {
+                            if (tp.YFlip) {
+                                ab2[_x][_y] = 192 - ab2[_x][_y] + 192;
+                            } else {
                                 ab2[_x][_y] = (ab2[_x][_y]);
                             }
                         }
@@ -1223,8 +1268,7 @@
             if (this.spriteState.substring(0, this.spriteState.length - 1) != "balls") {
                 this.spriteState = "balls0";
                 this.runningTick = 1;
-            } else if ((this.runningTick++) % (_H.floor(8 - absgsp)) == 0) {
-                ;
+            } else if (((this.runningTick++) % (_H.floor(8 - absgsp)) == 0) || (8 - absgsp < 1)) {
                 this.spriteState = "balls" + ((j + 1) % 5);
             }
         } else if (absgsp < 6) {
@@ -1248,204 +1292,3 @@
     this.buildHeightInfo(sonicLevel);
 }
 
-
-
-Sensor = function (x1, x2, y1, y2, manager, color) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
-    this.color = color;
-    this.manager = manager;
-    this.check = function (character) {
-        var m;
-        var x = _H.floor(character.x);
-        var y = _H.floor(character.y);
-        switch (character.mode) {
-            case RotationMode.Floor:
-                m = this.checkCollisionLineWrap(x + this.x1, x + this.x2, y + this.y1, y + this.y2);
-                break;
-            case RotationMode.LeftWall:
-                m = this.checkCollisionLineWrap(x - this.y1, x - this.y2, y + this.x1, y + this.x2);
-                break;
-            case RotationMode.Ceiling:
-                m = this.checkCollisionLineWrap(x - this.x1, x - this.x2, y - this.y1, y - this.y2);
-                break;
-            case RotationMode.RightWall:
-                m = this.checkCollisionLineWrap(x + this.y1, x + this.y2, y - this.x1, y - this.x2);
-                break;
-        }
-
-        if (m != -1) {
-            if (m.angle == 255 || m.angle == 0 || m.angle == 1) {
-                if (character.mode == RotationMode.Floor) {
-                    m.angle = 255;
-                } if (character.mode == RotationMode.LeftWall) {
-                    m.angle = 64;
-                } if (character.mode == RotationMode.Ceiling) {
-                    m.angle = 128;
-                } if (character.mode == RotationMode.RightWall) {
-                    m.angle = 192;
-                }
-
-            }
-
-        }
-        return m;
-    };
-
-
-
-
-
-
-    this.checkCollisionLineWrap = function (x1, x2, y1, y2) {
-        var _x = _H.floor(x1 / 128);
-        var _y = _H.floor(y1 / 128);
-        var tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
-        var curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-        var cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-        var __x = x1 - _x * 128;
-        var __y = y1 - _y * 128;
-        var i;
-        var curc = 0;
-        var length;
-
-        if (y1 == y2) {
-            if (Math.max(x1, x2) > sonicManager.SonicLevel.LevelWidth * 128)
-                return { value: sonicManager.SonicLevel.LevelWidth * 128 - 20, angle: 0xff };
-
-            if (x1 < x2) {
-                length = x2 - x1;
-                for (i = 0; i < length; i++) {
-                    if (__x + i >= 128) {
-                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x + 1][_y]];
-                        curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-                        __x -= 128;
-                    }
-                    if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 2)
-                        return { value: x1 + i, angle: cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)] };
-                }
-            } else {
-                length = x1 - x2;
-                for (i = 0; i < length; i++) {
-                    if (__x - i < 0) {
-                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x - 1][_y]];
-                        curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-                        __x += 128;
-                    }
-                    if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2)
-                        return { value: x1 - i, angle: cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)] };
-                }
-            }
-
-        }
-        else {
-            //top to bottom
-            if (Math.max(y1, y2) > sonicManager.SonicLevel.LevelHeight * 128)
-                return { value: sonicManager.SonicLevel.LevelHeight * 128 - 20, angle: 0xff };
-
-
-
-            if (y1 < y2) {
-                length = y2 - y1;
-                for (i = 0; i < length; i++) {
-                    if (__y + i >= 128) {
-                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y + 1)]];
-                        curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-
-                        __y -= 128;
-                    }
-                    if (curh[__x][__y + i] >= 1) {
-                        return { value: y1 + i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)] };
-                    }
-                }
-            } else {
-                length = y1 - y2;
-                for (i = 0; i < length; i++) {
-                    if (__y - i < 0) {
-                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y - 1)]];
-                        curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-                        __y += 128;
-                    }
-                    if (curh[__x][__y - i] >= 1) {
-                        return { value: y1 - i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)] };
-                    }
-                }
-            }
-        }
-        return -1;
-    };
-    this.draw = function (canvas, scale, character,sensorResult) {
-        var x = _H.floor(character.x) - sonicManager.windowLocation.x;
-        var y = _H.floor(character.y) - sonicManager.windowLocation.y;
-
-        canvas.beginPath();
-        if (sensorResult  && sensorResult.chosen) {
-            canvas.strokeStyle = "#FFF76D";
-            canvas.lineWidth = 4;
-        }else {
-            canvas.strokeStyle = this.color;
-            canvas.lineWidth = 2;
-        }
-        switch (character.mode) {
-            case RotationMode.Floor: 
-                canvas.moveTo((x + this.x1) * scale.x, (y + this.y1) * scale.y);
-                canvas.lineTo((x + this.x2) * scale.x, (y + this.y2) * scale.y);
-                break;
-            case RotationMode.LeftWall:
-                canvas.moveTo((x - this.y1) * scale.x, (y + this.x1) * scale.y);
-                canvas.lineTo((x - this.y2) * scale.x, (y + this.x2) * scale.y);
-                break;
-            case RotationMode.Ceiling:
-                canvas.moveTo((x - this.x1) * scale.x, (y - this.y1) * scale.y);
-                canvas.lineTo((x - this.x2) * scale.x, (y - this.y2) * scale.y);
-                break;
-            case RotationMode.RightWall:
-                canvas.moveTo((x + this.y1) * scale.x, (y - this.x1) * scale.y);
-                canvas.lineTo((x + this.y2) * scale.x, (y - this.x2) * scale.y);
-                break;
-        }
-
-        canvas.closePath();
-        canvas.stroke();
-
-    };
-};
-SensorManager = function (sonicManager) {
-    this.sonicManager = sonicManager;
-    this.sensors = [];
-    this.sensorResults = [];
-    this.check = function (character) {
-        var none = false;
-        for (var i in this.sensors) {
-            this.sensorResults[i] = this.sensors[i].check(character);
-            none = none || (this.sensorResults[i] != -1);
-        }
-        return none;
-    };
-    this.draw = function (canvas, scale, character) {
-        for (var i in this.sensors) {
-            this.sensors[i].draw(canvas, scale, character, this.sensorResults[i]);
-        }
-    };
-    this.getResult = function (letter) {
-        return this.sensorResults[letter];
-    };
-    this.addSensor = function (letter, sensor) {
-        this.sensors[letter] = (sensor);
-        this.sensorResults[letter] = false;
-        return sensor;
-    };
-    this.createHorizontalSensor = function (letter, y, x1, x2, color) {
-        return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color));
-    };
-    this.createVerticalSensor = function (letter, x, y1, y2, color) {
-        return this.addSensor(letter, new Sensor(x, x, y1, y2, this, color));
-    };
-
-}; 

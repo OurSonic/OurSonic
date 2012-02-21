@@ -105,7 +105,11 @@ function SonicManager(mainCanvas, resize) {
             that.sonicToon.ticking = true;
             try {
                 that.sonicToon.tick(that.SonicLevel, scale);
-            } finally {
+            }
+            catch (exc) {
+                alert(_H.stringify(exc));
+            }
+            finally {
                 that.sonicToon.ticking = false;
             }
             if (that.sonicToon.y > 128 * sonicManager.SonicLevel.LevelHeight) {
@@ -590,18 +594,18 @@ function SonicManager(mainCanvas, resize) {
                         }
                         else {
                             hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
+                            var vangle = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
+                            posm.x += 16 * scale.x / 2;
+                            posm.y += 16 * scale.y / 2;
+                            ctx.strokeStyle = "#DDD";
+                            ctx.font = "18pt courier ";
+                            ctx.shadowColor = "";
+                            ctx.shadowBlur = 0;
+                            ctx.lineWidth = 1;
+                            //  ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
                         }
 
-                        var vangle = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
-                    posm.x += 16 * scale.x / 2;
-                    posm.y += 16 * scale.y / 2;
-                    ctx.strokeStyle = "#DDD";
-                    ctx.font = "18pt courier ";
-                    ctx.shadowColor = "";
-                    ctx.shadowBlur = 0;
-                    ctx.lineWidth = 1;
 
-                    ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
 
                     hd = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
                     if (hd == 0) continue;
@@ -624,7 +628,7 @@ function SonicManager(mainCanvas, resize) {
                     ctx2.shadowColor = "";
                     ctx2.shadowBlur = 0;
                     ctx2.lineWidth = 1;
-                    ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);
+                  //  ctx2.strokeText(!vangle ? "XX" : vangle.toString(16), posm.x - 12, posm.y + 7);
 
                 }
             }

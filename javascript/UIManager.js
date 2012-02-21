@@ -540,37 +540,36 @@
 
 
         var acs = sonicManager.SonicLevel.AnimatedChunks = [];
-        for (jc = 0; jc < sonicManager.SonicLevel.AnimatedFiles.length; jc++) {
-            var fcc = sonicManager.SonicLevel.AnimatedFiles[jc];
-            for (j = 0; j < fcc.length; j++) {
-                fc = fcc[j];
-                fcc[j] = decodeNumeric(fc);
+        if (sonicManager.SonicLevel.AnimatedFiles) {
+            for (jc = 0; jc < sonicManager.SonicLevel.AnimatedFiles.length; jc++) {
+                var fcc = sonicManager.SonicLevel.AnimatedFiles[jc];
+                for (j = 0; j < fcc.length; j++) {
+                    fc = fcc[j];
+                    fcc[j] = decodeNumeric(fc);
 
-                var mj = [];
-                for (var l = 0; l < fcc[j].length; l++) {
-                    var value = fcc[j][l];
-                    mj.push(value >> 4);
-                    mj.push(value & 0xF);
+                    var mj = [];
+                    for (var l = 0; l < fcc[j].length; l++) {
+                        var value = fcc[j][l];
+                        mj.push(value >> 4);
+                        mj.push(value & 0xF);
+                    }
+                    fcc[j] = { colors: mj };
+                    var td = fcc[j];
+                    var mf = [];
+                    mf.length = 8;
+                    for (var o = 0; o < 8; o++) {
+                        mf[o] = [];
+                        mf[o].length = 8;
+                    }
+                    for (var n = 0; n < td.colors.length; n++) {
+                        mf[n % 8][_H.floor(n / 8)] = td.colors[n];
+                    }
+                    td.colors = mf;
+                    td.__proto__ = Tile.prototype;
+                    td.index = "A" + j + "_" + jc;
                 }
-                fcc[j] = { colors: mj };
-                var td = fcc[j];
-                var mf = [];
-                mf.length = 8;
-                for (var o = 0; o < 8; o++) {
-                    mf[o] = [];
-                    mf[o].length = 8;
-                }
-                for (var n = 0; n < td.colors.length; n++) {
-                    mf[n % 8][_H.floor(n / 8)] = td.colors[n];
-                }
-                td.colors = mf;
-                td.__proto__ = Tile.prototype;
-                td.index = "A" + j + "_" + jc;
             }
         }
-
-
-
 
 
         for (j = 0; j < sonicManager.SonicLevel.Blocks.length; j++) {
