@@ -54,7 +54,7 @@
     this.sensorManager.createVerticalSensor('d', 9, 0, -20, '#C242822');
     this.sensorManager.createHorizontalSensor('m1', 4, 0, -12, '#212C2E');
     this.sensorManager.createHorizontalSensor('m2', 4, 0, 12, '#22Ffc1');
-
+    this.watcher = new Watcher();
 
 
 
@@ -93,6 +93,8 @@
         this.myRec = { x: this.x - 5, width: 5 * 2, y: this.y - 20, height: 20 * 2 };
     };
     this.effectPhysics = function () {
+
+        var multiplyer = this.watcher.getMultiplyer();
         var max = 6;
         if (!this.jumping) {
             if (!this.inAir && this.wasJumping) {
@@ -1054,15 +1056,11 @@
             var hb2 = chunk.heightBlocks2 = [];
             var ab1 = chunk.angleMap1 = [];
             var ab2 = chunk.angleMap2 = [];
-            hb2.length = hb1.length = 128;
-            ab1.length = ab2.length = 8;
             for (var _1 = 0; _1 < 128; _1++) {
                 hb1[_1] = [];
                 hb2[_1] = [];
                 ab1[_1] = [];
                 ab2[_1] = [];
-                ab2[_1].length = ab1[_1].length = 8;
-                hb2[_1].length = hb1[_1].length = 128;
             }
 
 
@@ -1199,6 +1197,15 @@
 
 
     };
+    this.empty = function () {
+        for (var mc = 0; mc < sonicLevel.Chunks.length; mc++) {
+            var chunk = sonicLevel.Chunks[mc];
+            chunk.heightBlocks1 = null;
+            chunk.heightBlocks2 = null;
+            chunk.angleMap1 = null;
+            chunk.angleMap2 = null;
+        }
+    };
     this.updateSprite = function () {
         var absgsp = Math.abs(this.gsp);
         var j = parseInt(this.spriteState.substring(this.spriteState.length - 1, this.spriteState.length));
@@ -1292,3 +1299,20 @@
     this.buildHeightInfo(sonicLevel);
 }
 
+
+function Watcher() {
+    var lastTick = 0;
+    this.getMultiplyer = function () {
+        var ticks = new Date().getTime();
+        var offset = 0;
+        if (lastTick == 0)
+            offset = 1;
+        else 
+            offset = ticks - lastTick;
+
+        lastTick = ticks;
+
+        return offset / 16.6;
+    };
+
+}

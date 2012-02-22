@@ -138,6 +138,7 @@
         solidTileArea.visible = false;
         levelInformation.visible = true;
         levelManagerArea.visible = true;
+        sonicManager.sonicToon.empty();
         sonicManager.sonicToon = null;
     }
     ));
@@ -301,7 +302,7 @@
         var btn;
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
             curLevelName = "Downloading";
-            OurSonic.SonicLevels.getLevel(name, function (lvl) {
+             OurSonic.SonicLevels.getLevel(name, function (lvl) {
                 curLevelName = "loading";
                 curLevelName = name; loadGame(lvl, mainCanvas);
             });
