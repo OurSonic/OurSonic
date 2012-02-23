@@ -1,4 +1,8 @@
 ﻿window._H = {
+    extend: function (to, from) {
+        for (var prop in from) to[prop] = from[prop];
+        return to;
+    },
     save: function (canvas) {
         if (window.StateCount == undefined) {
             window.StateCount = 0;
@@ -9,6 +13,20 @@
     restore: function (canvas) {
         window.StateCount--;
         canvas.restore();
+    },
+    decodeString: function (lvl) {
+        var m = lvl.indexOf('&');
+        var mln = lvl.substring(0, m);
+        var fcLen = parseInt(mln);
+        var items = lvl.substring(m + 1, fcLen + m);
+        var d = items.split('&');
+        var last = lvl.substring(fcLen + m, lvl.length);
+        for (var i = d.length - 1; i >= 0; i--) {
+            var l = '&' + i;
+            last = last.replaceAll(l, d[i]);
+        }
+
+        return last;
     },
     floor: function (f) {
         if (f > 0) {
@@ -57,8 +75,8 @@
                 var x = 0;
                 var y = 0;
                 if (sonicManager.SonicLevel && sonicManager.SonicLevel.StartPositions && sonicManager.SonicLevel.StartPositions[0]) {
-                    x = sonicManager.SonicLevel.StartPositions[0].X*128*2;
-                    y = sonicManager.SonicLevel.StartPositions[0].Y-128*2;
+                    x = sonicManager.SonicLevel.StartPositions[0].X - 128 * 2;
+                    y = sonicManager.SonicLevel.StartPositions[0].Y - 128 * 2;
                 }
 
                 return { x: x, y: y, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
@@ -66,6 +84,12 @@
         return null;
     },
     ObjectParse: function (o) {
+        o.upperNibble = function () {
+            return this.SubType >> 4;
+        };
+        o.lowerNibble = function () {
+            return this.SubType & 0xf;
+        };
         switch (o.ID) {
             case 1: //monitor
                 return new MonitorObject(o);
@@ -114,7 +138,7 @@
         return { canvas: canvas, context: ctx };
     },
     intersectRect: function (r1, r2) {
-        return  !(r2.x > r1.x + r1 .width ||
+        return !(r2.x > r1.x + r1.width ||
            r2.x + r2.width < r1.x ||
            r2.y > r1.y + r1.height ||
            r2.y + r2.height < r1.y);
@@ -740,7 +764,10 @@ function LZWDecompressor(instream) {
     };
 
 } // end of LZWDecompressor
- 
 
 
- 
+
+
+String.prototype.replaceAll = function (str1, str2, ignore) {
+    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+}

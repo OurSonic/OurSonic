@@ -54,7 +54,7 @@
     this.sensorManager.createVerticalSensor('d', 9, 0, -20, '#C242822');
     this.sensorManager.createHorizontalSensor('m1', 4, 0, -12, '#212C2E');
     this.sensorManager.createHorizontalSensor('m2', 4, 0, 12, '#22Ffc1');
-    this.watcher = new Watcher();
+    this.watcher=new Watcher();
 
 
 
@@ -94,7 +94,8 @@
     };
     this.effectPhysics = function () {
 
-        var multiplyer = this.watcher.getMultiplyer();
+        this.watcher.tick();
+        
         var max = 6;
         if (!this.jumping) {
             if (!this.inAir && this.wasJumping) {
@@ -104,20 +105,20 @@
         if (this.inAir && !this.wasInAir) {
             this.wasInAir = true;
             if ((this.angle >= 0x70 && this.angle <= 0x90)) {
-                this.xsp = this.gsp;
+                this.xsp = this.watcher.multiply(this.gsp);
             }
         }
         if (!this.inAir && this.wasInAir) {
             this.wasInAir = false;
             if ((this.angle >= 0xF0 || this.angle <= 0x0F)) {
-                this.gsp = this.xsp;
+                this.gsp = this.watcher.multiply(this.xsp);
             } else if ((this.angle >= 0xE0 && this.angle <= 0xEF) ||
                 (this.angle >= 0x10 && this.angle <= 0x1F)) {
-                this.gsp = this.ysp;
+                this.gsp = this.watcher.multiply(this.ysp);
             } else if ((this.angle >= 0xC0 && this.angle <= 0xDF)) {
-                this.gsp = -this.ysp;
+                this.gsp = this.watcher.multiply(-this.ysp);
             } else if ((this.angle >= 0x20 && this.angle <= 0x3F)) {
-                this.gsp = this.ysp;
+                this.gsp = this.watcher.multiply(this.ysp);
             }
             this.xsp = 0;
             this.ysp = 0;
@@ -127,11 +128,11 @@
         if (!this.inAir && !this.rolling) {
             if (!this.holdingLeft && !this.holdingRight) {
                 //friction
-                this.gsp -= Math.min(Math.abs(this.gsp), this.frc) * (this.gsp > 0 ? 1 : -1);
+                this.gsp -= this.watcher.multiply(Math.min(Math.abs(this.gsp), this.frc) * (this.gsp > 0 ? 1 : -1));
             }
             oldSign = _H.sign(this.gsp);
             //slope
-            this.gsp += this.slp * -_H.sin(this.angle);
+            this.gsp += this.watcher.multiply(this.slp * -_H.sin(this.angle));
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
             }
@@ -140,11 +141,11 @@
                 this.facing = true;
                 if (this.gsp >= 0) {
                     //accelerate 
-                    this.gsp += this.acc;
+                    this.gsp += this.watcher.multiply(this.acc);
                     if (this.gsp > max) this.gsp = max;
                 } else {
                     //decelerate 
-                    this.gsp += this.dec;
+                    this.gsp += this.watcher.multiply(this.dec);
                     if (Math.abs(this.gsp) > 4.5) {
                         this.facing = false;
                         this.breaking = 1;
@@ -156,11 +157,11 @@
                 this.facing = false;
                 if (this.gsp <= 0) {
                     //accelerate 
-                    this.gsp -= this.acc;
+                    this.gsp -= this.watcher.multiply(this.acc);
                     if (this.gsp < -max) this.gsp = -max;
                 } else {
                     //decelerate 
-                    this.gsp -= this.dec;
+                    this.gsp -= this.watcher.multiply(this.dec);
                     if (Math.abs(this.gsp) > 4.5) {
                         this.facing = true;
                         this.breaking = -1;
@@ -193,26 +194,26 @@
             if (this.holdingLeft) {
                 if (this.gsp > 0) {
                     if (this.rolling) {
-                        this.gsp = _H.max(0, this.gsp - this.rdec);
+                        this.gsp = this.watcher.multiply(_H.max(0, this.gsp - this.rdec));
                     }
                 }
             }
             if (this.holdingRight) {
                 if (this.gsp < 0) {
                     if (this.rolling) {
-                        this.gsp = _H.min(0, this.gsp + this.rdec);
+                        this.gsp = this.watcher.multiply(_H.min(0, this.gsp + this.rdec));
                     }
                 }
             }
             //friction
-            this.gsp -= Math.min(Math.abs(this.gsp), this.rfrc) * (this.gsp > 0 ? 1 : -1);
+            this.gsp -= this.watcher.multiply(Math.min(Math.abs(this.gsp), this.rfrc) * (this.gsp > 0 ? 1 : -1));
             oldSign = _H.sign(this.gsp);
             //slope
             var ang = _H.sin(this.angle);
             if ((ang > 0) == (this.gsp > 0))
-                this.gsp += -this.slpRollingUp * ang;
+                this.gsp += this.watcher.multiply(-this.slpRollingUp * ang);
             else
-                this.gsp += -this.slpRollingDown * ang;
+                this.gsp +=this.watcher.multiply( -this.slpRollingDown * ang);
 
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
@@ -230,7 +231,7 @@
             if (Math.abs(this.gsp) < 2.5 && this.mode != RotationMode.Floor) {
                 if (this.mode == RotationMode.RightWall) this.x -= 0;
                 else if (this.mode == RotationMode.LeftWall) this.x += 0;
-                else if (this.mode == RotationMode.Ceiling) this.y += 20;
+                else if (this.mode == RotationMode.Ceiling) this.y += 10;
                 this.mode = RotationMode.Floor;
                 this.angle = 0xFF;
                 this.updateMode();
@@ -247,22 +248,22 @@
 
                 if (this.xsp >= 0) {
                     //accelerate 
-                    this.xsp += this.air;
+                    this.xsp += this.watcher.multiply(this.air);
                     if (this.xsp > max) this.xsp = max;
                 } else {
                     //decelerate 
-                    this.xsp += this.air;
+                    this.xsp += this.watcher.multiply(this.air);
                 }
             }
             if (this.holdingLeft && !this.holdingRight) {
                 this.facing = false;
                 if (this.xsp <= 0) {
                     //accelerate 
-                    this.xsp -= this.air;
+                    this.xsp -= this.watcher.multiply(this.air);
                     if (this.xsp < -max) this.xsp = -max;
                 } else {
                     //decelerate 
-                    this.xsp -= this.air;
+                    this.xsp -= this.watcher.multiply(this.air);
                 }
             }
             if (this.wasInAir) {
@@ -1302,17 +1303,20 @@
 
 function Watcher() {
     var lastTick = 0;
-    this.getMultiplyer = function () {
+    this.mult = 1;
+    this.tick = function () {
         var ticks = new Date().getTime();
         var offset = 0;
         if (lastTick == 0)
-            offset = 1;
+            offset = 16.6;
         else 
             offset = ticks - lastTick;
 
         lastTick = ticks;
 
-        return offset / 16.6;
+        this.mult= offset / 16.6;
     };
-
+    this.multiply = function (val) {
+        return this.mult * val;
+    }
 }

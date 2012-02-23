@@ -310,7 +310,7 @@ function TilePieceArea(x, y, scale, tilePiece, state) {
         this.tilePiece.drawUI(canv, pos, this.scale, this.tpc.XFlip, this.tpc.YFlip);
         if (sonicManager.showHeightMap) {
 
-            var jc = (this.SonicLevel.curHeightMap ? sonicManager.SonicLevel.CollisionIndexes1 : sonicManager.SonicLevel.CollisionIndexes2);
+            var jc = (sonicManager.SonicLevel.curHeightMap ? sonicManager.SonicLevel.CollisionIndexes1 : sonicManager.SonicLevel.CollisionIndexes2);
             var hm = sonicManager.SonicLevel.HeightMaps[jc[this.tpc.Block]]; 
             if (hm != 0 && hm != 1) {
                 hm.drawUI(canv, pos, this.scale, 0, this.tpc.XFlip, this.tpc.YFlip, this.tpc.Solid1);

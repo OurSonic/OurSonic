@@ -232,14 +232,14 @@
 
 
 
-    var levelInformation = this.levelInformation = new UiArea(70, 70, 470, 360, this);
+    var levelInformation = this.levelInformation = new UiArea(70, 70, 530, 360, this);
     levelInformation.visible = true;
     this.UIAreas.push(levelInformation);
     levelInformation.addControl(new TextArea(30, 25, "Level Selector", textFont, "blue"));
     levelInformation.addControl(new TextArea(30, 52, function () {
         return !curLevelName ? "Level Not Saved" : (curLevelName);
     }, textFont, "black"));
-    levelInformation.addControl(new Button(250, 70, 100, 22, "Save Level", buttonFont, "rgb(50,150,50)",
+    levelInformation.addControl(new Button(320, 70, 100, 22, "Save Level", buttonFont, "rgb(50,150,50)",
     function () {
         if (curLevelName) {
             OurSonic.SonicLevels.SaveLevelInformation(curLevelName, Base64.encode(_H.stringify(sonicManager.SonicLevel)), function (c) { }, function (c) { alert("Failure: " + _H.stringify(c)); });
@@ -252,7 +252,7 @@
     }));
 
     var tb;
-    levelInformation.addControl(tb = new Button(250, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
+    levelInformation.addControl(tb = new Button(320, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
     function () {
 
         levelManagerArea.visible = true;
@@ -287,7 +287,7 @@
     tb.visible = false;
 
     var ctls;
-    levelInformation.addControl(ctls = new ScrollBox(30, 70, 25, 11, 190, "rgb(50,60,127)"));
+    levelInformation.addControl(ctls = new ScrollBox(30, 70, 25, 11, 250, "rgb(50,60,127)"));
 
     var curLevelName;
     OurSonic.SonicLevels.getLevels(function (lvls) {
@@ -456,8 +456,9 @@
 
     function loadGame(lvl, mainCanvas) {
         sonicManager.loading = true;
-        sonicManager.SonicLevel = jQuery.parseJSON(lvl);
-
+        curLevelName = "Decoding";
+        sonicManager.SonicLevel = jQuery.parseJSON(_H.decodeString(lvl));
+        curLevelName = "Determining Level Information";
         var fc;
         var j;
         if (!sonicManager.SonicLevel.Chunks)
@@ -535,8 +536,8 @@
                 mf[n % 8][_H.floor(n / 8)] = td.colors[n];
             }
             td.colors = mf;
-            td.__proto__ = Tile.prototype;
             td.index = j;
+        sonicManager.SonicLevel.Tiles[j]=    _H.extend(new Tile(), td);
         }
 
 
@@ -566,8 +567,9 @@
                         mf[n % 8][_H.floor(n / 8)] = td.colors[n];
                     }
                     td.colors = mf;
-                    td.__proto__ = Tile.prototype;
                     td.index = "A" + j + "_" + jc;
+                    fcc[j] = _H.extend(new Tile(), td);
+
                 }
             }
         }
@@ -575,13 +577,12 @@
 
         for (j = 0; j < sonicManager.SonicLevel.Blocks.length; j++) {
             fc = sonicManager.SonicLevel.Blocks[j];
-            var mj = {};
-            mj.__proto__ = TilePiece.prototype;
+            var mj = new TilePiece();
             mj.index = j;
             mj.tiles = [];
             for (var p = 0; p < fc.length; p++) {
                 mj.tiles.push(fc[p]);
-                fc[p].__proto__ = TileItem.prototype;
+                
             }
             sonicManager.SonicLevel.Blocks[j] = mj;
         }
@@ -618,8 +619,7 @@
         for (j = 0; j < sonicManager.SonicLevel.Chunks.length; j++) {
             fc = sonicManager.SonicLevel.Chunks[j];
 
-            var mj = {};
-            mj.__proto__ = TileChunk.prototype;
+            var mj = new TileChunk();
             mj.index = j;
             mj.tilePieces = [];
             mj.tilePieces.length = 8;

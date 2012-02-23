@@ -24,9 +24,9 @@ namespace OurSonic
 
     // private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
        private string directory = ConfigurationManager.AppSettings["Directory"];
-        public SonicLevels()
-        {
        
+        public SonicLevels()
+        { 
             c = directory+"sonicLevels.xml";
              if (!File.Exists(c))
             {
@@ -68,8 +68,8 @@ namespace OurSonic
 
         [WebMethod]
         public string getLevel(string level)
-        {
-            return File.ReadAllText(directory + level+".js");
+        { 
+            return File.ReadAllText(directory + level + ".js");
         }
 
         [WebMethod]
