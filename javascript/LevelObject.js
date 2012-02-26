@@ -175,12 +175,17 @@ function SpringObject(o) {
     //alert('upper: ' + this.ObjectData.upperNibble() + ' lower: ' + this.ObjectData.lowerNibble())
     this.type = SpringType.Yellow;
     var mStart = 'assets/Sprites/spring';
+    
     switch (this.ObjectData.lowerNibble()) {
         case 0:
             this.type = SpringType.Yellow;
             mStart += "yellow";
             break;
         case 2:
+            this.type = SpringType.Red;
+            mStart += "red";
+            break;
+        default:
             this.type = SpringType.Red;
             mStart += "red";
             break;

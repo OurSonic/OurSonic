@@ -1,6 +1,21 @@
 ﻿function UIManager(sonicManager, mainCanvas, scale) {
     this.UIAreas = [];
     this.messages = [];
+    function runSonic() {
+        levelManagerArea.visible = false;
+        solidTileArea.visible = false;
+        levelInformation.visible = false;
+        modifyTileArea.visible = false;
+        modifyTileChunkArea.visible = false;
+        solidTileArea.visible = false;
+        debuggerArea.visible = true;
+        if (sonicManager.background)
+            sonicManager.background.cache(sonicManager.scale);
+        sonicManager.windowLocation = _H.defaultWindowLocation(0, mainCanvas, scale);
+        sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
+        sonicManager.sonicToon.obtainedRing = [];
+
+    }
 
     var textFont = this.textFont = "18pt sans-serrif ";
     var buttonFont = this.buttonFont = "13pt Arial bold";
@@ -295,18 +310,28 @@
             var lvlName = lvls[i];
             addLevelToList(lvlName);
         }
+
+        var dl = _H.getQueryString();
+        if (dl["level"]) {
+            loadLevel(dl["level"]);
+        }
     });
 
 
     function addLevelToList(name) {
         var btn;
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
-            curLevelName = "Downloading";
-             OurSonic.SonicLevels.getLevel(name, function (lvl) {
-                curLevelName = "loading";
-                curLevelName = name; loadGame(lvl, mainCanvas);
-            });
+ 
+            loadLevel(name);
         }));
+    }
+
+    function loadLevel(name) {
+        curLevelName = "Downloading "+name;
+        OurSonic.SonicLevels.getLevel(name, function (lvl) {
+            curLevelName = "loading";
+            curLevelName = name; loadGame(lvl, mainCanvas);
+        });
     }
 
 
@@ -387,21 +412,7 @@
         }));
 
 
-    levelManagerArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)",
-        function () {
-            levelManagerArea.visible = false;
-            solidTileArea.visible = false;
-            levelInformation.visible = false;
-            modifyTileArea.visible = false;
-            modifyTileChunkArea.visible = false;
-            solidTileArea.visible = false;
-            debuggerArea.visible = true;
-            if (sonicManager.background)
-                sonicManager.background.cache(sonicManager.scale);
-            sonicManager.windowLocation = _H.defaultWindowLocation(0, mainCanvas, scale);
-            sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
-            sonicManager.sonicToon.obtainedRing = [];
-        }));
+    levelManagerArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)", runSonic));
 
 
 
@@ -537,7 +548,7 @@
             }
             td.colors = mf;
             td.index = j;
-        sonicManager.SonicLevel.Tiles[j]=    _H.extend(new Tile(), td);
+            sonicManager.SonicLevel.Tiles[j] = _H.extend(new Tile(), td);
         }
 
 
@@ -582,7 +593,7 @@
             mj.tiles = [];
             for (var p = 0; p < fc.length; p++) {
                 mj.tiles.push(fc[p]);
-                
+
             }
             sonicManager.SonicLevel.Blocks[j] = mj;
         }
@@ -594,7 +605,7 @@
         sonicManager.SonicLevel.Angles = decodeNumeric(sonicManager.SonicLevel.Angles);
         sonicManager.SonicLevel.CollisionIndexes1 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes1);
         sonicManager.SonicLevel.CollisionIndexes2 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes2);
-        
+
         for (var i = 0; i < sonicManager.SonicLevel.HeightMaps.length; i++) {
 
             var b1 = true;
@@ -613,7 +624,7 @@
             } else if (b2) {
                 sonicManager.SonicLevel.HeightMaps[i] = 1;
             } else
-                sonicManager.SonicLevel.HeightMaps[i] = new HeightMask( sonicManager.SonicLevel.HeightMaps[i]);
+                sonicManager.SonicLevel.HeightMaps[i] = new HeightMask(sonicManager.SonicLevel.HeightMaps[i]);
         }
 
         var jc;
@@ -655,7 +666,7 @@
                     if (mj.animated) break;
 
                 }
-            } 
+            }
 
             /*for (je = 0; je < fc.angleMap1.length; je++) {
             for (jc = 0; jc < fc.angleMap1[je].length; jc++) {
@@ -685,7 +696,6 @@
 
 
 
-
         var finished = function () {
             levelManagerArea.visible = true;
             sonicManager.loading = false;
@@ -703,6 +713,13 @@
             finished();
             curLevelName = "level loaded";
             sonicManager.forceResize();
+
+
+            var dl = _H.getQueryString();
+            if (dl["run"]) {
+                setTimeout(runSonic, 1000);
+            }
+
         }, function (str) {
             curLevelName = str;
         });

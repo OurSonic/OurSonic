@@ -66,6 +66,16 @@
     sign: function (m) {
         return m == 0 ? 0 : (m < 0 ? -1 : 1);
     },
+    getQueryString: function () {
+        var result = {}, queryString = location.search.substring(1),
+      re = /([^&=]+)=([^&]*)/g, m;
+
+        while (m = re.exec(queryString)) {
+            result[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+        }
+
+        return result;
+    },
     defaultWindowLocation: function (state, canvas, scale) {
 
         switch (state) {
