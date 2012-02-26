@@ -140,7 +140,10 @@
     };
 
 
-
+    var updateTitle = function(str) {
+        document.title = str + " | Our Sonic";
+        curLevelName = str;
+    };
 
     var debuggerArea = this.debuggerArea = new UiArea(1347, 95, 200, 240, this, true);
     debuggerArea.visible = false;
@@ -210,13 +213,34 @@
             if (indexes.tpIndex < sonicManager.SonicLevel.Blocks.length)
                 modifyTilePieceArea.tilePiece = sonicManager.SonicLevel.Blocks[++indexes.tpIndex];
         }));
-    solidTileArea.addControl(new Button(360, 80, 45, 22, "Full", buttonFont, "rgb(50,150,50)",
+        solidTileArea.addControl(new Button(360, 80, 45, 22, "Full", buttonFont, "rgb(50,150,50)",
         function () {
             for (var i = 0; i < 16; i++) {
                 modifyTilePieceArea.tilePiece.heightMask.items[i] = 16;
 
             }
             this.sprites = [];
+        }));
+
+        solidTileArea.addControl(new Button(360, 130, 45, 22, "XFlip", buttonFont, function () {
+            if (modifyTilePieceArea.tpc.XFlip) {
+                return "rgb(190,120,65)";
+            } else {
+                return "rgb(50,150,50)";
+            }
+        },
+        function () {
+            modifyTilePieceArea.tpc.XFlip = !modifyTilePieceArea.tpc.XFlip;
+        }));
+        solidTileArea.addControl(new Button(360, 160, 45, 22, "YFlip", buttonFont, function () {
+            if (modifyTilePieceArea.tpc.YFlip) {
+                return "rgb(190,120,65)";
+            } else {
+                return "rgb(50,150,50)";
+            }
+        },
+        function () {
+            modifyTilePieceArea.tpc.YFlip = !modifyTilePieceArea.tpc.YFlip;
         }));
 
     solidTileArea.addControl(new Button(200, 35, 180, 22, "Modify Height Map", buttonFont, "rgb(50,150,50)",
@@ -327,10 +351,11 @@
     }
 
     function loadLevel(name) {
-        curLevelName = "Downloading "+name;
+        updateTitle( "Downloading " + name);
         OurSonic.SonicLevels.getLevel(name, function (lvl) {
-            curLevelName = "loading";
-            curLevelName = name; loadGame(lvl, mainCanvas);
+            updateTitle("Loading: " + name);
+            
+            loadGame(lvl, mainCanvas);
         });
     }
 
@@ -467,9 +492,9 @@
 
     function loadGame(lvl, mainCanvas) {
         sonicManager.loading = true;
-        curLevelName = "Decoding";
+        updateTitle("Decoding");
         sonicManager.SonicLevel = jQuery.parseJSON(_H.decodeString(lvl));
-        curLevelName = "Determining Level Information";
+        updateTitle("Determining Level Information");
         var fc;
         var j;
         if (!sonicManager.SonicLevel.Chunks)
@@ -705,13 +730,15 @@
         };
 
         //        var inds = sonicManager.inds = { r:0,t: 0, tp: 0, tc: 0, total: (sonicManager.SonicLevel.Chunks.length * 2 + sonicManager.SonicLevel.Blocks.length * 5 + sonicManager.SonicLevel.Tiles.length), done: false };
-        curLevelName = "preloading sprites";
+
+        updateTitle("preloading sprites");
         sonicManager.CACHING = true;
         sonicManager.preLoadSprites(scale, function () {
             //          inds.r = 1;
             sonicManager.CACHING = false;
             finished();
-            curLevelName = "level loaded";
+
+            updateTitle("Level Loaded");
             sonicManager.forceResize();
 
 
@@ -720,9 +747,7 @@
                 setTimeout(runSonic, 1000);
             }
 
-        }, function (str) {
-            curLevelName = str;
-        });
+        }, updateTitle);
 
 
         /*

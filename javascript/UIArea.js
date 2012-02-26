@@ -251,7 +251,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     };
     this.draw = function (canv) {
         if (!this.visible) return;
-        canv.fillStyle = this.color;
+        canv.fillStyle = _H.isFunction(this.color) ? this.color() : this.color;
         canv.strokeStyle = "#DAC333";
         canv.lineWidth = 2;
         roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 5, true, true);

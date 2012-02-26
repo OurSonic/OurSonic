@@ -61,9 +61,9 @@
     this.updateMode = function () {
 
         //if (this.angle == 0xF0) this.angle = 15;
-        if (this.angle < 0x20 || this.angle > 0xDE) {
+        if (this.angle <= 0x20 || this.angle > 0xDE) {
             this.mode = RotationMode.Floor;
-        } else if (this.angle >= 0x20 && this.angle < 0x56) {
+        } else if (this.angle > 0x20 && this.angle < 0x56) {
             this.mode = RotationMode.LeftWall;
         } else if (this.angle >= 0x56 && this.angle < 0xA1) {
             this.mode = RotationMode.Ceiling;
@@ -318,17 +318,14 @@
             this.xsp = 0;
         }
 
-
-
-
-
-        this.x += this.xsp;
-        this.y += this.ysp;
+         
+        this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x + this.xsp)) % (sonicManager.SonicLevel.LevelWidth * 128);
+        this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y + this.ysp)) % (sonicManager.SonicLevel.LevelHeight * 128);
     };
 
     this.tick = function () {
         if (this.debugging) {
-            var debugSpeed = 15;
+            var debugSpeed = this.watcher.multiply(15);
 
             if (this.holdingRight) {
                 this.x += debugSpeed;
@@ -341,6 +338,8 @@
                 this.y -= debugSpeed;
             }
 
+            this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x )) % (sonicManager.SonicLevel.LevelWidth * 128);
+            this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y )) % (sonicManager.SonicLevel.LevelHeight * 128);
             return;
         }
 
@@ -910,7 +909,7 @@
                             break;
                         case RotationMode.RightWall:
                             var n = 20;
-                            xOffset = (40 - ((cur.height + n) / scale.x)) / 2;
+                            xOffset = -(40 - ((cur.height + n) / scale.x)) / 2;
                             break;
                     }
                 } 

@@ -30,7 +30,10 @@
             this.lastAnimatedIndex = 0;
         }
 
-        if (this.animated.Frames[this.lastAnimatedIndex].Ticks == 0 || (sonicManager.drawTickCount - this.lastAnimatedFrame) >= 2/*this.animated.Frames[this.lastAnimatedIndex].Ticks*/) {
+        if (this.animated.Frames[this.lastAnimatedIndex].Ticks == 0 ||
+            (sonicManager.drawTickCount - this.lastAnimatedFrame) >= ((this.animated.AutomatedTiming > 0)
+                ? this.animated.AutomatedTiming
+                : this.animated.Frames[this.lastAnimatedIndex].Ticks)) {
             this.lastAnimatedFrame = sonicManager.drawTickCount;
             this.lastAnimatedIndex = (this.lastAnimatedIndex + 1) % this.animated.Frames.length;
         }
