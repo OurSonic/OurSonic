@@ -15,21 +15,10 @@
     </script> 
     <script type="text/javascript">
                                 //<![CDATA[
-        $(function () { 
-            var stats = new Stats();
+        $(function () {
 
-            // Align top-left
-            stats.getDomElement().style.position = 'absolute';
-            stats.getDomElement().style.left = '0px';
-            stats.getDomElement().style.top = '0px';
-
-            document.body.appendChild(stats.getDomElement());
-
-            setInterval(function () {
-
-                stats.update();
-
-            }, 1000 / 60);
+            var stats = new xStats;
+            document.body.appendChild(stats.element);
 
 
             var myCanv = new SonicEngine("build");

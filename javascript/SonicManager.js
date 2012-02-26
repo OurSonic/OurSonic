@@ -235,8 +235,12 @@ function SonicManager(mainCanvas, resize) {
 
 
                 if (this.showHeightMap) {
-                    canvas.strokeStyle = "#000000";
-                    canvas.strokeRect(posj.x, posj.y, scale.x * 16, scale.y * 16);
+                    for (var _xx = 0; _xx < 8; _xx++) {
+                        for (var _yy = 0; _yy < 8; _yy++) {
+                            canvas.strokeStyle = "#000000";
+                            canvas.strokeRect(posj.x + (_xx * 16) * scale.x, posj.y + (_yy * 16) * scale.y, scale.x * 16, scale.y * 16);
+                        }
+                    }
 
                 }
 
