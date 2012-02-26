@@ -115,7 +115,7 @@
     },
     itemsGood: function (items, x, y, jy) {
         if (items[x] < 0) {
-            return Math.abs(items[x]) >= jy;
+            return Math.abs(items[x]) >= y;
         }
         return items[x] >= 16 - y;
     },

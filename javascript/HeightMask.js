@@ -105,7 +105,7 @@
         }
     };
 
-    HeightMask.prototype.draw = function (canvas, pos, scale, state, xflip, yflip, solid,angle) {
+    HeightMask.prototype.draw = function (canvas, pos, scale, state, xflip, yflip, solid, angle) {
         _H.save(canvas);
         var oPos = { x: pos.x, y: pos.y };
         if (xflip) {
@@ -126,37 +126,41 @@
 
             if (solid > 0) {
                 for (var x = 0; x < 16; x++) {
-                    var jx = 0, jy = 0;
-                    var y = 16 + (this.items[x] > 0 ? -this.items[x] : this.items[x]);
+                    for (var y = 0; y < 16; y++) {
+                        var jx = 0, jy = 0;
 
-                    jx = x;
-                    jy = y;
-                    var _x = pos.x + (jx * scale.x);
-                    var _y = pos.y + (jy * scale.y);
+                        if (_H.itemsGood(this.items, x, y, jy)) { 
+
+                            jx = x;
+                            jy = y;
+                            var _x = pos.x + (jx * scale.x);
+                            var _y = pos.y + (jy * scale.y);
 
 
-                    canvas.lineWidth = 1;
-                    canvas.fillStyle = HeightMask.colors[solid];
-                    canvas.fillRect(_x, _y, scale.x, scale.y * Math.abs(this.items[x]));
+                            canvas.lineWidth = 1;
+                            canvas.fillStyle = HeightMask.colors[solid];
+                            canvas.fillRect(_x, _y, scale.x, scale.y);
+                        }
+                    }
                 }
             }
-          /*  if (!(angle == 0 || angle == 255 || angle == 1)) {
-                if (xflip) {
-                    if (yflip) {
-                        angle = 192 - angle + 192;
+            /*  if (!(angle == 0 || angle == 255 || angle == 1)) {
+            if (xflip) {
+            if (yflip) {
+            angle = 192 - angle + 192;
 
-                        angle = 128 - angle + 128;
+            angle = 128 - angle + 128;
 
-                    } else {
-                        angle = 128 - angle + 128;
-                    }
-                } else {
-                    if (yflip) {
-                        angle = 192 - angle + 192;
-                    } else {
-                        angle = angle;
-                    }
-                }
+            } else {
+            angle = 128 - angle + 128;
+            }
+            } else {
+            if (yflip) {
+            angle = 192 - angle + 192;
+            } else {
+            angle = angle;
+            }
+            }
             }*/
 
             canvas.beginPath();
