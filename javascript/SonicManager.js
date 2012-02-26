@@ -78,7 +78,7 @@ function SonicManager(mainCanvas, resize) {
                         var o = sonicManager.SonicLevel.Objects[l];
 
                         if (_H.intersects2(o.getRect(), { X: ex, Y: ey })) {
-                            alert(_H.stringify(o));
+                            alert("Object Data: "+_H.stringify(o));
                         }
                     }
 
@@ -96,21 +96,42 @@ function SonicManager(mainCanvas, resize) {
 
     this.tickCount = 0;
     this.drawTickCount = 0;
+    this.inHaltMode = false;
+    this.waitingForTickContinue = false;
+    this.waitingForDrawContinue = false;
 
     this.tick = function (that) {
         if (that.loading) return;
         if (that.sonicToon) {
-            that.tickCount++;
 
+            if (that.inHaltMode) {
+                if (that.waitingForTickContinue) {
+                    return;
+                }
+            }
+
+            that.tickCount++;
             that.sonicToon.ticking = true;
             try {
                 that.sonicToon.tick(that.SonicLevel, scale);
             }
             catch (exc) {
-                alert(_H.stringify(exc));
+                var txt = "There was an error on this page.\n\n";
+                txt += "Error description: " + exc.message + "\n\n";
+                txt += "Click OK to continue.\n\n";
+                alert(txt);
             }
             finally {
                 that.sonicToon.ticking = false;
+            }
+
+            if (that.inHaltMode) {
+                if (that.waitingForTickContinue) {
+                    return;
+                } else {
+                    that.waitingForTickContinue = true;
+                    that.waitingForDrawContinue = false;
+                }
             }
             if (that.sonicToon.y > 128 * sonicManager.SonicLevel.LevelHeight) {
                 that.sonicToon.y = 0;
@@ -122,6 +143,17 @@ function SonicManager(mainCanvas, resize) {
     };
     this.screenOffset = { x: mainCanvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: mainCanvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
     this.draw = function (canvas) {
+
+
+        if (this.inHaltMode) {
+            if (this.waitingForDrawContinue) {
+                return;
+            } else {
+                this.waitingForDrawContinue = true;
+            }
+        }
+
+
         _H.save(canvas);
         this.drawTickCount++;
         if ((this.spriteLoader && !this.spriteLoader.tick()) || this.loading) {
@@ -574,6 +606,12 @@ function SonicManager(mainCanvas, resize) {
                     var __y = _y;
                     var vangle;
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
+
+                    ctx.strokeStyle = "#000000";
+                    ctx.strokeRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
+
+
+
                     if (hd == 0) {
 
                     } else if (hd == 1) {
@@ -592,7 +630,7 @@ function SonicManager(mainCanvas, resize) {
                         ctx.shadowColor = "";
                         ctx.shadowBlur = 0;
                         ctx.lineWidth = 1;
-                        //  ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
+                         ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
                     }
                 }
             }
@@ -613,6 +651,9 @@ function SonicManager(mainCanvas, resize) {
                     var __y = _y;
                     var vangle;
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
+                    ctx.strokeStyle = "#000000";
+                    ctx.strokeRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
+
                     if (hd == 0) {
 
                     } else if (hd == 1) {
@@ -631,7 +672,7 @@ function SonicManager(mainCanvas, resize) {
                         ctx.shadowColor = "";
                         ctx.shadowBlur = 0;
                         ctx.lineWidth = 1;
-                        //  ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
+                          ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
                     }
                 }
             }

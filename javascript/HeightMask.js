@@ -61,7 +61,7 @@
                     var _y = pos.y + (jy * scale.y);
                      
                     canvas.lineWidth = 1;
-                    if (state <= 0 && Math.abs(this.items[x]) >= 16 - y && solid > 0) {
+                    if (state <= 0 && _H.itemsGood(this.items,x,y,jy) && solid > 0) {
                         canvas.fillStyle = HeightMask.colors[solid];
                         canvas.fillRect(_x, _y, scale.x, scale.y);
                     } else {
@@ -99,7 +99,7 @@
             if (solid > 0) {
                 for (var x = 0; x < 16; x++) {
                     var jx = 0, jy = 0;
-                    var y = 16 - Math.abs(this.items[x]);
+                    var y = 16 + (this.items[x] > 0 ? -this.items[x] : this.items[x]);
 
                     jx = x;
                     jy = y;
@@ -109,7 +109,7 @@
 
                     canvas.lineWidth = 1;
                     canvas.fillStyle = HeightMask.colors[solid];
-                    canvas.fillRect(_x, _y, scale.x, scale.y * this.items[x]);
+                    canvas.fillRect(_x, _y, scale.x, scale.y * Math.abs(this.items[x]));
                 }
             }
         }

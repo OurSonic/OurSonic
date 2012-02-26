@@ -69,12 +69,19 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
 
                 length = x2 - x1;
                 if (curh[(__x)][__y] >= 2) {
-                    _x -= 1;
-                    tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
-                    curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                    cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-                    __x = 0; 
-                    length = 128;
+
+                    for (i = 0; i < 128*10; i++) {
+                        if (__x - i < 0) {
+                            tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x - 1][_y]];
+                            curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
+                            cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
+                            __x += 128;
+                        }
+                        if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2)
+                            return { value: x1 - i, angle: cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)] };
+                    }
+
+
 
                 }
 
@@ -92,12 +99,16 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
             } else {
                 length = x1 - x2;
                 if (curh[(__x)][__y] >= 2) {
-                    _x += 1;
-                    tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
-                    curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                    cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-                    __x = 128;
-                    length = 128;
+                    for (i = 0; i < 128*10; i++) {
+                        if (__x + i >= 128) {
+                            tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x + 1][_y]];
+                            curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
+                            cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
+                            __x -= 128;
+                        }
+                        if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 2)
+                            return { value: x1 + i, angle: cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)] };
+                    }
 
                 }
 
@@ -124,19 +135,23 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
             if (y1 < y2) {
                 length = y2 - y1;
                 if (curh[(__x)][__y] >= 2) {
-                    _y -= 1;
-                    tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
-                    curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                    cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-                    __y = 0;
-                    length = 128;
+                    for (i = 0; i < 128*10; i++) {
+                        if (__y - i < 0) {
+                            tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y - 1)]];
+                            curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
+                            cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
+                            __y += 128;
+                        }
+                        if (curh[__x][__y - i] > 1) {
+                            return { value: y1 - i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)] };
+                        }
+                    }
                 }
                 for (i = 0; i < length; i++) {
                     if (__y + i >= 128) {
                         tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y + 1)]];
                         curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-
+                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2; 
                         __y -= 128;
                     }
                     if (curh[__x][__y + i] >= 1) {
@@ -146,13 +161,17 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
             } else {
                 length = y1 - y2;
                 if (curh[(__x)][__y] >= 2) {
-                    _y += 1;
-                    tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
-                    curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                    cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-                    __y = 128;
-                    length = 128;
-
+                    for (i = 0; i < 128*10; i++) {
+                        if (__y + i >= 128) {
+                            tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y + 1)]];
+                            curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
+                            cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
+                            __y -= 128;
+                        }
+                        if (curh[__x][__y + i] >= 1) {
+                            return { value: y1 + i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)] };
+                        }
+                    }
                 }
 
                 for (i = 0; i < length; i++) {

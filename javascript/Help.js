@@ -103,10 +103,16 @@
         }
         return new LevelObject(o);
     },
+    itemsGood: function (items, x, y, jy) {
+        if (items[x] < 0) {
+            return (Math.abs(items[x])) >= 16 - jy;
+        }
+        return items[x] >= 16 - y;
+    },
     intersects: function (p) {
 
         if (this.width == undefined || this.height == undefined || this.x == undefined || this.y == undefined || p.Y == undefined || p.X == undefined)
-            alert('');
+            alert('bad intersects');
         if (this.x < p.X && this.x + this.width > p.X &&
             this.y < p.Y && this.y + this.height > p.Y) {
             return true;
@@ -116,7 +122,7 @@
     intersects2: function (that, p) {
 
         if (that.width == undefined || that.height == undefined || that.x == undefined || that.y == undefined || p.Y == undefined || p.X == undefined)
-            alert('');
+            alert('bad intersects');
         if (that.x < p.X && that.x + that.width > p.X &&
             that.y < p.Y && that.y + that.height > p.Y) {
             return true;

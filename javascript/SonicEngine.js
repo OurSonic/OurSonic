@@ -83,6 +83,16 @@ function SonicEngine(canvasName) {
 
     function doKeyDown(evt) {
         switch (evt.keyCode) {
+            case 79:
+                sonicManager.inHaltMode = !sonicManager.inHaltMode;
+                break;
+            case 80:
+                if (sonicManager.inHaltMode) {
+                    sonicManager.waitingForTickContinue = false; 
+                }
+
+                break;
+        
             case 66:
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.hit();
@@ -182,6 +192,7 @@ function SonicEngine(canvasName) {
 
     that.draw = function () {
         requestAnimFrame(that.draw);
+        if (!sonicManager.inHaltMode)
         clear(that.canvasItem);
 
         sonicManager.draw(that.canvasItem);

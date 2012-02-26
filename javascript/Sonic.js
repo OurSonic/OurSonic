@@ -54,7 +54,7 @@
     this.sensorManager.createVerticalSensor('d', 9, 0, -20, '#C242822');
     this.sensorManager.createHorizontalSensor('m1', 4, 0, -12, '#212C2E');
     this.sensorManager.createHorizontalSensor('m2', 4, 0, 12, '#22Ffc1');
-    this.watcher=new Watcher();
+    this.watcher = new Watcher();
 
 
 
@@ -95,7 +95,7 @@
     this.effectPhysics = function () {
 
         this.watcher.tick();
-        
+
         var max = 6;
         if (!this.jumping) {
             if (!this.inAir && this.wasJumping) {
@@ -105,20 +105,20 @@
         if (this.inAir && !this.wasInAir) {
             this.wasInAir = true;
             if ((this.angle >= 0x70 && this.angle <= 0x90)) {
-                this.xsp = this.watcher.multiply(this.gsp);
+                this.xsp = (this.gsp);
             }
         }
         if (!this.inAir && this.wasInAir) {
             this.wasInAir = false;
             if ((this.angle >= 0xF0 || this.angle <= 0x0F)) {
-                this.gsp = this.watcher.multiply(this.xsp);
+                this.gsp = (this.xsp);
             } else if ((this.angle >= 0xE0 && this.angle <= 0xEF) ||
                 (this.angle >= 0x10 && this.angle <= 0x1F)) {
-                this.gsp = this.watcher.multiply(this.ysp);
+                this.gsp = (this.ysp);
             } else if ((this.angle >= 0xC0 && this.angle <= 0xDF)) {
-                this.gsp = this.watcher.multiply(-this.ysp);
+                this.gsp = (-this.ysp);
             } else if ((this.angle >= 0x20 && this.angle <= 0x3F)) {
-                this.gsp = this.watcher.multiply(this.ysp);
+                this.gsp = (this.ysp);
             }
             this.xsp = 0;
             this.ysp = 0;
@@ -128,7 +128,7 @@
         if (!this.inAir && !this.rolling) {
             if (!this.holdingLeft && !this.holdingRight) {
                 //friction
-                this.gsp -= this.watcher.multiply(Math.min(Math.abs(this.gsp), this.frc) * (this.gsp > 0 ? 1 : -1));
+                this.gsp -= (Math.min(Math.abs(this.gsp), this.watcher.multiply(this.frc)) * (this.gsp > 0 ? 1 : -1));
             }
             oldSign = _H.sign(this.gsp);
             //slope
@@ -194,26 +194,26 @@
             if (this.holdingLeft) {
                 if (this.gsp > 0) {
                     if (this.rolling) {
-                        this.gsp = this.watcher.multiply(_H.max(0, this.gsp - this.rdec));
+                        this.gsp = (_H.max(0, this.gsp - this.watcher.multiply(this.rdec)));
                     }
                 }
             }
             if (this.holdingRight) {
                 if (this.gsp < 0) {
                     if (this.rolling) {
-                        this.gsp = this.watcher.multiply(_H.min(0, this.gsp + this.rdec));
+                        this.gsp = (_H.min(0, this.gsp + this.watcher.multiply(this.rdec)));
                     }
                 }
             }
             //friction
-            this.gsp -= this.watcher.multiply(Math.min(Math.abs(this.gsp), this.rfrc) * (this.gsp > 0 ? 1 : -1));
+            this.gsp -= (Math.min(Math.abs(this.gsp), this.watcher.multiply(this.rfrc)) * (this.gsp > 0 ? 1 : -1));
             oldSign = _H.sign(this.gsp);
             //slope
             var ang = _H.sin(this.angle);
             if ((ang > 0) == (this.gsp > 0))
                 this.gsp += this.watcher.multiply(-this.slpRollingUp * ang);
             else
-                this.gsp +=this.watcher.multiply( -this.slpRollingDown * ang);
+                this.gsp += this.watcher.multiply(-this.slpRollingDown * ang);
 
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
@@ -231,7 +231,7 @@
             if (Math.abs(this.gsp) < 2.5 && this.mode != RotationMode.Floor) {
                 if (this.mode == RotationMode.RightWall) this.x -= 0;
                 else if (this.mode == RotationMode.LeftWall) this.x += 0;
-                else if (this.mode == RotationMode.Ceiling) this.y += 10;
+                else if (this.mode == RotationMode.Ceiling) this.y += 0;
                 this.mode = RotationMode.Floor;
                 this.angle = 0xFF;
                 this.updateMode();
@@ -1070,23 +1070,23 @@
                     var tp = chunk.tilePieces[_x][_y];
                     ab1[_x][_y] = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
                     ab2[_x][_y] = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
-                     
+
 
                     if (!(ab1[_x][_y] == 0 || ab1[_x][_y] == 255 || ab1[_x][_y] == 1)) {
                         if (tp.XFlip) {
                             if (tp.YFlip) {
-                                ab1[_x][_y] = 192 - ab1[_x][_y] + 192; 
+                                ab1[_x][_y] = 192 - ab1[_x][_y] + 192;
 
-                                ab1[_x][_y] = 128 - ab1[_x][_y] + 128; 
+                                ab1[_x][_y] = 128 - ab1[_x][_y] + 128;
 
                             } else {
-                                ab1[_x][_y] = 128 - ab1[_x][_y] + 128; 
+                                ab1[_x][_y] = 128 - ab1[_x][_y] + 128;
                             }
                         } else {
                             if (tp.YFlip) {
-                                ab1[_x][_y] = 192 - ab1[_x][_y] + 192; 
+                                ab1[_x][_y] = 192 - ab1[_x][_y] + 192;
                             } else {
-                                ab1[_x][_y] = (ab1[_x][_y]); 
+                                ab1[_x][_y] = (ab1[_x][_y]);
                             }
                         }
                     }
@@ -1170,7 +1170,7 @@
                                 case 1:
                                 case 2:
                                 case 3:
-                                    hb1[(_x * 16 + jx)][(_y * 16 + jy)] = (Math.abs(hd1[__x]) > 16 - __y) ? tp.Solid1 : 0;
+                                    hb1[(_x * 16 + jx)][(_y * 16 + jy)] = _H.itemsGood(hd1, __x, __y, jy) ? tp.Solid1 : 0;
                                     break;
                             }
 
@@ -1182,7 +1182,7 @@
                                 case 1:
                                 case 2:
                                 case 3:
-                                    hb2[(_x * 16 + jx)][(_y * 16 + jy)] = (Math.abs(hd2[__x]) > 16 - __y) ? tp.Solid2 : 0;
+                                    hb2[(_x * 16 + jx)][(_y * 16 + jy)] = _H.itemsGood(hd2, __x, __y, jy) ? tp.Solid2 : 0;
                                     break;
                             }
 
@@ -1305,18 +1305,23 @@ function Watcher() {
     var lastTick = 0;
     this.mult = 1;
     this.tick = function () {
+
+        if (sonicManager.inHaltMode) {
+            this.mult = 1;
+            return;
+        }
         var ticks = new Date().getTime();
         var offset = 0;
         if (lastTick == 0)
             offset = 16.6;
-        else 
+        else
             offset = ticks - lastTick;
 
         lastTick = ticks;
 
-        this.mult= offset / 16.6;
+        this.mult = offset / 16.6;
     };
-    this.multiply = function (val) {
+    this.multiply = function(val) {
         return this.mult * val;
-    }
+    };
 }
