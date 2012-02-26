@@ -1,6 +1,6 @@
 ﻿
 
-Sensor = function (x1, x2, y1, y2, manager, color,ignoreSolid) {
+Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
@@ -13,16 +13,16 @@ Sensor = function (x1, x2, y1, y2, manager, color,ignoreSolid) {
         var y = _H.floor(character.y);
         switch (character.mode) {
             case RotationMode.Floor:
-                m = this.checkCollisionLineWrap(x + this.x1, x + this.x2, y + this.y1, y + this.y2,ignoreSolid);
-                break;                                                                           
-            case RotationMode.LeftWall:                                                          
-                m = this.checkCollisionLineWrap(x - this.y1, x - this.y2, y + this.x1, y + this.x2,ignoreSolid);
-                break;                                                                            
-            case RotationMode.Ceiling:                                                            
-                m = this.checkCollisionLineWrap(x - this.x1, x - this.x2, y - this.y1, y - this.y2,ignoreSolid);
-                break;                                                                            
-            case RotationMode.RightWall:                                                          
-                m = this.checkCollisionLineWrap(x + this.y1, x + this.y2, y - this.x1, y - this.x2,ignoreSolid);
+                m = this.checkCollisionLineWrap(x + this.x1, x + this.x2, y + this.y1, y + this.y2, ignoreSolid);
+                break;
+            case RotationMode.LeftWall:
+                m = this.checkCollisionLineWrap(x - this.y1, x - this.y2, y + this.x1, y + this.x2, ignoreSolid);
+                break;
+            case RotationMode.Ceiling:
+                m = this.checkCollisionLineWrap(x - this.x1, x - this.x2, y - this.y1, y - this.y2, ignoreSolid);
+                break;
+            case RotationMode.RightWall:
+                m = this.checkCollisionLineWrap(x + this.y1, x + this.y2, y - this.x1, y - this.x2, ignoreSolid);
                 break;
         }
 
@@ -66,7 +66,19 @@ Sensor = function (x1, x2, y1, y2, manager, color,ignoreSolid) {
                 return { value: sonicManager.SonicLevel.LevelWidth * 128 - 20, angle: 0xff };
 
             if (x1 < x2) {
+
                 length = x2 - x1;
+                if (curh[(__x)][__y] >= 2) {
+                    _x -= 1;
+                    tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
+                    curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
+                    cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
+                    __x = 0; 
+                    length = 128;
+
+                }
+
+
                 for (i = 0; i < length; i++) {
                     if (__x + i >= 128) {
                         tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x + 1][_y]];
@@ -79,6 +91,16 @@ Sensor = function (x1, x2, y1, y2, manager, color,ignoreSolid) {
                 }
             } else {
                 length = x1 - x2;
+                if (curh[(__x)][__y] >= 2) {
+                    _x += 1;
+                    tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
+                    curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
+                    cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
+                    __x = 128;
+                    length = 128;
+
+                }
+
                 for (i = 0; i < length; i++) {
                     if (__x - i < 0) {
                         tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x - 1][_y]];
@@ -101,6 +123,14 @@ Sensor = function (x1, x2, y1, y2, manager, color,ignoreSolid) {
 
             if (y1 < y2) {
                 length = y2 - y1;
+                if (curh[(__x)][__y] >= 2) {
+                    _y -= 1;
+                    tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
+                    curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
+                    cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
+                    __y = 0;
+                    length = 128;
+                }
                 for (i = 0; i < length; i++) {
                     if (__y + i >= 128) {
                         tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y + 1)]];
@@ -115,6 +145,16 @@ Sensor = function (x1, x2, y1, y2, manager, color,ignoreSolid) {
                 }
             } else {
                 length = y1 - y2;
+                if (curh[(__x)][__y] >= 2) {
+                    _y += 1;
+                    tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
+                    curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
+                    cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
+                    __y = 128;
+                    length = 128;
+
+                }
+
                 for (i = 0; i < length; i++) {
                     if (__y - i < 0) {
                         tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y - 1)]];
@@ -192,7 +232,7 @@ SensorManager = function (sonicManager) {
         return sensor;
     };
     this.createHorizontalSensor = function (letter, y, x1, x2, color, ignoreSolid) {
-        return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color,ignoreSolid));
+        return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color, ignoreSolid));
     };
     this.createVerticalSensor = function (letter, x, y1, y2, color, ignoreSolid) {
         return this.addSensor(letter, new Sensor(x, x, y1, y2, this, color, ignoreSolid));
