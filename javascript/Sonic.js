@@ -132,7 +132,7 @@
             }
             oldSign = _H.sign(this.gsp);
             //slope
-            this.gsp += this.watcher.multiply(this.slp * -_H.sin(this.angle));
+            this.gsp += this.watcher.multiply(this.slp) * -_H.sin(this.angle);
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
             }
@@ -211,9 +211,9 @@
             //slope
             var ang = _H.sin(this.angle);
             if ((ang > 0) == (this.gsp > 0))
-                this.gsp += this.watcher.multiply(-this.slpRollingUp * ang);
+                this.gsp += this.watcher.multiply(-this.slpRollingUp) * ang;
             else
-                this.gsp += this.watcher.multiply(-this.slpRollingDown * ang);
+                this.gsp += this.watcher.multiply(-this.slpRollingDown) * ang;
 
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
@@ -222,23 +222,6 @@
                 this.rolling = false;
                 this.currentlyBall = false;
             }
-        }
-
-        if (!this.inAir) {
-            this.xsp = this.gsp * _H.cos(this.angle);
-            this.ysp = this.gsp * -_H.sin(this.angle);
-
-            if (Math.abs(this.gsp) < 2.5 && this.mode != RotationMode.Floor) {
-                if (this.mode == RotationMode.RightWall) this.x -= 0;
-                else if (this.mode == RotationMode.LeftWall) this.x += 0;
-                else if (this.mode == RotationMode.Ceiling) this.y += 0;
-                this.mode = RotationMode.Floor;
-                this.angle = 0xFF;
-                this.updateMode();
-                this.hlock = 30;
-            }
-
-
         }
 
 
@@ -274,7 +257,7 @@
                 }
             }
             //gravity
-            this.ysp += this.justHit ? 0.1875 : this.grv;
+            this.ysp += this.watcher.multiply(this.justHit ? 0.1875 : this.grv);
             //drag
             if (this.ysp < 0 && this.ysp > -4) {
                 if (Math.abs(this.xsp) > 0.125) {
@@ -283,7 +266,6 @@
             }
             if (this.ysp > 16) this.ysp = 16;
         }
-
         if (this.wasInAir && this.jumping) {
 
         } else if (this.jumping && !this.wasJumping) {
@@ -303,6 +285,30 @@
             }
         }
 
+        this.checkCollisionWithRing();
+        this.checkCollisionWithObjects();
+
+        if (!this.inAir) {
+            if (this.spinDash) {
+                this.gsp = 0;
+            }
+            this.xsp = this.gsp * _H.cos(this.angle);
+            this.ysp = this.gsp * -_H.sin(this.angle);
+
+            if (Math.abs(this.gsp) < 2.5 && this.mode != RotationMode.Floor) {
+                if (this.mode == RotationMode.RightWall) this.x -= 0;
+                else if (this.mode == RotationMode.LeftWall) this.x += 0;
+                else if (this.mode == RotationMode.Ceiling) this.y += 0;
+                this.mode = RotationMode.Floor;
+                this.angle = 0xFF;
+                this.updateMode();
+                this.hlock = 30;
+            }
+        }
+
+
+
+
         if (this.xsp > 0 && this.xsp < 0.008) {
             this.gsp = 0;
             this.xsp = 0;
@@ -311,6 +317,10 @@
             this.gsp = 0;
             this.xsp = 0;
         }
+
+
+
+
 
         this.x += this.xsp;
         this.y += this.ysp;
@@ -413,13 +423,7 @@
 
         var sensorA = this.sensorManager.getResult('a');
         var sensorB = this.sensorManager.getResult('b');
-
-
-        //if (sonicManager.tickCount == 0) {
-        this.checkCollisionWithRing();
-        this.checkCollisionWithObjects();
-        //}
-
+         
         if (!this.inAir) {
             if (sensorA == -1 && sensorB == -1) {
                 this.inAir = true;
@@ -909,7 +913,9 @@
                             xOffset = (40 - ((cur.height + n) / scale.x)) / 2;
                             break;
                     }
-                } canvas.translate((fx - sonicManager.windowLocation.x + xOffset + xOffset) * scale.x, ((fy - sonicManager.windowLocation.y + yOffset) * scale.y));
+                } 
+                
+                canvas.translate((fx - sonicManager.windowLocation.x + xOffset + xOffset) * scale.x, ((fy - sonicManager.windowLocation.y + yOffset) * scale.y));
 
 
 
@@ -918,7 +924,7 @@
                 if (!this.facing) {
                     //canvas.translate(cur.width, 0);
                     canvas.scale(-1, 1);
-                    if (!this.currentlyBall)
+                    if (!this.currentlyBall && !this.spinDash)
                         canvas.rotate(-_H.fixAngle(this.angle));
 
                     canvas.drawImage(cur, -cur.width / 2, -cur.height / 2);
@@ -928,7 +934,7 @@
                             (-cur.width / 2) - 25 * scale.x, -cur.height / 2 + (yOffset * scale.y) - 14, cur.width, cur.height);
                     }
                 } else {
-                    if (!this.currentlyBall)
+                    if (!this.currentlyBall && !this.spinDash)
                         canvas.rotate(_H.fixAngle(this.angle));
                     canvas.drawImage(cur, -cur.width / 2, -cur.height / 2);
 

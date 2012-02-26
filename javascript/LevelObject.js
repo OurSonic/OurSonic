@@ -52,8 +52,10 @@ function CollisionSwitcherObject(o) {
 
 
     CollisionSwitcherObject.prototype.draw = function (canvas, pos, scale) {
-        //  canvas.fillStyle = "#FFFFFF";
-        //  canvas.fillRect((this.ObjectData.X - 5 - sonicManager.windowLocation.x) * scale.x, (this.ObjectData.Y - 50 - sonicManager.windowLocation.y) * scale.y, 10 * scale.x, 100 * scale.y);
+        if (sonicManager.showHeightMap) {
+              canvas.fillStyle = "#FFFFFF";
+              canvas.fillRect((this.ObjectData.X - 5 - sonicManager.windowLocation.x) * scale.x, (this.ObjectData.Y - 50 - sonicManager.windowLocation.y) * scale.y, 10 * scale.x, 100 * scale.y);
+        }
     };
 
 }

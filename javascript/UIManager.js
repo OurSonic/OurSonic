@@ -591,6 +591,10 @@
 
         var je;
 
+        sonicManager.SonicLevel.Angles = decodeNumeric(sonicManager.SonicLevel.Angles);
+        sonicManager.SonicLevel.CollisionIndexes1 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes1);
+        sonicManager.SonicLevel.CollisionIndexes2 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes2);
+        
         for (var i = 0; i < sonicManager.SonicLevel.HeightMaps.length; i++) {
 
             var b1 = true;
@@ -609,12 +613,9 @@
             } else if (b2) {
                 sonicManager.SonicLevel.HeightMaps[i] = 1;
             } else
-                sonicManager.SonicLevel.HeightMaps[i] = new HeightMask(0, sonicManager.SonicLevel.HeightMaps[i]);
+                sonicManager.SonicLevel.HeightMaps[i] = new HeightMask( sonicManager.SonicLevel.HeightMaps[i]);
         }
 
-        sonicManager.SonicLevel.Angles = decodeNumeric(sonicManager.SonicLevel.Angles);
-        sonicManager.SonicLevel.CollisionIndexes1 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes1);
-        sonicManager.SonicLevel.CollisionIndexes2 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes2);
         var jc;
         for (j = 0; j < sonicManager.SonicLevel.Chunks.length; j++) {
             fc = sonicManager.SonicLevel.Chunks[j];

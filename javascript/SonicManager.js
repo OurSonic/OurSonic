@@ -146,6 +146,10 @@ function SonicManager(mainCanvas, resize) {
 
 
         if (this.inHaltMode) {
+            canvas.fillStyle = "white";
+            canvas.font = "21pt arial bold";
+            canvas.fillText("HALT MODE\r\n Press: P to step\r\n        O to resume", 10, 120);
+
             if (this.waitingForDrawContinue) {
                 return;
             } else {
@@ -229,6 +233,13 @@ function SonicManager(mainCanvas, resize) {
                     canvas.strokeRect(posj.x, posj.y, 128 * scale.x, 128 * scale.y);
                 }
 
+
+                if (this.showHeightMap) {
+                    canvas.strokeStyle = "#000000";
+                    canvas.strokeRect(posj.x, posj.y, scale.x * 16, scale.y * 16);
+
+                }
+
             }
 
             for (var ring in this.SonicLevel.Rings) {
@@ -293,14 +304,11 @@ function SonicManager(mainCanvas, resize) {
 
 
                 if (this.showHeightMap) {
-
-
                     var fd;
                     if ((fd = sonicManager.SpriteCache.heightMapChunks[(this.SonicLevel.curHeightMap ? 1 : 2) + " " + chunk.index + " " + scale.y + " " + scale.x])) {
                         if (fd.loaded) {
                             canvas.drawImage(fd, posj.x, posj.y);
                         }
-
                     }
                 }
 
@@ -607,9 +615,7 @@ function SonicManager(mainCanvas, resize) {
                     var vangle;
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
 
-                    ctx.strokeStyle = "#000000";
-                    ctx.strokeRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
-
+               
 
 
                     if (hd == 0) {
@@ -621,16 +627,17 @@ function SonicManager(mainCanvas, resize) {
                         }
                     }
                     else {
-                        hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1);
                         vangle = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
-                        posm.x += 16 * scale.x / 2;
+
+                        hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1, vangle);
+                     /*   posm.x += 16 * scale.x / 2;
                         posm.y += 16 * scale.y / 2;
                         ctx.strokeStyle = "#DDD";
                         ctx.font = "18pt courier ";
                         ctx.shadowColor = "";
                         ctx.shadowBlur = 0;
                         ctx.lineWidth = 1;
-                         ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
+                         ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);*/
                     }
                 }
             }
@@ -651,9 +658,7 @@ function SonicManager(mainCanvas, resize) {
                     var __y = _y;
                     var vangle;
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
-                    ctx.strokeStyle = "#000000";
-                    ctx.strokeRect(posj.x + (__x * 16) * scale.x, posj.y + (__y * 16) * scale.y, scale.x * 16, scale.y * 16);
-
+                 
                     if (hd == 0) {
 
                     } else if (hd == 1) {
@@ -663,16 +668,18 @@ function SonicManager(mainCanvas, resize) {
                         }
                     }
                     else {
-                        hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid2);
                         vangle = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
-                        posm.x += 16 * scale.x / 2;
+
+                        hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid2, vangle);
+                        /*   posm.x += 16 * scale.x / 2;
                         posm.y += 16 * scale.y / 2;
                         ctx.strokeStyle = "#DDD";
                         ctx.font = "18pt courier ";
                         ctx.shadowColor = "";
                         ctx.shadowBlur = 0;
                         ctx.lineWidth = 1;
-                          ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);
+                        ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);*/
+
                     }
                 }
             }

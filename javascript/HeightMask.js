@@ -1,7 +1,6 @@
-﻿function HeightMask(angle, items) {
+﻿function HeightMask( items) {
     this.width = 16;
     this.height = 16;
-    this.angle = angle;
     this.items = items ? items : [];
 
 
@@ -33,7 +32,7 @@
     };
 
 
-    HeightMask.prototype.drawUI = function (canvas, pos, scale, state, xflip, yflip, solid) {
+    HeightMask.prototype.drawUI = function (canvas, pos, scale, state, xflip, yflip, solid, angle) {
 
         if (solid > 0) {
             for (var x = 0; x < 16; x++) {
@@ -59,9 +58,9 @@
 
                     var _x = pos.x + (jx * scale.x);
                     var _y = pos.y + (jy * scale.y);
-                     
+
                     canvas.lineWidth = 1;
-                    if (state <= 0 && _H.itemsGood(this.items,x,y,jy) && solid > 0) {
+                    if (state <= 0 && _H.itemsGood(this.items, x, y, jy) && solid > 0) {
                         canvas.fillStyle = HeightMask.colors[solid];
                         canvas.fillRect(_x, _y, scale.x, scale.y);
                     } else {
@@ -70,14 +69,43 @@
                             canvas.strokeStyle = "#0C3146";
                             canvas.strokeRect(_x, _y, scale.x, scale.y);
                         }
-                    }  
+                    }
+
+
+
                 }
             }
+
+            if (!(angle == 0 || angle == 255 || angle == 1)) {
+                if (xflip) {
+                    if (yflip) {
+                        angle = 192 - angle + 192;
+
+                        angle = 128 - angle + 128;
+
+                    } else {
+                        angle = 128 - angle + 128;
+                    }
+                } else {
+                    if (yflip) {
+                        angle = 192 - angle + 192;
+                    } else {
+                        angle = angle;
+                    }
+                }
+            }
+
+            canvas.beginPath();
+            canvas.lineWidth = 4;
+            canvas.strokeStyle = "#03F3CA";
+            canvas.moveTo(pos.x + scale.x * 16 / 2, pos.y + scale.y * 16 / 2);
+            canvas.lineTo(pos.x + scale.x * 16 / 2 - _H.sin(angle) * scale.x * 8, pos.y + scale.y * 16 / 2 - _H.cos(angle) * scale.x * 8);
+            canvas.stroke();
 
         }
     };
 
-    HeightMask.prototype.draw = function (canvas, pos, scale, state, xflip, yflip, solid) {
+    HeightMask.prototype.draw = function (canvas, pos, scale, state, xflip, yflip, solid,angle) {
         _H.save(canvas);
         var oPos = { x: pos.x, y: pos.y };
         if (xflip) {
@@ -112,6 +140,32 @@
                     canvas.fillRect(_x, _y, scale.x, scale.y * Math.abs(this.items[x]));
                 }
             }
+          /*  if (!(angle == 0 || angle == 255 || angle == 1)) {
+                if (xflip) {
+                    if (yflip) {
+                        angle = 192 - angle + 192;
+
+                        angle = 128 - angle + 128;
+
+                    } else {
+                        angle = 128 - angle + 128;
+                    }
+                } else {
+                    if (yflip) {
+                        angle = 192 - angle + 192;
+                    } else {
+                        angle = angle;
+                    }
+                }
+            }*/
+
+            canvas.beginPath();
+            canvas.lineWidth = 3;
+            canvas.strokeStyle = "#03F3CA";
+            canvas.moveTo(pos.x + scale.x * 16 / 2, pos.y + scale.y * 16 / 2);
+            canvas.lineTo(pos.x + scale.x * 16 / 2 - _H.sin(angle) * scale.x * 8, pos.y + scale.y * 16 / 2 - _H.cos(angle) * scale.x * 8);
+            canvas.stroke();
+
         }
 
 
