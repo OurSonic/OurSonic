@@ -1125,6 +1125,7 @@
 
                     var hd1 = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
                     var hd2 = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
+                    if(hd1==undefined || hd2==undefined)continue;
                     var mj;
                     if (hd1 == 0 || hd1 == 1) {
                         mj = hd1 == 0 ? 0 : tp.Solid1;

@@ -186,10 +186,10 @@ function SonicManager(mainCanvas, resize) {
             this.windowLocation.x = _H.floor(this.sonicToon.x - this.windowLocation.width * scale.x / 4);
             this.windowLocation.y = _H.floor(this.sonicToon.y - this.windowLocation.height * scale.y / 4);
 
-            var wOffset = this.windowLocation.x;
-            var bw = (this.background.width / scale.x);
-            var movex = _H.floor(wOffset / bw) * bw;
             if (this.background) {
+                var wOffset = this.windowLocation.x;
+                var bw = (this.background.width / scale.x);
+                var movex = _H.floor(wOffset / bw) * bw;
                 this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x) * scale.x + movex, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
                 this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x) * scale.x + movex + this.background.width, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
 
@@ -624,7 +624,7 @@ function SonicManager(mainCanvas, resize) {
 
 
 
-
+                    if (hd == undefined) continue;
                     if (hd == 0) {
 
                     } else if (hd == 1) {
@@ -665,6 +665,7 @@ function SonicManager(mainCanvas, resize) {
                     var __y = _y;
                     var vangle;
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
+                    if (hd == undefined) continue;
 
                     if (hd == 0) {
 
@@ -807,7 +808,7 @@ function SonicManager(mainCanvas, resize) {
             that.background = new ParallaxBG(that.SpriteCache.bgImage, { x: 1, y: 1 });
             return true;
 
-        });
+        },true);
         sm.addIterationToStep(bgStep, 0);
 
 
