@@ -61,9 +61,9 @@
     this.updateMode = function () {
 
         //if (this.angle == 0xF0) this.angle = 15;
-        if (this.angle <= 0x20 || this.angle > 0xDE) {
+        if (this.angle <= 0x22 || this.angle > 0xDE) {
             this.mode = RotationMode.Floor;
-        } else if (this.angle > 0x20 && this.angle < 0x56) {
+        } else if (this.angle > 0x22 && this.angle < 0x56) {
             this.mode = RotationMode.LeftWall;
         } else if (this.angle >= 0x56 && this.angle < 0xA1) {
             this.mode = RotationMode.Ceiling;
@@ -215,6 +215,9 @@
             else
                 this.gsp += this.watcher.multiply(-this.slpRollingDown) * ang;
 
+            if (this.gsp > max * 2.5) this.gsp = max * 2.5;
+            if (this.gsp < -max * 2.5) this.gsp = -max * 2.5;
+            
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
             }
@@ -257,7 +260,7 @@
                 }
             }
             //gravity
-            this.ysp += this.watcher.multiply(this.justHit ? 0.1875 : this.grv);
+            this.ysp +=  this.watcher.multiply(this.justHit ? 0.1875 : this.grv);
             //drag
             if (this.ysp < 0 && this.ysp > -4) {
                 if (Math.abs(this.xsp) > 0.125) {
@@ -318,7 +321,7 @@
             this.xsp = 0;
         }
 
-         
+
         this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x + this.xsp)) % (sonicManager.SonicLevel.LevelWidth * 128);
         this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y + this.ysp)) % (sonicManager.SonicLevel.LevelHeight * 128);
     };
@@ -1325,6 +1328,7 @@ function Watcher() {
         lastTick = ticks;
 
         this.mult = offset / 16.6;
+        this.mult = 1;
     };
     this.multiply = function(val) {
         return this.mult * val;

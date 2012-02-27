@@ -145,7 +145,7 @@
         curLevelName = str;
     };
 
-    var debuggerArea = this.debuggerArea = new UiArea(1347, 95, 200, 240, this, true);
+    var debuggerArea = this.debuggerArea = new UiArea(1347, 95, 250, 240, this, true);
     debuggerArea.visible = false;
     this.UIAreas.push(debuggerArea);
     debuggerArea.addControl(new TextArea(30, 25, "Debugger", textFont, "blue"));

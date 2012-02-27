@@ -78,7 +78,7 @@ function SonicManager(mainCanvas, resize) {
                         var o = sonicManager.SonicLevel.Objects[l];
 
                         if (_H.intersects2(o.getRect(), { X: ex, Y: ey })) {
-                            alert("Object Data: "+_H.stringify(o));
+                            alert("Object Data: " + _H.stringify(o));
                         }
                     }
 
@@ -183,13 +183,16 @@ function SonicManager(mainCanvas, resize) {
             canvas.beginPath();
             canvas.rect(0, 0, this.windowLocation.width * scale.x, this.windowLocation.height * scale.x);
             canvas.clip();
-            this.windowLocation.x = _H.floor(this.sonicToon.x - 160);
-            this.windowLocation.y = _H.floor(this.sonicToon.y - 180);
+            this.windowLocation.x = _H.floor(this.sonicToon.x - this.windowLocation.width * scale.x / 4);
+            this.windowLocation.y = _H.floor(this.sonicToon.y - this.windowLocation.height * scale.y / 4);
 
-            var wOffset = _H.floor(this.windowLocation.x / scale.x);
-
+            var wOffset = this.windowLocation.x;
+            var bw = (this.background.width / scale.x);
+            var movex = _H.floor(wOffset / bw) * bw;
             if (this.background) {
-                this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x / 2) * scale.x, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
+                this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x) * scale.x + movex, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
+                this.background.draw(canvas, { x: -_H.floor(this.windowLocation.x) * scale.x + movex + this.background.width, y: -(_H.floor(this.windowLocation.y / 4)) * scale.y }, scale, wOffset);
+
             }
         }
 
@@ -619,7 +622,7 @@ function SonicManager(mainCanvas, resize) {
                     var vangle;
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
 
-               
+
 
 
                     if (hd == 0) {
@@ -634,14 +637,14 @@ function SonicManager(mainCanvas, resize) {
                         vangle = sonicManager.SonicLevel.Angles[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
 
                         hd.draw(ctx, posm, scale, -1, tp.XFlip, tp.YFlip, tp.Solid1, vangle);
-                     /*   posm.x += 16 * scale.x / 2;
+                        /*   posm.x += 16 * scale.x / 2;
                         posm.y += 16 * scale.y / 2;
                         ctx.strokeStyle = "#DDD";
                         ctx.font = "18pt courier ";
                         ctx.shadowColor = "";
                         ctx.shadowBlur = 0;
                         ctx.lineWidth = 1;
-                         ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);*/
+                        ctx.strokeText(vangle.toString(16), posm.x - 12, posm.y + 7);*/
                     }
                 }
             }
@@ -662,7 +665,7 @@ function SonicManager(mainCanvas, resize) {
                     var __y = _y;
                     var vangle;
                     var posm = { x: posj.x + (__x * 16) * scale.x, y: posj.y + (__y * 16) * scale.y };
-                 
+
                     if (hd == 0) {
 
                     } else if (hd == 1) {
@@ -688,7 +691,7 @@ function SonicManager(mainCanvas, resize) {
                 }
             }
             var fc = canv.canvas.toDataURL("image/png");
-            that.SpriteCache.heightMapChunks[2 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.hmc++; done(); }); 
+            that.SpriteCache.heightMapChunks[2 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.hmc++; done(); });
 
         }, function () {
             if (ind_.tcs >= that.SonicLevel.Chunks.length * 2 / speed && ind_.hmc >= that.SonicLevel.Chunks.length * 2 / speed) {
@@ -782,32 +785,32 @@ function SonicManager(mainCanvas, resize) {
 
 
 
-        /*var bgStep = sm.addStep("Background data", function (sp, done) {
+        var bgStep = sm.addStep("Background data", function (sp, done) {
 
-        var canv = _H.defaultCanvas(that.SonicLevel.BackgroundWidth * 128 * scale.x, that.SonicLevel.BackgroundHeight * 128 * scale.y);
-        var ctx = canv.context;
-        ctx.clearRect(0, 0, canv.width, canv.height);
+            var canv = _H.defaultCanvas(that.SonicLevel.BackgroundWidth * 128 * scale.x, that.SonicLevel.BackgroundHeight * 128 * scale.y);
+            var ctx = canv.context;
+            ctx.clearRect(0, 0, canv.width, canv.height);
 
-        for (var x = 0; x <that.SonicLevel.BackgroundWidth; x++) {
-        for (var y = 0; y < that.SonicLevel.BackgroundHeight; y++) {
-        var ck = sonicManager.SonicLevel.Chunks[that.SonicLevel.BGChunkMap[x][y]];
-        if (ck) {
-        ck.draw(ctx, { x: x * 128 * scale.x, y: y * 128 * scale.y }, scale, 0);
-        }
-        }
-        }
+            for (var x = 0; x < that.SonicLevel.BackgroundWidth; x++) {
+                for (var y = 0; y < that.SonicLevel.BackgroundHeight; y++) {
+                    var ck = sonicManager.SonicLevel.Chunks[that.SonicLevel.BGChunkMap[x][y]];
+                    if (ck) {
+                        ck.draw(ctx, { x: x * 128 * scale.x, y: y * 128 * scale.y }, scale, 0);
+                    }
+                }
+            }
 
-        that.SpriteCache.bgImage = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
+            that.SpriteCache.bgImage = _H.loadSprite(canv.canvas.toDataURL("image/png"), done);
 
 
         }, function () {
-        that.background = new ParallaxBG(that.SpriteCache.bgImage, { x: 1, y: 1 });
-        return true;
+            that.background = new ParallaxBG(that.SpriteCache.bgImage, { x: 1, y: 1 });
+            return true;
 
         });
         sm.addIterationToStep(bgStep, 0);
-        
-        */
+
+
 
 
 

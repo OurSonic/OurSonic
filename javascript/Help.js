@@ -80,6 +80,7 @@
 
         switch (state) {
             case 0:
+             //   return { x: 0, y: 0, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
                 return { x: 0, y: 0, width: 320, height: 240, intersects: _H.intersects };
             case 1:
                 var x = 0;
