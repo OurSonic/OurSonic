@@ -20,7 +20,7 @@
                     var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
                     var frame = an.Frames[ind];
                     if (!frame) {
-                        continue;
+                        frame = an.Frames[0];//fixors
                     }
                     var file = sonicManager.SonicLevel.AnimatedFiles[an.AnimationFile];
                     var va = file[frame.StartingTileIndex + (this.index - anin)];
@@ -29,6 +29,7 @@
                         va.draw(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame);
                         return true;
                     }
+                    
                 }
             }
         }

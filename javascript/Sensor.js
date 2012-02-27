@@ -155,7 +155,7 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
                         __y -= 128;
                     }
                     if (curh[__x][__y + i] >= 1) {
-                        if (curh[__x][__y + i] == 1 && sonicManager.sonicToon.ysp < 0) continue;
+                        if (curh[__x][__y + i] == 1 && sonicManager.sonicToon.inAir &&  sonicManager.sonicToon.ysp < 0) continue;
                         return { value: y1 + i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)] };
                     }
                 }
