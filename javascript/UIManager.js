@@ -514,20 +514,16 @@
 
         var mf = decodeNumeric(sonicManager.SonicLevel.Foreground);
         sonicManager.SonicLevel.ChunkMap = [];
-        sonicManager.SonicLevel.ChunkMap.length = sonicManager.SonicLevel.ForegroundWidth;
         for (var q = 0; q < sonicManager.SonicLevel.ForegroundWidth; q++) {
             sonicManager.SonicLevel.ChunkMap[q] = [];
-            sonicManager.SonicLevel.ChunkMap[q].length = sonicManager.SonicLevel.ForegroundHeight;
             for (var r = 0; r < sonicManager.SonicLevel.ForegroundHeight; r++) {
                 sonicManager.SonicLevel.ChunkMap[q][r] = mf[q + r * sonicManager.SonicLevel.ForegroundWidth];
             }
         }
         var mf = decodeNumeric(sonicManager.SonicLevel.Background);
         sonicManager.SonicLevel.BGChunkMap = [];
-        sonicManager.SonicLevel.BGChunkMap.length = sonicManager.SonicLevel.BackgroundWidth;
         for (var q = 0; q < sonicManager.SonicLevel.BackgroundWidth; q++) {
             sonicManager.SonicLevel.BGChunkMap[q] = [];
-            sonicManager.SonicLevel.BGChunkMap[q].length = sonicManager.SonicLevel.BackgroundHeight;
             for (var r = 0; r < sonicManager.SonicLevel.BackgroundHeight; r++) {
                 sonicManager.SonicLevel.BGChunkMap[q][r] = mf[q + r * sonicManager.SonicLevel.BackgroundWidth];
             }
@@ -563,10 +559,8 @@
             sonicManager.SonicLevel.Tiles[j] = { colors: mj };
             var td = sonicManager.SonicLevel.Tiles[j];
             var mf = [];
-            mf.length = 8;
             for (var o = 0; o < 8; o++) {
                 mf[o] = [];
-                mf[o].length = 8;
             }
             for (var n = 0; n < td.colors.length; n++) {
                 mf[n % 8][_H.floor(n / 8)] = td.colors[n];
@@ -594,10 +588,8 @@
                     fcc[j] = { colors: mj };
                     var td = fcc[j];
                     var mf = [];
-                    mf.length = 8;
                     for (var o = 0; o < 8; o++) {
                         mf[o] = [];
-                        mf[o].length = 8;
                     }
                     for (var n = 0; n < td.colors.length; n++) {
                         mf[n % 8][_H.floor(n / 8)] = td.colors[n];
@@ -659,10 +651,8 @@
             var mj = new TileChunk();
             mj.index = j;
             mj.tilePieces = [];
-            mj.tilePieces.length = 8;
             for (var i = 0; i < 8; i++) {
-                mj.tilePieces[i] = [];
-                mj.tilePieces[i].length = 8;
+                mj.tilePieces[i] = []; 
             }
             for (var p = 0; p < fc.length; p++) {
                 mj.tilePieces[p % 8][_H.floor(p / 8)] = (fc[p]);

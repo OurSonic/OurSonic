@@ -80,9 +80,6 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
                         if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2)
                             return { value: x1 - i, angle: cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)] };
                     }
-
-
-
                 }
 
 

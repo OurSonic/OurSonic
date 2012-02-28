@@ -217,7 +217,7 @@
 
             if (this.gsp > max * 2.5) this.gsp = max * 2.5;
             if (this.gsp < -max * 2.5) this.gsp = -max * 2.5;
-            
+
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
             }
@@ -260,7 +260,7 @@
                 }
             }
             //gravity
-            this.ysp +=  this.watcher.multiply(this.justHit ? 0.1875 : this.grv);
+            this.ysp += this.watcher.multiply(this.justHit ? 0.1875 : this.grv);
             //drag
             if (this.ysp < 0 && this.ysp > -4) {
                 if (Math.abs(this.xsp) > 0.125) {
@@ -341,8 +341,8 @@
                 this.y -= debugSpeed;
             }
 
-            this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x )) % (sonicManager.SonicLevel.LevelWidth * 128);
-            this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y )) % (sonicManager.SonicLevel.LevelHeight * 128);
+            this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x)) % (sonicManager.SonicLevel.LevelWidth * 128);
+            this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y)) % (sonicManager.SonicLevel.LevelHeight * 128);
             return;
         }
 
@@ -425,7 +425,7 @@
 
         var sensorA = this.sensorManager.getResult('a');
         var sensorB = this.sensorManager.getResult('b');
-         
+
         if (!this.inAir) {
             if (sensorA == -1 && sensorB == -1) {
                 this.inAir = true;
@@ -862,7 +862,7 @@
             canvas.fillText("Air ", pos.x + 220, pos.y + 45);
         if (this.hlock > 0) {
             canvas.fillText("HLock: " + this.hlock, pos.x + 90, pos.y + 195);
-        }
+        } 
 
     };
     function modeString(st) {
@@ -915,8 +915,8 @@
                             xOffset = -(40 - ((cur.height + n) / scale.x)) / 2;
                             break;
                     }
-                } 
-                
+                }
+
                 canvas.translate((fx - sonicManager.windowLocation.x + xOffset + xOffset) * scale.x, ((fy - sonicManager.windowLocation.y + yOffset) * scale.y));
 
 
@@ -1068,6 +1068,8 @@
             for (var _1 = 0; _1 < 128; _1++) {
                 hb1[_1] = [];
                 hb2[_1] = [];
+            }
+            for (var _1 = 0; _1 < 8; _1++) {
                 ab1[_1] = [];
                 ab2[_1] = [];
             }
@@ -1125,7 +1127,7 @@
 
                     var hd1 = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes1[tp.Block]];
                     var hd2 = sonicManager.SonicLevel.HeightMaps[sonicManager.SonicLevel.CollisionIndexes2[tp.Block]];
-                    if(hd1==undefined || hd2==undefined)continue;
+                    if (hd1 == undefined || hd2 == undefined) continue;
                     var mj;
                     if (hd1 == 0 || hd1 == 1) {
                         mj = hd1 == 0 ? 0 : tp.Solid1;
@@ -1329,9 +1331,8 @@ function Watcher() {
         lastTick = ticks;
 
         this.mult = offset / 16.6;
-        this.mult = 1;
     };
-    this.multiply = function(val) {
-        return this.mult * val;
+    this.multiply = function (val) {
+        return 1 * val;
     };
 }

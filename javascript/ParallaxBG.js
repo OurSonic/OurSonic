@@ -60,8 +60,7 @@
         var w = this.width;
         var h = this.height;
 
-        this.slots = [];
-        this.slots.length = h;
+        this.slots = []; 
         for (var y = 0; y < h; y++) {
             this.slots[y] = new ParallaxBGSlot();
         }

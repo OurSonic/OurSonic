@@ -69,7 +69,18 @@ namespace OurSonic
         [WebMethod]
         public string getLevel(string level)
         { 
+
+            if(doc.Root.Attribute("Count")==null)
+            {
+                doc.Root.Add(new XAttribute("Count", 1));
+            }
+            else
+            {
+                doc.Root.Attribute("Count").SetValue(int.Parse(doc.Root.Attribute("Count").Value) + 1);
+            }
+            doc.Save(c);
             return File.ReadAllText(directory + level + ".js");
+
         }
 
         [WebMethod]
@@ -101,6 +112,15 @@ namespace OurSonic
         public string[] getLevels()
         {
 
+            if (doc.Root.Attribute("LVLCount") == null)
+            {
+                doc.Root.Add(new XAttribute("LVLCount", 1));
+            }
+            else
+            {
+                doc.Root.Attribute("LVLCount").SetValue(int.Parse(doc.Root.Attribute("LVLCount").Value) + 1);
+            }
+            doc.Save(c);
             return new DirectoryInfo(directory).GetFiles().Where(a => a.Extension==(".js")).Select(a => a.Name.Replace(".js","")).ToArray();
 //            return ((XElement)doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();
         }

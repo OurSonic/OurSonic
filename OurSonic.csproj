@@ -58,6 +58,7 @@
     <Content Include="javascript\curCompress.js" />
     <Content Include="javascript\UIManager.js" />
     <Content Include="javascript\SonicManager.js" />
+    <Content Include="ObjectMapping.txt" />
     <Content Include="SonicLevels.asmx" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="Web.config">
