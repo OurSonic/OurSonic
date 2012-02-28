@@ -123,13 +123,14 @@
                 canvas.drawImage(fd, pos.x, pos.y);
             }
         } else {
-
+            canvas.strokeStyle = "#000000";
+            canvas.strokeRect(pos.x, pos.y, scale.x * 16, scale.y * 16);
             if (solid > 0) {
                 for (var x = 0; x < 16; x++) {
                     for (var y = 0; y < 16; y++) {
-                        var jx = 0, jy = 0; 
-                        
-                        if (_H.itemsGood(this.items, x, y, jy)) { 
+                        var jx = 0, jy = 0;
+
+                        if (_H.itemsGood(this.items, x, y, jy)) {
 
                             jx = x;
                             jy = y;
@@ -145,10 +146,14 @@
                 }
                 canvas.beginPath();
                 canvas.lineWidth = 3;
-                canvas.strokeStyle = "#03F3CA";
+                canvas.strokeStyle = "rgba(163,241,255,0.8)";
                 canvas.moveTo(pos.x + scale.x * 16 / 2, pos.y + scale.y * 16 / 2);
                 canvas.lineTo(pos.x + scale.x * 16 / 2 - _H.sin(angle) * scale.x * 8, pos.y + scale.y * 16 / 2 - _H.cos(angle) * scale.x * 8);
                 canvas.stroke();
+                canvas.beginPath();
+                canvas.fillStyle = "rgba(163,241,255,0.8)";
+                canvas.arc(pos.x + scale.x * 16 / 2 - _H.sin(angle) * scale.x * 8, pos.y + scale.y * 16 / 2 - _H.cos(angle) * scale.x * 8, 5, 0, 2 * Math.PI, true);
+                canvas.fill();
             }
             /*  if (!(angle == 0 || angle == 255 || angle == 1)) {
             if (xflip) {
@@ -169,12 +174,11 @@
             }
             }*/
 
-    
+
 
         }
 
-        canvas.strokeStyle = "#000000";
-        canvas.strokeRect(pos.x, pos.y, scale.x * 16, scale.y * 16); 
+      
 
         _H.restore(canvas);
         pos.x = oPos.x;

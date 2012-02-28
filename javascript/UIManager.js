@@ -17,7 +17,7 @@
 
     }
 
-    var textFont = this.textFont = "18pt sans-serrif ";
+    var textFont = this.textFont = "18pt Calibri ";
     var buttonFont = this.buttonFont = "13pt Arial bold";
     mainCanvas.font = textFont;
     var indexes = this.indexes = { tpIndex: 0, modifyIndex: 0, modifyTPIndex: 0 };
@@ -271,7 +271,7 @@
 
 
 
-    var levelInformation = this.levelInformation = new UiArea(70, 70, 530, 360, this);
+    var levelInformation = this.levelInformation = new UiArea(70, 70, 530, 420, this);
     levelInformation.visible = true;
     this.UIAreas.push(levelInformation);
     levelInformation.addControl(new TextArea(30, 25, "Level Selector", textFont, "blue"));

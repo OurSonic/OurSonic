@@ -5,6 +5,10 @@
 			collision map
 	x
 	y
+	xflip
+	yflip
+	data
+	subdata
 	xsp
 	ysp
 	offsetX
@@ -30,7 +34,6 @@ events
 	triggered:bool
 	state
 	trigger(level,sonic,state)
-	
 
 level
 	events[name]

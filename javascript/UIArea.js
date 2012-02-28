@@ -19,7 +19,7 @@ function UiArea(x, y, w, h,manager,closable) {
     var that = this;
 
     if (closable) {
-        this.addControl(new Button(this.width - 30, 4, 26, 26, "X", this.manager.buttonFont, "Green", function () { that.visible = false; }));
+        this.addControl(new Button(this.width - 80, 4, 26, 23, "X", this.manager.buttonFont, "Green", function () { that.visible = false; }));
     }
     
     this.click = function (e) {
@@ -95,16 +95,28 @@ function UiArea(x, y, w, h,manager,closable) {
 
             var cv = cg.getContext('2d');
 
+            var lingrad = cv.createLinearGradient(0, 0, 0, this.height);
+            lingrad.addColorStop(0, 'rgba(220,220,220,0.85)');
+            lingrad.addColorStop(1, 'rgba(142,142,142,0.85)');
 
-            cv.fillStyle = "rgba(133,133,133,0.6)";
-            cv.lineWidth = 9;
+
+            cv.fillStyle = lingrad;
             cv.strokeStyle = "#333";
 
             var _x = this.x;
             var _y = this.y;
             this.x = 10;
             this.y = 10;
-            roundRect(cv, this.x, this.y, this.width, this.height, 5, true, true);
+            var rad = 30;
+            roundRect(cv, this.x, this.y, this.width, this.height, rad, true, true);
+
+            cv.beginPath();
+            cv.moveTo(this.x, this.y + rad);
+            cv.lineTo(this.x + this.width, this.y + rad);
+            cv.lineWidth = 2;
+            cv.strokeStyle = "#000000";
+            cv.stroke();
+
             for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 good = t.forceDrawing();
@@ -135,17 +147,36 @@ function UiArea(x, y, w, h,manager,closable) {
             }
             _H.restore(canv);
         } else {
-            canv.fillStyle = "rgba(133,133,133,0.6)";
-            canv.lineWidth = 9;
-            canv.strokeStyle = "#333";
-            _H.save(canv);
-            canv.translate(10, 10);
-            roundRect(canv, this.x, this.y, this.width, this.height, 5, true, true);
+            cv = canv;
+            var lingrad = cv.createLinearGradient(0, 0, 0, this.height);
+            lingrad.addColorStop(0, 'rgba(220,220,220,0.7)');
+            lingrad.addColorStop(1, 'rgba(142,142,142,0.7)');
+
+
+            cv.fillStyle = lingrad;
+            cv.strokeStyle = "#333";
+
+            var _x = this.x;
+            var _y = this.y;
+            this.x += 10;
+            this.y += 10;
+            var rad = 30;
+            roundRect(cv, this.x, this.y, this.width, this.height, rad, true, true);
+
+            cv.beginPath();
+            cv.moveTo(this.x, this.y + rad);
+            cv.lineTo(this.x + this.width, this.y + rad);
+            cv.lineWidth = 2;
+            cv.strokeStyle = "#000000";
+            cv.stroke();
 
             for (j = 0; j < this.controls.length; j++) {
                 t = this.controls[j];
                 t.draw(canv);
             }
+
+            this.x = _x;
+            this.y = _y;
             _H.restore(canv);
 
         }
@@ -196,17 +227,10 @@ function TextArea(x, y, text, font, color) {
         var pad = 3;
         //     canv.fillRect(this.parent.x + this.x - pad, this.parent.y + this.y - h - pad, w + (pad * 2), h + (pad * 2));
 
-        canv.strokeStyle = this.color;
-        canv.shadowColor = "#FFF";
-        canv.shadowBlur = 20;
-        canv.lineWidth = 1.5;
+        canv.fillStyle = this.color; 
         
-        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
-        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
-        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
-        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
-        canv.strokeText(text, this.parent.x + this.x, this.parent.y + this.y);
-        canv.shadowBlur = 0;
+        canv.fillText(text, this.parent.x + this.x, this.parent.y + this.y);
+ 
 
     };
 
@@ -233,6 +257,12 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     this.color = color;
     this.parent = null;
 
+    var created = false;
+
+    this.button1Grad = null;
+    this.button2Grad = null;
+    this.buttonBorderGrad = null; 
+
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
@@ -251,13 +281,31 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     };
     this.draw = function (canv) {
         if (!this.visible) return;
-        canv.fillStyle = _H.isFunction(this.color) ? this.color() : this.color;
-        canv.strokeStyle = "#DAC333";
+
+        if (!created) {
+            created = true;
+            this.button1Grad = canv.createLinearGradient(0, 0, 0, 1);
+            this.button1Grad.addColorStop(0, '#FFFFFF');
+            this.button1Grad.addColorStop(1, '#dedede');
+
+            this.button2Grad = canv.createLinearGradient(0, 0, 0, 1);
+            this.button2Grad.addColorStop(0, '#dedede');
+            this.button2Grad.addColorStop(1, '#FFFFFF');
+
+
+            this.buttonBorderGrad = canv.createLinearGradient(0, 0, 0, 1);
+            this.buttonBorderGrad.addColorStop(0, '#AFAFAF');
+            this.buttonBorderGrad.addColorStop(1, '#7a7a7a');
+
+        } 
+
+        canv.strokeStyle = this.buttonBorderGrad;
+        canv.fillStyle = this.clicking ? this.button1Grad : this.button2Grad;
         canv.lineWidth = 2;
-        roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 5, true, true);
-        canv.fillStyle = this.clicking ? "#FCA" : "#334";
+        roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 2, true, true);
         if (canv.font != this.font)
             canv.font = this.font;
+        canv.fillStyle = "#000000";
 
         canv.fillText(this.text, this.parent.x + this.x + ((this.width / 2) - (canv.measureText(this.text).width / 2)), this.parent.y + this.y + (this.height / 3) * 2);
     };
@@ -306,6 +354,7 @@ function TilePieceArea(x, y, scale, tilePiece, state) {
         if (!this.visible) return;
         if (!this.tilePiece) return;
         this.tilePiece.tag = true;
+        if (!this.tpc) return;
         var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
         this.tilePiece.drawUI(canv, pos, this.scale, this.tpc.XFlip, this.tpc.YFlip);
         if (sonicManager.showHeightMap) {
@@ -572,17 +621,17 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
         canv.fillStyle = this.backColor;
 
         var i;
-
+        var jHeight = 5;
 
         canv.fillStyle = this.backColor;
         canv.lineWidth = 1;
         canv.strokeStyle = "#333";
-        roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.itemWidth + scrollWidth + 6, this.visibleItems * this.itemHeight, 3, true, true);
+        roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.itemWidth + scrollWidth + 6, this.visibleItems * (this.itemHeight + jHeight), 3, true, true);
 
         canv.fillStyle = "grey";
         canv.lineWidth = 1;
         canv.strokeStyle = "#444";
-        canv.fillRect(this.parent.x + this.x + this.itemWidth + 2 + 2, this.parent.y + this.y + 2, scrollWidth, this.visibleItems * this.itemHeight - 2);
+        canv.fillRect(this.parent.x + this.x + this.itemWidth + 2 + 2, this.parent.y + this.y + 2, scrollWidth, this.visibleItems * (this.itemHeight + jHeight) - 2);
 
         canv.fillStyle = "red";
         canv.lineWidth = 1;
@@ -602,7 +651,7 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
             this.controls[i].height = this.itemHeight;
             this.controls[i].width = this.itemWidth;
 
-            curY += this.itemHeight;
+            curY += this.itemHeight + jHeight;
             this.controls[i].draw(canv);
         }
 
@@ -621,15 +670,16 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     }
     if (typeof radius === "undefined") {
         radius = 5;
-    }
+    } 
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
     ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x + width, y + height);
+   // ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x , y + height);
+   // ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
