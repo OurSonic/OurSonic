@@ -1,6 +1,6 @@
 ﻿
 
-function UiArea(x, y, w, h,manager,closable) {
+function UiArea(x, y, w, h, manager, closable) {
     this.x = x;
     this.y = y;
     this.manager = manager;
@@ -21,7 +21,7 @@ function UiArea(x, y, w, h,manager,closable) {
     if (closable) {
         this.addControl(new Button(this.width - 80, 4, 26, 23, "X", this.manager.buttonFont, "Green", function () { that.visible = false; }));
     }
-    
+
     this.click = function (e) {
         if (!this.visible) return;
         for (var ij = 0; ij < this.controls.length; ij++) {
@@ -189,8 +189,8 @@ function UiArea(x, y, w, h,manager,closable) {
 
 function TextArea(x, y, text, font, color) {
     this.forceDrawing = function () {
-        if ((_H.isFunction(this.text) ? this.text() : this.text )== this.oldText) {
-            return {redraw:true,clearCache:false};
+        if ((_H.isFunction(this.text) ? this.text() : this.text) == this.oldText) {
+            return { redraw: true, clearCache: false };
         }
         this.oldText = _H.isFunction(this.text) ? this.text() : this.text;
         return { redraw: true, clearCache: true };
@@ -227,10 +227,10 @@ function TextArea(x, y, text, font, color) {
         var pad = 3;
         //     canv.fillRect(this.parent.x + this.x - pad, this.parent.y + this.y - h - pad, w + (pad * 2), h + (pad * 2));
 
-        canv.fillStyle = this.color; 
-        
+        canv.fillStyle = this.color;
+
         canv.fillText(text, this.parent.x + this.x, this.parent.y + this.y);
- 
+
 
     };
 
@@ -261,7 +261,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
 
     this.button1Grad = null;
     this.button2Grad = null;
-    this.buttonBorderGrad = null; 
+    this.buttonBorderGrad = null;
 
     this.onClick = function (e) {
         if (!this.visible) return;
@@ -297,7 +297,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
             this.buttonBorderGrad.addColorStop(0, '#AFAFAF');
             this.buttonBorderGrad.addColorStop(1, '#7a7a7a');
 
-        } 
+        }
 
         canv.strokeStyle = this.buttonBorderGrad;
         canv.fillStyle = this.clicking ? this.button1Grad : this.button2Grad;
@@ -360,7 +360,7 @@ function TilePieceArea(x, y, scale, tilePiece, state) {
         if (sonicManager.showHeightMap) {
 
             var jc = (sonicManager.SonicLevel.curHeightMap ? sonicManager.SonicLevel.CollisionIndexes1 : sonicManager.SonicLevel.CollisionIndexes2);
-            var hm = sonicManager.SonicLevel.HeightMaps[jc[this.tpc.Block]]; 
+            var hm = sonicManager.SonicLevel.HeightMaps[jc[this.tpc.Block]];
             if (hm != 0 && hm != 1) {
                 hm.drawUI(canv, pos, this.scale, 0, this.tpc.XFlip, this.tpc.YFlip, sonicManager.SonicLevel.curHeightMap ? this.tpc.Solid1 : this.tpc.Solid2, sonicManager.SonicLevel.Angles[jc[this.tpc.Block]]);
             }
@@ -428,12 +428,12 @@ function TileBGEditArea(x, y, parallaxBG) {
 
         this.parallaxBG = sonicManager.background;
         if (!this.parallaxBG) return;
-        
+
         this.width = this.parallaxBG.width;
         this.height = this.parallaxBG.height;
         this.parent.width = this.width + 70;
         this.parent.height = this.height + 50;
-        
+
         var scale = { x: 1, y: 1 };
         this.parallaxBG.drawUI(canv, { x: this.parent.x + this.x, y: this.parent.y + this.y }, scale);
 
@@ -442,7 +442,7 @@ function TileBGEditArea(x, y, parallaxBG) {
     return this;
 }
 
-function TileChunkArea(x, y, scale, tileChunk,state) {
+function TileChunkArea(x, y, scale, tileChunk, state) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -476,7 +476,7 @@ function TileChunkArea(x, y, scale, tileChunk,state) {
     this.clickHandled = false;
     this.onMouseOver = function (e) {
         if (this.clicking) {
-            
+
         }
     };
     this.draw = function (canv) {
@@ -500,7 +500,8 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
     this.itemHeight = itemHeight;
     this.backColor = backColor;
 
-    this.height = visibleItems * itemHeight;
+    var jHeight = 5;
+    this.height = visibleItems * (itemHeight + jHeight);
     this.parent = null;
     this.scrollOffset = 0;
     this.scrollPosition = 0;
@@ -535,7 +536,11 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
 
 
         if (e.x > this.itemWidth && e.x < this.itemWidth + scrollWidth) {
-            if (this.scrollPosition > e.y) {
+
+            var height = this.visibleItems * (this.itemHeight + jHeight) - 2;
+            this.scrollOffset = _H.floor((e.y / height) * (this.controls.length - this.visibleItems));
+
+/*            if (this.scrollPosition > e.y) {
                 if (this.scrollOffset > 0) {
                     this.scrollOffset--;
                 }
@@ -543,7 +548,7 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
                 if (this.scrollOffset < this.controls.length - this.visibleItems) {
                     this.scrollOffset++;
                 }
-            }
+            }*/
         }
         this.dragging = true;
 
@@ -574,20 +579,23 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
                 e.x -= control.x;
                 e.y -= control.y;
                 control.onMouseOver(e);
-             break;
+                break;
 
             }
         }
         if (this.dragging && e.x > this.itemWidth && e.x < this.itemWidth + scrollWidth) {
-            if (this.scrollPosition > e.y) {
-                if (this.scrollOffset > 0) {
-                    this.scrollOffset--;
-                }
-            } else {
-                if (this.scrollOffset < this.controls.length - this.visibleItems) {
-                    this.scrollOffset++;
-                }
+            var height = this.visibleItems * (this.itemHeight + jHeight) - 2;
+            this.scrollOffset = _H.floor((e.y / height) * (this.controls.length-this.visibleItems));
+
+            /*            if (this.scrollPosition > e.y) {
+            if (this.scrollOffset > 0) {
+            this.scrollOffset--;
             }
+            } else {
+            if (this.scrollOffset < this.controls.length - this.visibleItems) {
+            this.scrollOffset++;
+            }
+            }*/
         }
         if (this.mouseOver) this.mouseOver();
     };
@@ -621,7 +629,7 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
         canv.fillStyle = this.backColor;
 
         var i;
-        var jHeight = 5;
+        var height = this.visibleItems * (this.itemHeight + jHeight) - 2;
 
         canv.fillStyle = this.backColor;
         canv.lineWidth = 1;
@@ -631,14 +639,14 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
         canv.fillStyle = "grey";
         canv.lineWidth = 1;
         canv.strokeStyle = "#444";
-        canv.fillRect(this.parent.x + this.x + this.itemWidth + 2 + 2, this.parent.y + this.y + 2, scrollWidth, this.visibleItems * (this.itemHeight + jHeight) - 2);
+        canv.fillRect(this.parent.x + this.x + this.itemWidth + 2 + 2, this.parent.y + this.y + 2, scrollWidth, height);
 
-        canv.fillStyle = "red";
+        canv.fillStyle = "FFDDFF";
         canv.lineWidth = 1;
-        canv.strokeStyle = "#444";
-        this.scrollPosition = (this.visibleItems * this.itemHeight - 2) * this.scrollOffset / this.controls.length;
+        canv.strokeStyle = "#FFDDFF";
+        this.scrollPosition = height * this.scrollOffset / (this.controls.length - this.visibleItems);
 
-        canv.fillRect(this.parent.x + this.x + this.itemWidth + 2 + 2 + 2, this.parent.y + this.y + 2 + (this.scrollPosition), scrollWidth - 2, 5);
+        canv.fillRect(this.parent.x + this.x + this.itemWidth + 2 + 2 + 2, this.parent.y + this.y + 2 + (this.scrollPosition)-3, scrollWidth - 2, 5);
 
 
 
@@ -670,16 +678,16 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     }
     if (typeof radius === "undefined") {
         radius = 5;
-    } 
+    }
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
     ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
     ctx.lineTo(x + width, y + height);
-   // ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x , y + height);
-   // ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    // ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x, y + height);
+    // ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
