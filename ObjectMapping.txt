@@ -1,19 +1,20 @@
 ﻿objects
 	assets[]
 		frames[]
+			offsetX
+			offsetY
 			hurt sonic map
 			collision map
-	x
-	y
-	xflip
-	yflip
-	data
-	subdata
-	xsp
-	ysp
-	offsetX
-	offsetY
-	pieces
+	info
+		x
+		y
+		xflip
+		yflip
+		xsp
+		ysp
+		data
+		subdata
+	pieces 
 		asset index
 		frame index
 		collided
@@ -22,15 +23,25 @@
 
 	tick:function(level,sonic)
 	onHurtSonic:function(level,sonic)
-	onCollide:function(level,sonic)
+	onCollide:function(level,sonic,sensor)
 		sonic.isball
 		sonic.istouching && sonic.isspindash
-	
-helper
-	createProjectile:function(hurts,shielddeflection)
+	 
+
+projectile
+	x
+	y
+	xsp
+	ysp
+	assets[]
+		frames[]
+			hurt sonic map
+			collision map
+	onCollide:function(level,sonic)
+	tick:function(level,sonic)
 
 events
-	tick:function(level,sonic,state)  only when triggered
+	tick:function(level,sonic,state)  ;only when triggered
 	triggered:bool
 	state
 	trigger(level,sonic,state)

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game2.aspx" />
+    <Content Include="javascript\Editor.js" />
     <Content Include="javascript\LevelObject.js" />
     <Content Include="javascript\Sensor.js" />
     <Content Include="javascript\TileItem.js" />

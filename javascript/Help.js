@@ -76,11 +76,21 @@
 
         return result;
     },
+    negateColor: function (color) {
+        var r = parseInt(color.substring(0, 2), 16);
+        var g = parseInt(color.substring(2, 4), 16);
+        var b = parseInt(color.substring(4, 6), 16);
+        var off = 1;
+        r = _H.floor((255 - r) * off);
+        g = _H.floor((255 - g) * off);
+        b = _H.floor((255 - b) * off    );
+        return r.toString(16) + g.toString(16) + b.toString(16);
+    },
     defaultWindowLocation: function (state, canvas, scale) {
 
         switch (state) {
             case 0:
-             //   return { x: 0, y: 0, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
+                //   return { x: 0, y: 0, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
                 return { x: 0, y: 0, width: 320, height: 240, intersects: _H.intersects };
             case 1:
                 var x = 0;

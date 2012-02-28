@@ -1,6 +1,7 @@
 ﻿function UIManager(sonicManager, mainCanvas, scale) {
     this.UIAreas = [];
     this.messages = [];
+
     function runSonic() {
         levelManagerArea.visible = false;
         solidTileArea.visible = false;
@@ -21,16 +22,16 @@
     var buttonFont = this.buttonFont = "13pt Arial bold";
     mainCanvas.font = textFont;
     var indexes = this.indexes = { tpIndex: 0, modifyIndex: 0, modifyTPIndex: 0 };
-    this.dragger = new Dragger(function (xsp, ysp) {
+    this.dragger = new Dragger(function(xsp, ysp) {
         sonicManager.windowLocation.x += xsp;
         sonicManager.windowLocation.y += ysp;
     });
-    this.draw = function (canvas) {
+    this.draw = function(canvas) {
         this.dragger.tick();
 
         _H.save(canvas);
 
-        var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
+        var cl = JSLINQ(this.UIAreas).OrderBy(function(f) {
             return f.depth;
         });
 
@@ -48,7 +49,7 @@
 
     };
 
-    this.onMouseScroll = function (evt) {
+    this.onMouseScroll = function(evt) {
         var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
 
 
@@ -65,14 +66,14 @@
         }
         return false;
     };
-    this.onClick = function (e) {
+    this.onClick = function(e) {
         var cell = _H.getCursorPosition(e);
         cell.x -= 10;
         cell.y -= 10;
         var goodArea = null;
         var are;
         var ij;
-        var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
+        var cl = JSLINQ(this.UIAreas).OrderBy(function(f) {
             return -f.depth;
         });
         for (var ij = 0; ij < cl.items.length; ij++) {
@@ -98,7 +99,7 @@
         return false;
     };
 
-    this.onMouseMove = function (e) {
+    this.onMouseMove = function(e) {
         if (this.dragger.isDragging()) {
             this.dragger.mouseMove(e);
             return false;
@@ -107,7 +108,7 @@
         cell.x -= 10;
         cell.y -= 10;
 
-        var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
+        var cl = JSLINQ(this.UIAreas).OrderBy(function(f) {
             return -f.depth;
         });
 
@@ -126,7 +127,7 @@
         return false;
 
     };
-    this.onMouseUp = function (e) {
+    this.onMouseUp = function(e) {
         var cell = _H.getCursorPosition(e, true);
         cell.x -= 10;
         cell.y -= 10;
@@ -144,6 +145,62 @@
         document.title = str + " | Our Sonic";
         curLevelName = str;
     };
+
+
+    var objectArea = this.objectArea = new UiArea(1347, 95, 250, 240, this, true);
+    objectArea.visible = false;
+    this.UIAreas.push(objectArea);
+    objectArea.addControl(new TextArea(30, 25, "Object Framework", textFont, "blue"));
+    objectArea.addControl(new Button(40, 190, 60, 22, "Framework", buttonFont, "rgb(50,150,50)", function() {
+    }
+    ));
+    objectArea.addControl(new Button(40, 190, 60, 22, "Add Asset", buttonFont, "rgb(50,150,50)", function() {
+    }
+    ));
+
+
+    objectArea.addControl(new TextArea(30, 25, "Assets", textFont, "black"));
+
+    var cts;
+    objectArea.addControl(cts = new ScrollBox(30, 70, 25, 11, 250, "rgb(50,60,127)"));
+    cts.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function() {
+
+    }));
+
+
+    var assetArea = this.assetArea = new UiArea(650, 30, 930, 800, this, true);
+    assetArea.visible = true;
+    this.UIAreas.push(assetArea);
+    assetArea.addControl(new TextArea(30, 25, "Frames", textFont, "black"));
+    var name = "a";
+    assetArea.addControl(cts = new ScrollBox(30, 70, 25, 11, 250, "rgb(50,60,127)"));
+    cts.visible = false;
+    cts.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function() {
+
+    }));
+
+    assetArea.addControl(cts = new ColorEditingArea(30, 45,{x:11,y:11}));
+    assetArea.addControl(new Button(770, 70, 150, 22, "Show Outline", buttonFont, "rgb(50,150,50)", function () {
+        cts.editor.showOutline = !cts.editor.showOutline;
+    }
+    ));
+
+    
+
+
+
+    var objectInfoArea = this.objectInfoArea = new UiArea(1347, 95, 250, 240, this, true);
+    objectInfoArea.visible = false;
+    this.UIAreas.push(objectInfoArea);
+    objectInfoArea.addControl(new TextArea(30, 25, "Object Information", textFont, "blue"));
+    objectInfoArea.addControl(new Button(40, 190, 60, 22, "Framework", buttonFont, "rgb(50,150,50)", function () {
+        objectArea.visible = true;
+        objectArea.objectFramework = objectArea.object.Framwork;
+    }
+    ));
+
+
+
 
     var debuggerArea = this.debuggerArea = new UiArea(1347, 95, 250, 240, this, true);
     debuggerArea.visible = false;
@@ -213,7 +270,7 @@
             if (indexes.tpIndex < sonicManager.SonicLevel.Blocks.length)
                 modifyTilePieceArea.tilePiece = sonicManager.SonicLevel.Blocks[++indexes.tpIndex];
         }));
-        solidTileArea.addControl(new Button(360, 80, 45, 22, "Full", buttonFont, "rgb(50,150,50)",
+    solidTileArea.addControl(new Button(360, 80, 45, 22, "Full", buttonFont, "rgb(50,150,50)",
         function () {
             for (var i = 0; i < 16; i++) {
                 modifyTilePieceArea.tilePiece.heightMask.items[i] = 16;
@@ -222,23 +279,23 @@
             this.sprites = [];
         }));
 
-        solidTileArea.addControl(new Button(360, 130, 45, 22, "XFlip", buttonFont, function () {
-            if (modifyTilePieceArea.tpc.XFlip) {
-                return "rgb(190,120,65)";
-            } else {
-                return "rgb(50,150,50)";
-            }
-        },
+    solidTileArea.addControl(new Button(360, 130, 45, 22, "XFlip", buttonFont, function () {
+        if (modifyTilePieceArea.tpc.XFlip) {
+            return "rgb(190,120,65)";
+        } else {
+            return "rgb(50,150,50)";
+        }
+    },
         function () {
             modifyTilePieceArea.tpc.XFlip = !modifyTilePieceArea.tpc.XFlip;
         }));
-        solidTileArea.addControl(new Button(360, 160, 45, 22, "YFlip", buttonFont, function () {
-            if (modifyTilePieceArea.tpc.YFlip) {
-                return "rgb(190,120,65)";
-            } else {
-                return "rgb(50,150,50)";
-            }
-        },
+    solidTileArea.addControl(new Button(360, 160, 45, 22, "YFlip", buttonFont, function () {
+        if (modifyTilePieceArea.tpc.YFlip) {
+            return "rgb(190,120,65)";
+        } else {
+            return "rgb(50,150,50)";
+        }
+    },
         function () {
             modifyTilePieceArea.tpc.YFlip = !modifyTilePieceArea.tpc.YFlip;
         }));
@@ -345,16 +402,16 @@
     function addLevelToList(name) {
         var btn;
         ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
- 
+
             loadLevel(name);
         }));
     }
 
     function loadLevel(name) {
-        updateTitle( "Downloading " + name);
+        updateTitle("Downloading " + name);
         OurSonic.SonicLevels.getLevel(name, function (lvl) {
             updateTitle("Loading: " + name);
-            
+
             loadGame(lvl, mainCanvas);
         });
     }
@@ -652,7 +709,7 @@
             mj.index = j;
             mj.tilePieces = [];
             for (var i = 0; i < 8; i++) {
-                mj.tilePieces[i] = []; 
+                mj.tilePieces[i] = [];
             }
             for (var p = 0; p < fc.length; p++) {
                 mj.tilePieces[p % 8][_H.floor(p / 8)] = (fc[p]);

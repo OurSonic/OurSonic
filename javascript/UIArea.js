@@ -19,7 +19,7 @@ function UiArea(x, y, w, h, manager, closable) {
     var that = this;
 
     if (closable) {
-        this.addControl(new Button(this.width - 80, 4, 26, 23, "X", this.manager.buttonFont, "Green", function () { that.visible = false; }));
+        this.addControl(new Button(this.width - 30, 4, 26, 23, "X", this.manager.buttonFont, "Green", function () { that.visible = false; }));
     }
 
     this.click = function (e) {
@@ -311,6 +311,60 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     };
     return this;
 }
+function ColorEditingArea(x, y, scale) {
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
+    this.imageSize = { x: 64, y: 64 };
+    this.lastPosition = null;
+    this.x = x;
+    this.y = y;
+    this.visible = true;
+    this.scale = scale;
+    this.width = scale.x * this.imageSize.x;
+    this.height = scale.y * this.imageSize.y;
+    this.clicking = false;
+    this.editor = new Editor(this.imageSize);
+    this.parent = null;
+    this.onClick = function (e) {
+        if (!this.visible) return;
+        this.clicking = true;
+        this.clickHandled = false;
+        this.lastPosition = { x: e.x, y: e.y };
+        this.editor.drawPixel({ x: e.x, y: e.y }, this.scale);
+
+    };
+    this.onMouseUp = function (e) {
+        if (!this.visible) return;
+
+        if (this.tilePiece && this.clicking && !this.clickHandled) {
+            this.tilePiece.click(_H.floor(e.x / scale.x), _H.floor(e.y / scale.y), this.state);
+        }
+        this.lastPosition = null;
+        this.clickHandled = false;
+        this.clicking = false;
+    };
+    this.clickHandled = false;
+    this.onMouseOver = function (e) {
+        if (!this.editor) return;  
+        if (this.clicking) {
+            this.clickHandled = true;
+            this.editor.drawLine({ x: e.x, y: e.y }, this.lastPosition, this.scale);
+            this.lastPosition = { x: e.x, y: e.y };
+            
+        } 
+    };
+    this.draw = function (canv) {
+        if (!this.visible) return;
+        if (!this.editor) return; 
+        var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
+        
+        this.editor.draw(canv, pos, this.scale);
+
+    };
+    return this;
+}
+
 
 function TilePieceArea(x, y, scale, tilePiece, state) {
     this.forceDrawing = function () {
@@ -682,8 +736,8 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width , y);
+    //ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
     ctx.lineTo(x + width, y + height);
     // ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
     ctx.lineTo(x, y + height);
