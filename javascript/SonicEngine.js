@@ -25,18 +25,22 @@ function SonicEngine(canvasName) {
     this.canvasWidth = 0;
     this.canvasHeight = 0;
 
+    var element = document.getElementById(canvasName);
 
+   element.addEventListener('DOMMouseScroll', handleScroll, false);
+   element.addEventListener('mousewheel', handleScroll, false);
+ 
+   element.addEventListener('touchmove', canvasMouseMove);
+   element.addEventListener('touchstart', canvasOnClick);
+   element.addEventListener('touchend', canvasMouseUp); 
+    
+   element.addEventListener('mousedown', canvasOnClick);
+   element.addEventListener('mouseup', canvasMouseUp);
+   element.addEventListener('mousemove', canvasMouseMove);
 
-    document.getElementById(canvasName).addEventListener('DOMMouseScroll', handleScroll, false);
-    document.getElementById(canvasName).addEventListener('mousewheel', handleScroll, false);
-
-    document.getElementById(canvasName).addEventListener('touchmove', canvasMouseMove);
-    document.getElementById(canvasName).addEventListener('touchstart', canvasOnClick);
-    document.getElementById(canvasName).addEventListener('touchend', canvasMouseUp);
-
-    document.getElementById(canvasName).addEventListener('mousedown', canvasOnClick);
-    document.getElementById(canvasName).addEventListener('mouseup', canvasMouseUp);
-    document.getElementById(canvasName).addEventListener('mousemove', canvasMouseMove);
+   element.addEventListener('contextmenu', function (evt) {
+        evt.preventDefault();
+    }, false);
 
     $(document).keydown(doKeyDown);
     $(document).keyup(doKeyUp);
@@ -63,7 +67,7 @@ function SonicEngine(canvasName) {
     function canvasMouseUp(e) {
         e.preventDefault();
         sonicManager.uiManager.onMouseUp(e);
-
+        return false;
     }
 
 

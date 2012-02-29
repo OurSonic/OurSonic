@@ -22,16 +22,16 @@
     var buttonFont = this.buttonFont = "13pt Arial bold";
     mainCanvas.font = textFont;
     var indexes = this.indexes = { tpIndex: 0, modifyIndex: 0, modifyTPIndex: 0 };
-    this.dragger = new Dragger(function(xsp, ysp) {
+    this.dragger = new Dragger(function (xsp, ysp) {
         sonicManager.windowLocation.x += xsp;
         sonicManager.windowLocation.y += ysp;
     });
-    this.draw = function(canvas) {
+    this.draw = function (canvas) {
         this.dragger.tick();
 
         _H.save(canvas);
 
-        var cl = JSLINQ(this.UIAreas).OrderBy(function(f) {
+        var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
             return f.depth;
         });
 
@@ -49,7 +49,7 @@
 
     };
 
-    this.onMouseScroll = function(evt) {
+    this.onMouseScroll = function (evt) {
         var delta = evt.wheelDelta ? evt.wheelDelta / 40 : evt.detail ? -evt.detail : 0;
 
 
@@ -66,14 +66,14 @@
         }
         return false;
     };
-    this.onClick = function(e) {
+    this.onClick = function (e) {
         var cell = _H.getCursorPosition(e);
         cell.x -= 10;
         cell.y -= 10;
         var goodArea = null;
         var are;
         var ij;
-        var cl = JSLINQ(this.UIAreas).OrderBy(function(f) {
+        var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
             return -f.depth;
         });
         for (var ij = 0; ij < cl.items.length; ij++) {
@@ -99,7 +99,7 @@
         return false;
     };
 
-    this.onMouseMove = function(e) {
+    this.onMouseMove = function (e) {
         if (this.dragger.isDragging()) {
             this.dragger.mouseMove(e);
             return false;
@@ -108,7 +108,7 @@
         cell.x -= 10;
         cell.y -= 10;
 
-        var cl = JSLINQ(this.UIAreas).OrderBy(function(f) {
+        var cl = JSLINQ(this.UIAreas).OrderBy(function (f) {
             return -f.depth;
         });
 
@@ -127,7 +127,7 @@
         return false;
 
     };
-    this.onMouseUp = function(e) {
+    this.onMouseUp = function (e) {
         var cell = _H.getCursorPosition(e, true);
         cell.x -= 10;
         cell.y -= 10;
@@ -141,7 +141,7 @@
     };
 
 
-    var updateTitle = function(str) {
+    var updateTitle = function (str) {
         document.title = str + " | Our Sonic";
         curLevelName = str;
     };
@@ -151,10 +151,10 @@
     objectArea.visible = false;
     this.UIAreas.push(objectArea);
     objectArea.addControl(new TextArea(30, 25, "Object Framework", textFont, "blue"));
-    objectArea.addControl(new Button(40, 190, 60, 22, "Framework", buttonFont, "rgb(50,150,50)", function() {
+    objectArea.addControl(new Button(40, 190, 60, 22, "Framework", buttonFont, "rgb(50,150,50)", function () {
     }
     ));
-    objectArea.addControl(new Button(40, 190, 60, 22, "Add Asset", buttonFont, "rgb(50,150,50)", function() {
+    objectArea.addControl(new Button(40, 190, 60, 22, "Add Asset", buttonFont, "rgb(50,150,50)", function () {
     }
     ));
 
@@ -163,29 +163,40 @@
 
     var cts;
     objectArea.addControl(cts = new ScrollBox(30, 70, 25, 11, 250, "rgb(50,60,127)"));
-    cts.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function() {
+    cts.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
 
     }));
 
 
-    var assetArea = this.assetArea = new UiArea(650, 30, 930, 800, this, true);
+    var assetArea = this.assetArea = new UiArea(650, 30, 960, 800, this, true);
     assetArea.visible = true;
     this.UIAreas.push(assetArea);
     assetArea.addControl(new TextArea(30, 25, "Frames", textFont, "black"));
     var name = "a";
     assetArea.addControl(cts = new ScrollBox(30, 70, 25, 11, 250, "rgb(50,60,127)"));
     cts.visible = false;
-    cts.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function() {
+    cts.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
 
     }));
 
-    assetArea.addControl(cts = new ColorEditingArea(30, 45,{x:11,y:11}));
+    assetArea.addControl(cts = new ColorEditingArea(30, 45, { x: 11, y: 11 }));
     assetArea.addControl(new Button(770, 70, 150, 22, "Show Outline", buttonFont, "rgb(50,150,50)", function () {
         cts.editor.showOutline = !cts.editor.showOutline;
     }
     ));
 
-    
+    assetArea.addControl(new TextArea(750, 150, function () { return "Line Width:" + cts.editor.lineWidth; }, textFont, "Black"));
+
+    assetArea.addControl(new Button(900, 120, 14, 20, "^", buttonFont, "rgb(50,150,50)", function () {
+        cts.editor.lineWidth = Math.max(cts.editor.lineWidth + 1, 1);
+    }
+    ));
+    assetArea.addControl(new Button(900, 145, 14, 20, "v", buttonFont, "rgb(50,150,50)", function () {
+        cts.editor.lineWidth = Math.min(cts.editor.lineWidth - 1, 10);
+    }
+    ));
+
+
 
 
 

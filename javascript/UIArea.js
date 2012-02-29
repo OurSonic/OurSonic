@@ -149,8 +149,8 @@ function UiArea(x, y, w, h, manager, closable) {
         } else {
             cv = canv;
             var lingrad = cv.createLinearGradient(0, 0, 0, this.height);
-            lingrad.addColorStop(0, 'rgba(220,220,220,0.7)');
-            lingrad.addColorStop(1, 'rgba(142,142,142,0.7)');
+            lingrad.addColorStop(0, 'rgba(220,220,220,0.85)');
+            lingrad.addColorStop(1, 'rgba(142,142,142,0.85)');
 
 
             cv.fillStyle = lingrad;
