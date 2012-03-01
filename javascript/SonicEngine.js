@@ -44,10 +44,10 @@ function SonicEngine(canvasName) {
 
     $(document).keypress(doKeyDown);
     $(document).keydown(function (e) {
-        if (e.ctrlKey ||  e.keyCode == 8 || e.keyCode == 46 ||e.keyCode == 37 || e.keyCode == 39) {
-            e.preventDefault();
-            doKeyDown(e);
-        } 
+          if (e.ctrlKey || e.keyCode == 8 || e.keyCode == 46 || e.keyCode == 40 || e.keyCode == 38 || e.keyCode == 37 || e.keyCode == 39) {
+              e.preventDefault();
+              doKeyDown(e);
+          } 
     });
     $(document).keyup(doKeyUp);
 
@@ -99,12 +99,12 @@ function SonicEngine(canvasName) {
 
 
         switch (evt.keyCode) {
-            case 79:
+            case 111:
 
                 if (sonicManager.sonicToon)
                     sonicManager.inHaltMode = !sonicManager.inHaltMode;
                 break;
-            case 80:
+            case 112:
                 if (sonicManager.sonicToon)
                     if (sonicManager.inHaltMode) {
                         sonicManager.waitingForTickContinue = false;
@@ -116,14 +116,14 @@ function SonicEngine(canvasName) {
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.hit();
                 break;
-            case 67:
+            case 99:
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.debug();
                 break;
-            case 69:
+            case 101:
                 sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
                 break;
-            case 70:
+            case 102:
                 sonicManager.showHeightMap = !sonicManager.showHeightMap;
                 break;
             case 38:  /* Up arrow was pressed */

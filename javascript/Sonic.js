@@ -58,13 +58,13 @@
     
     this.updateMode = function () {
      
-        if (this.angle <= 0x22 || this.angle >= 0xC0) {
+        if (this.angle <= 0x22 || this.angle >= 0xDE) {
             this.mode = RotationMode.Floor;
         } else if (this.angle > 0x22 && this.angle < 0x56) {
             this.mode = RotationMode.LeftWall;
         } else if (this.angle >= 0x56 && this.angle < 0xA1) {
             this.mode = RotationMode.Ceiling;
-        } else if (this.angle > 0xA1 && this.angle < 0xC0) {
+        } else if (this.angle > 0xA1 && this.angle < 0xDE) {
             this.mode = RotationMode.RightWall;
         } 
         this.myRec = { x: this.x - 5, width: 5 * 2, y: this.y - 20, height: 20 * 2 };
@@ -1292,7 +1292,8 @@
 function Watcher() {
     var lastTick = 0;
     this.mult = 1;
-    this.tick = function () { 
+    this.tick = function () {
+        return;
         if (sonicManager.inHaltMode) {
             this.mult = 1;
             return;

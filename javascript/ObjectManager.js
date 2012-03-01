@@ -78,14 +78,14 @@ function LevelObjectAssetFrame(name) {
                     canvas.strokeRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
 
                 if (showCollideMap) {
-                    if (this.hurtSonicMap[ex][ey]) {
+                    if (this.collisionMap[ex][ey]) {
                         canvas.fillStyle = "rgba(30,34,255,0.6)";
                         canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
                     }
                 }
 
                 if (showHurtMap) {
-                    if (this.collisionMap[ex][ey]) {
+                    if (this.hurtSonicMap[ex][ey]) {
                         canvas.fillStyle = "rgba(211,12,55,0.6)";
                         canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
                     }
@@ -118,6 +118,8 @@ function LevelObjectPiece(name) {
     this.collided = false;
     this.xflip = false;
     this.yflip = false;
+    this.x = 0;
+    this.y = 0;
     this.name = name ? name : "";
 }
 function LevelObjectPath(name) {
