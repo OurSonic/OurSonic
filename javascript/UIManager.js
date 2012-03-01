@@ -196,8 +196,9 @@
     objectFrameworkArea.addControl(new TextArea(320, 80 - 20, "Key: ", textFont, "black"));
     objectFrameworkArea.addControl(objectFrameworkArea.key = new TextBox(370, 60 - 20, 459, 25, "", buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.key = this.text; }));
     objectFrameworkArea.onMove = function () {
-        codeMirror.style.left = (this.x + 320+20)+"px";
-        codeMirror.style.top = (this.y + 150+20)+"px";
+        if (!codeMirror) return;
+        codeMirror.style.left = (this.x + 320 + 20) + "px";
+        codeMirror.style.top = (this.y + 150 + 20) + "px";
     };
     
 
@@ -309,19 +310,33 @@
                 frame.height = Math.max(frame.height - 1, 1);
             }));
 
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(230 - 55, 35, 100, 25, "Color Map", buttonFont, "rgb(50,150,50)", function () {
+            var bt;
+            objectFrameworkArea.mainPanel.frameArea.addControl(bt = new Button(230 - 55, 35, 150, 25, "Collide Map", buttonFont, "rgb(50,150,50)", function () {
+                ce.showCollideMap = this.toggled;
             }));
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(335 - 55, 35, 100, 25, "Collide Map", buttonFont, "rgb(50,150,50)", function () {
+            bt.toggle = true;
+            objectFrameworkArea.mainPanel.frameArea.addControl(bt = new Button(390 - 55, 35, 150, 25, "Hurt Map", buttonFont, "rgb(50,150,50)", function () {
+                ce.showHurtMap = this.toggled;
             }));
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(440 - 55, 35, 100, 25, "Hurt Map", buttonFont, "rgb(50,150,50)", function () {
-            }));
+            bt.toggle = true;
 
-            objectFrameworkArea.mainPanel.frameArea.addControl(new PaletteArea(230 - 55, 300, { x: 39, y: 11 }, frame.palette, false));
-            objectFrameworkArea.mainPanel.frameArea.addControl(ce = new ColorEditingArea(230 - 55, 70, { x: (310 / frame.width), y: (225 / frame.height) }, frame));
+            objectFrameworkArea.mainPanel.frameArea.addControl(ce = new ColorEditingArea(230 - 55, 65, { x: (310 / frame.width), y: (225 / frame.height) }));
+            ce.init(frame);
             ce.editor.showOutline = false;
             ce.editable = false;
-            
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(230 - 55, 305+11*2, 310, 25, "Edit Map", buttonFont, "rgb(50,150,50)", function () {
+            ce.click = function (e) {
+                frame.offsetX = e.x;
+                frame.offsetY = e.y;
+            };
+
+            var pa;
+            objectFrameworkArea.mainPanel.frameArea.addControl(pa = new PaletteArea(230 - 55, 300, { x: 39, y: 11 }, false));
+            pa.init(frame.palette,true);
+
+            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(230 - 55, 305 + 11 * 2, 310, 25, "Edit Map", buttonFont, "rgb(50,150,50)", function () {
+                colorEditorArea.init(frame);
+                colorEditorArea.visible = true;
+                colorEditorArea.depth = objectFrameworkArea.depth+1;
             }));
 
         };
@@ -367,34 +382,34 @@
 
 
 
-    var assetArea = this.assetArea = new UiArea(650, 30, 960, 800, this, true);
-    assetArea.visible = false;
-    this.UIAreas.push(assetArea);
-    assetArea.addControl(new TextArea(30, 25, "Frames", textFont, "black"));
-    var name = "a";
-    assetArea.addControl(cts = new ScrollBox(30, 70, 25, 11, 250, "rgb(50,60,127)"));
-    cts.visible = false;
-    cts.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
+    var colorEditorArea = this.colorEditorArea = new UiArea(650, 30, 960, 800, this, true);
+    colorEditorArea.visible = false;
+    this.UIAreas.push(colorEditorArea);
 
-    }));
 
-    assetArea.addControl(cts = new ColorEditingArea(30, 45, { x: 11, y: 11 }));
-    assetArea.addControl(new Button(770, 70, 150, 22, "Show Outline", buttonFont, "rgb(50,150,50)", function () {
-        cts.editor.showOutline = !cts.editor.showOutline;
+    colorEditorArea.addControl(colorEditorArea.colorEditor = new ColorEditingArea(30, 45, { x: 11, y: 11 }));
+    colorEditorArea.addControl(new Button(770, 70, 150, 22, "Show Outline", buttonFont, "rgb(50,150,50)", function () {
+        colorEditorArea.colorEditor.editor.showOutline = !colorEditorArea.colorEditor.editor.showOutline;
     }
     ));
 
-    assetArea.addControl(new TextArea(750, 150, function () { return "Line Width:" + cts.editor.lineWidth; }, textFont, "Black"));
+    colorEditorArea.addControl(new TextArea(750, 150, function () { return "Line Width:" + colorEditorArea.colorEditor.editor.lineWidth; }, textFont, "Black"));
 
-    assetArea.addControl(new Button(900, 120, 14, 20, "^", buttonFont, "rgb(50,150,50)", function () {
-        cts.editor.lineWidth = Math.max(cts.editor.lineWidth + 1, 1);
+    colorEditorArea.addControl(new Button(900, 120, 14, 20, "^", buttonFont, "rgb(50,150,50)", function () {
+        colorEditorArea.colorEditor.editor.lineWidth = Math.max(colorEditorArea.colorEditor.editor.lineWidth + 1, 1);
     }
     ));
-    assetArea.addControl(new Button(900, 145, 14, 20, "v", buttonFont, "rgb(50,150,50)", function () {
-        cts.editor.lineWidth = Math.min(cts.editor.lineWidth - 1, 10);
+    colorEditorArea.addControl(new Button(900, 145, 14, 20, "v", buttonFont, "rgb(50,150,50)", function () {
+        colorEditorArea.colorEditor.editor.lineWidth = Math.min(colorEditorArea.colorEditor.editor.lineWidth - 1, 10);
     }
     ));
-
+    colorEditorArea.addControl(colorEditorArea.paletteArea = new PaletteArea(770, 250, { x: 45, y: 45 }, true));
+    colorEditorArea.colorEditor.paletteEditor = colorEditorArea.paletteArea;
+    colorEditorArea.init = function (frame) {
+        colorEditorArea.colorEditor.scale = { x: 700 / frame.width, y: 700 / frame.height };
+        colorEditorArea.colorEditor.init(frame);
+        colorEditorArea.paletteArea.init(frame.palette, false);
+    };
 
 
 

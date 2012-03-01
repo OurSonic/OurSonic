@@ -9,12 +9,12 @@ function ObjectManager(sonicManager) {
 
     this.init = function () {
 
-    }; 
-} 
+    };
+}
 
 function LevelObject(key) {
     this.assets = [];
-    this.key = key?key:"";
+    this.key = key ? key : "";
     this.pieces = [];
     this.paths = [];
     this.projectiles = [];
@@ -34,7 +34,7 @@ function LevelObject(key) {
 }
 function LevelObjectAsset(name) {
     this.frames = [];
-    this.name = name?name:"";
+    this.name = name ? name : "";
 }
 function LevelObjectAssetFrame(name) {
     this.offsetX = 0;
@@ -43,11 +43,22 @@ function LevelObjectAssetFrame(name) {
     this.offsetY = 0;
     this.hurtSonicMap = [];
     this.collisionMap = [];
+    for (var i = 0; i < 100; i++) {
+        this.collisionMap[i] = [];
+        this.hurtSonicMap[i] = [];
+        for (var a = 0; a < 100; a++) {
+            this.collisionMap[i][a] = Math.random() * 100 < 50;
+            this.hurtSonicMap[i][a] = Math.random() * 100 < 50;
+        }
+    }
+
+
     this.colorMap = [];
     this.palette = [];
     this.name = name ? name : "";
 
-    this.drawUI = function (canvas, pos, scale, showOutline) {
+
+    this.drawUI = function (canvas, pos, scale, showOutline, showCollideMap, showHurtMap) {
         canvas.strokeStyle = "#000000";
         canvas.lineWidth = 1;
 
@@ -65,8 +76,37 @@ function LevelObjectAssetFrame(name) {
                 canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
                 if (showOutline)
                     canvas.strokeRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
+
+                if (showCollideMap) {
+                    if (this.hurtSonicMap[ex][ey]) {
+                        canvas.fillStyle = "rgba(30,34,255,0.6)";
+                        canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
+                    }
+                }
+
+                if (showHurtMap) {
+                    if (this.collisionMap[ex][ey]) {
+                        canvas.fillStyle = "rgba(211,12,55,0.6)";
+                        canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
+                    }
+
+                }
             }
         }
+        canvas.beginPath();
+        canvas.moveTo(pos.x + this.offsetX * scale.x, pos.y + 0);
+        canvas.lineTo(pos.x + this.offsetX * scale.x, pos.y + this.height * scale.y);
+        canvas.lineWidth = 3;
+        canvas.strokeStyle = "#000000";
+        canvas.stroke();
+
+        canvas.beginPath();
+        canvas.moveTo(pos.x + 0, pos.y + this.offsetY * scale.y);
+        canvas.lineTo(pos.x + this.width*scale.x, pos.y + this.offsetY * scale.y);
+        canvas.lineWidth = 3;
+        canvas.strokeStyle = "#000000";
+        canvas.stroke();
+
     };
     this.draw = function (canvas, pos, scale) {
 
@@ -78,7 +118,7 @@ function LevelObjectPiece(name) {
     this.collided = false;
     this.xflip = false;
     this.yflip = false;
-    this.name = name?name:"";
+    this.name = name ? name : "";
 }
 function LevelObjectPath(name) {
     this.pieces = [];

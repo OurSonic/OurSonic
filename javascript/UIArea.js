@@ -264,6 +264,8 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     this.width = width;
     this.height = height;
     this.text = text;
+    this.toggle = false;
+    this.toggled = false;
     this.font = font;
     this.clicking = false;
     this.click = click;
@@ -281,6 +283,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
+        if (this.toggle) this.toggled = !this.toggled;
     };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
@@ -318,7 +321,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
         }
 
         canv.strokeStyle = this.buttonBorderGrad;
-        canv.fillStyle = this.clicking ? this.button1Grad : this.button2Grad;
+        canv.fillStyle = this.toggle ? (this.toggled ? this.button1Grad : this.button2Grad) : (this.clicking ? this.button1Grad : this.button2Grad);
         canv.lineWidth = 2;
         roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 2, true, true);
         if (canv.font != this.font)
@@ -549,29 +552,45 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
 }
 
 
-function ColorEditingArea(x, y, scale, frame) {
+function ColorEditingArea(x, y, scale) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
-    };
-    this.imageSize = { x: 64, y: 64 };
+    }; 
     this.lastPosition = null;
     this.x = x;
     this.y = y;
+    this.showHurtMap = false;
+    this.showCollideMap = false;
     this.editable = true;
     this.visible = true;
     this.scale = scale;
-    this.width = scale.x * this.imageSize.x;
-    this.height = scale.y * this.imageSize.y;
     this.clicking = false;
-    this.editor = new Editor(frame);
+    this.paletteEditor = null;
     this.parent = null;
+    this.click = undefined;
+    this.init = function (frame) {
+        frame.width
+        this.frame = frame;
+        this.width = this.scale.x * frame.width;
+        this.height = this.scale.y * frame.height;
+        this.editor = new Editor(frame);
+    };
     this.onClick = function (e) {
         if (!this.visible) return;
-        if (!this.editable) return;
+        if (!this.editor) return;
         this.clicking = true;
         this.clickHandled = false;
-        this.lastPosition = { x: e.x, y: e.y };
-        this.editor.drawPixel({ x: e.x, y: e.y }, this.scale);
+        var pos = { x: _H.floor(e.x / this.scale.x), y: _H.floor(e.y / this.scale.y) };
+        if (!this.editable) {
+            if (this.click) {
+                this.click(pos);
+            }
+        } else {
+            this.lastPosition = pos;
+            if (this.paletteEditor)
+                this.editor.currentColor = this.paletteEditor.selectedIndex;
+            this.editor.drawPixel(pos);
+        }
 
     };
     this.onKeyDown = function (e) {
@@ -579,7 +598,6 @@ function ColorEditingArea(x, y, scale, frame) {
     };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
-        if (!this.editable) return;
 
         this.lastPosition = null;
         this.clickHandled = false;
@@ -588,12 +606,19 @@ function ColorEditingArea(x, y, scale, frame) {
     this.clickHandled = false;
     this.onMouseOver = function (e) {
         if (!this.editor) return;
-        if (!this.editable) return;
+        var pos = { x: _H.floor(e.x / this.scale.x), y: _H.floor(e.y / this.scale.y) };
+
 
         if (this.clicking) {
-            this.clickHandled = true;
-            this.editor.drawLine({ x: e.x, y: e.y }, this.lastPosition, this.scale);
-            this.lastPosition = { x: e.x, y: e.y };
+            if (!this.editable) {
+                if (this.click) {
+                    this.click(pos);
+                }
+            } else {
+                this.clickHandled = true;
+                this.editor.drawLine(pos, this.lastPosition);
+                this.lastPosition = pos;
+            }
         }
     };
     this.draw = function (canv) {
@@ -601,7 +626,7 @@ function ColorEditingArea(x, y, scale, frame) {
         if (!this.editor) return;
         var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
 
-        this.editor.draw(canv, pos, this.scale);
+        this.editor.draw(canv, pos, this.scale,this.showCollideMap,this.showHurtMap);
 
     };
     return this;
@@ -733,7 +758,7 @@ function Panel(x, y, w, h, area) {
     return this;
 }
 
-function PaletteArea(x, y, scale, palette, showCurrent) {
+function PaletteArea(x, y, scale,  showCurrent) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -742,17 +767,38 @@ function PaletteArea(x, y, scale, palette, showCurrent) {
     this.y = y;
     this.visible = true;
     this.scale = scale;
-    this.width = scale.x * 2;
-    this.height = scale.y * palette.length / 2;
     this.clicking = false;
-    this.palette = palette;
     this.selectedIndex = 0;
     this.parent = null;
-    var wide = true;
+    this.wide = false;
+    this.init = function (palette, wide) {
+        this.wide = wide;
+        if (!wide) {
+            this.width = this.scale.x * 2;
+            this.height = this.scale.y * palette.length / 2;
+        }
+        else {
+            this.width = this.scale.x * palette.length / 2;
+            this.height = this.scale.y * 2;
+        }
+        this.palette = palette;
+
+    }
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
         this.clickHandled = false;
+
+        var _x = _H.floor(e.x / scale.x);
+        var _y = _H.floor(e.y / scale.y);
+
+        if (this.wide) {
+            this.selectedIndex = _y * palette.length / 2 + _x;
+        }
+        else {
+            this.selectedIndex = _y * 2 + _x;
+        }
+
     };
     this.onKeyDown = function (e) {
 
@@ -760,14 +806,23 @@ function PaletteArea(x, y, scale, palette, showCurrent) {
     this.onMouseUp = function (e) {
         if (!this.visible) return;
 
-        if (this.tilePiece && this.clicking && !this.clickHandled) {
-            this.tilePiece.click(_H.floor(e.x / scale.x / 2), _H.floor(e.y / scale.y), this.state);
-        }
         this.clickHandled = false;
         this.clicking = false;
     };
     this.clickHandled = false;
     this.onMouseOver = function (e) {
+        if(this.clicking) {
+
+            var _x = _H.floor(e.x / scale.x);
+            var _y = _H.floor(e.y / scale.y);
+
+            if (this.wide) {
+                this.selectedIndex = _y * palette.length / 2 + _x;
+            }
+            else {
+                this.selectedIndex = _y * 2 + _x;
+            }
+        }
     };
     this.draw = function (canv) {
         if (!this.visible) return;
@@ -778,19 +833,19 @@ function PaletteArea(x, y, scale, palette, showCurrent) {
         canv.lineWidth = 1;
         var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
 
-        if (wide) {
+        if (this.wide) {
             var f = _H.floor(this.palette.length / 2);
             for (var h = 0; h < 2; h++) {
                 for (var w = 0; w < f; w++) {
                     canv.fillStyle = this.palette[w + h * f];
-                    canv.fillRect(pos.x + w * scale.x, pos.y + h * scale.y, scale.x, scale.y);
-                    canv.strokeRect(pos.x + w * scale.x, pos.y + h * scale.y, scale.x, scale.y);
+                    canv.fillRect(pos.x + w * this.scale.x, pos.y + h * this.scale.y, this.scale.x, this.scale.y);
+                    canv.strokeRect(pos.x + w * this.scale.x, pos.y + h * this.scale.y, this.scale.x, this.scale.y);
                 }
             }
             if (this.showCurrent) {
                 canv.fillStyle = this.palette[this.selectedIndex];
-                canv.fillRect(pos.x, pos.y + f * scale.y, scale.x * 2, scale.y * 2);
-                canv.strokeRect(pos.x, pos.y + f * scale.y, scale.x * 2, scale.y * 2);
+                canv.fillRect(pos.x, pos.y + f * this.scale.y, this.scale.x * 2, this.scale.y * 2);
+                canv.strokeRect(pos.x, pos.y + f * this.scale.y, this.scale.x * 2, this.scale.y * 2);
             }
         } else {
 
@@ -798,14 +853,14 @@ function PaletteArea(x, y, scale, palette, showCurrent) {
             for (var h = 0; h < f; h++) {
                 for (var w = 0; w < 2; w++) {
                     canv.fillStyle = this.palette[w + h * 2];
-                    canv.fillRect(pos.x + w * scale.x, pos.y + h * scale.y, scale.x, scale.y);
-                    canv.strokeRect(pos.x + w * scale.x, pos.y + h * scale.y, scale.x, scale.y);
+                    canv.fillRect(pos.x + w * this.scale.x, pos.y + h * this.scale.y, this.scale.x, this.scale.y);
+                    canv.strokeRect(pos.x + w * this.scale.x, pos.y + h * this.scale.y, this.scale.x, this.scale.y);
                 }
             }
             if (this.showCurrent) {
                 canv.fillStyle = this.palette[this.selectedIndex];
-                canv.fillRect(pos.x, pos.y + f * scale.y, scale.x * 2, scale.y * 2);
-                canv.strokeRect(pos.x, pos.y + f * scale.y, scale.x * 2, scale.y * 2);
+                canv.fillRect(pos.x, pos.y + f * this.scale.y, this.scale.x * 2, this.scale.y * 2);
+                canv.strokeRect(pos.x, pos.y + f * this.scale.y, this.scale.x * 2, this.scale.y * 2);
             }
         }
 

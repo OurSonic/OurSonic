@@ -111,6 +111,7 @@
         o.lowerNibble = function () {
             return this.SubType & 0xf;
         };
+        return null;
         switch (o.ID) {
             case 1:
                 //monitor
@@ -382,8 +383,8 @@
         var funcNameRegex = /function (.{1,})\(/;
         var results = (funcNameRegex).exec((obj).constructor.toString());
         return (results && results.length > 1) ? results[1] : "";
-    } 
- };
+    }
+};
 
 
 
