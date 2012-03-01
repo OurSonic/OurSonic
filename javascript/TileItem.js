@@ -1,4 +1,4 @@
 ﻿function TileItem() {
-    TileItem.prototype.draw = function () {
+    this.draw = function () {
     };
 }

@@ -32,9 +32,8 @@ function SonicManager(mainCanvas, resize) {
             }
         }
         return undefined;
-    };
-
-    var lamesauce = new TileChunk() + new TilePiece() + new Tile() + new HeightMask();
+    }; 
+    
     this.SonicLevel.ChunkMap = [[]];
     this.clickState = ClickState.Dragging;
 
@@ -99,8 +98,8 @@ function SonicManager(mainCanvas, resize) {
     this.inHaltMode = false;
     this.waitingForTickContinue = false;
     this.waitingForDrawContinue = false;
-
-    this.tick = function (that) {
+    var that = this;//internetexplorer doesnt take a this param in setinterval
+    this.tick = function () {
         if (that.loading) return;
         if (that.sonicToon) {
 

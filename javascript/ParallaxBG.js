@@ -4,12 +4,12 @@
 
 
 
-    ParallaxBG.prototype.click = function (x, y) {
+    this.click = function (x, y) {
         this.slots[y].rotateSpeed = x / this.width * 2;
     };
 
 
-    ParallaxBG.prototype.onBar = function (x, y) {
+    this.onBar = function (x, y) {
         var w = 3 * scl.x;
         var cur = this.slots[y].rotateSpeed;
         if (x > ((this.width * cur / 2) - w) && x < ((this.width * cur / 2) + w)) {
@@ -31,7 +31,7 @@
         return null;
     };
 
-    ParallaxBG.prototype.cache = function (scale) {
+    this.cache = function (scale) {
         var w = (this.width * scale.x);
         var h = sonicManager.windowLocation.height * scale.y;
         var sprites = [];
@@ -55,7 +55,7 @@
         this.sprites = sprites;
     };
 
-    ParallaxBG.prototype.init = function (scale) {
+    this.init = function (scale) {
 
         var w = this.width;
         var h = this.height;
@@ -86,7 +86,7 @@
     };
 
 
-    ParallaxBG.prototype.drawUI = function (canvas, pos, scale) {
+    this.drawUI = function (canvas, pos, scale) {
         if (this.sprite && this.sprite.loaded)
 
             canvas.drawImage(this.sprite, pos.x, pos.y);
@@ -124,7 +124,7 @@
         }
 
     };
-    ParallaxBG.prototype.draw = function (canvas, pos, scale, offsetX) {
+    this.draw = function (canvas, pos, scale, offsetX) {
         var w = (this.width * scale.x);
         var h = sonicManager.windowLocation.height * scale.y;
         for (var ind in this.sprites) {
@@ -180,13 +180,13 @@ function ParallaxBGSlot() {
     
     this.sprite = null;
     this.rotateSpeed = 1;
-    ParallaxBGSlot.prototype.draw = function (canvas, pos, scale) {
+    this.draw = function (canvas, pos, scale) {
         if (this.sprite && this.sprite.loaded)
             canvas.drawImage(this.sprite, pos.x, pos.y, this.sprite.width, this.sprite.height);
 
     };
 
-    ParallaxBGSlot.prototype.drawUI = function (canvas, pos, scale) {
+    this.drawUI = function (canvas, pos, scale) {
         if (this.sprite && this.sprite.loaded)
             canvas.drawImage(this.sprite, pos.x, pos.y, this.sprite.width, this.sprite.height);
 
@@ -198,7 +198,7 @@ function ParallaxBGSlot() {
         }*/
 
     };
-    ParallaxBGSlot.prototype.load = function (scale) {/*
+    this.load = function (scale) {/*
         var pos = { x: 0, y: 0 };
         var v = _H.defaultCanvas(scale.x * this.colors.length, scale.y);
         var canvas = v.context;

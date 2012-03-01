@@ -6,7 +6,7 @@ function LevelObject(o) {
     this.Width = 30;
     this.Height = 30;
 
-    LevelObject.prototype.getRect = function () {
+    this.getRect = function () {
 
         var x = this.ObjectData.X - monitor.width / 2;
         var y = this.ObjectData.Y - monitor.height / 2;
@@ -15,10 +15,10 @@ function LevelObject(o) {
 
         return { x: x, y: y, width: w, height: h };
     };
-    LevelObject.prototype.collide = function () {
+    this.collide = function () {
 
     };
-    LevelObject.prototype.draw = function (canvas, pos, scale) {
+    this.draw = function (canvas, pos, scale) {
         if (this.sprites[0] && this.sprites[0].loaded) {
             canvas.drawImage(this.sprites[0], (pos.x - this.sprites[0].width / 2) * scale.x, (pos.y - this.sprites[0].height / 2) * scale.y, this.sprites[0].width * scale.x, this.sprites[0].height * scale.y);
         } else {
@@ -37,12 +37,12 @@ function CollisionSwitcherObject(o) {
     this.Width = 10;
     this.Height = 70;
 
-    CollisionSwitcherObject.prototype.getRect = function () {
+    this.getRect = function () {
         var x = this.ObjectData.X - this.Width / 2;
         var y = this.ObjectData.Y - this.Height / 2;
         return { x: x, y: y, width: this.Width, height: this.Height };
     };
-    CollisionSwitcherObject.prototype.collide = function () {
+    this.collide = function () {
         if (sonicManager.sonicToon.xsp > 0) {
             sonicManager.SonicLevel.curHeightMap = true;
         } else {
@@ -51,7 +51,7 @@ function CollisionSwitcherObject(o) {
     };
 
 
-    CollisionSwitcherObject.prototype.draw = function (canvas, pos, scale) {
+    this.draw = function (canvas, pos, scale) {
         if (sonicManager.showHeightMap) {
               canvas.fillStyle = "#FFFFFF";
               canvas.fillRect((this.ObjectData.X - 5 - sonicManager.windowLocation.x) * scale.x, (this.ObjectData.Y - 50 - sonicManager.windowLocation.y) * scale.y, 10 * scale.x, 100 * scale.y);
@@ -93,12 +93,12 @@ function MonitorObject(o) {
 
     }
 
-    MonitorObject.prototype.getRect = function () {
+    this.getRect = function () {
         var x = this.ObjectData.X - monitor.width / 2;
         var y = this.ObjectData.Y - monitor.height / 2;
         return { x: x, y: y, width: monitor.width, height: monitor.height };
     };
-    MonitorObject.prototype.collide = function () {
+    this.collide = function () {
         if (sonicManager.sonicToon.ysp == 0) {
             sonicManager.sonicToon.gsp = 0;
             sonicManager.sonicToon.xsp = 0;
@@ -142,7 +142,7 @@ function MonitorObject(o) {
     };
 
 
-    MonitorObject.prototype.draw = function (canvas, pos, scale) {
+    this.draw = function (canvas, pos, scale) {
         if (this.sprites[0] && this.sprites[0].loaded) {
 
             if (this.ObjectData.SubType == 10) {
@@ -208,13 +208,13 @@ function SpringObject(o) {
 
     var md;
     this.sprites.push(md=_H.loadSprite(mStart + "closed.png"));
-    
-    SpringObject.prototype.getRect = function () {
+
+    this.getRect = function () {
         var x = this.ObjectData.X - md.width / 2;
         var y = this.ObjectData.Y - md.height / 2;
         return { x: x, y: y, width: md.width, height: md.height };
     };
-    SpringObject.prototype.collide = function () {
+    this.collide = function () {
         var spd;
         switch (this.type) {
             case SpringType.Red:
@@ -243,7 +243,7 @@ function SpringObject(o) {
     };
 
 
-    SpringObject.prototype.draw = function (canvas, pos, scale) {
+    this.draw = function (canvas, pos, scale) {
         if (this.sprites[0] && this.sprites[0].loaded) {
             canvas.drawImage(this.sprites[0], (pos.x - this.sprites[0].width / 2) * scale.x, (pos.y) * scale.y, this.sprites[0].width * scale.x, this.sprites[0].height * scale.y);
         }

@@ -4,7 +4,7 @@
     this.items = items ? items : [];
 
 
-    HeightMask.prototype.setItem = function (x, y, rotationMode) {
+    this.setItem = function (x, y, rotationMode) {
 
         var jx = 0, jy = 0;
         switch (rotationMode) {
@@ -32,7 +32,7 @@
     };
 
 
-    HeightMask.prototype.drawUI = function (canvas, pos, scale, state, xflip, yflip, solid, angle) {
+    this.drawUI = function (canvas, pos, scale, state, xflip, yflip, solid, angle) {
 
         if (solid > 0) {
             for (var x = 0; x < 16; x++) {
@@ -105,7 +105,7 @@
         }
     };
 
-    HeightMask.prototype.draw = function (canvas, pos, scale, state, xflip, yflip, solid, angle) {
+    this.draw = function (canvas, pos, scale, state, xflip, yflip, solid, angle) {
         _H.save(canvas);
         var oPos = { x: pos.x, y: pos.y };
         if (xflip) {

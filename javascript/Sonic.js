@@ -1315,8 +1315,7 @@
 function Watcher() {
     var lastTick = 0;
     this.mult = 1;
-    this.tick = function () {
-
+    this.tick = function () { 
         if (sonicManager.inHaltMode) {
             this.mult = 1;
             return;
@@ -1333,6 +1332,7 @@ function Watcher() {
         this.mult = offset / 16.6;
     };
     this.multiply = function (val) {
-        return 1 * val;
+        return val;
+        return this.mult*val;
     };
 }

@@ -14,8 +14,7 @@
             sonicManager.background.cache(sonicManager.scale);
         sonicManager.windowLocation = _H.defaultWindowLocation(0, mainCanvas, scale);
         sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
-        sonicManager.sonicToon.obtainedRing = [];
-
+        sonicManager.sonicToon.obtainedRing = []; 
     }
 
     var textFont = this.textFont = "18pt Calibri ";
@@ -169,7 +168,7 @@
 
 
     var assetArea = this.assetArea = new UiArea(650, 30, 960, 800, this, true);
-    assetArea.visible = true;
+    assetArea.visible = false;
     this.UIAreas.push(assetArea);
     assetArea.addControl(new TextArea(30, 25, "Frames", textFont, "black"));
     var name = "a";

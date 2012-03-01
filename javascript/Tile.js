@@ -2,13 +2,13 @@
     this.colors = colors;
     ;
     this.sprites = [];
-    Tile.prototype.changeColor = function (x, y, color) {
+    this.changeColor = function (x, y, color) {
         this.colors[x][y] = color;
         this.sprites = [];
     };
 
 
-    Tile.prototype.checkGood = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
+    this.checkGood = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
 
         if (this.index[0] != 'A') {
             for (var i = 0; i < sonicManager.SonicLevel.Animations.length; i++) {
@@ -35,7 +35,7 @@
         }
         return false;
     };
-    Tile.prototype.drawUI = function (canvas, pos, scale, xflip, yflip, palette) {
+    this.drawUI = function(canvas, pos, scale, xflip, yflip, palette) {
 
 
         for (var i = 0; i < this.colors.length; i++) {
@@ -47,7 +47,7 @@
 
                 var m = sonicManager.SonicLevel.Palette[palette][gj];
                 if (canvas.fillStyle != "#" + m)
-                    canvas.fillStyle = "#" + m;  
+                    canvas.fillStyle = "#" + m;
 
                 if (xflip) {
                     if (yflip) {
@@ -75,8 +75,8 @@
         }*/
 
 
-    }
-    Tile.prototype.draw = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
+    };
+    this.draw = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
         if (this.checkGood(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame)) {
             return;
         }

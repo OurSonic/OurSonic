@@ -5,6 +5,9 @@
 			offsetY
 			hurt sonic map
 			collision map
+			image
+			palette			
+	key
 	info
 		x
 		y
@@ -12,21 +15,22 @@
 		yflip
 		xsp
 		ysp
-		data
 		subdata
 	pieces 
 		asset index
 		frame index
 		collided
+		xflip
+		yflip
 	paths
 		peices[]
 
+	init:function(level,sonic)
 	tick:function(level,sonic)
 	onHurtSonic:function(level,sonic)
 	onCollide:function(level,sonic,sensor)
 		sonic.isball
 		sonic.istouching && sonic.isspindash
-	 
 
 projectile
 	x
@@ -37,8 +41,13 @@ projectile
 		frames[]
 			hurt sonic map
 			collision map
-	onCollide:function(level,sonic)
+	init:function(level,sonic)
 	tick:function(level,sonic)
+	onHurtSonic:function(level,sonic)
+	onCollide:function(level,sonic,sensor)
+		sonic.isball
+		sonic.istouching && sonic.isspindash
+	 
 
 events
 	tick:function(level,sonic,state)  ;only when triggered

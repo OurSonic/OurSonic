@@ -1,7 +1,7 @@
 function TilePiece(heightMask, tiles) {
     this.tiles = tiles;
 
-    TilePiece.prototype.click = function (x, y, state) {
+    this.click = function (x, y, state) {
 
 
         //sonicManager.SonicLevel.Tiles[this.tiles[_H.floor(x / 8) + _H.floor(y / 8) * 2]].changeColor(x % 8, y % 8, new Color(0, 0, 0));
@@ -9,10 +9,10 @@ function TilePiece(heightMask, tiles) {
 
 
     };
-    TilePiece.prototype.mouseOver = function (x, y) {
+    this.mouseOver = function (x, y) {
         //sonicManager.SonicLevel.Tiles[this.tiles[_H.floor(x / 8) + _H.floor(y / 8) * 2]].tempColor(x % 8, y % 8, new Color(122, 5, 122));
     };
-    TilePiece.prototype.onlyBackground = function () {
+    this.onlyBackground = function () {
         for (var i = 0; i < this.tiles.length; i++) {
             var mj = this.tiles[i];
             if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
@@ -23,7 +23,7 @@ function TilePiece(heightMask, tiles) {
         }
         return true;
     };
-    TilePiece.prototype.drawUI = function (canvas, position, scale, xflip, yflip) {
+    this.drawUI = function(canvas, position, scale, xflip, yflip) {
 
         var drawOrder;
         if (xflip) {
@@ -43,8 +43,8 @@ function TilePiece(heightMask, tiles) {
             var mj = this.tiles[i];
             if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
                 sonicManager.SonicLevel.Tiles[mj.Tile].drawUI(canvas,
-                                { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
-                                _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette);
+                    { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
+                    _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette);
 
 
             }
@@ -54,16 +54,13 @@ function TilePiece(heightMask, tiles) {
         }
 
 
-
-
-
         //canvas.fillStyle = "#FFFFFF";
         //canvas.fillText(sonicManager.SonicLevel.Blocks.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);
 
 
         return true;
-    }
-    TilePiece.prototype.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame) {
+    };
+    this.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame) {
 
         var drawOrder;
         if (xflip) {
@@ -111,7 +108,7 @@ function TilePiece(heightMask, tiles) {
 
         return true;
     };
-    TilePiece.prototype.equals = function (tp) {
+    this.equals = function (tp) {
         for (var i = 0; i < this.tiles.length; i++) {
 
             if (tp[i] != this.tiles[i])

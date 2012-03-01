@@ -2,13 +2,13 @@
     this.tilePieces = tilePieces;
     this.hLayer = [[]];
     this.sprites = [];
-    TileChunk.prototype.getTilePiece = function (x, y) {
+    this.getTilePiece = function (x, y) {
         return this.tilePieces[_H.floor((x / 16))][_H.floor((y / 16))];
     };
-    TileChunk.prototype.getBlock= function (x, y) {
+    this.getBlock = function (x, y) {
         return sonicManager.SonicLevel.Blocks[this.tilePieces[_H.floor((x / 16))][_H.floor((y / 16))].Block];
-    }; 
-    TileChunk.prototype.onlyBackground = function () {
+    };
+    this.onlyBackground = function () {
         for (var i = 0; i < this.tilePieces.length; i++) {
             for (var j = 0; j < this.tilePieces[i].length; j++) {
                 var r = this.tilePieces[i][j];
@@ -24,7 +24,7 @@
     };
     this.lastAnimatedFrame = 0;
     this.lastAnimatedIndex = 0;
-    TileChunk.prototype.animatedTick = function () {
+    this.animatedTick = function() {
         if (this.lastAnimatedFrame == undefined) {
             this.lastAnimatedFrame = 0;
             this.lastAnimatedIndex = 0;
@@ -37,9 +37,9 @@
             this.lastAnimatedFrame = sonicManager.drawTickCount;
             this.lastAnimatedIndex = (this.lastAnimatedIndex + 1) % this.animated.Frames.length;
         }
-    }
+    };
 
-    TileChunk.prototype.draw = function (canvas, position, scale, layer, animationFrame) {
+    this.draw = function (canvas, position, scale, layer, animationFrame) {
 
 
         if (layer == 1 && animationFrame == undefined && this.animated != undefined) {
@@ -50,7 +50,7 @@
 
         var fd;
         if ((fd = sonicManager.SpriteCache.tileChunks[layer + " " + this.index + " " + scale.y + " " + scale.x + " " + ((animationFrame != undefined) ? animationFrame : '-')])) {
-            if (fd == 1) return;
+            if (fd == 1) return false;
             if (fd.loaded) {
                 canvas.drawImage(fd, position.x, position.y);
 
