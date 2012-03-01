@@ -55,41 +55,18 @@
     this.sensorManager.createHorizontalSensor('m1', 4, 0, -12, '#212C2E');
     this.sensorManager.createHorizontalSensor('m2', 4, 0, 12, '#22Ffc1');
     this.watcher = new Watcher();
-
-
-
+    
     this.updateMode = function () {
-
-        //if (this.angle == 0xF0) this.angle = 15;
-        if (this.angle <= 0x22 || this.angle > 0xDE) {
+     
+        if (this.angle <= 0x22 || this.angle >= 0xC0) {
             this.mode = RotationMode.Floor;
         } else if (this.angle > 0x22 && this.angle < 0x56) {
             this.mode = RotationMode.LeftWall;
         } else if (this.angle >= 0x56 && this.angle < 0xA1) {
             this.mode = RotationMode.Ceiling;
-        } else if (this.angle > 0xA1 && this.angle < 0xDE) {
+        } else if (this.angle > 0xA1 && this.angle < 0xC0) {
             this.mode = RotationMode.RightWall;
-        }
-        /* 
-        if (this.angle <= 0xff && this.angle > 0xC8) {
-        this.mode = RotationMode.Floor;
-        } else if (this.angle <= 0xc8 && this.angle > 0x80) {
-        this.mode = RotationMode.RightWall;
-        } else if (this.angle <= 0x80 && this.angle > 0x40) {
-        this.mode = RotationMode.Ceiling;
-        } else if (this.angle <= 0x40 && this.angle > 0x0) {
-        this.mode = RotationMode.LeftWall;
-        } */
-        /*
-        if (this.angle <= 0x20 || this.angle > 0xd6) {
-        this.mode = RotationMode.Floor;
-        } else if (this.angle <= 0xd6 && this.angle > 0xa2) {
-        this.mode = RotationMode.RightWall;
-        } else if (this.angle <= 0xa2 && this.angle > 0x5e) {
-        this.mode = RotationMode.Ceiling;
-        } else if (this.angle <= 0x5e && this.angle > 0x20) {
-        this.mode = RotationMode.LeftWall;
-        }  */
+        } 
         this.myRec = { x: this.x - 5, width: 5 * 2, y: this.y - 20, height: 20 * 2 };
     };
     this.effectPhysics = function () {

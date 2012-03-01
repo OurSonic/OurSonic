@@ -1,36 +1,14 @@
-function Editor(size) {
-    this.colors = [];
-    this.size = size;
-    for (var i = 0; i < size.x; i++) {
-        this.colors[i] = [];
-        for (var j = 0; j < size.y; j++) {
-            this.colors[i][j] = Math.floor(Math.random() * 16777215).toString(16); ;
-        }
-    }
+function Editor(assetFrame) {
+    this.assetFrame = assetFrame;
+
     this.lineWidth = 1;
     this.currentColor = "FFFFFF";
     this.showOutline = true;
     this.draw = function (canvas, pos, scale) {
-        canvas.strokeStyle = "#000000";
-        canvas.lineWidth = 1;
-        for (var x = 0; x < this.size.x; x++) {
-            for (var y = 0; y < this.size.y; y++) {
-
-                //  var negative = _H.negateColor(this.colors[x][y]);
-                if (canvas.fillStyle != "#" + this.colors[x][y])
-                    canvas.fillStyle = "#" + this.colors[x][y];
-
-                //if (canvas.strokeStyle != "#" + negative)
-                //    canvas.strokeStyle = "#" + negative;
-
-                canvas.fillRect(pos.x + x * scale.x, pos.y + y * scale.y, scale.x, scale.y);
-                if (this.showOutline) canvas.strokeRect(pos.x + x * scale.x, pos.y + y * scale.y, scale.x, scale.y);
-
-            }
-        }
+        this.assetFrame.drawUI(canvas, pos, scale, this.showOutline);
     };
     this.drawPixel = function (location, scale) {
-        this.colors[_H.floor(location.x / scale.x)][_H.floor(location.y / scale.y)] = this.currentColor;
+        this.assetFrame.colorMap[_H.floor(location.x / scale.x)][_H.floor(location.y / scale.y)] = this.currentColor;
     };
     this.drawLine = function (location1, location2, scale) {
 
@@ -48,19 +26,16 @@ function Editor(size) {
             sx = -1;
         if (location1.y > location2.y)
             sy = -1;
-        while (true) {
-
+        while (true) { 
             if (this.lineWidth == 1) {
-                this.colors[location1.x][location1.y] = this.currentColor;
+                this.assetFrame.colorMap[location1.x][location1.y] = this.currentColor;
             } else {
-                var k,c;
+                var k, c;
                 for (k = -halfwidth; k < halfwidth; k++) {
                     for (c = -halfwidth; c < halfwidth; c++) {
-                        this.colors[Math.min(Math.max(0, location1.x + k), this.size.x)][Math.min(Math.max(0, location1.y+c), this.size.y)] = this.currentColor;
-
-                    } 
-                }
-            
+                        this.assetFrame.colorMap[Math.min(Math.max(0, location1.x + k), this.assetFrame.width)][Math.min(Math.max(0, location1.y + c), this.assetFrame.height)] = this.currentColor;
+                    }
+                } 
             }
             if (location1.x == location2.x && location1.y == location2.y)
                 break;
@@ -74,15 +49,5 @@ function Editor(size) {
                 location1.y += sy;
             }
         }
-
-
-
-        /*for (var x = Math.min(location1.x, location2.x); x < Math.max(location1.x, location2.x); x++) {
-        for (var y = Math.min(location1.y, location2.y); y < Math.max(location1.y, location2.y); y++) {
-        this.colors[_H.floor(location.x / scale.x)][_H.floor(location.y / scale.y)] = this.currentColor;
-        }
-        }*/
-
-
     };
 }

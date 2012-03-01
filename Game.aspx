@@ -7,8 +7,9 @@
     <title>Our Sonic</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js" type="text/javascript">
     </script>
- 
-
+    <link rel="stylesheet" href="/lib/codemirror.css">
+    <script src="/lib/codemirror.js"></script>
+    <script src="/lib/mode/javascript/javascript.js"></script>
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Help.js?1" type="text/javascript"> 
@@ -19,7 +20,7 @@
     </script>
     <script src="javascript/Tile.js?1" type="text/javascript"> 
     </script>
-    <script src="javascript/LevelObject.js?1" type="text/javascript"> 
+    <script src="javascript/ObjectManager.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Ring.js?1" type="text/javascript"> 
     </script>
@@ -68,6 +69,8 @@
             <asp:ServiceReference Path="SonicLevels.asmx" />
         </Services>
     </asp:ScriptManager>
+    <div id="d_clip_container">
+    </div>
     <canvas id="build" style="margin: 0px; position: absolute; top: 0px; left: 0px;"></canvas>
     </form>
 </body>

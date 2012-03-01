@@ -3,6 +3,8 @@
 function SonicManager(mainCanvas, resize) {
     var scale = this.scale = { x: 2, y: 2 };
     window.sonicManager = this;
+     
+			
     this.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
     this.showHeightMap = false;
     this.goodRing = new Ring(false);
@@ -12,6 +14,7 @@ function SonicManager(mainCanvas, resize) {
     this.background = null;
 
     this.uiManager = new UIManager(this, mainCanvas, this.scale);
+    this.uiManager.objectFrameworkArea.populate(new LevelObject("Somekey"));
 
     this.SonicLevel = {
         Tiles: [],

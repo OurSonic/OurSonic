@@ -60,6 +60,21 @@
     <Content Include="javascript\curCompress.js" />
     <Content Include="javascript\UIManager.js" />
     <Content Include="javascript\SonicManager.js" />
+    <Content Include="lib\codemirror.css" />
+    <Content Include="lib\codemirror.js" />
+    <Content Include="lib\mode\javascript\javascript.js" />
+    <Content Include="lib\util\dialog.css" />
+    <Content Include="lib\util\dialog.js" />
+    <Content Include="lib\util\foldcode.js" />
+    <Content Include="lib\util\formatting.js" />
+    <Content Include="lib\util\javascript-hint.js" />
+    <Content Include="lib\util\match-highlighter.js" />
+    <Content Include="lib\util\overlay.js" />
+    <Content Include="lib\util\runmode.js" />
+    <Content Include="lib\util\search.js" />
+    <Content Include="lib\util\searchcursor.js" />
+    <Content Include="lib\util\simple-hint.css" />
+    <Content Include="lib\util\simple-hint.js" />
     <Content Include="ObjectMapping.txt" />
     <Content Include="SonicLevels.asmx" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
@@ -96,9 +111,7 @@
     <Content Include="javascript\UIArea.js" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="assets\TileChunks\" />
     <Folder Include="bin\" />
-    <Folder Include="libs\" />
     <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <ItemGroup>

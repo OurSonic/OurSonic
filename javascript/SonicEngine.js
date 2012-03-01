@@ -27,25 +27,31 @@ function SonicEngine(canvasName) {
 
     var element = document.getElementById(canvasName);
 
-   element.addEventListener('DOMMouseScroll', handleScroll, false);
-   element.addEventListener('mousewheel', handleScroll, false);
- 
-   element.addEventListener('touchmove', canvasMouseMove);
-   element.addEventListener('touchstart', canvasOnClick);
-   element.addEventListener('touchend', canvasMouseUp); 
-    
-   element.addEventListener('mousedown', canvasOnClick);
-   element.addEventListener('mouseup', canvasMouseUp);
-   element.addEventListener('mousemove', canvasMouseMove);
+    element.addEventListener('DOMMouseScroll', handleScroll, false);
+    element.addEventListener('mousewheel', handleScroll, false);
 
-   element.addEventListener('contextmenu', function (evt) {
+    element.addEventListener('touchmove', canvasMouseMove);
+    element.addEventListener('touchstart', canvasOnClick);
+    element.addEventListener('touchend', canvasMouseUp);
+
+    element.addEventListener('mousedown', canvasOnClick);
+    element.addEventListener('mouseup', canvasMouseUp);
+    element.addEventListener('mousemove', canvasMouseMove);
+
+    element.addEventListener('contextmenu', function (evt) {
         evt.preventDefault();
     }, false);
 
-    $(document).keydown(doKeyDown);
+    $(document).keypress(doKeyDown);
+    $(document).keydown(function (e) {
+        if (e.ctrlKey ||  e.keyCode == 8 || e.keyCode == 46 ||e.keyCode == 37 || e.keyCode == 39) {
+            e.preventDefault();
+            doKeyDown(e);
+        } 
+    });
     $(document).keyup(doKeyUp);
 
-
+     
     function canvasOnClick(e) {
         e.preventDefault();
         if (sonicManager.uiManager.onClick(e)) return false;
@@ -86,17 +92,26 @@ function SonicEngine(canvasName) {
 
 
     function doKeyDown(evt) {
+
+        if (!sonicManager.sonicToon) {
+            sonicManager.uiManager.onKeyDown(evt);
+        }
+
+
         switch (evt.keyCode) {
             case 79:
-                sonicManager.inHaltMode = !sonicManager.inHaltMode;
+
+                if (sonicManager.sonicToon)
+                    sonicManager.inHaltMode = !sonicManager.inHaltMode;
                 break;
             case 80:
-                if (sonicManager.inHaltMode) {
-                    sonicManager.waitingForTickContinue = false; 
-                }
+                if (sonicManager.sonicToon)
+                    if (sonicManager.inHaltMode) {
+                        sonicManager.waitingForTickContinue = false;
+                    }
 
                 break;
-        
+
             case 66:
                 if (sonicManager.sonicToon)
                     sonicManager.sonicToon.hit();
@@ -197,7 +212,7 @@ function SonicEngine(canvasName) {
     that.draw = function () {
         requestAnimFrame(that.draw);
         if (!sonicManager.inHaltMode)
-        clear(that.canvasItem);
+            clear(that.canvasItem);
 
         sonicManager.draw(that.canvasItem);
 
