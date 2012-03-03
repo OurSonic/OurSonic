@@ -7,7 +7,7 @@ function UiArea(x, y, w, h, manager, closable) {
     this.closable = closable;
     this.width = w;
     this.height = h;
-    this.depth = 0;
+    this.depth = -1;
     this.visible = true;
     this.dragging = false;
     this.controls = [];
@@ -16,6 +16,18 @@ function UiArea(x, y, w, h, manager, closable) {
         control.parent = this;
         this.controls.push(control);
         return control;
+    };
+    this.focus = function () {
+        for (var ij = 0; ij < this.controls.length; ij++) {
+            var control = this.controls[ij];
+            control.focus();
+        }
+    };
+    this.loseFocus = function () {
+        for (var ij = 0; ij < this.controls.length; ij++) {
+            var control = this.controls[ij];
+            control.loseFocus();
+        }
     };
 
     var that = this;
@@ -219,6 +231,12 @@ function TextArea(x, y, text, font, color) {
     this.onKeyDown = function (e) {
 
     };
+    this.focus = function () {
+
+    };
+    this.loseFocus = function () {
+
+    };
     this.onClick = function (e) {
         return false;
     };
@@ -254,6 +272,46 @@ function TextArea(x, y, text, font, color) {
 }
 
 
+function HtmlBox(x, y,width,height, init,updatePosition,_focus,_hide) {
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.visible = true;
+    this.parent = null;
+    init();
+    this.onKeyDown = function (e) {
+
+    };
+    this.focus = function () {
+        _focus();
+    };
+    this.loseFocus = function () {
+        _hide();
+    };
+    this.onClick = function (e) {
+        return false;
+    };
+    this.onMouseUp = function (e) {
+        if (this.mouseUp) this.mouseUp();
+    };
+    this.onMouseOver = function (e) {
+        if (this.mouseOver) this.mouseOver();
+    };
+
+    this.draw = function (canv) {
+        if (!this.visible) return;
+        updatePosition(this.parent.x + this.x, this.parent.y + this.y);
+    };
+
+
+    return this;
+}
+
+
 function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOver) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
@@ -279,6 +337,12 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     this.button1Grad = null;
     this.button2Grad = null;
     this.buttonBorderGrad = null;
+    this.focus = function () {
+    
+    };
+    this.loseFocus = function () {
+   
+    };
 
     this.onClick = function (e) {
         if (!this.visible) return;
@@ -352,7 +416,8 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
     this.parent = null;
     this.cursorPosition = 0;
     this.dragPosition = -1;
-
+    this.drawTicks = 0;
+    this.lastClickTick = 0;
     var created = false;
     this.focused = false;
     this.blinked = false;
@@ -360,6 +425,14 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
     this.button1Grad = null;
     this.button2Grad = null;
     this.buttonBorderGrad = null;
+
+    this.focus = function () {
+    
+    };
+    this.loseFocus = function () {
+      
+    };
+    
     this.onKeyDown = function (e) {
         if (e.altKey) return;
         if (this.focused) {
@@ -460,9 +533,34 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
             var w = can.measureText(this.text.substring(0, i)).width;
             if (w > e.x - 14) {
                 this.cursorPosition = i;
+                if (this.drawTicks - this.lastClickTick < 15) {
+                    this.selectWord();
+                }
+                this.lastClickTick = this.drawTicks;
                 return;
             }
         }
+        this.cursorPosition = this.text.length;
+        if (this.drawTicks - this.lastClickTick < 20) {
+            this.selectWord();
+        }
+        this.lastClickTick = this.drawTicks;
+    };
+    this.selectWord = function () {
+        var j = this.text.split(' ');
+
+        var pos = 0;
+        for (var i = 0; i < j.length; i++) {
+            if (this.cursorPosition < j[i].length + pos) {
+                this.dragPosition = pos;
+                this.cursorPosition = j[i].length + pos;
+                return;
+            } else {
+                pos += j[i].length+1;
+            }
+        }
+
+        this.dragPosition = pos - j[j.length-1].length;
         this.cursorPosition = this.text.length;
     };
     this.onMouseUp = function (e) {
@@ -475,6 +573,7 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
     };
     this.onMouseOver = function (e) {
         if (!this.visible) return;
+        document.body.style.cursor = "text";
         if (this.clicking) {
             if (this.dragPosition == -1) {
                 this.dragPosition = this.cursorPosition;
@@ -496,7 +595,7 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
             this.cursorPosition = -1;
             this.dragPosition = -1;
         }
-
+        this.drawTicks++
         can = canv;
         if (!created) {
             created = true;
@@ -575,6 +674,13 @@ function ColorEditingArea(x, y, scale) {
         this.height = this.scale.y * frame.height;
         this.editor = new Editor(frame);
     };
+    this.focus = function () {
+    
+    };
+    this.loseFocus = function () {
+     
+    };
+    
     this.onClick = function (e) {
         if (!this.visible) return;
         if (!this.editor) return;
@@ -652,7 +758,18 @@ function Panel(x, y, w, h, area) {
         return control;
     };
     this.outline = true;
-
+    this.focus = function () {
+        for (var ij = 0; ij < this.controls.length; ij++) {
+            var control = this.controls[ij];
+            control.focus();
+        }
+    };
+    this.loseFocus = function () {
+        for (var ij = 0; ij < this.controls.length; ij++) {
+            var control = this.controls[ij];
+            control.loseFocus();
+        }
+    };
     this.empty = function () {
 
         for (var ij = 0; ij < this.controls.length; ij++) {
@@ -784,6 +901,12 @@ function PaletteArea(x, y, scale,  showCurrent) {
         this.palette = palette;
 
     }
+    this.focus = function () {
+  
+    };
+    this.loseFocus = function () {
+     
+    };
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
@@ -890,6 +1013,12 @@ function TilePieceArea(x, y, scale, tilePiece, state) {
     this.onKeyDown = function (e) {
 
     };
+    this.focus = function () {
+    
+    };
+    this.loseFocus = function () {
+ 
+    };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
 
@@ -961,6 +1090,12 @@ function TileBGEditArea(x, y, parallaxBG) {
     };
     this.onKeyDown = function (e) {
 
+    };
+    this.focus = function () {
+ 
+    };
+    this.loseFocus = function () {
+    
     };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
@@ -1038,6 +1173,12 @@ function TileChunkArea(x, y, scale, tileChunk, state) {
     this.onKeyDown = function (e) {
 
     };
+    this.focus = function () {
+    
+    };
+    this.loseFocus = function () {
+        
+    };
     this.clickHandled = false;
     this.onMouseOver = function (e) {
         if (this.clicking) {
@@ -1051,6 +1192,7 @@ function TileChunkArea(x, y, scale, tileChunk, state) {
     };
     return this;
 };
+
 function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, controls) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
@@ -1071,7 +1213,12 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
     this.scrollOffset = 0;
     this.scrollPosition = 0;
     this.dragging = false;
-
+    this.focus = function () {
+     
+    };
+    this.loseFocus = function () {
+        
+    };
     if (controls)
         this.controls = controls;
     else

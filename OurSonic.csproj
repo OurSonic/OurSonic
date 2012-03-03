@@ -78,9 +78,19 @@
     <Content Include="ObjectMapping.txt" />
     <Content Include="SonicLevels.asmx" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <Content Include="uploadify\cancel.png" />
+    <Content Include="uploadify\expressInstall.swf" />
+    <Content Include="uploadify\jquery-1.4.2.min.js" />
+    <Content Include="uploadify\jquery.uploadify.v2.1.4.js" />
+    <Content Include="uploadify\jquery.uploadify.v2.1.4.min.js" />
+    <Content Include="uploadify\swfobject.js" />
+    <Content Include="uploadify\uploadify.allglyphs.swf" />
+    <Content Include="uploadify\uploadify.css" />
+    <Content Include="uploadify\uploadify.swf" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="ReflectImage.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game2.aspx.cs">
@@ -90,6 +100,9 @@
     <Compile Include="Game.aspx.cs">
       <DependentUpon>Game.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ReflectImage.ashx.cs">
+      <DependentUpon>ReflectImage.ashx</DependentUpon>
     </Compile>
     <Compile Include="SonicLevels.asmx.cs">
       <DependentUpon>SonicLevels.asmx</DependentUpon>

@@ -64,6 +64,7 @@ function SonicEngine(canvasName) {
 
     function canvasMouseMove(e) {
         e.preventDefault();
+        document.body.style.cursor = "default";
 
         if (sonicManager.uiManager.onMouseMove(e)) return false;
 

@@ -78,7 +78,7 @@
             return -f.depth;
         });
         for (var ij = 0; ij < cl.items.length; ij++) {
-            var are = cl.items[ij];
+            are = cl.items[ij];
             if (are.visible && are.y <= cell.y && are.y + are.height > cell.y && are.x <= cell.x && are.x + are.width > cell.x) {
                 goodArea = are;
                 var ec = { x: cell.x - are.x, y: cell.y - are.y };
@@ -92,7 +92,13 @@
                 are = this.UIAreas[ij];
                 if (goodArea == are) {
                     are.depth = 1;
-                } else are.depth = 0;
+                    are.focus();
+                } else {
+                    if (are.visible) {
+                        are.depth = 0;
+                        are.loseFocus();
+                    }
+                }
             }
 
             return true;
@@ -198,43 +204,46 @@
 
     objectFrameworkArea.addControl(new TextArea(320, 80 - 20, "Key: ", textFont, "black"));
     objectFrameworkArea.addControl(objectFrameworkArea.key = new TextBox(370, 60 - 20, 459, 25, "", buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.key = this.text; }));
-    objectFrameworkArea.onMove = function () {
-        if (!codeMirror) return;
-        
-        var scroller = editor.getScrollerElement();
-         
-        scroller.style.left = (this.x + 320 + 20) + "px";
-        scroller.style.top = (this.y + 100 + 20) + "px";
-        editor.refresh();
-        
+
+
+    var addCodeWindow = function (value, change) {
+        objectFrameworkArea.clearMainArea();
+        objectFrameworkArea.mainPanel.addControl(new HtmlBox(15, -35, 485, 485, function () {
+            $(document.body).append('<textarea id="code" name="code" style="position:absolute;width:485px;height:485px;"></textarea>');
+            codeMirror = document.getElementById("code");
+            codeMirror.value = value;
+            editor = CodeMirror.fromTextArea(codeMirror, {
+                lineNumbers: true,
+                matchBrackets: true,
+                onChange: change
+            });
+            var scroller = editor.getScrollerElement();
+            scroller.style.height = "485px";
+            scroller.style.width = "485px";
+            editor.refresh();
+        }, function (x, y) {
+
+            var scroller = editor.getScrollerElement();
+
+            scroller.style.left = x + "px";
+            scroller.style.top = y + "px";
+            editor.refresh();
+
+        }, function () {
+            var sc = editor.getScrollerElement();
+            if (sc) {
+                sc.style.visibility = "visible";
+            }
+        }, function () {
+            var sc = editor.getScrollerElement();
+            if (sc) {
+                sc.style.left = "-100px";
+                sc.style.top = "-100px";
+                sc.style.visibility = "hidden";
+            }
+        }));
     };
 
-
-    objectFrameworkArea.addControl(new Button(320, 95 - 20, 250, 25, "onInit", buttonFont, "rgb(50,150,50)", function () {
-
-        objectFrameworkArea.clearMainArea();
-        $(document.body).append('<textarea id="code" name="code" style="position:absolute;width:485px;height:485px;"></textarea>');
-        codeMirror = document.getElementById("code");
-        codeMirror.value = objectFrameworkArea.objectFramework.initScript;
-    
-        editor = CodeMirror.fromTextArea(codeMirror, {
-            lineNumbers: true,
-            matchBrackets: true, 
-            onChange: function () {
-                objectFrameworkArea.objectFramework.initScript = editor.getValue();
-            }
-        });
-
-        var scroller = editor.getScrollerElement();
-
-        scroller.style.height = "485px";
-        scroller.style.width = "485px"; 
-
-        editor.refresh();
-
-
-        objectFrameworkArea.onMove();
-    }));
 
     objectFrameworkArea.clearMainArea = function () {
 
@@ -244,23 +253,68 @@
         if (codeMirror) {
             codeMirror.parentNode.removeChild(codeMirror);
         }
+        var sc = document.getElementById("picFieldUploader"); sc.style.visibility = "hidden";
     };
-
-
-    objectFrameworkArea.addControl(new Button(580, 95 - 20, 250, 25, "onTick", buttonFont, "rgb(50,150,50)", function () {
-
+    var b1, b2, b3, b4;
+    objectFrameworkArea.addControl(b1 = new Button(320, 95 - 20, 250, 25, "onInit", buttonFont, "rgb(50,150,50)", function () {
+        b2.toggled = false;
+        b3.toggled = false;
+        b4.toggled = false;
+        if (this.toggled) {
+            addCodeWindow(objectFrameworkArea.objectFramework.initScript, function () {
+                objectFrameworkArea.objectFramework.initScript = editor.getValue();
+            });
+        } else {
+            objectFrameworkArea.clearMainArea();
+        }
     }));
-    objectFrameworkArea.addControl(new Button(320, 130 - 20, 250, 25, "onCollide", buttonFont, "rgb(50,150,50)", function () {
+    b1.toggle = true;
 
+    objectFrameworkArea.addControl(b2 = new Button(580, 95 - 20, 250, 25, "onTick", buttonFont, "rgb(50,150,50)", function () {
+        b1.toggled = false;
+        b3.toggled = false;
+        b4.toggled = false;
+        if (this.toggled) {
+            addCodeWindow(objectFrameworkArea.objectFramework.tickScript, function () {
+                objectFrameworkArea.objectFramework.tickScript = editor.getValue();
+            });
+        } else {
+            objectFrameworkArea.clearMainArea();
+        }
     }));
-    objectFrameworkArea.addControl(new Button(580, 130 - 20, 250, 25, "onHurtSonic", buttonFont, "rgb(50,150,50)", function () {
+    b2.toggle = true;
 
+    objectFrameworkArea.addControl(b3 = new Button(320, 130 - 20, 250, 25, "onCollide", buttonFont, "rgb(50,150,50)", function () {
+        b2.toggled = false;
+        b1.toggled = false;
+        b4.toggled = false;
+        if (this.toggled) {
+            addCodeWindow(objectFrameworkArea.objectFramework.collideScript, function () {
+                objectFrameworkArea.objectFramework.collideScript = editor.getValue();
+            });
+        } else {
+            objectFrameworkArea.clearMainArea();
+        }
     }));
-    objectFrameworkArea.addControl(new Button(580, 130 - 20, 250, 25, "onHurtSonic", buttonFont, "rgb(50,150,50)", function () {
+    b3.toggle = true;
 
+    objectFrameworkArea.addControl(b4 = new Button(580, 130 - 20, 250, 25, "onHurtSonic", buttonFont, "rgb(50,150,50)", function () {
+        b2.toggled = false;
+        b3.toggled = false;
+        b1.toggled = false;
+        if (this.toggled) {
+            addCodeWindow(objectFrameworkArea.objectFramework.hurtScript, function () {
+                objectFrameworkArea.objectFramework.hurtScript = editor.getValue();
+            });
+        } else {
+            objectFrameworkArea.clearMainArea();
+        }
     }));
+    b4.toggle = true;
+
 
     objectFrameworkArea.addControl(objectFrameworkArea.mainPanel = new Panel(320, 150, 510, 510, objectFrameworkArea));
+    setTimeout('        var sc = document.getElementById("picFieldUploader");sc.style.visibility = "hidden";sc.style.position="absolute";', 300);
 
     objectFrameworkArea.loadAsset = function (asset) {
 
@@ -282,6 +336,21 @@
                     vs.colorMap[i][j] = Math.floor(Math.random() * vs.palette.length);
                 }
             }
+            window.imageUploaded = function (img) {
+                _H.loadSprite(img, function (image) {
+                    vs.uploadImage(image);
+                    var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
+                    ce.init(vs);
+                    ce.editor.showOutline = false;
+                    ce.editable = false;
+                    ce.click = function (e) {
+                        frame.offsetX = e.x;
+                        frame.offsetY = e.y;
+                    };
+
+                    objectFrameworkArea.mainPanel.frameArea.palatteArea.init(vs.palette, true);
+                });
+            };
 
             objectFrameworkArea.mainPanel.populate(asset);
         }));
@@ -289,7 +358,7 @@
         var jd;
         objectFrameworkArea.mainPanel.addControl(jd = new ScrollBox(20, 35, 25, 3, 460, "rgb(50,60,127)"));
         objectFrameworkArea.mainPanel.populate = function (ast) {
-
+            var bd;
             jd.controls = [];
             for (var i = 0; i < ast.frames.length; i++) {
                 jd.addControl(bd = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
@@ -298,16 +367,19 @@
                 bd.state = ast.frames[i];
             }
         };
+
+
         objectFrameworkArea.mainPanel.populate(asset);
 
         objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.frameArea = new Panel(7, 155, 480, 350, objectFrameworkArea));
         objectFrameworkArea.mainPanel.frameArea.outline = false;
 
+
         objectFrameworkArea.mainPanel.loadFrame = function (frame) {
             objectFrameworkArea.mainPanel.frameArea.controls = [];
 
             var ce;
-            objectFrameworkArea.mainPanel.frameArea.addControl(new TextArea(15, 15, "Name: ", textFont, "black"));
+            objectFrameworkArea.mainPanel.frameArea.addControl(new TextArea(15, 21, "Name: ", textFont, "black"));
             objectFrameworkArea.mainPanel.frameArea.addControl(new TextBox(90, 0, 395, 25, frame.name, buttonFont, "rgb(50,150,50)", function () { frame.name = this.text; }));
 
 
@@ -339,7 +411,8 @@
             }));
             bt.toggle = true;
 
-            objectFrameworkArea.mainPanel.frameArea.addControl(ce = new ColorEditingArea(230 - 55, 65, { x: (310 / frame.width), y: (225 / frame.height) }));
+            objectFrameworkArea.mainPanel.frameArea.addControl(objectFrameworkArea.mainPanel.frameArea.colorEditor = new ColorEditingArea(230 - 55, 65, { x: (310 / frame.width), y: (225 / frame.height) }));
+            var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
             ce.init(frame);
             ce.editor.showOutline = false;
             ce.editable = false;
@@ -347,10 +420,37 @@
                 frame.offsetX = e.x;
                 frame.offsetY = e.y;
             };
+            objectFrameworkArea.mainPanel.frameArea.addControl(new HtmlBox(19, 64, 120, 31, function() {
+                var sc = document.getElementById("picFieldUploader");
+
+                sc.style.left = (objectFrameworkArea.x + 320 + 7 + 19) + "px";
+                sc.style.top = (objectFrameworkArea.y + 150 + 155 + 64) + "px";
+                sc.style.position = "absolute";
+                sc.style.visibility = "visible";
+            }, function(x, y) {
+                var sc = document.getElementById("picFieldUploader");
+                if (sc) {
+                    sc.style.left = x + "px";
+                    sc.style.top = y + "px";
+                }
+            }, function() {
+                var sc = document.getElementById("picFieldUploader");
+                if (sc) { 
+                    sc.style.visibility = "visible";
+                }
+            }, function() {
+                var sc = document.getElementById("picFieldUploader");
+                if (sc) {
+                    sc.style.left = "-100px";
+                    sc.style.top = "-100px";
+                    sc.style.visibility = "hidden";
+                }
+            }));
+
 
             var pa;
-            objectFrameworkArea.mainPanel.frameArea.addControl(pa = new PaletteArea(230 - 55, 300, { x: 39, y: 11 }, false));
-            pa.init(frame.palette, true);
+            objectFrameworkArea.mainPanel.frameArea.addControl(objectFrameworkArea.mainPanel.frameArea.palatteArea = new PaletteArea(230 - 55, 300, { x: 39, y: 11 }, false));
+            objectFrameworkArea.mainPanel.frameArea.palatteArea.init(frame.palette, true);
 
             objectFrameworkArea.mainPanel.frameArea.addControl(new Button(230 - 55, 305 + 11 * 2, 310, 25, "Edit Map", buttonFont, "rgb(50,150,50)", function () {
                 colorEditorArea.init(frame);
@@ -368,29 +468,46 @@
         this.key.text = object.key;
         this.assets.controls = [];
         var b;
-        for (var i = 0; i < object.assets.length; i++) {
+        var i;
+        for (i = 0; i < object.assets.length; i++) {
             this.assets.addControl(b = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
+                b1.toggled = false;
+                b2.toggled = false;
+                b3.toggled = false;
+                b4.toggled = false;
                 objectFrameworkArea.loadAsset(this.state);
             }));
             b.state = object.assets[i];
         }
         this.pieces.controls = [];
-        for (var i = 0; i < object.pieces.length; i++) {
+        for (i = 0; i < object.pieces.length; i++) {
             this.pieces.addControl(b = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
+                b1.toggled = false;
+                b2.toggled = false;
+                b3.toggled = false;
+                b4.toggled = false;
                 objectFrameworkArea.loadPiece(this.state);
             }));
             b.state = object.pieces[i];
         }
         this.paths.controls = [];
-        for (var i = 0; i < object.paths.length; i++) {
+        for (i = 0; i < object.paths.length; i++) {
             this.paths.addControl(b = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
+                b1.toggled = false;
+                b2.toggled = false;
+                b3.toggled = false;
+                b4.toggled = false;
                 objectFrameworkArea.loadPath(this.state);
             }));
             b.state = object.paths[i];
         }
         this.projectiles.controls = [];
-        for (var i = 0; i < object.projectiles.length; i++) {
+        for (i = 0; i < object.projectiles.length; i++) {
             this.projectiles.addControl(b = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
+                b1.toggled = false;
+                b2.toggled = false;
+                b3.toggled = false;
+                b4.toggled = false;
                 objectFrameworkArea.loadPiece(this.state);
             }));
             b.state = object.projectiles[i];
@@ -438,8 +555,8 @@
     this.UIAreas.push(objectInfoArea);
     objectInfoArea.addControl(new TextArea(30, 25, "Object Information", textFont, "blue"));
     objectInfoArea.addControl(new Button(40, 190, 60, 22, "Framework", buttonFont, "rgb(50,150,50)", function () {
-        objectArea.visible = true;
-        objectArea.objectFramework = objectArea.object.Framwork;
+        objectFrameworkArea.visible = true;
+        objectFrameworkArea.objectFramework = objectFrameworkArea.object.Framwork;
     }
     ));
 
@@ -645,7 +762,7 @@
 
     function addLevelToList(name) {
         var btn;
-        ctls.addControl(btn = new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
+        ctls.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
 
             loadLevel(name);
         }));
@@ -812,26 +929,26 @@
         sonicManager.SonicLevel.LevelHeight = sonicManager.SonicLevel.ForegroundHeight;
 
 
-
+        var q, r, l, o;
         var mf = decodeNumeric(sonicManager.SonicLevel.Foreground);
         sonicManager.SonicLevel.ChunkMap = [];
-        for (var q = 0; q < sonicManager.SonicLevel.ForegroundWidth; q++) {
+        for (q = 0; q < sonicManager.SonicLevel.ForegroundWidth; q++) {
             sonicManager.SonicLevel.ChunkMap[q] = [];
-            for (var r = 0; r < sonicManager.SonicLevel.ForegroundHeight; r++) {
+            for (r = 0; r < sonicManager.SonicLevel.ForegroundHeight; r++) {
                 sonicManager.SonicLevel.ChunkMap[q][r] = mf[q + r * sonicManager.SonicLevel.ForegroundWidth];
             }
         }
         var mf = decodeNumeric(sonicManager.SonicLevel.Background);
         sonicManager.SonicLevel.BGChunkMap = [];
-        for (var q = 0; q < sonicManager.SonicLevel.BackgroundWidth; q++) {
+        for (q = 0; q < sonicManager.SonicLevel.BackgroundWidth; q++) {
             sonicManager.SonicLevel.BGChunkMap[q] = [];
-            for (var r = 0; r < sonicManager.SonicLevel.BackgroundHeight; r++) {
+            for (r = 0; r < sonicManager.SonicLevel.BackgroundHeight; r++) {
                 sonicManager.SonicLevel.BGChunkMap[q][r] = mf[q + r * sonicManager.SonicLevel.BackgroundWidth];
             }
         }
         sonicManager.SonicLevel.Objects = [];
-        for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
-            var o = sonicManager.SonicLevel.Objects[l];
+        for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
+            o = sonicManager.SonicLevel.Objects[l];
             sonicManager.SonicLevel.Objects[l] = _H.ObjectParse(o);
         }
 
@@ -846,25 +963,25 @@
         }
         sonicManager.SonicLevel.Palette=jm;*/
 
-
+        var value, td;
         sonicManager.SonicLevel.curHeightMap = true;
         for (j = 0; j < sonicManager.SonicLevel.Tiles.length; j++) {
             fc = sonicManager.SonicLevel.Tiles[j];
             sonicManager.SonicLevel.Tiles[j] = decodeNumeric(fc);
 
-            var mj = [];
-            for (var l = 0; l < sonicManager.SonicLevel.Tiles[j].length; l++) {
-                var value = sonicManager.SonicLevel.Tiles[j][l];
+            mj = [];
+            for (l = 0; l < sonicManager.SonicLevel.Tiles[j].length; l++) {
+                value = sonicManager.SonicLevel.Tiles[j][l];
                 mj.push(value >> 4);
                 mj.push(value & 0xF);
             }
             sonicManager.SonicLevel.Tiles[j] = { colors: mj };
-            var td = sonicManager.SonicLevel.Tiles[j];
-            var mf = [];
-            for (var o = 0; o < 8; o++) {
+            td = sonicManager.SonicLevel.Tiles[j];
+            mf = [];
+            for (o = 0; o < 8; o++) {
                 mf[o] = [];
             }
-            for (var n = 0; n < td.colors.length; n++) {
+            for (n = 0; n < td.colors.length; n++) {
                 mf[n % 8][_H.floor(n / 8)] = td.colors[n];
             }
             td.colors = mf;
@@ -881,19 +998,19 @@
                     fc = fcc[j];
                     fcc[j] = decodeNumeric(fc);
 
-                    var mj = [];
-                    for (var l = 0; l < fcc[j].length; l++) {
-                        var value = fcc[j][l];
+                    mj = [];
+                    for (l = 0; l < fcc[j].length; l++) {
+                        value = fcc[j][l];
                         mj.push(value >> 4);
                         mj.push(value & 0xF);
                     }
                     fcc[j] = { colors: mj };
-                    var td = fcc[j];
-                    var mf = [];
-                    for (var o = 0; o < 8; o++) {
+                    td = fcc[j];
+                    mf = [];
+                    for (o = 0; o < 8; o++) {
                         mf[o] = [];
                     }
-                    for (var n = 0; n < td.colors.length; n++) {
+                    for (n = 0; n < td.colors.length; n++) {
                         mf[n % 8][_H.floor(n / 8)] = td.colors[n];
                     }
                     td.colors = mf;
@@ -907,10 +1024,10 @@
 
         for (j = 0; j < sonicManager.SonicLevel.Blocks.length; j++) {
             fc = sonicManager.SonicLevel.Blocks[j];
-            var mj = new TilePiece();
+            mj = new TilePiece();
             mj.index = j;
             mj.tiles = [];
-            for (var p = 0; p < fc.length; p++) {
+            for (p = 0; p < fc.length; p++) {
                 mj.tiles.push(fc[p]);
 
             }
@@ -919,17 +1036,17 @@
 
 
 
-        var je;
+        var m;
 
         sonicManager.SonicLevel.Angles = decodeNumeric(sonicManager.SonicLevel.Angles);
         sonicManager.SonicLevel.CollisionIndexes1 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes1);
         sonicManager.SonicLevel.CollisionIndexes2 = decodeNumeric(sonicManager.SonicLevel.CollisionIndexes2);
 
-        for (var i = 0; i < sonicManager.SonicLevel.HeightMaps.length; i++) {
+        for (i = 0; i < sonicManager.SonicLevel.HeightMaps.length; i++) {
 
             var b1 = true;
             var b2 = true;
-            for (var m = 0; m < sonicManager.SonicLevel.HeightMaps[i].length; m++) {
+            for (m = 0; m < sonicManager.SonicLevel.HeightMaps[i].length; m++) {
                 if (b1 && sonicManager.SonicLevel.HeightMaps[i][m] != 0) {
                     b1 = false;
                 }

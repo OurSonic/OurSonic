@@ -9,7 +9,10 @@
     </script>
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script>   
-
+    
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/mode/javascript/javascript.js"></script>
       <script src="javascript/stats.js?1" type="text/javascript"> 
     </script>    
     <script src="javascript/curCompress.js?1" type="text/javascript"> 

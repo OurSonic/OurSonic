@@ -7,9 +7,10 @@
     <title>Our Sonic</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js" type="text/javascript">
     </script>
-    <link rel="stylesheet" href="/lib/codemirror.css">
-    <script src="/lib/codemirror.js"></script>
-    <script src="/lib/mode/javascript/javascript.js"></script>
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/mode/javascript/javascript.js"></script>
+
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Help.js?1" type="text/javascript"> 
@@ -49,18 +50,38 @@
     <script src="javascript/SonicEngine.js?1" type="text/javascript"> 
     </script>
     <script type="text/javascript">
-                                //<![CDATA[
+    //<![CDATA[
         $(function () {
             var stats = new xStats;
             document.body.appendChild(stats.element);
 
             var myCanv = new SonicEngine("build");
-
-
-
         }); 
+        
+ 
+   
     //]]>
+        
     </script>
+    <script type="text/javascript" src="/uploadify/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="/uploadify/swfobject.js"></script>
+<script type="text/javascript" src="/uploadify/jquery.uploadify.v2.1.4.js"></script>
+<script type="text/javascript">
+// <![CDATA[
+    $(document).ready(function () {
+        $('#picField').uploadify({
+            'uploader': '/uploadify/uploadify.swf',
+            'script': '/ReflectImage.ashx',
+            'cancelImg': '/uploadify/cancel.png',
+            'folder': '/uploads',
+            'auto': true,
+            onUpload: function (e) {
+                alert(_H.stringify(e));
+            }
+        });
+    });
+// ]]>
+</script>
 </head>
 <body style="background-color: #000080;">
     <form id="form1" runat="server">
@@ -71,7 +92,8 @@
     </asp:ScriptManager>
     <div id="d_clip_container">
     </div>
-    <canvas id="build" style="margin: 0px; position: absolute; top: 0px; left: 0px;"></canvas>
+    <canvas id="build" style="margin: 0px; position: absolute; top: 0px; left: 0px; z-index: 0;"></canvas>
+    <input type="file" id="picField" style="position:absolute; z-index: 100; " > 
     </form>
 </body>
 </html>
