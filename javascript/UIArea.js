@@ -11,7 +11,7 @@ function UiArea(x, y, w, h, manager, closable) {
     this.visible = true;
     this.dragging = false;
     this.controls = [];
-    this.onMove = function() {};
+    this.onMove = function () { };
     this.addControl = function (control) {
         control.parent = this;
         this.controls.push(control);
@@ -213,10 +213,11 @@ function UiArea(x, y, w, h, manager, closable) {
 
 function TextArea(x, y, text, font, color) {
     this.forceDrawing = function () {
-        if ((_H.isFunction(this.text) ? this.text() : this.text) == this.oldText) {
+        var txt = (_H.isFunction(this.text) ? this.text() : this.text);
+        if (txt == this.oldText) {
             return { redraw: true, clearCache: false };
         }
-        this.oldText = _H.isFunction(this.text) ? this.text() : this.text;
+        this.oldText = txt;
         return { redraw: true, clearCache: true };
     };
     this.x = x;
@@ -249,7 +250,7 @@ function TextArea(x, y, text, font, color) {
 
     this.draw = function (canv) {
         if (!this.visible) return;
-        var text = _H.isFunction(this.text) ? this.text() : this.text;
+        var txt = _H.isFunction(this.text) ? this.text() : this.text;
         if (canv.font != this.font)
             canv.font = this.font;
 
@@ -262,7 +263,7 @@ function TextArea(x, y, text, font, color) {
 
         canv.fillStyle = this.color;
 
-        canv.fillText(text, this.parent.x + this.x, this.parent.y + this.y);
+        canv.fillText(txt, this.parent.x + this.x, this.parent.y + this.y);
 
 
     };
@@ -272,7 +273,7 @@ function TextArea(x, y, text, font, color) {
 }
 
 
-function HtmlBox(x, y,width,height, init,updatePosition,_focus,_hide) {
+function HtmlBox(x, y, width, height, init, updatePosition, _focus, _hide) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -310,6 +311,106 @@ function HtmlBox(x, y,width,height, init,updatePosition,_focus,_hide) {
 
     return this;
 }
+function ImageButton(x, y, width, height, text, font, image, click, mouseUp, mouseOver) {
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
+    this.x = x;
+    this.y = y;
+    this.visible = true;
+    this.width = width;
+    this.height = height;
+    this.text = text;
+    this.toggle = false;
+    this.toggled = false;
+    this.font = font;
+    this.clicking = false;
+    this.click = click;
+    this.mouseUp = mouseUp;
+    this.mouseOver = mouseOver;
+    this.image = image;
+    this.parent = null;
+
+    var created = false;
+
+    this.button1Grad = null;
+    this.button2Grad = null;
+    this.buttonBorderGrad = null;
+    this.focus = function () {
+
+    };
+    this.loseFocus = function () {
+
+    };
+
+    this.onClick = function (e) {
+        if (!this.visible) return;
+        this.clicking = true;
+        if (this.toggle)
+            this.toggled = !this.toggled;
+    };
+    this.onMouseUp = function (e) {
+        if (!this.visible) return;
+        if (this.clicking) {
+            if (this.click) this.click();
+        }
+        this.clicking = false;
+        if (this.mouseUp) this.mouseUp();
+    };
+    this.onMouseOver = function (e) {
+        if (!this.visible) return;
+        if (this.mouseOver) this.mouseOver();
+    };
+    this.onKeyDown = function (e) {
+
+    };
+    this.draw = function (canv) {
+        if (!this.visible) return;
+
+        if (!created) {
+            created = true;
+            this.button1Grad = canv.createLinearGradient(0, 0, 0, 1);
+
+            this.button1Grad.addColorStop(0, '#FFFFFF');
+            this.button1Grad.addColorStop(1, '#dedede');
+
+            this.button2Grad = canv.createLinearGradient(0, 0, 0, 1);
+            this.button2Grad.addColorStop(0, '#dedede');
+            this.button2Grad.addColorStop(1, '#FFFFFF');
+
+
+            this.buttonBorderGrad = canv.createLinearGradient(0, 0, 0, 1);
+            this.buttonBorderGrad.addColorStop(0, '#AFAFAF');
+            this.buttonBorderGrad.addColorStop(1, '#7a7a7a');
+
+        }
+
+        canv.strokeStyle = this.buttonBorderGrad;
+        if (this.toggle) {
+            canv.fillStyle = (this.toggled ?
+                this.button1Grad :
+                this.button2Grad);
+
+        } else {
+            canv.fillStyle = (this.clicking ?
+                this.button1Grad :
+                this.button2Grad);
+
+        }
+        canv.lineWidth = 2;
+        roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 2, true, true);
+        if (canv.font != this.font)
+            canv.font = this.font;
+        canv.fillStyle = "#000000";
+        var txt = (_H.isFunction(this.text) ? this.text() : this.text);
+
+
+        this.image(canv, this.parent.x + this.x, this.parent.y + this.y);
+
+        canv.fillText(txt, this.parent.x + this.x + ((this.width / 2) - (canv.measureText(txt).width / 2)), this.parent.y + this.y + this.height-3);
+    };
+    return this;
+}
 
 
 function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOver) {
@@ -338,16 +439,17 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
     this.button2Grad = null;
     this.buttonBorderGrad = null;
     this.focus = function () {
-    
+
     };
     this.loseFocus = function () {
-   
+
     };
 
     this.onClick = function (e) {
         if (!this.visible) return;
         this.clicking = true;
-        if (this.toggle) this.toggled = !this.toggled;
+        if (this.toggle)
+            this.toggled = !this.toggled;
     };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
@@ -370,6 +472,7 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
         if (!created) {
             created = true;
             this.button1Grad = canv.createLinearGradient(0, 0, 0, 1);
+
             this.button1Grad.addColorStop(0, '#FFFFFF');
             this.button1Grad.addColorStop(1, '#dedede');
 
@@ -385,14 +488,24 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
         }
 
         canv.strokeStyle = this.buttonBorderGrad;
-        canv.fillStyle = this.toggle ? (this.toggled ? this.button1Grad : this.button2Grad) : (this.clicking ? this.button1Grad : this.button2Grad);
+        if (this.toggle) {
+            canv.fillStyle = (this.toggled ?
+                this.button1Grad :
+                this.button2Grad);
+
+        } else {
+            canv.fillStyle = (this.clicking ?
+                this.button1Grad :
+                this.button2Grad);
+
+        }
         canv.lineWidth = 2;
         roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.width, this.height, 2, true, true);
         if (canv.font != this.font)
             canv.font = this.font;
         canv.fillStyle = "#000000";
-
-        canv.fillText((_H.isFunction(this.text) ? this.text() : this.text), this.parent.x + this.x + ((this.width / 2) - (canv.measureText(this.text).width / 2)), this.parent.y + this.y + (this.height / 3) * 2);
+        var txt = (_H.isFunction(this.text) ? this.text() : this.text);
+        canv.fillText(txt, this.parent.x + this.x + ((this.width / 2) - (canv.measureText(txt).width / 2)), this.parent.y + this.y + (this.height / 3) * 2);
     };
     return this;
 }
@@ -427,12 +540,12 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
     this.buttonBorderGrad = null;
 
     this.focus = function () {
-    
+
     };
     this.loseFocus = function () {
-      
+
     };
-    
+
     this.onKeyDown = function (e) {
         if (e.altKey) return;
         if (this.focused) {
@@ -556,11 +669,11 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
                 this.cursorPosition = j[i].length + pos;
                 return;
             } else {
-                pos += j[i].length+1;
+                pos += j[i].length + 1;
             }
         }
 
-        this.dragPosition = pos - j[j.length-1].length;
+        this.dragPosition = pos - j[j.length - 1].length;
         this.cursorPosition = this.text.length;
     };
     this.onMouseUp = function (e) {
@@ -654,7 +767,7 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
 function ColorEditingArea(x, y, scale) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
-    }; 
+    };
     this.lastPosition = null;
     this.x = x;
     this.y = y;
@@ -675,12 +788,12 @@ function ColorEditingArea(x, y, scale) {
         this.editor = new Editor(frame);
     };
     this.focus = function () {
-    
+
     };
     this.loseFocus = function () {
-     
+
     };
-    
+
     this.onClick = function (e) {
         if (!this.visible) return;
         if (!this.editor) return;
@@ -732,7 +845,7 @@ function ColorEditingArea(x, y, scale) {
         if (!this.editor) return;
         var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
 
-        this.editor.draw(canv, pos, this.scale,this.showCollideMap,this.showHurtMap);
+        this.editor.draw(canv, pos, this.scale, this.showCollideMap, this.showHurtMap);
 
     };
     return this;
@@ -875,7 +988,7 @@ function Panel(x, y, w, h, area) {
     return this;
 }
 
-function PaletteArea(x, y, scale,  showCurrent) {
+function PaletteArea(x, y, scale, showCurrent) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -902,10 +1015,10 @@ function PaletteArea(x, y, scale,  showCurrent) {
 
     }
     this.focus = function () {
-  
+
     };
     this.loseFocus = function () {
-     
+
     };
     this.onClick = function (e) {
         if (!this.visible) return;
@@ -934,7 +1047,7 @@ function PaletteArea(x, y, scale,  showCurrent) {
     };
     this.clickHandled = false;
     this.onMouseOver = function (e) {
-        if(this.clicking) {
+        if (this.clicking) {
 
             var _x = _H.floor(e.x / scale.x);
             var _y = _H.floor(e.y / scale.y);
@@ -1014,10 +1127,10 @@ function TilePieceArea(x, y, scale, tilePiece, state) {
 
     };
     this.focus = function () {
-    
+
     };
     this.loseFocus = function () {
- 
+
     };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
@@ -1092,10 +1205,10 @@ function TileBGEditArea(x, y, parallaxBG) {
 
     };
     this.focus = function () {
- 
+
     };
     this.loseFocus = function () {
-    
+
     };
     this.onMouseUp = function (e) {
         if (!this.visible) return;
@@ -1174,10 +1287,10 @@ function TileChunkArea(x, y, scale, tileChunk, state) {
 
     };
     this.focus = function () {
-    
+
     };
     this.loseFocus = function () {
-        
+
     };
     this.clickHandled = false;
     this.onMouseOver = function (e) {
@@ -1192,7 +1305,183 @@ function TileChunkArea(x, y, scale, tileChunk, state) {
     };
     return this;
 };
+function HScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, controls) {
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
+    this.x = x;
+    this.y = y;
+    this.itemWidth = itemWidth;
+    this.visible = true;
+    var scrollWidth = 14;
+    var jWidth = 5;
 
+    this.width = visibleItems * (itemWidth + jWidth);
+    this.visibleItems = visibleItems;
+    this.itemHeight = itemHeight;
+    this.backColor = backColor;
+
+    this.height =itemHeight+ scrollWidth;
+    this.parent = null;
+    this.scrollOffset = 0;
+    this.scrollPosition = 0;
+    this.dragging = false;
+    this.focus = function () {
+
+    };
+    this.loseFocus = function () {
+
+    };
+    if (controls)
+        this.controls = controls;
+    else
+        this.controls = [];
+
+    this.scrolling = false;
+    this.addControl = function (control) {
+        control.parent = this;
+        this.controls.push(control);
+        return control;
+    };
+
+
+
+    this.onClick = function (e) {
+        if (!this.visible) return;
+        for (var ij = this.scrollOffset; ij < this.controls.length; ij++) {
+            var control = this.controls[ij];
+            if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+                e.x -= control.x;
+                e.y -= control.y;
+                control.onClick(e);
+                return false;
+
+            }
+        }
+
+
+        if (e.y > this.itemHeight && e.y < this.itemHeight + scrollWidth) {
+
+            var width = this.visibleItems * (this.itemWidth + jWidth) - 2;
+            this.scrollOffset = _H.floor((e.x / width) * (this.controls.length - this.visibleItems));
+
+            this.scrollOffset = Math.min(Math.max(this.scrollOffset, 0), this.controls.length);
+
+        }
+        this.dragging = true;
+
+        return false;
+    };
+    this.onKeyDown = function (e) {
+
+    };
+    this.onMouseUp = function (e) {
+        if (!this.visible) return;
+        this.dragging = false;
+
+        for (var ij = this.scrollOffset; ij < this.controls.length; ij++) {
+            var control = this.controls[ij];
+            if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+                e.x -= control.x;
+                e.y -= control.y;
+                control.onMouseUp(e);
+                return false;
+
+            }
+        }
+
+        if (this.mouseUp) this.mouseUp();
+    };
+    this.onMouseOver = function (e) {
+        if (!this.visible) return;
+        for (var ij = 0; ij < this.controls.length; ij++) {
+            var control = this.controls[ij];
+            if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+                e.x -= control.x;
+                e.y -= control.y;
+                control.onMouseOver(e);
+                break;
+
+            }
+        }
+        if (this.dragging && e.y > this.itemHeight && e.y < this.itemHeight + scrollWidth) {
+            var width = this.visibleItems * (this.itemWidth + jWidth) - 2;
+            this.scrollOffset = _H.floor((e.x / width) * (this.controls.length - this.visibleItems));
+
+            this.scrollOffset = Math.min(Math.max(this.scrollOffset, 0), this.controls.length);
+
+        }
+        if (this.mouseOver) this.mouseOver();
+    };
+    this.onScroll = function (e) {
+        if (!this.visible) return;
+        if (e.delta > 0) {
+            if (this.scrollOffset > 0) {
+                this.scrollOffset--;
+            }
+        } else {
+            if (this.scrollOffset < this.controls.length - this.visibleItems) {
+                this.scrollOffset++;
+            }
+        }
+        for (var ij = 0; ij < this.controls.length; ij++) {
+            var control = this.controls[ij];
+            if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+                e.x -= control.x;
+                e.y -= control.y;
+                if (control.onScroll)
+                    control.onScroll(e);
+                return false;
+
+            }
+        }
+        if (this.scroll) this.scroll();
+    };
+
+    this.draw = function (canv) {
+        if (!this.visible) return;
+        canv.fillStyle = this.backColor;
+
+        var i; 
+        var width = this.visibleItems * (this.itemWidth + jWidth) - 2;
+
+        canv.fillStyle = this.backColor;
+        canv.lineWidth = 1;
+        canv.strokeStyle = "#333";
+        roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.visibleItems * (this.itemWidth + jWidth) + 2, this.itemHeight + scrollWidth+6, 3, true, true);
+
+        canv.fillStyle = "grey";
+        canv.lineWidth = 1;
+        canv.strokeStyle = "#444";
+        canv.fillRect(this.parent.x + this.x + 2, this.parent.y + this.y + this.itemHeight + 6, this.visibleItems * (this.itemWidth + jWidth) , scrollWidth);
+
+        canv.fillStyle = "FFDDFF";
+        canv.lineWidth = 1;
+        canv.strokeStyle = "#FFDDFF";
+        this.scrollPosition = width * this.scrollOffset / (this.controls.length - this.visibleItems);
+
+        canv.fillRect(this.parent.x + this.x + (this.scrollPosition) + 2, this.parent.y + this.y + this.itemHeight + 6, 5, scrollWidth - 2);
+
+
+
+
+        var curX= 3;
+        for (i = this.scrollOffset; i < Math.min(this.controls.length, this.scrollOffset + this.visibleItems); i++) {
+            this.controls[i].parent = { x: this.parent.x + this.x, y: this.parent.y + this.y };
+            this.controls[i].x = curX;
+            this.controls[i].y = 2;
+            this.controls[i].height = this.itemHeight;
+            this.controls[i].width = this.itemWidth;
+
+            curX += this.itemWidth + jWidth;
+            this.controls[i].draw(canv);
+        }
+
+
+
+    };
+    return this;
+}
 function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, controls) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
@@ -1214,10 +1503,10 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
     this.scrollPosition = 0;
     this.dragging = false;
     this.focus = function () {
-     
+
     };
     this.loseFocus = function () {
-        
+
     };
     if (controls)
         this.controls = controls;

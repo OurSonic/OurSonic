@@ -95,7 +95,27 @@ function LevelObjectAssetFrame(name) {
     this.palette = [];
     this.name = name ? name : "";
 
+    this.drawSimple = function (canvas, pos, width, height) {
 
+        canvas.save();
+        canvas.translate(pos.x, pos.y);
+        canvas.scale(width / this.width, height / this.height);
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
+                var ex = x;
+                var ey = y;
+                var color = this.palette[this.colorMap[ex][ey]];
+                if (canvas.fillStyle != "#" + color)
+                    canvas.fillStyle = "#" + color;
+
+                canvas.fillRect(ex, ey, 1, 1);
+
+            }
+        }
+        canvas.restore();
+
+    };
+    
     this.drawUI = function (canvas, pos, scale, showOutline, showCollideMap, showHurtMap) {
         canvas.strokeStyle = "#000000";
         canvas.lineWidth = 1;
@@ -160,13 +180,16 @@ function LevelObjectPiece(name) {
     this.collided = false;
     this.xflip = false;
     this.yflip = false;
-    this.x = 0;
-    this.y = 0;
     this.name = name ? name : "";
 }
 function LevelObjectPath(name) {
     this.pieces = [];
-    this.name = name ? name : "";
+    this.name = name ? name : ""; 
+}
+function LevelObjectPathPiece(pieceName) {
+    this.pieceName = pieceName;
+    this.x = 0;
+    this.y = 0;
 }
 function LevelObjectInfo() {
     this.x = 0;

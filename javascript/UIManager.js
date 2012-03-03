@@ -317,6 +317,50 @@
     objectFrameworkArea.addControl(objectFrameworkArea.mainPanel = new Panel(320, 150, 510, 510, objectFrameworkArea));
     setTimeout('        var sc = document.getElementById("picFieldUploader");sc.style.visibility = "hidden";sc.style.position="absolute";', 300);
 
+
+
+    objectFrameworkArea.loadPiece = function (piece) {
+
+        objectFrameworkArea.clearMainArea();
+
+
+        objectFrameworkArea.mainPanel.addControl(new TextArea(25, 25, "Name: ", textFont, "black"));
+        objectFrameworkArea.mainPanel.addControl(new TextBox(100, 5, 290, 25, piece.name, buttonFont, "rgb(50,150,50)", function () { piece.name = this.text; }));
+        var b;
+        objectFrameworkArea.mainPanel.addControl(b = new Button(40, 50, 70, 25, "XFlip", buttonFont, "rgb(50,150,50)", function () {
+            piece.xflip=b.toggled;
+        }));
+        b.toggle = true;
+        b.toggled = piece.xflip;
+        
+        var c;
+        objectFrameworkArea.mainPanel.addControl(c = new Button(115, 50, 70, 25, "YFlip", buttonFont, "rgb(50,150,50)", function () {
+            piece.yflip = b.toggled;
+        }));
+        c.toggle = true;
+        c.toggled = piece.yflip;
+
+
+
+        var jd;
+        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 100, "rgb(50,60,127)")); 
+            var bd;
+            jd.controls = [];
+            for (var i = 0; i < objectFrameworkArea.objectFramework.assets.length; i++) {
+                jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
+                    this.state.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15);
+                }, function () {
+                    objectFrameworkArea.mainPanel.loadFrame(this.state.frames[0]);
+                }));
+                bd.state = objectFrameworkArea.objectFramework.assets[i];
+            } 
+
+
+
+    };
+
+
+
     objectFrameworkArea.loadAsset = function (asset) {
 
         objectFrameworkArea.clearMainArea();
@@ -339,9 +383,9 @@
             }
             window.imageUploaded = function (img) {
                 _H.loadSprite(img, function (image) {
-                    vs.uploadImage(image);
+                    objectFrameworkArea.mainPanel.frameArea.currentFrame.uploadImage(image);
                     var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
-                    ce.init(vs);
+                    ce.init(objectFrameworkArea.mainPanel.frameArea.currentFrame);
                     ce.editor.showOutline = false;
                     ce.editable = false;
                     ce.click = function (e) {
@@ -349,7 +393,7 @@
                         frame.offsetY = e.y;
                     };
 
-                    objectFrameworkArea.mainPanel.frameArea.palatteArea.init(vs.palette, true);
+                    objectFrameworkArea.mainPanel.frameArea.palatteArea.init(objectFrameworkArea.mainPanel.frameArea.currentFrame.palette, true);
                 });
             };
 
@@ -357,12 +401,14 @@
         }));
 
         var jd;
-        objectFrameworkArea.mainPanel.addControl(jd = new ScrollBox(20, 35, 25, 3, 460, "rgb(50,60,127)"));
+        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 100, "rgb(50,60,127)"));
         objectFrameworkArea.mainPanel.populate = function (ast) {
             var bd;
             jd.controls = [];
             for (var i = 0; i < ast.frames.length; i++) {
-                jd.addControl(bd = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
+                jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
+                    this.state.drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15);
+                }, function () {
                     objectFrameworkArea.mainPanel.loadFrame(this.state);
                 }));
                 bd.state = ast.frames[i];
@@ -378,7 +424,7 @@
 
         objectFrameworkArea.mainPanel.loadFrame = function (frame) {
             objectFrameworkArea.mainPanel.frameArea.controls = [];
-
+            objectFrameworkArea.mainPanel.frameArea.currentFrame = frame;
             var ce;
             objectFrameworkArea.mainPanel.frameArea.addControl(new TextArea(15, 21, "Name: ", textFont, "black"));
             objectFrameworkArea.mainPanel.frameArea.addControl(new TextBox(90, 0, 395, 25, frame.name, buttonFont, "rgb(50,150,50)", function () { frame.name = this.text; }));
@@ -421,14 +467,14 @@
                 frame.offsetX = e.x;
                 frame.offsetY = e.y;
             };
-            objectFrameworkArea.mainPanel.frameArea.addControl(new HtmlBox(19, 64, 120, 31, function() {
+            objectFrameworkArea.mainPanel.frameArea.addControl(new HtmlBox(19, 64, 120, 31, function () {
                 var sc = document.getElementById("picFieldUploader");
 
                 sc.style.left = (objectFrameworkArea.x + 320 + 7 + 19) + "px";
                 sc.style.top = (objectFrameworkArea.y + 150 + 155 + 64) + "px";
                 sc.style.position = "absolute";
                 sc.style.visibility = "visible";
-            }, function(x, y) {
+            }, function (x, y) {
                 var sc = document.getElementById("picFieldUploader");
                 if (sc) {
                     if (sc.style.left == x + "px" && sc.style.top == y + "px")
@@ -436,12 +482,12 @@
                     sc.style.left = x + "px";
                     sc.style.top = y + "px";
                 }
-            }, function() {
+            }, function () {
                 var sc = document.getElementById("picFieldUploader");
-                if (sc) { 
+                if (sc) {
                     sc.style.visibility = "visible";
                 }
-            }, function() {
+            }, function () {
                 var sc = document.getElementById("picFieldUploader");
                 if (sc) {
                     sc.style.left = "-100px";

@@ -28,6 +28,7 @@ namespace OurSonic
                 Convert.ToBase64String(dc);
                 context.Response.ContentType = "image/x-ms-bmp";
                 context.Response.Write(Convert.ToBase64String(dc));
+                File.Delete(d);
             }
 
 
