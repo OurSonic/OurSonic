@@ -3,7 +3,7 @@
 function SonicManager(mainCanvas, resize) {
     var scale = this.scale = { x: 2, y: 2 };
     window.sonicManager = this;
-     
+    this.mainCanvas = mainCanvas;
 			
     this.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
     this.showHeightMap = false;

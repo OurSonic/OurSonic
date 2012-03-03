@@ -355,6 +355,9 @@
 
                 for (var j = 0; j < jd.controls.length; j++) {
                     if (jd.controls[j] == this) {
+                        if (piece.assetIndex == j)
+                            this.toggled = true;
+                        
                         piece.assetIndex = j;
                         continue;
                     }
@@ -364,7 +367,7 @@
             }));
             bd.toggle = true;
             bd.state = objectFrameworkArea.objectFramework.assets[i];
-            if (piece.assetIndex==i) {
+            if (piece.assetIndex == i) {
                 bd.toggled = true;
             }
         }
@@ -373,7 +376,38 @@
 
     };
 
+    objectFrameworkArea.loadPath = function (path) {
 
+        objectFrameworkArea.clearMainArea();
+
+
+        objectFrameworkArea.mainPanel.addControl(new TextArea(25, 25, "Name: ", textFont, "black"));
+        objectFrameworkArea.mainPanel.addControl(new TextBox(100, 5, 290, 25, path.name, buttonFont, "rgb(50,150,50)", function () { path.name = this.text; }));
+
+
+        var jd;
+        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 100, "rgb(50,60,127)"));
+        var bd;
+        jd.controls = [];
+        for (var i = 0; i < objectFrameworkArea.objectFramework.pieces.length; i++) {
+
+            jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
+                var ast = objectFrameworkArea.objectFramework.assets[this.state.assetIndex];
+                if (ast.frames.length == 0) return;
+                ast.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15, this.state.xflip, this.state.yflip);
+            }, function () {
+
+
+            }));
+            bd.state = objectFrameworkArea.objectFramework.pieces[i];
+        }
+
+        var pe;
+        objectFrameworkArea.mainPanel.addControl(pe = new PathEditor(20, 150, { width: 150, height: 150 }));
+        pe.init(path);
+
+
+    };
 
     objectFrameworkArea.loadAsset = function (asset) {
 

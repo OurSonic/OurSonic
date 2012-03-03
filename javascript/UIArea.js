@@ -407,7 +407,7 @@ function ImageButton(x, y, width, height, text, font, image, click, mouseUp, mou
 
         this.image(canv, this.parent.x + this.x, this.parent.y + this.y);
 
-        canv.fillText(txt, this.parent.x + this.x + ((this.width / 2) - (canv.measureText(txt).width / 2)), this.parent.y + this.y + this.height-3);
+        canv.fillText(txt, this.parent.x + this.x + ((this.width / 2) - (canv.measureText(txt).width / 2)), this.parent.y + this.y + this.height - 3);
     };
     return this;
 }
@@ -762,6 +762,75 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
     };
     return this;
 }
+function PathEditor(x, y, size) {
+    this.forceDrawing = function () {
+        return { redraw: false, clearCache: false };
+    };
+    this.lastPosition = null;
+    this.x = x;
+    this.y = y;
+    this.showHurtMap = false;
+    this.showCollideMap = false;
+    this.visible = true;
+    this.size = size;
+    this.clicking = false;
+    this.parent = null;
+    this.pathMaker = null;
+    this.init = function (path) {
+        this.path = path;
+        this.width = size.width;
+        this.height = size.height;
+        this.pathMaker = new PathMaker(path);
+    };
+    this.focus = function () {
+
+    };
+    this.loseFocus = function () {
+
+    };
+
+    this.onClick = function (e) {
+        if (!this.visible) return;
+        if (!this.pathMaker) return;
+        this.clicking = true;
+        this.clickHandled = false; 
+        this.lastPosition = e;
+        this.pathMaker.placeItem(e);
+
+    };
+    this.onKeyDown = function (e) {
+
+    };
+    this.onMouseUp = function (e) {
+        if (!this.visible) return;
+
+        this.lastPosition = null;
+        this.clickHandled = false;
+        this.clicking = false;
+    };
+    this.clickHandled = false;
+    this.onMouseOver = function (e) {
+        if (!this.pathMaker) return;
+        
+
+
+        if (this.clicking) {
+            this.clickHandled = true;
+            this.pathMaker.placeItem(e, this.lastPosition);
+            this.lastPosition = e;
+
+        }
+    };
+    this.draw = function (canv) {
+        if (!this.visible) return;
+        if (!this.pathMaker) return;
+        var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
+
+        this.pathMaker.draw(canv, pos, this.size);
+
+    };
+    return this;
+}
 
 
 function ColorEditingArea(x, y, scale) {
@@ -775,13 +844,13 @@ function ColorEditingArea(x, y, scale) {
     this.showCollideMap = false;
     this.editable = true;
     this.visible = true;
+    this.editor = null;
     this.scale = scale;
     this.clicking = false;
     this.paletteEditor = null;
     this.parent = null;
     this.click = undefined;
     this.init = function (frame) {
-        frame.width
         this.frame = frame;
         this.width = this.scale.x * frame.width;
         this.height = this.scale.y * frame.height;
@@ -1321,7 +1390,7 @@ function HScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, contro
     this.itemHeight = itemHeight;
     this.backColor = backColor;
 
-    this.height =itemHeight+ scrollWidth;
+    this.height = itemHeight + scrollWidth;
     this.parent = null;
     this.scrollOffset = 0;
     this.scrollPosition = 0;
@@ -1442,18 +1511,18 @@ function HScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, contro
         if (!this.visible) return;
         canv.fillStyle = this.backColor;
 
-        var i; 
+        var i;
         var width = this.visibleItems * (this.itemWidth + jWidth) - 2;
 
         canv.fillStyle = this.backColor;
         canv.lineWidth = 1;
         canv.strokeStyle = "#333";
-        roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.visibleItems * (this.itemWidth + jWidth) + 2, this.itemHeight + scrollWidth+6, 3, true, true);
+        roundRect(canv, this.parent.x + this.x, this.parent.y + this.y, this.visibleItems * (this.itemWidth + jWidth) + 2, this.itemHeight + scrollWidth + 6, 3, true, true);
 
         canv.fillStyle = "grey";
         canv.lineWidth = 1;
         canv.strokeStyle = "#444";
-        canv.fillRect(this.parent.x + this.x + 2, this.parent.y + this.y + this.itemHeight + 6, this.visibleItems * (this.itemWidth + jWidth) , scrollWidth);
+        canv.fillRect(this.parent.x + this.x + 2, this.parent.y + this.y + this.itemHeight + 6, this.visibleItems * (this.itemWidth + jWidth), scrollWidth);
 
         canv.fillStyle = "FFDDFF";
         canv.lineWidth = 1;
@@ -1465,7 +1534,7 @@ function HScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, contro
 
 
 
-        var curX= 3;
+        var curX = 3;
         for (i = this.scrollOffset; i < Math.min(this.controls.length, this.scrollOffset + this.visibleItems); i++) {
             this.controls[i].parent = { x: this.parent.x + this.x, y: this.parent.y + this.y };
             this.controls[i].x = curX;

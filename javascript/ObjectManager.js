@@ -204,8 +204,46 @@ function LevelObjectPiece(name) {
     this.name = name ? name : "";
 }
 function LevelObjectPath(name) {
-    this.pieces = [];
+    this.pieces = [{ x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150}];
     this.name = name ? name : "";
+    this.width = 150;
+    this.height = 150;
+
+
+
+
+    this.drawUI = function (canvas, pos, scale, showOutline, showImages) {
+        canvas.strokeStyle = "#000000";
+        canvas.lineWidth = 2;
+
+
+        canvas.fillStyle = "#FFFFFF";
+        canvas.fillRect(pos.x, pos.y, this.width, this.height);
+        for (var i = 1; i < this.pieces.length; i++) {
+            var j = this.pieces[i];
+         
+                canvas.beginPath();
+                canvas.moveTo(pos.x + j.x, pos.y + j.y);
+                canvas.lineTo(pos.x + this.pieces[i - 1].x, pos.y + this.pieces[i - 1].y);
+                canvas.stroke();
+       
+        }
+        for (var i = 0; i < this.pieces.length; i++) {
+            var j = this.pieces[i];
+            var drawRadial = sonicManager.mainCanvas.createRadialGradient(0, 0, 0, 10, 10, 50);
+            drawRadial.addColorStop(0, 'white');
+            drawRadial.addColorStop(1, 'red');
+
+
+            canvas.fillStyle = drawRadial;
+            canvas.beginPath();
+            canvas.arc(pos.x + j.x, pos.y + j.y, 10, 0, Math.PI * 2, true);
+            canvas.closePath();
+            canvas.fill();
+
+        }
+
+    };
 }
 function LevelObjectPathPiece(pieceName) {
     this.pieceName = pieceName;

@@ -39,6 +39,8 @@
     </script>
     <script src="javascript/UIArea.js?1" type="text/javascript"> 
     </script>
+    <script src="javascript/PathMaker.js?1" type="text/javascript"> 
+    </script>
     <script src="javascript/Sonic.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Sensor.js?1" type="text/javascript"> 
