@@ -327,15 +327,15 @@
         objectFrameworkArea.mainPanel.addControl(new TextArea(25, 25, "Name: ", textFont, "black"));
         objectFrameworkArea.mainPanel.addControl(new TextBox(100, 5, 290, 25, piece.name, buttonFont, "rgb(50,150,50)", function () { piece.name = this.text; }));
         var b;
-        objectFrameworkArea.mainPanel.addControl(b = new Button(40, 50, 70, 25, "XFlip", buttonFont, "rgb(50,150,50)", function () {
-            piece.xflip=b.toggled;
+        objectFrameworkArea.mainPanel.addControl(b = new Button(40, 160, 70, 25, "XFlip", buttonFont, "rgb(50,150,50)", function () {
+            piece.xflip = b.toggled;
         }));
         b.toggle = true;
         b.toggled = piece.xflip;
-        
+
         var c;
-        objectFrameworkArea.mainPanel.addControl(c = new Button(115, 50, 70, 25, "YFlip", buttonFont, "rgb(50,150,50)", function () {
-            piece.yflip = b.toggled;
+        objectFrameworkArea.mainPanel.addControl(c = new Button(115, 160, 70, 25, "YFlip", buttonFont, "rgb(50,150,50)", function () {
+            piece.yflip = c.toggled;
         }));
         c.toggle = true;
         c.toggled = piece.yflip;
@@ -343,17 +343,31 @@
 
 
         var jd;
-        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 100, "rgb(50,60,127)")); 
-            var bd;
-            jd.controls = [];
-            for (var i = 0; i < objectFrameworkArea.objectFramework.assets.length; i++) {
-                jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
-                    this.state.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15);
-                }, function () {
-                    objectFrameworkArea.mainPanel.loadFrame(this.state.frames[0]);
-                }));
-                bd.state = objectFrameworkArea.objectFramework.assets[i];
-            } 
+        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 100, "rgb(50,60,127)"));
+        var bd;
+        jd.controls = [];
+        for (var i = 0; i < objectFrameworkArea.objectFramework.assets.length; i++) {
+            jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
+                if (this.state.frames.length == 0) return;
+                this.state.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15, piece.xflip, piece.yflip);
+            }, function () {
+
+
+                for (var j = 0; j < jd.controls.length; j++) {
+                    if (jd.controls[j] == this) {
+                        piece.assetIndex = j;
+                        continue;
+                    }
+                    jd.controls[j].toggled = false;
+                }
+
+            }));
+            bd.toggle = true;
+            bd.state = objectFrameworkArea.objectFramework.assets[i];
+            if (piece.assetIndex==i) {
+                bd.toggled = true;
+            }
+        }
 
 
 

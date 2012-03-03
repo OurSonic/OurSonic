@@ -72,7 +72,7 @@ function LevelObjectAssetFrame(name) {
             for (var y = 0; y < this.height; y++) {
                 var pl = _H.colorFromData(pix, (x * 4) + y * this.width * 4);
                 var ind = 0;
-                if (palette[pl]!=undefined) {
+                if (palette[pl] != undefined) {
                     ind = palette[pl];
                 } else {
                     ind = paletteLength;
@@ -95,11 +95,32 @@ function LevelObjectAssetFrame(name) {
     this.palette = [];
     this.name = name ? name : "";
 
-    this.drawSimple = function (canvas, pos, width, height) {
+    this.drawSimple = function (canvas, pos, width, height, xflip, yflip) {
 
         canvas.save();
         canvas.translate(pos.x, pos.y);
+
+
+        if (xflip) {
+            if (yflip) {
+                canvas.translate(width, height);
+                canvas.scale(-1, -1);
+            } else {
+                canvas.translate(width, 0);
+                canvas.scale(-1, 1);
+            }
+        } else {
+            if (yflip) {
+                canvas.translate(0, height);
+                canvas.scale(1, -1);
+            } else {
+
+            }
+        }
+
         canvas.scale(width / this.width, height / this.height);
+
+
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 var ex = x;
@@ -115,7 +136,7 @@ function LevelObjectAssetFrame(name) {
         canvas.restore();
 
     };
-    
+
     this.drawUI = function (canvas, pos, scale, showOutline, showCollideMap, showHurtMap) {
         canvas.strokeStyle = "#000000";
         canvas.lineWidth = 1;
@@ -134,7 +155,7 @@ function LevelObjectAssetFrame(name) {
                 //if (canvas.strokeStyle != "#" + negative)
                 //    canvas.strokeStyle = "#" + negative; 
 
-                
+
                 canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
                 if (showOutline)
                     canvas.strokeRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
@@ -184,7 +205,7 @@ function LevelObjectPiece(name) {
 }
 function LevelObjectPath(name) {
     this.pieces = [];
-    this.name = name ? name : ""; 
+    this.name = name ? name : "";
 }
 function LevelObjectPathPiece(pieceName) {
     this.pieceName = pieceName;
