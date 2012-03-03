@@ -215,8 +215,17 @@
             editor = CodeMirror.fromTextArea(codeMirror, {
                 lineNumbers: true,
                 matchBrackets: true,
-                onChange: change
+                onChange: change,
+                extraKeys: { "Ctrl-Space": function (cm) { CodeMirror.simpleHint(cm, CodeMirror.javascriptHint); } },
+                onCursorActivity: function () {
+                    editor.setLineClass(hlLine, null);
+                    hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
+                }
             });
+            editor.setOption("theme", "night");
+            
+            var hlLine = editor.setLineClass(0, "activeline");
+            
             var scroller = editor.getScrollerElement();
             scroller.style.height = "485px";
             scroller.style.width = "485px";
@@ -343,7 +352,7 @@
 
 
         var jd;
-        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 100, "rgb(50,60,127)"));
+        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 112, "rgb(50,60,127)"));
         var bd;
         jd.controls = [];
         for (var i = 0; i < objectFrameworkArea.objectFramework.assets.length; i++) {
@@ -386,7 +395,7 @@
 
 
         var jd;
-        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 100, "rgb(50,60,127)"));
+        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 112, "rgb(50,60,127)"));
         var bd;
         jd.controls = [];
         for (var i = 0; i < objectFrameworkArea.objectFramework.pieces.length; i++) {
@@ -449,7 +458,7 @@
         }));
 
         var jd;
-        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 100, "rgb(50,60,127)"));
+        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 112, "rgb(50,60,127)"));
         objectFrameworkArea.mainPanel.populate = function (ast) {
             var bd;
             jd.controls = [];

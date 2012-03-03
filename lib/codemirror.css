@@ -1,8 +1,9 @@
 .CodeMirror {
   line-height: 1em;
   font-family: monospace;
-    cursor: text;
-}
+    cursor: text;border-top: 1px solid black; border-bottom: 1px solid black;
+} 
+      .activeline {background: #0e1741 !important;}
 
 .CodeMirror-scroll {
   overflow: auto;

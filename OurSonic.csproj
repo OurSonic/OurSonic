@@ -63,6 +63,7 @@
     <Content Include="javascript\SonicManager.js" />
     <Content Include="lib\codemirror.css" />
     <Content Include="lib\codemirror.js" />
+    <Content Include="lib\theme\night.css" />
     <Content Include="lib\mode\javascript\javascript.js" />
     <Content Include="lib\util\dialog.css" />
     <Content Include="lib\util\dialog.js" />
