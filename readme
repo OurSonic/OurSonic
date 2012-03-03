@@ -1,0 +1,47 @@
+﻿Our Sonic
+
+Sonic simulator and level editor
+
+
+TODO:
+
+	level editor
+		object framework editor
+			'/ assets
+			pieces 
+			paths
+			projectiles
+		object editor
+		chunk editor
+		block editor
+			heightmap/angle editor
+		tile editor
+	simulation
+		check phsyics variables
+		lag magnifier 
+	image editor
+		drawlines
+		drawpolygon
+		floodfill
+		selection (with threshold)
+		modify palette
+	uis
+		better/prettier depth support 
+		prettier
+		faster
+		blinking on textchange
+	backgrounds
+		background editor
+		manually insert s3 logic
+	animated tiles
+		fix bug on launchbase
+	animated palette
+		determine logic
+	framework
+		convert to node.js
+		saving of new levels
+		forking
+	object database
+		storing via mongodb?
+		create 765 objects
+		

@@ -224,7 +224,8 @@
         }, function (x, y) {
 
             var scroller = editor.getScrollerElement();
-
+            if (scroller.style.left == x + "px" && scroller.style.top == y + "px")
+                return;
             scroller.style.left = x + "px";
             scroller.style.top = y + "px";
             editor.refresh();
@@ -430,6 +431,8 @@
             }, function(x, y) {
                 var sc = document.getElementById("picFieldUploader");
                 if (sc) {
+                    if (sc.style.left == x + "px" && sc.style.top == y + "px")
+                        return;
                     sc.style.left = x + "px";
                     sc.style.top = y + "px";
                 }
