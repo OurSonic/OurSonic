@@ -32,10 +32,12 @@ function LevelObject(key) {
     this.onHurtSonic = function (level, sonic, sensor) {
     };
 }
+
 function LevelObjectAsset(name) {
     this.frames = [];
     this.name = name ? name : "";
 }
+
 function LevelObjectAssetFrame(name) {
     this.offsetX = 0;
     this.width = 0;
@@ -137,12 +139,14 @@ function LevelObjectAssetFrame(name) {
 
     };
 
-    this.drawUI = function (canvas, pos, scale, showOutline, showCollideMap, showHurtMap) {
+    this.drawUI = function (canvas, pos, size, showOutline, showCollideMap, showHurtMap, showOffset) {
         canvas.strokeStyle = "#000000";
         canvas.lineWidth = 1;
+        canvas.save();
 
-        scale.x = _H.floor(scale.x);
-        scale.y = _H.floor(scale.y);
+        canvas.translate(pos.x, pos.y);
+
+        canvas.scale(size.width / this.width, size.height / this.height);
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 var ex = x;
@@ -156,45 +160,50 @@ function LevelObjectAssetFrame(name) {
                 //    canvas.strokeStyle = "#" + negative; 
 
 
-                canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
-                if (showOutline)
-                    canvas.strokeRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
+                canvas.fillRect(ex, ey, 1, 1);
+              //  if (showOutline)
+                //    canvas.strokeRect(ex, ey, 1, 1);
 
                 if (showCollideMap) {
                     if (this.collisionMap[ex][ey]) {
                         canvas.fillStyle = "rgba(30,34,255,0.6)";
-                        canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
+                        canvas.fillRect(ex, ey, 1, 1);
                     }
                 }
 
                 if (showHurtMap) {
                     if (this.hurtSonicMap[ex][ey]) {
                         canvas.fillStyle = "rgba(211,12,55,0.6)";
-                        canvas.fillRect(pos.x + ex * scale.x, pos.y + ey * scale.y, scale.x, scale.y);
+                        canvas.fillRect(ex, ey, 1, 1);
                     }
 
                 }
             }
         }
-        canvas.beginPath();
-        canvas.moveTo(pos.x + this.offsetX * scale.x, pos.y + 0);
-        canvas.lineTo(pos.x + this.offsetX * scale.x, pos.y + this.height * scale.y);
-        canvas.lineWidth = 3;
-        canvas.strokeStyle = "#000000";
-        canvas.stroke();
+        if (showOffset) {
 
-        canvas.beginPath();
-        canvas.moveTo(pos.x + 0, pos.y + this.offsetY * scale.y);
-        canvas.lineTo(pos.x + this.width * scale.x, pos.y + this.offsetY * scale.y);
-        canvas.lineWidth = 3;
-        canvas.strokeStyle = "#000000";
-        canvas.stroke();
+            canvas.beginPath();
+            canvas.moveTo(  this.offsetX,  0);
+            canvas.lineTo(  this.offsetX,  this.height);
+            canvas.lineWidth = 1;
+            canvas.strokeStyle = "#000000";
+            canvas.stroke();
+
+            canvas.beginPath();
+            canvas.moveTo( 0, this.offsetY);
+            canvas.lineTo( this.width,  this.offsetY);
+            canvas.lineWidth = 1;
+            canvas.strokeStyle = "#000000";
+            canvas.stroke();
+        }
+        canvas.restore();
 
     };
     this.draw = function (canvas, pos, scale) {
 
     };
 }
+
 function LevelObjectPiece(name) {
     this.assetIndex = 0;
     this.frameIndex = 0;
@@ -203,18 +212,16 @@ function LevelObjectPiece(name) {
     this.yflip = false;
     this.name = name ? name : "";
 }
+
 function LevelObjectPieceLayout(name) {
     this.width = 350;
-    this.height = 350;
+    this.height = 280;
     this.pieces = [];
-   
+
     this.name = name ? name : "";
-  
 
 
-
-
-    this.drawUI = function (canvas, pos, scale, showOutline, showImages) {
+    this.drawUI = function (canvas, pos, scale, showOutline, showImages, selectedPieceIndex) {
         canvas.strokeStyle = "#000000";
         canvas.lineWidth = 2;
 
@@ -223,36 +230,49 @@ function LevelObjectPieceLayout(name) {
         canvas.fillRect(pos.x, pos.y, this.width, this.height);
         for (var i = 1; i < this.pieces.length; i++) {
             var j = this.pieces[i];
-         
-                canvas.beginPath();
-                canvas.moveTo(pos.x + j.x, pos.y + j.y);
-                canvas.lineTo(pos.x + this.pieces[i - 1].x, pos.y + this.pieces[i - 1].y);
-                canvas.stroke();
-       
+
+            canvas.beginPath();
+            canvas.moveTo(pos.x + j.x, pos.y + j.y);
+            canvas.lineTo(pos.x + this.pieces[i - 1].x, pos.y + this.pieces[i - 1].y);
+            canvas.stroke();
+
         }
         for (var i = 0; i < this.pieces.length; i++) {
             var j = this.pieces[i];
-            var drawRadial = sonicManager.mainCanvas.createRadialGradient(0, 0, 0, 10, 10, 50);
-            drawRadial.addColorStop(0, 'white');
-            drawRadial.addColorStop(1, 'red');
+            if (showImages) {
+                var piece = sonicManager.uiManager.objectFrameworkArea.objectFramework.pieces[j.pieceIndex];
+                var asset = sonicManager.uiManager.objectFrameworkArea.objectFramework.assets[piece.assetIndex];
+                if (asset.frames.length > 0) {
+                    asset.frames[0].drawUI(canvas, { x: pos.x + j.x - asset.frames[0].offsetX, y: pos.y + j.y - asset.frames[0].offsetY }, { x: 1, y: 1 }, false, false, false);
+                }
+            } else {
+                var drawRadial = sonicManager.mainCanvas.createRadialGradient(0, 0, 0, 10, 10, 50);
+                drawRadial.addColorStop(0, 'white');
+                if (selectedPieceIndex == i) {
+                    drawRadial.addColorStop(1, 'yellow');
+                } else {
+                    drawRadial.addColorStop(1, 'red');
+                }
 
+                canvas.fillStyle = drawRadial;
+                canvas.beginPath();
+                canvas.arc(pos.x + j.x, pos.y + j.y, 10, 0, Math.PI * 2, true);
+                canvas.closePath();
+                canvas.fill();
 
-            canvas.fillStyle = drawRadial;
-            canvas.beginPath();
-            canvas.arc(pos.x + j.x, pos.y + j.y, 10, 0, Math.PI * 2, true);
-            canvas.closePath();
-            canvas.fill();
-
+            }
         }
 
     };
 }
+
 function LevelObjectPieceLayoutPiece(pieceIndex) {
     this.pieceIndex = pieceIndex;
     this.assetIndex = 0;
     this.x = 0;
     this.y = 0;
 }
+
 function LevelObjectInfo() {
     this.x = 0;
     this.y = 0;
@@ -263,6 +283,7 @@ function LevelObjectInfo() {
     this.subdata = undefined;
     this.key = undefined;
 }
+
 function LevelProjectile(name) {
     this.x = 0;
     this.y = 0;

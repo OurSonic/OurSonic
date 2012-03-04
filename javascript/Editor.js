@@ -4,8 +4,8 @@ function Editor(assetFrame) {
     this.lineWidth = 1;
     this.currentColor = 0;
     this.showOutline = true;
-    this.draw = function (canvas, pos, scale,showCollideMap,showHurtMap) {
-        this.assetFrame.drawUI(canvas, pos, scale, this.showOutline, showCollideMap, showHurtMap);
+    this.draw = function (canvas, pos, size,showCollideMap,showHurtMap) {
+        this.assetFrame.drawUI(canvas, pos, size, this.showOutline, showCollideMap, showHurtMap, true);
     };
     this.drawPixel = function (location1) {
 

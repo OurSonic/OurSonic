@@ -5,9 +5,10 @@ function PieceLayoutMaker(pieceLayout) {
     this.currentColor = 0;
     this.showOutline = true;
     this.showImages = false;
+    this.selectedPieceIndex = 0;
 
     this.draw = function (canvas, pos, scale) {
-        this.pieceLayout.drawUI(canvas, pos, scale, this.showOutline, this.showImages);
+        this.pieceLayout.drawUI(canvas, pos, scale, this.showOutline, this.showImages, this.selectedPieceIndex);
     };
     this.placeItem = function (position, lastPosition) {
 
@@ -19,6 +20,7 @@ function PieceLayoutMaker(pieceLayout) {
                     position.y < this.pieceLayout.pieces[i].y + 10) {
                     this.pieceLayout.pieces[i].x = position.x;
                     this.pieceLayout.pieces[i].y = position.y;
+                    this.selectedPieceIndex = i;
                     break;
                 }
             }
@@ -30,10 +32,12 @@ function PieceLayoutMaker(pieceLayout) {
                     lastPosition.y < this.pieceLayout.pieces[i].y + 10) {
                     this.pieceLayout.pieces[i].x = position.x;
                     this.pieceLayout.pieces[i].y = position.y;
+                    this.selectedPieceIndex = i;
                     break;
                 }
             }
         }
+        sonicManager.uiManager.objectFrameworkArea.mainPanel.updatePieces();
 
     };
 }

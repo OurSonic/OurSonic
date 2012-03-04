@@ -375,10 +375,10 @@ function ImageButton(x, y, width, height, text, font, image, click, mouseUp, mou
             this.button1Grad = canv.createLinearGradient(0, 0, 0, 1);
 
             this.button1Grad.addColorStop(0, '#FFFFFF');
-            this.button1Grad.addColorStop(1, '#dedede');
+            this.button1Grad.addColorStop(1, '#A5A5A5');
 
             this.button2Grad = canv.createLinearGradient(0, 0, 0, 1);
-            this.button2Grad.addColorStop(0, '#dedede');
+            this.button2Grad.addColorStop(0, '#A5A5A5');
             this.button2Grad.addColorStop(1, '#FFFFFF');
 
 
@@ -477,10 +477,10 @@ function Button(x, y, width, height, text, font, color, click, mouseUp, mouseOve
             this.button1Grad = canv.createLinearGradient(0, 0, 0, 1);
 
             this.button1Grad.addColorStop(0, '#FFFFFF');
-            this.button1Grad.addColorStop(1, '#dedede');
+            this.button1Grad.addColorStop(1, '#A5A5A5');
 
             this.button2Grad = canv.createLinearGradient(0, 0, 0, 1);
-            this.button2Grad.addColorStop(0, '#dedede');
+            this.button2Grad.addColorStop(0, '#A5A5A5');
             this.button2Grad.addColorStop(1, '#FFFFFF');
 
 
@@ -721,10 +721,10 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
             created = true;
             this.button1Grad = canv.createLinearGradient(0, 0, 0, 1);
             this.button1Grad.addColorStop(0, '#FFFFFF');
-            this.button1Grad.addColorStop(1, '#dedede');
+            this.button1Grad.addColorStop(1, '#A5A5A5');
 
             this.button2Grad = canv.createLinearGradient(0, 0, 0, 1);
-            this.button2Grad.addColorStop(0, '#dedede');
+            this.button2Grad.addColorStop(0, '#A5A5A5');
             this.button2Grad.addColorStop(1, '#FFFFFF');
 
 
@@ -773,7 +773,7 @@ function PieceLayoutEditor(x, y, size) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
-    this.lastPosition = null;
+    this.lastPosition = null; 
     this.x = x;
     this.y = y;
     this.showHurtMap = false;
@@ -818,13 +818,14 @@ function PieceLayoutEditor(x, y, size) {
     this.clickHandled = false;
     this.onMouseOver = function (e) {
         if (!this.pieceLayoutMaker) return;
-        
+
 
 
         if (this.clicking) {
             this.clickHandled = true;
             this.pieceLayoutMaker.placeItem(e, this.lastPosition);
-            this.lastPosition = e;
+            this.lastPosition = { x: e.x, y: e.y };
+            
 
         }
     };
@@ -840,27 +841,27 @@ function PieceLayoutEditor(x, y, size) {
 }
 
 
-function ColorEditingArea(x, y, scale) {
+function ColorEditingArea(x, y,size) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
     this.lastPosition = null;
     this.x = x;
     this.y = y;
+    this.size = size;
     this.showHurtMap = false;
     this.showCollideMap = false;
     this.editable = true;
     this.visible = true;
     this.editor = null;
-    this.scale = scale;
     this.clicking = false;
     this.paletteEditor = null;
     this.parent = null;
     this.click = undefined;
     this.init = function (frame) {
         this.frame = frame;
-        this.width = this.scale.x * frame.width;
-        this.height = this.scale.y * frame.height;
+        this.width = this.size.width;
+        this.height = this.size.height;
         this.editor = new Editor(frame);
     };
     this.focus = function () {
@@ -875,7 +876,9 @@ function ColorEditingArea(x, y, scale) {
         if (!this.editor) return;
         this.clicking = true;
         this.clickHandled = false;
-        var pos = { x: _H.floor(e.x / this.scale.x), y: _H.floor(e.y / this.scale.y) };
+        var scalex = this.size.width/this.editor.assetFrame.width;
+        var scaley = this.size.height/this.editor.assetFrame.height;
+        var pos = { x: _H.floor(e.x / scalex), y: _H.floor(e.y / scaley) };
         if (!this.editable) {
             if (this.click) {
                 this.click(pos);
@@ -901,7 +904,11 @@ function ColorEditingArea(x, y, scale) {
     this.clickHandled = false;
     this.onMouseOver = function (e) {
         if (!this.editor) return;
-        var pos = { x: _H.floor(e.x / this.scale.x), y: _H.floor(e.y / this.scale.y) };
+
+        var scalex = this.size.width/this.editor.assetFrame.width;
+        var scaley = this.size.height/this.editor.assetFrame.height;
+
+        var pos = { x: _H.floor(e.x / scalex), y: _H.floor(e.y / scaley) };
 
 
         if (this.clicking) {
@@ -921,7 +928,7 @@ function ColorEditingArea(x, y, scale) {
         if (!this.editor) return;
         var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
 
-        this.editor.draw(canv, pos, this.scale, this.showCollideMap, this.showHurtMap);
+        this.editor.draw(canv, pos, this.size, this.showCollideMap, this.showHurtMap);
 
     };
     return this;
