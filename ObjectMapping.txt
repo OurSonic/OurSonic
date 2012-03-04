@@ -22,8 +22,8 @@
 		collided
 		xflip
 		yflip
-	paths
-		peices[]
+	pieceLayouts
+		pieces[]
 
 	init:function(level,sonic)
 	tick:function(level,sonic)

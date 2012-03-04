@@ -9,7 +9,7 @@ TODO:
 		object framework editor
 			'/ assets
 			'/ pieces 
-			paths
+			pieceLayouts
 			projectiles
 		object editor
 		chunk editor

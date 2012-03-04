@@ -1,15 +1,17 @@
 ﻿function UIManager(sonicManager, mainCanvas, scale) {
     this.UIAreas = [];
     this.messages = [];
+    sonicManager.uiManager = this;
 
-    function runSonic() {
-        levelManagerArea.visible = false;
-        solidTileArea.visible = false;
-        levelInformation.visible = false;
-        modifyTileArea.visible = false;
-        modifyTileChunkArea.visible = false;
-        solidTileArea.visible = false;
-        debuggerArea.visible = true;
+
+    this.runSonic = function () {
+        sonicManager.uiManager.levelManagerArea.visible = false;
+        sonicManager.uiManager.solidTileArea.visible = false;
+        sonicManager.uiManager.levelInformation.visible = false;
+        sonicManager.uiManager.modifyTileArea.visible = false;
+        sonicManager.uiManager.modifyTileChunkArea.visible = false;
+        sonicManager.uiManager.solidTileArea.visible = false;
+        sonicManager.uiManager.debuggerArea.visible = true;
         if (sonicManager.background)
             sonicManager.background.cache(sonicManager.scale);
         sonicManager.windowLocation = _H.defaultWindowLocation(0, mainCanvas, scale);
@@ -18,11 +20,11 @@
     }
 
     var textFont = this.textFont = "18pt Calibri ";
-    var smallTextFont = this.smallTextFont = "12pt Calibri ";
-    var buttonFont = this.buttonFont = "13pt Arial bold";
-    var smallButtonFont = this.smallButtonFont = "11pt Arial bold";
+    this.smallTextFont = "12pt Calibri ";
+    this.buttonFont = "13pt Arial bold";
+    this.smallButtonFont = "11pt Arial bold";
     mainCanvas.font = textFont;
-    var indexes = this.indexes = { tpIndex: 0, modifyIndex: 0, modifyTPIndex: 0 };
+    this.indexes = { tpIndex: 0, modifyIndex: 0, modifyTPIndex: 0 };
     this.dragger = new Dragger(function (xsp, ysp) {
         sonicManager.windowLocation.x += xsp;
         sonicManager.windowLocation.y += ysp;
@@ -102,6 +104,15 @@
             }
 
             return true;
+        } else {
+            for (ij = 0; ij < this.UIAreas.length; ij++) {
+                are = this.UIAreas[ij];
+                if (are.visible) {
+                    are.depth = 0;
+                    are.loseFocus();
+                }
+            }
+
         }
         return false;
     };
@@ -155,870 +166,18 @@
     };
 
 
-    var updateTitle = function (str) {
+
+    this.updateTitle = function (str) {
         document.title = str + " | Our Sonic";
-        curLevelName = str;
-    };
-
-    var size = 40 * 4;
-
-    var objectFrameworkArea = this.objectFrameworkArea = new UiArea(540, 75, 850, 690, this, true);
-    objectFrameworkArea.visible = true;
-    this.UIAreas.push(objectFrameworkArea);
-    objectFrameworkArea.addControl(new TextArea(30, 25, "Object Framework", textFont, "blue"));
-
-    objectFrameworkArea.addControl(new TextArea(45, 60, "Assets", textFont, "black"));
-    objectFrameworkArea.addControl(new Button(160, 38, 140, 25, "Add Asset", buttonFont, "rgb(50,150,50)", function () {
-        objectFrameworkArea.objectFramework.assets.push(new LevelObjectAsset("Asset " + (objectFrameworkArea.objectFramework.assets.length + 1)));
-        objectFrameworkArea.populate(objectFrameworkArea.objectFramework);
-    }));
-    objectFrameworkArea.addControl(objectFrameworkArea.assets = new ScrollBox(30, 60 + 10, 25, 4, 250, "rgb(50,60,127)"));
-
-
-    objectFrameworkArea.addControl(new TextArea(45, 60 + (size * 1), "Pieces", textFont, "black"));
-    objectFrameworkArea.addControl(new Button(160, 38 + (size * 1), 140, 25, "Add Piece", buttonFont, "rgb(50,150,50)", function () {
-        objectFrameworkArea.objectFramework.pieces.push(new LevelObjectPiece("Piece " + (objectFrameworkArea.objectFramework.pieces.length + 1)));
-        objectFrameworkArea.populate(objectFrameworkArea.objectFramework);
-    }));
-    objectFrameworkArea.addControl(objectFrameworkArea.pieces = new ScrollBox(30, 60 + (size * 1) + 10, 25, 4, 250, "rgb(50,60,127)"));
-
-    objectFrameworkArea.addControl(new TextArea(45, 60 + (size * 2), "Paths", textFont, "black"));
-    objectFrameworkArea.addControl(new Button(160, 38 + (size * 2), 140, 25, "Add Path", buttonFont, "rgb(50,150,50)", function () {
-        objectFrameworkArea.objectFramework.paths.push(new LevelObjectPath("Path " + (objectFrameworkArea.objectFramework.paths.length + 1)));
-        objectFrameworkArea.populate(objectFrameworkArea.objectFramework);
-    }));
-    objectFrameworkArea.addControl(objectFrameworkArea.paths = new ScrollBox(30, 60 + (size * 2) + 10, 25, 4, 250, "rgb(50,60,127)"));
-
-
-    objectFrameworkArea.addControl(new TextArea(45, 60 + (size * 3), "Projectiles", textFont, "black"));
-    objectFrameworkArea.addControl(new Button(160, 38 + (size * 3), 140, 25, "Add Projectile", buttonFont, "rgb(50,150,50)", function () {
-        objectFrameworkArea.objectFramework.projectiles.push(new LevelProjectile("Projectile " + (objectFrameworkArea.objectFramework.projectiles.length + 1)));
-        objectFrameworkArea.populate(objectFrameworkArea.objectFramework);
-    }));
-    objectFrameworkArea.addControl(objectFrameworkArea.projectiles = new ScrollBox(30, 60 + (size * 3) + 10, 25, 4, 250, "rgb(50,60,127)"));
-
-
-
-    var codeMirror;
-    var editor;
-
-    objectFrameworkArea.addControl(new TextArea(320, 80 - 20, "Key: ", textFont, "black"));
-    objectFrameworkArea.addControl(objectFrameworkArea.key = new TextBox(370, 60 - 20, 459, 25, "", buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.key = this.text; }));
-
-
-    var addCodeWindow = function (value, change) {
-        objectFrameworkArea.clearMainArea();
-        objectFrameworkArea.mainPanel.addControl(new HtmlBox(15, -35, 485, 485, function () {
-            $(document.body).append('<textarea id="code" name="code" style="position:absolute;width:485px;height:485px;"></textarea>');
-            codeMirror = document.getElementById("code");
-            codeMirror.value = value;
-            editor = CodeMirror.fromTextArea(codeMirror, {
-                lineNumbers: true,
-                matchBrackets: true,
-                onChange: change,
-                extraKeys: { "Ctrl-Space": function (cm) { CodeMirror.simpleHint(cm, CodeMirror.javascriptHint); } },
-                onCursorActivity: function () {
-                    editor.setLineClass(hlLine, null);
-                    hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
-                }
-            });
-            editor.setOption("theme", "night");
-            
-            var hlLine = editor.setLineClass(0, "activeline");
-            
-            var scroller = editor.getScrollerElement();
-            scroller.style.height = "485px";
-            scroller.style.width = "485px";
-            editor.refresh();
-        }, function (x, y) {
-
-            var scroller = editor.getScrollerElement();
-            if (scroller.style.left == x + "px" && scroller.style.top == y + "px")
-                return;
-            scroller.style.left = x + "px";
-            scroller.style.top = y + "px";
-            editor.refresh();
-
-        }, function () {
-            var sc = editor.getScrollerElement();
-            if (sc) {
-                sc.style.visibility = "visible";
-            }
-        }, function () {
-            var sc = editor.getScrollerElement();
-            if (sc) {
-                sc.style.left = "-100px";
-                sc.style.top = "-100px";
-                sc.style.visibility = "hidden";
-            }
-        }));
+        sonicManager.uiManager.curLevelName = str;
     };
 
 
-    objectFrameworkArea.clearMainArea = function () {
-
-        objectFrameworkArea.mainPanel.controls = [];
-        codeMirror = document.getElementById("code");
-        $('.CodeMirror').remove();
-        if (codeMirror) {
-            codeMirror.parentNode.removeChild(codeMirror);
-        }
-        var sc = document.getElementById("picFieldUploader"); sc.style.visibility = "hidden";
-    };
-    var b1, b2, b3, b4;
-    objectFrameworkArea.addControl(b1 = new Button(320, 95 - 20, 250, 25, "onInit", buttonFont, "rgb(50,150,50)", function () {
-        b2.toggled = false;
-        b3.toggled = false;
-        b4.toggled = false;
-        if (this.toggled) {
-            addCodeWindow(objectFrameworkArea.objectFramework.initScript, function () {
-                objectFrameworkArea.objectFramework.initScript = editor.getValue();
-            });
-        } else {
-            objectFrameworkArea.clearMainArea();
-        }
-    }));
-    b1.toggle = true;
-
-    objectFrameworkArea.addControl(b2 = new Button(580, 95 - 20, 250, 25, "onTick", buttonFont, "rgb(50,150,50)", function () {
-        b1.toggled = false;
-        b3.toggled = false;
-        b4.toggled = false;
-        if (this.toggled) {
-            addCodeWindow(objectFrameworkArea.objectFramework.tickScript, function () {
-                objectFrameworkArea.objectFramework.tickScript = editor.getValue();
-            });
-        } else {
-            objectFrameworkArea.clearMainArea();
-        }
-    }));
-    b2.toggle = true;
-
-    objectFrameworkArea.addControl(b3 = new Button(320, 130 - 20, 250, 25, "onCollide", buttonFont, "rgb(50,150,50)", function () {
-        b2.toggled = false;
-        b1.toggled = false;
-        b4.toggled = false;
-        if (this.toggled) {
-            addCodeWindow(objectFrameworkArea.objectFramework.collideScript, function () {
-                objectFrameworkArea.objectFramework.collideScript = editor.getValue();
-            });
-        } else {
-            objectFrameworkArea.clearMainArea();
-        }
-    }));
-    b3.toggle = true;
-
-    objectFrameworkArea.addControl(b4 = new Button(580, 130 - 20, 250, 25, "onHurtSonic", buttonFont, "rgb(50,150,50)", function () {
-        b2.toggled = false;
-        b3.toggled = false;
-        b1.toggled = false;
-        if (this.toggled) {
-            addCodeWindow(objectFrameworkArea.objectFramework.hurtScript, function () {
-                objectFrameworkArea.objectFramework.hurtScript = editor.getValue();
-            });
-        } else {
-            objectFrameworkArea.clearMainArea();
-        }
-    }));
-    b4.toggle = true;
-
-
-    objectFrameworkArea.addControl(objectFrameworkArea.mainPanel = new Panel(320, 150, 510, 510, objectFrameworkArea));
-    setTimeout('        var sc = document.getElementById("picFieldUploader");sc.style.visibility = "hidden";sc.style.position="absolute";', 300);
-
-
-
-    objectFrameworkArea.loadPiece = function (piece) {
-
-        objectFrameworkArea.clearMainArea();
-
-
-        objectFrameworkArea.mainPanel.addControl(new TextArea(25, 25, "Name: ", textFont, "black"));
-        objectFrameworkArea.mainPanel.addControl(new TextBox(100, 5, 290, 25, piece.name, buttonFont, "rgb(50,150,50)", function () { piece.name = this.text; }));
-        var b;
-        objectFrameworkArea.mainPanel.addControl(b = new Button(40, 160, 70, 25, "XFlip", buttonFont, "rgb(50,150,50)", function () {
-            piece.xflip = b.toggled;
-        }));
-        b.toggle = true;
-        b.toggled = piece.xflip;
-
-        var c;
-        objectFrameworkArea.mainPanel.addControl(c = new Button(115, 160, 70, 25, "YFlip", buttonFont, "rgb(50,150,50)", function () {
-            piece.yflip = c.toggled;
-        }));
-        c.toggle = true;
-        c.toggled = piece.yflip;
-
-
-
-        var jd;
-        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 112, "rgb(50,60,127)"));
-        var bd;
-        jd.controls = [];
-        for (var i = 0; i < objectFrameworkArea.objectFramework.assets.length; i++) {
-            jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
-                if (this.state.frames.length == 0) return;
-                this.state.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15, piece.xflip, piece.yflip);
-            }, function () {
-
-
-                for (var j = 0; j < jd.controls.length; j++) {
-                    if (jd.controls[j] == this) {
-                        if (piece.assetIndex == j)
-                            this.toggled = true;
-                        
-                        piece.assetIndex = j;
-                        continue;
-                    }
-                    jd.controls[j].toggled = false;
-                }
-
-            }));
-            bd.toggle = true;
-            bd.state = objectFrameworkArea.objectFramework.assets[i];
-            if (piece.assetIndex == i) {
-                bd.toggled = true;
-            }
-        }
-
-
-
-    };
-
-    objectFrameworkArea.loadPath = function (path) {
-
-        objectFrameworkArea.clearMainArea();
-
-
-        objectFrameworkArea.mainPanel.addControl(new TextArea(25, 25, "Name: ", textFont, "black"));
-        objectFrameworkArea.mainPanel.addControl(new TextBox(100, 5, 290, 25, path.name, buttonFont, "rgb(50,150,50)", function () { path.name = this.text; }));
-
-
-        var jd;
-        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 112, "rgb(50,60,127)"));
-        var bd;
-        jd.controls = [];
-        for (var i = 0; i < objectFrameworkArea.objectFramework.pieces.length; i++) {
-
-            jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
-                var ast = objectFrameworkArea.objectFramework.assets[this.state.assetIndex];
-                if (ast.frames.length == 0) return;
-                ast.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15, this.state.xflip, this.state.yflip);
-            }, function () {
-
-
-            }));
-            bd.state = objectFrameworkArea.objectFramework.pieces[i];
-        }
-
-        var pe;
-        objectFrameworkArea.mainPanel.addControl(pe = new PathEditor(20, 150, { width: 150, height: 150 }));
-        pe.init(path);
-
-
-    };
-
-    objectFrameworkArea.loadAsset = function (asset) {
-
-        objectFrameworkArea.clearMainArea();
-
-
-        objectFrameworkArea.mainPanel.addControl(new TextArea(25, 25, "Name: ", textFont, "black"));
-        objectFrameworkArea.mainPanel.addControl(new TextBox(100, 5, 290, 25, asset.name, buttonFont, "rgb(50,150,50)", function () { asset.name = this.text; }));
-        objectFrameworkArea.mainPanel.addControl(new Button(400, 5, 100, 25, "Add Frame", buttonFont, "rgb(50,150,50)", function () {
-
-            var vs;
-            asset.frames.push(vs = new LevelObjectAssetFrame("Frame " + (asset.frames.length + 1)));
-            vs.palette = ["000", "111", "222", "333", "444", "555", "666", "777", "888", "999", "AAA", "BBB", "CCC", "DDD", "EEE", "FFF"];
-            vs.width = Math.floor(Math.random() * 40) + 20;
-            vs.height = Math.floor(Math.random() * 40) + 20;
-            for (var i = 0; i < vs.width; i++) {
-                vs.colorMap[i] = [];
-                for (var j = 0; j < vs.height; j++) {
-                    vs.colorMap[i][j] = Math.floor(Math.random() * vs.palette.length);
-                }
-            }
-            window.imageUploaded = function (img) {
-                _H.loadSprite(img, function (image) {
-                    objectFrameworkArea.mainPanel.frameArea.currentFrame.uploadImage(image);
-                    var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
-                    ce.init(objectFrameworkArea.mainPanel.frameArea.currentFrame);
-                    ce.editor.showOutline = false;
-                    ce.editable = false;
-                    ce.click = function (e) {
-                        frame.offsetX = e.x;
-                        frame.offsetY = e.y;
-                    };
-
-                    objectFrameworkArea.mainPanel.frameArea.palatteArea.init(objectFrameworkArea.mainPanel.frameArea.currentFrame.palette, true);
-                });
-            };
-
-            objectFrameworkArea.mainPanel.populate(asset);
-        }));
-
-        var jd;
-        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 112, "rgb(50,60,127)"));
-        objectFrameworkArea.mainPanel.populate = function (ast) {
-            var bd;
-            jd.controls = [];
-            for (var i = 0; i < ast.frames.length; i++) {
-                jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
-                    this.state.drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15);
-                }, function () {
-                    objectFrameworkArea.mainPanel.loadFrame(this.state);
-                }));
-                bd.state = ast.frames[i];
-            }
-        };
-
-
-        objectFrameworkArea.mainPanel.populate(asset);
-
-        objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.frameArea = new Panel(7, 155, 480, 350, objectFrameworkArea));
-        objectFrameworkArea.mainPanel.frameArea.outline = false;
-
-
-        objectFrameworkArea.mainPanel.loadFrame = function (frame) {
-            objectFrameworkArea.mainPanel.frameArea.controls = [];
-            objectFrameworkArea.mainPanel.frameArea.currentFrame = frame;
-            var ce;
-            objectFrameworkArea.mainPanel.frameArea.addControl(new TextArea(15, 21, "Name: ", textFont, "black"));
-            objectFrameworkArea.mainPanel.frameArea.addControl(new TextBox(90, 0, 395, 25, frame.name, buttonFont, "rgb(50,150,50)", function () { frame.name = this.text; }));
-
-
-            objectFrameworkArea.mainPanel.frameArea.addControl(new TextArea(0, 275, function () { return "Width:  " + frame.width; }, smallTextFont, "Black"));
-
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(75, 275 - 25, 14, 17, "^", buttonFont, "rgb(50,150,50)", function () {
-                frame.width = Math.min(frame.width + 1, 100);
-            }));
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(75, 275 - 5, 14, 20, "v", buttonFont, "rgb(50,150,50)", function () {
-                frame.width = Math.max(frame.width - 1, 1);
-            }));
-
-            objectFrameworkArea.mainPanel.frameArea.addControl(new TextArea(0, 320, function () { return "Height: " + frame.height; }, smallTextFont, "Black"));
-
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(75, 320 - 25, 14, 17, "^", buttonFont, "rgb(50,150,50)", function () {
-                frame.height = Math.min(frame.height + 1, 100);
-            }));
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(75, 320 - 5, 14, 20, "v", buttonFont, "rgb(50,150,50)", function () {
-                frame.height = Math.max(frame.height - 1, 1);
-            }));
-
-            var bt;
-            objectFrameworkArea.mainPanel.frameArea.addControl(bt = new Button(230 - 55, 35, 150, 25, "Collide Map", buttonFont, "rgb(50,150,50)", function () {
-                ce.showCollideMap = this.toggled;
-            }));
-            bt.toggle = true;
-            objectFrameworkArea.mainPanel.frameArea.addControl(bt = new Button(390 - 55, 35, 150, 25, "Hurt Map", buttonFont, "rgb(50,150,50)", function () {
-                ce.showHurtMap = this.toggled;
-            }));
-            bt.toggle = true;
-
-            objectFrameworkArea.mainPanel.frameArea.addControl(objectFrameworkArea.mainPanel.frameArea.colorEditor = new ColorEditingArea(230 - 55, 65, { x: (310 / frame.width), y: (225 / frame.height) }));
-            var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
-            ce.init(frame);
-            ce.editor.showOutline = false;
-            ce.editable = false;
-            ce.click = function (e) {
-                frame.offsetX = e.x;
-                frame.offsetY = e.y;
-            };
-            objectFrameworkArea.mainPanel.frameArea.addControl(new HtmlBox(19, 64, 120, 31, function () {
-                var sc = document.getElementById("picFieldUploader");
-
-                sc.style.left = (objectFrameworkArea.x + 320 + 7 + 19) + "px";
-                sc.style.top = (objectFrameworkArea.y + 150 + 155 + 64) + "px";
-                sc.style.position = "absolute";
-                sc.style.visibility = "visible";
-            }, function (x, y) {
-                var sc = document.getElementById("picFieldUploader");
-                if (sc) {
-                    if (sc.style.left == x + "px" && sc.style.top == y + "px")
-                        return;
-                    sc.style.left = x + "px";
-                    sc.style.top = y + "px";
-                }
-            }, function () {
-                var sc = document.getElementById("picFieldUploader");
-                if (sc) {
-                    sc.style.visibility = "visible";
-                }
-            }, function () {
-                var sc = document.getElementById("picFieldUploader");
-                if (sc) {
-                    sc.style.left = "-100px";
-                    sc.style.top = "-100px";
-                    sc.style.visibility = "hidden";
-                }
-            }));
-
-
-            var pa;
-            objectFrameworkArea.mainPanel.frameArea.addControl(objectFrameworkArea.mainPanel.frameArea.palatteArea = new PaletteArea(230 - 55, 300, { x: 39, y: 11 }, false));
-            objectFrameworkArea.mainPanel.frameArea.palatteArea.init(frame.palette, true);
-
-            objectFrameworkArea.mainPanel.frameArea.addControl(new Button(230 - 55, 305 + 11 * 2, 310, 25, "Edit Map", buttonFont, "rgb(50,150,50)", function () {
-                colorEditorArea.init(frame);
-                colorEditorArea.visible = true;
-                colorEditorArea.depth = objectFrameworkArea.depth + 1;
-            }));
-
-        };
-
-
-    };
-
-    objectFrameworkArea.populate = function (object) {
-        this.objectFramework = object;
-        this.key.text = object.key;
-        this.assets.controls = [];
-        var b;
-        var i;
-        for (i = 0; i < object.assets.length; i++) {
-            this.assets.addControl(b = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
-                b1.toggled = false;
-                b2.toggled = false;
-                b3.toggled = false;
-                b4.toggled = false;
-                objectFrameworkArea.loadAsset(this.state);
-            }));
-            b.state = object.assets[i];
-        }
-        this.pieces.controls = [];
-        for (i = 0; i < object.pieces.length; i++) {
-            this.pieces.addControl(b = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
-                b1.toggled = false;
-                b2.toggled = false;
-                b3.toggled = false;
-                b4.toggled = false;
-                objectFrameworkArea.loadPiece(this.state);
-            }));
-            b.state = object.pieces[i];
-        }
-        this.paths.controls = [];
-        for (i = 0; i < object.paths.length; i++) {
-            this.paths.addControl(b = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
-                b1.toggled = false;
-                b2.toggled = false;
-                b3.toggled = false;
-                b4.toggled = false;
-                objectFrameworkArea.loadPath(this.state);
-            }));
-            b.state = object.paths[i];
-        }
-        this.projectiles.controls = [];
-        for (i = 0; i < object.projectiles.length; i++) {
-            this.projectiles.addControl(b = new Button(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", "rgb(50,190,90)", function () {
-                b1.toggled = false;
-                b2.toggled = false;
-                b3.toggled = false;
-                b4.toggled = false;
-                objectFrameworkArea.loadPiece(this.state);
-            }));
-            b.state = object.projectiles[i];
-        }
-    };
-
-
-
-
-
-    var colorEditorArea = this.colorEditorArea = new UiArea(650, 30, 960, 800, this, true);
-    colorEditorArea.visible = false;
-    this.UIAreas.push(colorEditorArea);
-
-
-    colorEditorArea.addControl(colorEditorArea.colorEditor = new ColorEditingArea(30, 45, { x: 11, y: 11 }));
-    colorEditorArea.addControl(new Button(770, 70, 150, 22, "Show Outline", buttonFont, "rgb(50,150,50)", function () {
-        colorEditorArea.colorEditor.editor.showOutline = !colorEditorArea.colorEditor.editor.showOutline;
-    }
-    ));
-
-    colorEditorArea.addControl(new TextArea(750, 150, function () { return "Line Width:" + colorEditorArea.colorEditor.editor.lineWidth; }, textFont, "Black"));
-
-    colorEditorArea.addControl(new Button(900, 120, 14, 20, "^", buttonFont, "rgb(50,150,50)", function () {
-        colorEditorArea.colorEditor.editor.lineWidth = Math.max(colorEditorArea.colorEditor.editor.lineWidth + 1, 1);
-    }
-    ));
-    colorEditorArea.addControl(new Button(900, 145, 14, 20, "v", buttonFont, "rgb(50,150,50)", function () {
-        colorEditorArea.colorEditor.editor.lineWidth = Math.min(colorEditorArea.colorEditor.editor.lineWidth - 1, 10);
-    }
-    ));
-    colorEditorArea.addControl(colorEditorArea.paletteArea = new PaletteArea(770, 250, { x: 45, y: 45 }, true));
-    colorEditorArea.colorEditor.paletteEditor = colorEditorArea.paletteArea;
-    colorEditorArea.init = function (frame) {
-        colorEditorArea.colorEditor.scale = { x: 700 / frame.width, y: 700 / frame.height };
-        colorEditorArea.colorEditor.init(frame);
-        colorEditorArea.paletteArea.init(frame.palette, false);
-    };
-
-
-
-
-    var objectInfoArea = this.objectInfoArea = new UiArea(1347, 95, 250, 240, this, true);
-    objectInfoArea.visible = false;
-    this.UIAreas.push(objectInfoArea);
-    objectInfoArea.addControl(new TextArea(30, 25, "Object Information", textFont, "blue"));
-    objectInfoArea.addControl(new Button(40, 190, 60, 22, "Framework", buttonFont, "rgb(50,150,50)", function () {
-        objectFrameworkArea.visible = true;
-        objectFrameworkArea.objectFramework = objectFrameworkArea.object.Framwork;
-    }
-    ));
-
-
-
-
-    var debuggerArea = this.debuggerArea = new UiArea(1347, 95, 250, 240, this, true);
-    debuggerArea.visible = false;
-    this.UIAreas.push(debuggerArea);
-    debuggerArea.addControl(new TextArea(30, 25, "Debugger", textFont, "blue"));
-    debuggerArea.addControl(new Button(40, 60, 60, 22, "Stop", buttonFont, "rgb(50,150,50)", function () {
-        sonicManager.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
-
-        debuggerArea.visible = false;
-        solidTileArea.visible = false;
-        levelInformation.visible = true;
-        levelManagerArea.visible = true;
-        sonicManager.sonicToon.empty();
-        sonicManager.sonicToon = null;
-    }
-    ));
-
-
-
-    debuggerArea.addControl(new Button(40, 95, 90, 22, "Hit Sonic", buttonFont, "rgb(50,150,50)", function () {
-        sonicManager.sonicToon.hit();
-    }
-    ));
-
-    debuggerArea.addControl(new Button(40, 130, 160, 22, "Show Height Map", buttonFont, "rgb(50,150,50)", function () {
-        if (this.text == "Show Height Map") {
-            sonicManager.showHeightMap = true;
-            this.text = "Hide Height Map";
-        } else {
-            sonicManager.showHeightMap = false;
-            this.text = "Show Height Map";
-        }
-    }
-    ));
-    debuggerArea.addControl(new Button(40, 160, 160, 22, "Switch Height Map", buttonFont, "rgb(50,150,50)", function () {
-        sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
-    }
-    ));
-    debuggerArea.addControl(new Button(40, 190, 160, 22, "Debug Sonic", buttonFont, "rgb(50,150,50)", function () {
-        if (this.text == "Debug Sonic") {
-            sonicManager.sonicToon.debugging = true;
-            this.text = "Normal Sonic";
-        } else {
-            sonicManager.sonicToon.debugging = false;
-            this.text = "Debug Sonic";
-        }
-
-    }
-    ));
-
-
-    var solidTileArea = this.solidTileArea = new UiArea(40, 450, 430, 400, this, true);
-    solidTileArea.visible = false;
-    this.UIAreas.push(solidTileArea);
-    solidTileArea.addControl(new TextArea(30, 25, "Modify Solid Tile", textFont, "blue"));
-
-
-
-    solidTileArea.addControl(new Button(50, 35, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
-        function () {
-            if (indexes.tpIndex > 0)
-                modifyTilePieceArea.tilePiece = sonicManager.SonicLevel.Blocks[--indexes.tpIndex];
-        }));
-
-    solidTileArea.addControl(new Button(75, 35, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
-        function () {
-            if (indexes.tpIndex < sonicManager.SonicLevel.Blocks.length)
-                modifyTilePieceArea.tilePiece = sonicManager.SonicLevel.Blocks[++indexes.tpIndex];
-        }));
-    solidTileArea.addControl(new Button(360, 80, 45, 22, "Full", buttonFont, "rgb(50,150,50)",
-        function () {
-            for (var i = 0; i < 16; i++) {
-                modifyTilePieceArea.tilePiece.heightMask.items[i] = 16;
-
-            }
-            this.sprites = [];
-        }));
-
-    solidTileArea.addControl(new Button(360, 130, 45, 22, "XFlip", buttonFont, function () {
-        if (modifyTilePieceArea.tpc.XFlip) {
-            return "rgb(190,120,65)";
-        } else {
-            return "rgb(50,150,50)";
-        }
-    },
-        function () {
-            modifyTilePieceArea.tpc.XFlip = !modifyTilePieceArea.tpc.XFlip;
-        }));
-    solidTileArea.addControl(new Button(360, 160, 45, 22, "YFlip", buttonFont, function () {
-        if (modifyTilePieceArea.tpc.YFlip) {
-            return "rgb(190,120,65)";
-        } else {
-            return "rgb(50,150,50)";
-        }
-    },
-        function () {
-            modifyTilePieceArea.tpc.YFlip = !modifyTilePieceArea.tpc.YFlip;
-        }));
-
-    solidTileArea.addControl(new Button(200, 35, 180, 22, "Modify Height Map", buttonFont, "rgb(50,150,50)",
-    function () {
-        modifyTilePieceArea.state = (modifyTilePieceArea.state + 1) % 3;
-        switch (modifyTilePieceArea.state) {
-            case 0:
-                this.text = "Modify Height Map";
-                break;
-            case 1:
-                this.text = "Modify Tile Direction";
-                break;
-            case 2:
-                this.text = "Modify Tile Colors";
-                break;
-        }
-    }));
-    var modifyTilePieceArea = this.modifyTilePieceArea = new TilePieceArea(30, 70, { x: 4 * 5, y: 4 * 5 }, null, 0);
-    solidTileArea.addControl(modifyTilePieceArea);
-
-
-    var bgEditor = this.bgEditor = new UiArea(100, 440, 420, 360, this, true);
-    bgEditor.visible = false;
-    this.UIAreas.push(bgEditor);
-    bgEditor.addControl(new TextArea(30, 25, "BG Editor", textFont, "blue"));
-    bgEditor.addControl(new TileBGEditArea(60, 35));
-
-
-
-
-    var levelInformation = this.levelInformation = new UiArea(70, 70, 460, 420, this);
-    levelInformation.visible = true;
-    this.UIAreas.push(levelInformation);
-    levelInformation.addControl(new TextArea(30, 25, "Level Selector", textFont, "blue"));
-    levelInformation.addControl(new TextArea(30, 52, function () {
-        return !curLevelName ? "Level Not Saved" : (curLevelName);
-    }, textFont, "black"));
-    levelInformation.addControl(new Button(320, 70, 100, 22, "Save Level", buttonFont, "rgb(50,150,50)",
-    function () {
-        if (curLevelName) {
-            OurSonic.SonicLevels.SaveLevelInformation(curLevelName, Base64.encode(_H.stringify(sonicManager.SonicLevel)), function (c) { }, function (c) { alert("Failure: " + _H.stringify(c)); });
-        } else {
-            OurSonic.SonicLevels.saveLevel(Base64.encode(_H.stringify(sonicManager.SonicLevel)), function (j) {
-                addLevelToList(curLevelName);
-            });
-
-        }
-    }));
-
-    var tb;
-    levelInformation.addControl(tb = new Button(320, 105, 160, 22, "Load Empty Level", buttonFont, "rgb(50,150,50)",
-    function () {
-
-        levelManagerArea.visible = true;
-        loadingText.visible = true;
-        var index = 0;
-        var tim = function () {
-            var max = 188;
-            if (index == max) {
-                setTimeout(function () {
-                    alert(_H.stringify(sonicManager.SonicLevel));
-                    loadGame(_H.stringify(sonicManager.SonicLevel), mainCanvas);
-                    loadingText.visible = false;
-                }, 500);
-                return;
-            }
-            setTimeout(tim, 100);
-
-            _H.loadSprite("assets/Chunks/Tile" + index++ + ".png", function (image) {
-                loadingText.text = "Loading " + index + "/" + max;
-                sonicManager.importChunkFromImage(image);
-                if (index == max) {
-                    sonicManager.inds = { done: true };
-                }
-            });
-
-        };
-        setTimeout(tim, 100);
-
-
-
-    }));
-    tb.visible = false;
-
-    var ctls;
-    levelInformation.addControl(ctls = new ScrollBox(30, 70, 25, 11, 250, "rgb(50,60,127)"));
-
-    var curLevelName;
-    OurSonic.SonicLevels.getLevels(function (lvls) {
-        for (var i = 0; i < lvls.length; i++) {
-            var lvlName = lvls[i];
-            addLevelToList(lvlName);
-        }
-
-        var dl = _H.getQueryString();
-        if (dl["level"]) {
-            loadLevel(dl["level"]);
-        }
-    });
-
-
-    function addLevelToList(name) {
-        var btn;
-        ctls.addControl(new Button(0, 0, 0, 0, name, "10pt Arial", "rgb(50,190,90)", function () {
-
-            loadLevel(name);
-        }));
-    }
-
-    function loadLevel(name) {
-        updateTitle("Downloading " + name);
-        OurSonic.SonicLevels.getLevel(name, function (lvl) {
-            updateTitle("Loading: " + name);
-
-            loadGame(lvl, mainCanvas);
-        });
-    }
-
-
-
-
-
-
-
-    var levelManagerArea = this.levelManagerArea = new UiArea(500, 25, 400, 400, this);
-    levelManagerArea.visible = false;
-    this.UIAreas.push(levelManagerArea);
-    levelManagerArea.addControl(new TextArea(30, 25, "Level Manager", textFont, "blue"));
-    var loadingText;
-    levelManagerArea.addControl(loadingText = new TextArea(270, 25, "Loading", textFont, "green"));
-    loadingText.visible = false;
-
-    levelManagerArea.addControl(new Button(35, 100, 160, 22, "Show Height Map", buttonFont, "rgb(50,150,50)", function () {
-        if (this.text == "Show Height Map") {
-            sonicManager.showHeightMap = true;
-            this.text = "Hide Height Map";
-        } else {
-            sonicManager.showHeightMap = false;
-            this.text = "Show Height Map";
-        }
-    }
-    ));
-
-    levelManagerArea.addControl(new Button(200, 150, 160, 22, "Dragging", buttonFont, "rgb(50,150,50)",
-        function () {
-
-            sonicManager.clickState = (sonicManager.clickState + 1) % 4;
-            switch (sonicManager.clickState) {
-                case ClickState.PlaceChunk:
-                    this.text = "Modify Chunks";
-                    break;
-                case ClickState.Dragging:
-                    this.text = "Dragging";
-                    break;
-                case ClickState.PlaceRing:
-                    this.text = "Place Rings";
-                    break;
-                case ClickState.PlaceObject:
-                    this.text = "Place Object";
-                    break;
-            }
-
-        }));
-
-    levelManagerArea.addControl(new Button(200, 180, 160, 22, "Switch Height Map", buttonFont, "rgb(50,150,50)", function () {
-        sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
-    }
-    ));
-
-    levelManagerArea.addControl(new Button(35, 150, 160, 22, "Modify Chunks", buttonFont, "rgb(50,150,50)",
-        function () {
-            modifyTileChunkArea.visible = true;
-
-        }));
-
-    levelManagerArea.addControl(new Button(35, 150, 160, 22, "Modify Chunks", buttonFont, "rgb(50,150,50)",
-        function () {
-            modifyTileChunkArea.visible = true;
-
-        }));
-    levelManagerArea.addControl(new Button(35, 175, 160, 22, "Modify Tile Pieces", buttonFont, "rgb(50,150,50)",
-        function () {
-            solidTileArea.visible = true;
-
-        }));
-    levelManagerArea.addControl(new Button(35, 200, 160, 22, "Modify Tiles", buttonFont, "rgb(50,150,50)",
-        function () {
-            modifyTileArea.visible = true;
-
-        }));
-    levelManagerArea.addControl(new Button(35, 240, 160, 22, "Modify Background", buttonFont, "rgb(50,150,50)",
-        function () {
-            bgEditor.visible = true;
-        }));
-
-
-    levelManagerArea.addControl(new Button(200, 35, 60, 22, "Run", buttonFont, "rgb(50,150,50)", runSonic));
-
-
-
-
-    var modifyTileChunkArea = this.modifyTileChunkArea = new UiArea(900, 450, 400, 400, this, true);
-    modifyTileChunkArea.visible = false;
-    this.UIAreas.push(modifyTileChunkArea);
-    modifyTileChunkArea.addControl(new TextArea(30, 25, "Modify Tile Chunk", textFont, "blue"));
-
-
-
-    var modifyTC = this.modifyTC = new TileChunkArea(30, 70, { x: 2, y: 2 }, null, 1);
-
-    modifyTileChunkArea.addControl(modifyTC);
-
-    modifyTileChunkArea.addControl(new Button(50, 35, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
-        function () {
-            if (indexes.modifyIndex > 0)
-                modifyTC.tileChunk = sonicManager.SonicLevel.Chunks[--indexes.modifyIndex];
-        }));
-    modifyTileChunkArea.addControl(new Button(80, 35, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
-        function () {
-            if (indexes.modifyIndex < sonicManager.SonicLevel.Chunks.length)
-                modifyTC.tileChunk = sonicManager.SonicLevel.Chunks[++indexes.modifyIndex];
-        }));
-
-
-    var modifyTP = this.modifyTP = new TilePieceArea(300, 160, { x: 2 * 3, y: 2 * 3 }, null, 3);
-
-    modifyTileChunkArea.addControl(modifyTP);
-
-    modifyTileChunkArea.addControl(new Button(300, 100, 25, 22, "<<", buttonFont, "rgb(50,150,50)",
-        function () {
-            if (indexes.modifyTPIndex > 0)
-                modifyTP.tilePiece = modifyTC.setToTile = sonicManager.SonicLevel.Blocks[--indexes.modifyTPIndex];
-        }));
-    modifyTileChunkArea.addControl(new Button(330, 100, 25, 22, ">>", buttonFont, "rgb(50,150,50)",
-        function () {
-            if (indexes.modifyTPIndex < sonicManager.SonicLevel.Blocks.length)
-                modifyTP.tilePiece = modifyTC.setToTile = sonicManager.SonicLevel.Blocks[++indexes.modifyTPIndex];
-        }));
-
-
-
-
-
-
-    var modifyTileArea = this.modifyTileArea = new UiArea(900, 25, 400, 400, this, true);
-    modifyTileArea.visible = false;
-    this.UIAreas.push(modifyTileArea);
-    modifyTileArea.addControl(new TextArea(30, 25, "Modify Tile", textFont, "blue"));
-
-    function loadGame(lvl, mainCanvas) {
+    this.loadGame = function (lvl, mainCanvas) {
         sonicManager.loading = true;
-        updateTitle("Decoding");
+        sonicManager.uiManager.updateTitle("Decoding");
         sonicManager.SonicLevel = jQuery.parseJSON(_H.decodeString(lvl));
-        updateTitle("Determining Level Information");
+        sonicManager.uiManager.updateTitle("Determining Level Information");
         var fc;
         var j;
         if (!sonicManager.SonicLevel.Chunks)
@@ -1141,7 +300,6 @@
         }
 
 
-
         var m;
 
         sonicManager.SonicLevel.Angles = decodeNumeric(sonicManager.SonicLevel.Angles);
@@ -1235,34 +393,33 @@
         }
 
 
-
         var finished = function () {
-            levelManagerArea.visible = true;
+            sonicManager.uiManager.levelManagerArea.visible = true;
             sonicManager.loading = false;
-            modifyTC.tileChunk = sonicManager.SonicLevel.Chunks[0];
-            modifyTilePieceArea.tilePiece = modifyTP.tilePiece = sonicManager.SonicLevel.Blocks[0];
+            sonicManager.uiManager.modifyTC.tileChunk = sonicManager.SonicLevel.Chunks[0];
+            sonicManager.uiManager.modifyTilePieceArea.tilePiece = sonicManager.uiManager.modifyTP.tilePiece = sonicManager.SonicLevel.Blocks[0];
 
         };
 
         //        var inds = sonicManager.inds = { r:0,t: 0, tp: 0, tc: 0, total: (sonicManager.SonicLevel.Chunks.length * 2 + sonicManager.SonicLevel.Blocks.length * 5 + sonicManager.SonicLevel.Tiles.length), done: false };
 
-        updateTitle("preloading sprites");
+        sonicManager.uiManager.updateTitle("preloading sprites");
         sonicManager.CACHING = true;
         sonicManager.preLoadSprites(scale, function () {
             //          inds.r = 1;
             sonicManager.CACHING = false;
             finished();
 
-            updateTitle("Level Loaded");
+            sonicManager.uiManager.updateTitle("Level Loaded");
             sonicManager.forceResize();
 
 
             var dl = _H.getQueryString();
             if (dl["run"]) {
-                setTimeout(runSonic, 1000);
+                setTimeout(sonicManager.uiManager.runSonic, 1000);
             }
 
-        }, updateTitle);
+        }, sonicManager.uiManager.updateTitle);
 
 
         /*
@@ -1302,7 +459,22 @@
         }*/
 
 
-    }
+    };
+
+
+    window.BGEditorArea();
+    window.ColorEditorArea();
+    window.DebuggerArea();
+    window.SolidTileArea();
+    window.LevelInformationArea();
+    window.LevelManagerArea();
+    window.ModifyTileArea();
+    window.ModifyTilePieceArea();
+    window.ModifyTileChunkArea(); 
+    window._TileChunkArea();
+    window._TilePieceArea();
+    window.ObjectFrameworkArea();
+    window.ObjectInfoArea();
 
 }
 

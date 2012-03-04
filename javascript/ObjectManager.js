@@ -16,7 +16,7 @@ function LevelObject(key) {
     this.assets = [];
     this.key = key ? key : "";
     this.pieces = [];
-    this.paths = [];
+    this.pieceLayouts = [];
     this.projectiles = [];
     this.initScript = "this.state = {\r\n\txsp: 0.0,\r\n\tysp: 0.0,\r\n\tfacing: false,\r\n};";
     this.tickScript = "if(this.state.facing){\r\n\tthis.state.facing=false;\r\n\tthis.state.xsp=10;\r\n|";
@@ -203,11 +203,13 @@ function LevelObjectPiece(name) {
     this.yflip = false;
     this.name = name ? name : "";
 }
-function LevelObjectPath(name) {
-    this.pieces = [{ x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150 }, { x: Math.random() * 150, y: Math.random() * 150}];
+function LevelObjectPieceLayout(name) {
+    this.width = 350;
+    this.height = 350;
+    this.pieces = [];
+   
     this.name = name ? name : "";
-    this.width = 150;
-    this.height = 150;
+  
 
 
 
@@ -245,8 +247,9 @@ function LevelObjectPath(name) {
 
     };
 }
-function LevelObjectPathPiece(pieceName) {
-    this.pieceName = pieceName;
+function LevelObjectPieceLayoutPiece(pieceIndex) {
+    this.pieceIndex = pieceIndex;
+    this.assetIndex = 0;
     this.x = 0;
     this.y = 0;
 }

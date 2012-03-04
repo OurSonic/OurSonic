@@ -121,6 +121,7 @@ function SonicManager(mainCanvas, resize) {
                 var txt = "There was an error on this page.\n\n";
                 txt += "Error description: " + exc.message + "\n\n";
                 txt += "Click OK to continue.\n\n";
+                
                 alert(txt);
             }
             finally {
@@ -335,9 +336,9 @@ function SonicManager(mainCanvas, resize) {
     };
 
     this.spriteLoader = null;
-    this.SpriteCache = { rings: [], tileChunks: [], tilePeices: [], tiles: [], sonicSprites: [], heightMaps: [], heightMapChunks: [] };
+    this.SpriteCache = { rings: [], tileChunks: [], tilepieces: [], tiles: [], sonicSprites: [], heightMaps: [], heightMapChunks: [] };
     this.preLoadSprites = function (scale, completed, update) {
-        this.SpriteCache = { rings: [], tileChunks: [], tilePeices: [], tiles: [], sonicSprites: [], heightMaps: [], heightMapChunks: [] };
+        this.SpriteCache = { rings: [], tileChunks: [], tilepieces: [], tiles: [], sonicSprites: [], heightMaps: [], heightMapChunks: [] };
 
         var ci = this.SpriteCache.rings;
         var inj = 0;
@@ -386,7 +387,7 @@ function SonicManager(mainCanvas, resize) {
         md = that.SonicLevel.Blocks[k];
         md.draw(ctx, { x: 0, y: 0 }, scale, false);
         var fc = canv.canvas.toDataURL("image/png");
-        that.SpriteCache.tilePeices[false + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, done);
+        that.SpriteCache.tilepieces[false + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, done);
 
 
 
@@ -397,7 +398,7 @@ function SonicManager(mainCanvas, resize) {
 
         md.draw(ctx, { x: 0, y: 0 }, scale, true);
         var fc = canv.canvas.toDataURL("image/png");
-        that.SpriteCache.tilePeices[true + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, done);
+        that.SpriteCache.tilepieces[true + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, done);
 
         }, function () {
         ind_.tps++;

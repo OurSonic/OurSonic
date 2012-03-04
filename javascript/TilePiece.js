@@ -77,7 +77,7 @@ function TilePiece(heightMask, tiles) {
             }
         }
         var fd;
-        if ((fd = sonicManager.SpriteCache.tilePeices[layer + " " + this.index + " " + scale.y + " " + scale.x])) {
+        if ((fd = sonicManager.SpriteCache.tilepieces[layer + " " + this.index + " " + scale.y + " " + scale.x])) {
             if (fd.loaded) {
                 canvas.drawImage(fd, position.x, position.y);
             }

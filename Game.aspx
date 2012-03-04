@@ -10,12 +10,10 @@
     <link rel="stylesheet" href="lib/codemirror.css">
     <script src="lib/codemirror.js"></script>
     <script src="lib/mode/javascript/javascript.js"></script>
-    
     <script src="lib/util/simple-hint.js"></script>
     <link rel="stylesheet" href="lib/util/simple-hint.css">
     <script src="lib/util/javascript-hint.js"></script>
     <link rel="stylesheet" href="lib/theme/night.css">
-
     <script src="javascript/linq.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Help.js?1" type="text/javascript"> 
@@ -42,9 +40,7 @@
     </script>
     <script src="javascript/Tile.js?1" type="text/javascript"> 
     </script>
-    <script src="javascript/UIArea.js?1" type="text/javascript"> 
-    </script>
-    <script src="javascript/PathMaker.js?1" type="text/javascript"> 
+    <script src="javascript/PieceLayoutMaker.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Sonic.js?1" type="text/javascript"> 
     </script>
@@ -55,6 +51,36 @@
     <script src="javascript/UIManager.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/SonicEngine.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UIArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/BGEditorArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/ColorEditorArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/DebuggerArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/LevelInformationArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/LevelManagerArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/ModifyTileArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/ModifyTilePieceArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/ModifyTileChunkArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/ModifyTilePieceArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/ObjectFrameworkArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/ObjectInfoArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/SolidTileArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/TileChunkArea.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/UserInterfaces/TilePieceArea.js?1" type="text/javascript"> 
     </script>
     <script type="text/javascript">
     //<![CDATA[
@@ -71,24 +97,24 @@
         
     </script>
     <script type="text/javascript" src="/uploadify/jquery-1.4.2.min.js"></script>
-<script type="text/javascript" src="/uploadify/swfobject.js"></script>
-<script type="text/javascript" src="/uploadify/jquery.uploadify.v2.1.4.js"></script>
-<script type="text/javascript">
+    <script type="text/javascript" src="/uploadify/swfobject.js"></script>
+    <script type="text/javascript" src="/uploadify/jquery.uploadify.v2.1.4.js"></script>
+    <script type="text/javascript">
 // <![CDATA[
-    $(document).ready(function () {
-        $('#picField').uploadify({
-            'uploader': '/uploadify/uploadify.swf',
-            'script': '/ReflectImage.ashx',
-            'cancelImg': '/uploadify/cancel.png',
-            'folder': '/uploads',
-            'auto': true,
-            onUpload: function (e) {
-                alert(_H.stringify(e));
-            }
+        $(document).ready(function () {
+            $('#picField').uploadify({
+                'uploader': '/uploadify/uploadify.swf',
+                'script': '/ReflectImage.ashx',
+                'cancelImg': '/uploadify/cancel.png',
+                'folder': '/uploads',
+                'auto': true,
+                onUpload: function (e) {
+                    alert(_H.stringify(e));
+                }
+            });
         });
-    });
 // ]]>
-</script>
+    </script>
 </head>
 <body style="background-color: #000080;">
     <form id="form1" runat="server">
@@ -100,7 +126,7 @@
     <div id="d_clip_container">
     </div>
     <canvas id="build" style="margin: 0px; position: absolute; top: 0px; left: 0px; z-index: 0;"></canvas>
-    <input type="file" id="picField" style="position:absolute; z-index: 100; " > 
+    <input type="file" id="picField" style="position: absolute; z-index: 100;">
     </form>
 </body>
 </html>

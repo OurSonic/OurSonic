@@ -583,5 +583,3 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
 };
 
 
-
-

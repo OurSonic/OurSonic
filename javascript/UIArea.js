@@ -33,7 +33,10 @@ function UiArea(x, y, w, h, manager, closable) {
     var that = this;
 
     if (closable) {
-        this.addControl(new Button(this.width - 30, 4, 26, 23, "X", this.manager.buttonFont, "Green", function () { that.visible = false; }));
+        this.addControl(new Button(this.width - 30, 4, 26, 23, "X", this.manager.buttonFont, "Green", function () {
+            that.loseFocus();
+            that.visible = false;
+        }));
     }
 
     this.click = function (e) {
@@ -641,6 +644,8 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
         if (!this.visible) return;
         this.clicking = true;
         this.focused = true;
+        if (can.font != this.font)
+            can.font = this.font;
         for (var i = 0; i < this.text.length; i++) {
             this.dragPosition = -1;
             var w = can.measureText(this.text.substring(0, i)).width;
@@ -691,6 +696,8 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
             if (this.dragPosition == -1) {
                 this.dragPosition = this.cursorPosition;
             }
+            if (can.font != this.font)
+                can.font = this.font;
             for (var i = 0; i < this.text.length; i++) {
                 var w = can.measureText(this.text.substring(0, i)).width;
                 if (w > e.x - 14) {
@@ -762,7 +769,7 @@ function TextBox(x, y, width, height, text, font, color, textChanged) {
     };
     return this;
 }
-function PathEditor(x, y, size) {
+function PieceLayoutEditor(x, y, size) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -775,12 +782,12 @@ function PathEditor(x, y, size) {
     this.size = size;
     this.clicking = false;
     this.parent = null;
-    this.pathMaker = null;
-    this.init = function (path) {
-        this.path = path;
+    this.pieceLayoutMaker = null;
+    this.init = function (pieceLayout) {
+        this.pieceLayout = pieceLayout;
         this.width = size.width;
         this.height = size.height;
-        this.pathMaker = new PathMaker(path);
+        this.pieceLayoutMaker = new PieceLayoutMaker(pieceLayout);
     };
     this.focus = function () {
 
@@ -791,11 +798,11 @@ function PathEditor(x, y, size) {
 
     this.onClick = function (e) {
         if (!this.visible) return;
-        if (!this.pathMaker) return;
+        if (!this.pieceLayoutMaker) return;
         this.clicking = true;
         this.clickHandled = false; 
         this.lastPosition = e;
-        this.pathMaker.placeItem(e);
+        this.pieceLayoutMaker.placeItem(e);
 
     };
     this.onKeyDown = function (e) {
@@ -810,23 +817,23 @@ function PathEditor(x, y, size) {
     };
     this.clickHandled = false;
     this.onMouseOver = function (e) {
-        if (!this.pathMaker) return;
+        if (!this.pieceLayoutMaker) return;
         
 
 
         if (this.clicking) {
             this.clickHandled = true;
-            this.pathMaker.placeItem(e, this.lastPosition);
+            this.pieceLayoutMaker.placeItem(e, this.lastPosition);
             this.lastPosition = e;
 
         }
     };
     this.draw = function (canv) {
         if (!this.visible) return;
-        if (!this.pathMaker) return;
+        if (!this.pieceLayoutMaker) return;
         var pos = { x: this.parent.x + this.x, y: this.parent.y + this.y };
 
-        this.pathMaker.draw(canv, pos, this.size);
+        this.pieceLayoutMaker.draw(canv, pos, this.size);
 
     };
     return this;
