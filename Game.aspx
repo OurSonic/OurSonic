@@ -96,9 +96,9 @@
     //]]>
         
     </script>
-    <script type="text/javascript" src="/uploadify/jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="/uploadify/swfobject.js"></script>
-    <script type="text/javascript" src="/uploadify/jquery.uploadify.v2.1.4.js"></script>
+    <script type="text/javascript" src="uploadify/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="uploadify/swfobject.js"></script>
+    <script type="text/javascript" src="uploadify/jquery.uploadify.v2.1.4.js"></script>
     <script type="text/javascript">
 // <![CDATA[
         $(document).ready(function () {

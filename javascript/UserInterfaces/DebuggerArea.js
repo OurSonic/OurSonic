@@ -6,7 +6,7 @@ window.DebuggerArea = function() {
     sonicManager.uiManager.UIAreas.push(debuggerArea);
     debuggerArea.addControl(new TextArea(30, 25, "Debugger", sonicManager.uiManager.textFont, "blue"));
     debuggerArea.addControl(new Button(40, 60, 60, 22, "Stop", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
-        sonicManager.windowLocation = _H.defaultWindowLocation(1, sonicManager.mainCanvas, scale);
+        sonicManager.windowLocation = _H.defaultWindowLocation(1, sonicManager.mainCanvas, sonicManager.scale);
 
         sonicManager.uiManager.debuggerArea.visible = false;
         sonicManager.uiManager.solidTileArea.visible = false;

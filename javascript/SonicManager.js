@@ -4,7 +4,7 @@ function SonicManager(mainCanvas, resize) {
     var scale = this.scale = { x: 2, y: 2 };
     window.sonicManager = this;
     this.mainCanvas = mainCanvas;
-			
+
     this.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
     this.showHeightMap = false;
     this.goodRing = new Ring(false);
@@ -35,8 +35,8 @@ function SonicManager(mainCanvas, resize) {
             }
         }
         return undefined;
-    }; 
-    
+    };
+
     this.SonicLevel.ChunkMap = [[]];
     this.clickState = ClickState.Dragging;
 
@@ -101,7 +101,7 @@ function SonicManager(mainCanvas, resize) {
     this.inHaltMode = false;
     this.waitingForTickContinue = false;
     this.waitingForDrawContinue = false;
-    var that = this;//internetexplorer doesnt take a this param in setinterval
+    var that = this; //internetexplorer doesnt take a this param in setinterval
     this.tick = function () {
         if (that.loading) return;
         if (that.sonicToon) {
@@ -121,7 +121,7 @@ function SonicManager(mainCanvas, resize) {
                 var txt = "There was an error on this page.\n\n";
                 txt += "Error description: " + exc.message + "\n\n";
                 txt += "Click OK to continue.\n\n";
-                
+
                 alert(txt);
             }
             finally {
@@ -206,8 +206,10 @@ function SonicManager(mainCanvas, resize) {
         if (this.windowLocation.x > 128 * sonicManager.SonicLevel.LevelWidth - this.windowLocation.width) this.windowLocation.x = 128 * sonicManager.SonicLevel.LevelWidth - this.windowLocation.width;
         if (this.windowLocation.y > 128 * sonicManager.SonicLevel.LevelHeight - this.windowLocation.height) this.windowLocation.y = 128 * sonicManager.SonicLevel.LevelHeight - this.windowLocation.height;
         var offs = [];
-        for (var i = -1; i < this.windowLocation.width / 128; i += 1) {
-            for (var a = -1; a < this.windowLocation.height / 128; a += 1) {
+        var w1 = this.windowLocation.width / 128;
+        var h1 = this.windowLocation.height / 128;
+        for (var i = -1; i < w1; i += 1) {
+            for (var a = -1; a < h1; a += 1) {
                 offs.push({ x: i, y: a });
             }
         }
@@ -232,7 +234,8 @@ function SonicManager(mainCanvas, resize) {
 
                 var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
 
-                chunk.draw(canvas, posj, scale, false);
+                if (!chunk.isEmpty())
+                    chunk.draw(canvas, posj, scale, false);
                 if (!this.sonicToon) {
                     canvas.strokeStyle = "#DD0033";
                     canvas.lineWidth = 3;
@@ -240,7 +243,7 @@ function SonicManager(mainCanvas, resize) {
                 }
 
 
-               
+
             }
 
             for (var ring in this.SonicLevel.Rings) {
@@ -295,7 +298,8 @@ function SonicManager(mainCanvas, resize) {
 
                 var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
 
-                chunk.draw(canvas, posj, scale, true);
+                if (!chunk.isEmpty() && !chunk.onlyBackground())
+                    chunk.draw(canvas, posj, scale, true);
                 if (!this.sonicToon) {
                     canvas.strokeStyle = "#DD0033";
                     canvas.lineWidth = 3;
@@ -802,7 +806,7 @@ function SonicManager(mainCanvas, resize) {
             that.background = new ParallaxBG(that.SpriteCache.bgImage, { x: 1, y: 1 });
             return true;
 
-        },true);
+        }, true);
         sm.addIterationToStep(bgStep, 0);
 
 

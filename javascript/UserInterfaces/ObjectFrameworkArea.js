@@ -6,7 +6,7 @@ window.ObjectFrameworkArea = function () {
     sonicManager.uiManager.UIAreas.push(objectFrameworkArea);
     objectFrameworkArea.addControl(new TextArea(30, 25, "Object Framework", sonicManager.uiManager.textFont, "blue"));
 
-    objectFrameworkArea.addControl(new TextArea(45, 60, "Assets", sonicManager.uiManager.textFont, "black"));
+    objectFrameworkArea.addControl(new TextArea(16, 60, "Assets", sonicManager.uiManager.textFont, "black"));
     objectFrameworkArea.addControl(new Button(160, 38, 140, 25, "Add Asset", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
         objectFrameworkArea.objectFramework.assets.push(new LevelObjectAsset("Asset " + (objectFrameworkArea.objectFramework.assets.length + 1)));
         objectFrameworkArea.populate(objectFrameworkArea.objectFramework);
@@ -14,14 +14,14 @@ window.ObjectFrameworkArea = function () {
     objectFrameworkArea.addControl(objectFrameworkArea.assets = new ScrollBox(30, 60 + 10, 25, 4, 250, "rgb(50,60,127)"));
 
 
-    objectFrameworkArea.addControl(new TextArea(45, 60 + (size * 1), "Pieces", sonicManager.uiManager.textFont, "black"));
+    objectFrameworkArea.addControl(new TextArea(16, 60 + (size * 1), "Pieces", sonicManager.uiManager.textFont, "black"));
     objectFrameworkArea.addControl(new Button(160, 38 + (size * 1), 140, 25, "Add Piece", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
         objectFrameworkArea.objectFramework.pieces.push(new LevelObjectPiece("Piece " + (objectFrameworkArea.objectFramework.pieces.length + 1)));
         objectFrameworkArea.populate(objectFrameworkArea.objectFramework);
     }));
     objectFrameworkArea.addControl(objectFrameworkArea.pieces = new ScrollBox(30, 60 + (size * 1) + 10, 25, 4, 250, "rgb(50,60,127)"));
 
-    objectFrameworkArea.addControl(new TextArea(45, 60 + (size * 2), "Piece Layouts", sonicManager.uiManager.textFont, "black"));
+    objectFrameworkArea.addControl(new TextArea(16, 60 + (size * 2), "Piece Layouts", sonicManager.uiManager.textFont, "black"));
     objectFrameworkArea.addControl(new Button(160, 38 + (size * 2), 140, 25, "Add Piece Layout", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
         var pth;
         objectFrameworkArea.objectFramework.pieceLayouts.push(pth = new LevelObjectPieceLayout("Piece Layout " + (objectFrameworkArea.objectFramework.pieceLayouts.length + 1)));
@@ -32,9 +32,9 @@ window.ObjectFrameworkArea = function () {
     objectFrameworkArea.addControl(objectFrameworkArea.pieceLayouts = new ScrollBox(30, 60 + (size * 2) + 10, 25, 4, 250, "rgb(50,60,127)"));
 
 
-    objectFrameworkArea.addControl(new TextArea(45, 60 + (size * 3), "Projectiles", sonicManager.uiManager.textFont, "black"));
+    objectFrameworkArea.addControl(new TextArea(16, 60 + (size * 3), "Projectiles", sonicManager.uiManager.textFont, "black"));
     objectFrameworkArea.addControl(new Button(160, 38 + (size * 3), 140, 25, "Add Projectile", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
-        objectFrameworkArea.objectFramework.projectiles.push(new LevelProjectile("Projectile " + (objectFrameworkArea.objectFramework.projectiles.length + 1)));
+        objectFrameworkArea.objectFramework.projectiles.push(new LevelObjectProjectile("Projectile " + (objectFrameworkArea.objectFramework.projectiles.length + 1)));
         objectFrameworkArea.populate(objectFrameworkArea.objectFramework);
     }));
     objectFrameworkArea.addControl(objectFrameworkArea.projectiles = new ScrollBox(30, 60 + (size * 3) + 10, 25, 4, 250, "rgb(50,60,127)"));
@@ -350,7 +350,64 @@ window.ObjectFrameworkArea = function () {
             }
 
         };
+        
 
+
+
+
+    };
+
+    objectFrameworkArea.loadProjectile = function (projectile) {
+
+        objectFrameworkArea.clearMainArea();
+
+
+        objectFrameworkArea.mainPanel.addControl(new TextArea(25, 25, "Name: ", sonicManager.uiManager.textFont, "black"));
+        objectFrameworkArea.mainPanel.addControl(new TextBox(100, 5, 290, 25, projectile.name, sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () { projectile.name = this.text; }));
+        var b;
+        objectFrameworkArea.mainPanel.addControl(b = new Button(40, 160, 70, 25, "XFlip", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
+            projectile.xflip = b.toggled;
+        }));
+        b.toggle = true;
+        b.toggled = projectile.xflip;
+
+        var c;
+        objectFrameworkArea.mainPanel.addControl(c = new Button(115, 160, 70, 25, "YFlip", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
+            projectile.yflip = c.toggled;
+        }));
+        c.toggle = true;
+        c.toggled = projectile.yflip;
+
+
+        var jd;
+        objectFrameworkArea.mainPanel.addControl(jd = new HScrollBox(20, 35, 70, 4, 112, "rgb(50,60,127)"));
+        var bd;
+        jd.controls = [];
+        for (var i = 0; i < objectFrameworkArea.objectFramework.assets.length; i++) {
+            jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () { return this.state.name; }, "10pt Arial", function (canvas, x, y) {
+                if (this.state.frames.length == 0) return;
+                this.state.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15, projectile.xflip, projectile.yflip);
+            }, function () {
+
+
+                for (var j = 0; j < jd.controls.length; j++) {
+                    if (jd.controls[j] == this) {
+                        if (projectile.assetIndex == j)
+                            this.toggled = true;
+
+                        projectile.assetIndex = j;
+                        continue;
+                    }
+                    jd.controls[j].toggled = false;
+                }
+
+            }));
+            bd.toggle = true;
+            bd.state = objectFrameworkArea.objectFramework.assets[i];
+            if (projectile.assetIndex == i) {
+                bd.toggled = true;
+            }
+        }
 
 
     };
@@ -452,7 +509,7 @@ window.ObjectFrameworkArea = function () {
             }));
             bt.toggle = true;
 
-            objectFrameworkArea.mainPanel.frameArea.addControl(objectFrameworkArea.mainPanel.frameArea.colorEditor = new ColorEditingArea(230 - 55, 65, { width: 310, height: 225 }));
+            objectFrameworkArea.mainPanel.frameArea.addControl(objectFrameworkArea.mainPanel.frameArea.colorEditor = new ColorEditingArea(230 - 55, 65, { width: 310, height: 225 },true));
             var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
             ce.init(frame);
             ce.editor.showOutline = false;
@@ -553,7 +610,7 @@ window.ObjectFrameworkArea = function () {
                 b2.toggled = false;
                 b3.toggled = false;
                 b4.toggled = false;
-                objectFrameworkArea.loadPiece(this.state);
+                objectFrameworkArea.loadProjectile(this.state);
             }));
             b.state = object.projectiles[i];
         }

@@ -8,23 +8,42 @@
     this.getBlock = function (x, y) {
         return sonicManager.SonicLevel.Blocks[this.tilePieces[_H.floor((x / 16))][_H.floor((y / 16))].Block];
     };
+    this.isOnlyBackground = undefined;
+    this.empty = undefined;
     this.onlyBackground = function () {
+        if (this.isOnlyBackground == false) return false;
+        if (this.isOnlyBackground == true) return true;
         for (var i = 0; i < this.tilePieces.length; i++) {
             for (var j = 0; j < this.tilePieces[i].length; j++) {
                 var r = this.tilePieces[i][j];
                 var pm = sonicManager.SonicLevel.Blocks[r.Block];
                 if (pm) {
                     if (!pm.onlyBackground()) {
-                        return false;
+                        return this.isOnlyBackground = false;
                     }
                 }
             }
         }
+        this.isOnlyBackground = true;
+        return true;
+    };
+    this.isEmpty = function () {
+        if (this.empty == false) return false;
+        if (this.empty == true) return true;
+        for (var i = 0; i < this.tilePieces.length; i++) {
+            for (var j = 0; j < this.tilePieces[i].length; j++) {
+                var r = this.tilePieces[i][j];
+                if (r.Block != 0) {
+                    return this.empty = false;
+                }
+            }
+        }
+        this.empty = true;
         return true;
     };
     this.lastAnimatedFrame = 0;
     this.lastAnimatedIndex = 0;
-    this.animatedTick = function() {
+    this.animatedTick = function () {
         if (this.lastAnimatedFrame == undefined) {
             this.lastAnimatedFrame = 0;
             this.lastAnimatedIndex = 0;

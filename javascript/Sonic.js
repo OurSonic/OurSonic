@@ -71,7 +71,7 @@
     };
     this.effectPhysics = function () {
 
-        this.watcher.tick();
+     //   this.watcher.tick();
 
         var max = 6;
         if (!this.jumping) {
@@ -105,11 +105,11 @@
         if (!this.inAir && !this.rolling) {
             if (!this.holdingLeft && !this.holdingRight) {
                 //friction
-                this.gsp -= (Math.min(Math.abs(this.gsp), this.watcher.multiply(this.frc)) * (this.gsp > 0 ? 1 : -1));
+                this.gsp -= (Math.min(Math.abs(this.gsp), /*this.watcher.multiply*/(this.frc)) * (this.gsp > 0 ? 1 : -1));
             }
             oldSign = _H.sign(this.gsp);
             //slope
-            this.gsp += this.watcher.multiply(this.slp) * -_H.sin(this.angle);
+            this.gsp += /*this.watcher.multiply*/(this.slp) * -_H.sin(this.angle);
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
             }
@@ -118,11 +118,11 @@
                 this.facing = true;
                 if (this.gsp >= 0) {
                     //accelerate 
-                    this.gsp += this.watcher.multiply(this.acc);
+                    this.gsp += /*this.watcher.multiply*/(this.acc);
                     if (this.gsp > max) this.gsp = max;
                 } else {
                     //decelerate 
-                    this.gsp += this.watcher.multiply(this.dec);
+                    this.gsp += /*this.watcher.multiply*/(this.dec);
                     if (Math.abs(this.gsp) > 4.5) {
                         this.facing = false;
                         this.breaking = 1;
@@ -134,11 +134,11 @@
                 this.facing = false;
                 if (this.gsp <= 0) {
                     //accelerate 
-                    this.gsp -= this.watcher.multiply(this.acc);
+                    this.gsp -= /*this.watcher.multiply*/(this.acc);
                     if (this.gsp < -max) this.gsp = -max;
                 } else {
                     //decelerate 
-                    this.gsp -= this.watcher.multiply(this.dec);
+                    this.gsp -= /*this.watcher.multiply*/(this.dec);
                     if (Math.abs(this.gsp) > 4.5) {
                         this.facing = true;
                         this.breaking = -1;
@@ -171,26 +171,26 @@
             if (this.holdingLeft) {
                 if (this.gsp > 0) {
                     if (this.rolling) {
-                        this.gsp = (_H.max(0, this.gsp - this.watcher.multiply(this.rdec)));
+                        this.gsp = (_H.max(0, this.gsp - /*this.watcher.multiply*/(this.rdec)));
                     }
                 }
             }
             if (this.holdingRight) {
                 if (this.gsp < 0) {
                     if (this.rolling) {
-                        this.gsp = (_H.min(0, this.gsp + this.watcher.multiply(this.rdec)));
+                        this.gsp = (_H.min(0, this.gsp + /*this.watcher.multiply*/(this.rdec)));
                     }
                 }
             }
             //friction
-            this.gsp -= (Math.min(Math.abs(this.gsp), this.watcher.multiply(this.rfrc)) * (this.gsp > 0 ? 1 : -1));
+            this.gsp -= (Math.min(Math.abs(this.gsp), /*this.watcher.multiply*/(this.rfrc)) * (this.gsp > 0 ? 1 : -1));
             oldSign = _H.sign(this.gsp);
             //slope
             var ang = _H.sin(this.angle);
             if ((ang > 0) == (this.gsp > 0))
-                this.gsp += this.watcher.multiply(-this.slpRollingUp) * ang;
+                this.gsp += /*this.watcher.multiply*/(-this.slpRollingUp) * ang;
             else
-                this.gsp += this.watcher.multiply(-this.slpRollingDown) * ang;
+                this.gsp += /*this.watcher.multiply*/(-this.slpRollingDown) * ang;
 
             if (this.gsp > max * 2.5) this.gsp = max * 2.5;
             if (this.gsp < -max * 2.5) this.gsp = -max * 2.5;
@@ -211,22 +211,22 @@
 
                 if (this.xsp >= 0) {
                     //accelerate 
-                    this.xsp += this.watcher.multiply(this.air);
+                    this.xsp += /*this.watcher.multiply*/(this.air);
                     if (this.xsp > max) this.xsp = max;
                 } else {
                     //decelerate 
-                    this.xsp += this.watcher.multiply(this.air);
+                    this.xsp += /*this.watcher.multiply*/(this.air);
                 }
             }
             if (this.holdingLeft && !this.holdingRight) {
                 this.facing = false;
                 if (this.xsp <= 0) {
                     //accelerate 
-                    this.xsp -= this.watcher.multiply(this.air);
+                    this.xsp -= /*this.watcher.multiply*/(this.air);
                     if (this.xsp < -max) this.xsp = -max;
                 } else {
                     //decelerate 
-                    this.xsp -= this.watcher.multiply(this.air);
+                    this.xsp -= /*this.watcher.multiply*/(this.air);
                 }
             }
             if (this.wasInAir) {
@@ -237,7 +237,7 @@
                 }
             }
             //gravity
-            this.ysp += this.watcher.multiply(this.justHit ? 0.1875 : this.grv);
+            this.ysp += /*this.watcher.multiply*/(this.justHit ? 0.1875 : this.grv);
             //drag
             if (this.ysp < 0 && this.ysp > -4) {
                 if (Math.abs(this.xsp) > 0.125) {
@@ -302,10 +302,27 @@
         this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x + this.xsp)) % (sonicManager.SonicLevel.LevelWidth * 128);
         this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y + this.ysp)) % (sonicManager.SonicLevel.LevelHeight * 128);
     };
+    this.getBestSensor = function(sensor1, sensor2) {
+        if (sensor1 == -1 && sensor2 == -1) return false;
 
+        if (sensor1 == -1) return sensor2;
+        if (sensor2 == -1) return sensor1;
+
+        switch (this.mode) {
+        case RotationMode.Floor:
+            return sensor1.value < sensor2.value ? sensor1 : sensor2;
+        case RotationMode.LeftWall:
+            return sensor1.value > sensor2.value ? sensor1 : sensor2;
+        case RotationMode.Ceiling:
+            return sensor1.value > sensor2.value ? sensor1 : sensor2;
+        case RotationMode.RightWall:
+            return sensor1.value < sensor2.value ? sensor1 : sensor2;
+        }
+        return null;
+    };
     this.tick = function () {
         if (this.debugging) {
-            var debugSpeed = this.watcher.multiply(15);
+            var debugSpeed = /*this.watcher.multiply*/(15);
 
             if (this.holdingRight) {
                 this.x += debugSpeed;
@@ -348,55 +365,32 @@
         var sensorM1 = this.sensorManager.getResult('m1');
         var sensorM2 = this.sensorManager.getResult('m2');
 
-
-        switch (this.mode) {
+        var best = this.getBestSensor(sensorM1, sensorM2, this.mode);
+        if (best) {
+            switch (this.mode) {
             case RotationMode.Floor:
-                if (sensorM1 != -1) {
-                    this.x = fx = sensorM1.value + 12;
-                    this.gsp = 0;
-                    if (this.inAir) this.xsp = 0;
-                }
-                if (sensorM2 != -1) {
-                    this.x = fx = sensorM2.value - 12;
-                    this.gsp = 0;
-                    if (this.inAir) this.xsp = 0;
-                }
+                this.x = fx = best.value - 12;
+                this.gsp = 0;
+                if (this.inAir) this.xsp = 0;
                 break;
             case RotationMode.LeftWall:
-                if (sensorM1 != -1) {
-                    this.y = fy = sensorM1.value - 12;
-                    if (this.inAir) this.xsp = 0;
-                }
-                if (sensorM2 != -1) {
-                    this.y = fy = sensorM2.value + 12;
-                    this.gsp = 0;
-                    if (this.inAir) this.xsp = 0;
-                }
+                this.y = fy = best.value - 12;
+                if (this.inAir) this.xsp = 0;
+
                 break;
             case RotationMode.Ceiling:
-                if (sensorM1 != -1) {
-                    this.x = fx = sensorM1.value + 12;
-                    this.gsp = 0;
-                    if (this.inAir) this.xsp = 0;
-                }
-                if (sensorM2 != -1) {
-                    this.x = fx = sensorM2.value - 12;
-                    this.gsp = 0;
-                    if (this.inAir) this.xsp = 0;
-                }
+                this.x = fx = best.value - 12;
+                this.gsp = 0;
+                if (this.inAir) this.xsp = 0;
+
                 break;
             case RotationMode.RightWall:
-                if (sensorM1 != -1) {
-                    this.y = fy = sensorM1.value - 12;
-                    this.gsp = 0;
-                    if (this.inAir) this.xsp = 0;
-                }
-                if (sensorM2 != -1) {
-                    this.y = fy = sensorM2.value + 12;
-                    this.gsp = 0;
-                    if (this.inAir) this.xsp = 0;
-                }
+                this.y = fy = best.value + 12;
+                this.gsp = 0;
+                if (this.inAir) this.xsp = 0;
+
                 break;
+            }
         }
         this.sensorManager.check(this);
 
@@ -404,95 +398,40 @@
         var sensorB = this.sensorManager.getResult('b');
 
         if (!this.inAir) {
-            if (sensorA == -1 && sensorB == -1) {
+
+              best = this.getBestSensor(sensorA, sensorB, this.mode);
+            if (!best) {
                 this.inAir = true;
             } else {
                 this.justHit = false;
                 switch (this.mode) {
                     case RotationMode.Floor:
-                        if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value < sensorB.value) {
-                                sensorA.chosen = true;
-                                this.angle = sensorA.angle;
-                                this.y = fy = sensorA.value - 20;
-                            } else {
-                                sensorB.chosen = true;
-                                this.angle = sensorB.angle;
-                                this.y = fy = sensorB.value - 20;
-                            }
-                        } else if (sensorA.value > -1) {
-                            sensorA.chosen = true;
-                            this.angle = sensorA.angle;
-                            this.y = fy = sensorA.value - 20;
-                        } else if (sensorB.value > -1) {
-                            sensorB.chosen = true;
-                            this.angle = sensorB.angle;
-                            this.y = fy = sensorB.value - 20;
-                        }
+
+                        best.chosen = true;
+                        this.angle = best.angle;
+                        this.y = fy = best.value - 20;
+
 
                         break;
                     case RotationMode.LeftWall:
-                        if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value > sensorB.value) {
-                                sensorA.chosen = true;
-                                this.angle = sensorA.angle;
-                                this.x = fx = sensorA.value + 20;
-                            } else {
-                                sensorB.chosen = true;
-                                this.angle = sensorB.angle;
-                                this.x = fx = sensorB.value + 20;
-                            }
-                        } else if (sensorA.value > -1) {
-                            sensorA.chosen = true;
-                            this.angle = sensorA.angle;
-                            this.x = fx = sensorA.value + 20;
-                        } else if (sensorB.value > -1) {
-                            sensorB.chosen = true;
-                            this.angle = sensorB.angle;
-                            this.x = fx = sensorB.value + 20;
-                        }
+                        best.chosen = true;
+                        this.angle = best.angle;
+                        this.x = fx = best.value + 20;
+
                         break;
                     case RotationMode.Ceiling:
-                        if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value > sensorB.value) {
-                                sensorA.chosen = true;
-                                this.angle = sensorA.angle;
-                                this.y = fy = sensorA.value + 20;
-                            } else {
-                                sensorB.chosen = true;
-                                this.angle = sensorB.angle;
-                                this.y = fy = sensorB.value + 20;
-                            }
-                        } else if (sensorA.value > -1) {
-                            sensorA.chosen = true;
-                            this.angle = sensorA.angle;
-                            this.y = fy = sensorA.value + 20;
-                        } else if (sensorB.value > -1) {
-                            sensorB.chosen = true;
-                            this.angle = sensorB.angle;
-                            this.y = fy = sensorB.value + 20;
-                        }
+
+                        best.chosen = true;
+                        this.angle = best.angle;
+                        this.y = fy = best.value + 20;
+
                         break;
                     case RotationMode.RightWall:
-                        if (sensorA.value >= 0 && sensorB.value >= 0) {
-                            if (sensorA.value < sensorB.value) {
-                                sensorA.chosen = true;
-                                this.angle = sensorA.angle;
-                                this.x = fx = sensorA.value - 20;
-                            } else {
-                                sensorB.chosen = true;
-                                this.angle = sensorB.angle;
-                                this.x = fx = sensorB.value - 20;
-                            }
-                        } else if (sensorA.value > -1) {
-                            sensorA.chosen = true;
-                            this.angle = sensorA.angle;
-                            this.x = fx = sensorA.value - 20;
-                        } else if (sensorB.value > -1) {
-                            sensorB.chosen = true;
-                            this.angle = sensorB.angle;
-                            this.x = fx = sensorB.value - 20;
-                        }
+
+                        best.chosen = true;
+                        this.angle = best.angle;
+                        this.x = fx = best.value - 20;
+
                         break;
                 }
 
@@ -698,21 +637,7 @@
             m = this.checkCollisionLineWrap(x, y, length, direction);
 
         }
-
-        if (m.angle == 255) {
-            if (this.mode == RotationMode.Floor) {
-
-            }
-            else if (this.mode == RotationMode.LeftWall) {
-                //   m.angle = Math.floor(256 / 4 * 1);
-            }
-            else if (this.mode == RotationMode.Ceiling) {
-                //   m.angle = Math.floor(256 / 4 * 2);
-            }
-            else if (this.mode == RotationMode.RightWall) {
-                //     m.angle = Math.floor(256 / 4 * 3);
-            }
-        }
+         
 
         return m;
     };

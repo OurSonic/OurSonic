@@ -841,7 +841,7 @@ function PieceLayoutEditor(x, y, size) {
 }
 
 
-function ColorEditingArea(x, y,size) {
+function ColorEditingArea(x, y, size, showOffset) {
     this.forceDrawing = function () {
         return { redraw: false, clearCache: false };
     };
@@ -862,7 +862,7 @@ function ColorEditingArea(x, y,size) {
         this.frame = frame;
         this.width = this.size.width;
         this.height = this.size.height;
-        this.editor = new Editor(frame);
+        this.editor = new Editor(frame,showOffset);
     };
     this.focus = function () {
 

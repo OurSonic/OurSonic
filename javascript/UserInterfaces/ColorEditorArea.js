@@ -4,7 +4,7 @@ window.ColorEditorArea = function() {
     sonicManager.uiManager.UIAreas.push(colorEditorArea);
 
 
-    colorEditorArea.addControl(colorEditorArea.colorEditor = new ColorEditingArea(30, 45, { width: 680, height: 680 }));
+    colorEditorArea.addControl(colorEditorArea.colorEditor = new ColorEditingArea(30, 45, { width: 680, height: 680 },false));
     colorEditorArea.addControl(new Button(770, 70, 150, 22, "Show Outline", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function() {
         colorEditorArea.colorEditor.editor.showOutline = !colorEditorArea.colorEditor.editor.showOutline;
     }

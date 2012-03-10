@@ -1,11 +1,11 @@
-function Editor(assetFrame) {
+function Editor(assetFrame,showOffset) {
     this.assetFrame = assetFrame;
 
     this.lineWidth = 1;
     this.currentColor = 0;
     this.showOutline = true;
     this.draw = function (canvas, pos, size,showCollideMap,showHurtMap) {
-        this.assetFrame.drawUI(canvas, pos, size, this.showOutline, showCollideMap, showHurtMap, true);
+        this.assetFrame.drawUI(canvas, pos, size, this.showOutline, showCollideMap, showHurtMap, showOffset);
     };
     this.drawPixel = function (location1) {
 

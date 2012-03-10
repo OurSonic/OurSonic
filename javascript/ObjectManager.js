@@ -284,15 +284,15 @@ function LevelObjectInfo() {
     this.key = undefined;
 }
 
-function LevelProjectile(name) {
+function LevelObjectProjectile(name) {
     this.x = 0;
     this.y = 0;
     this.xsp = 0;
     this.ysp = 0;
     this.xflip = 0;
     this.yflip = 0;
-    this.subdata = undefined;
-    this.assets = [];
+    this.assetIndex = 0;
+    this.frameIndex = 0;
     this.name = name ? name : "";
     this.init = function (level, sonic) {
     };
