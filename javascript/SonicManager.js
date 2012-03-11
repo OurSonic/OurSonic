@@ -311,7 +311,7 @@ function SonicManager(mainCanvas, resize) {
                 if (this.showHeightMap) {
                     var fd;
                     if ((fd = sonicManager.SpriteCache.heightMapChunks[(this.SonicLevel.curHeightMap ? 1 : 2) + " " + chunk.index + " " + scale.y + " " + scale.x])) {
-                        if (fd.loaded) {
+                        if (true || fd.loaded) {
                             canvas.drawImage(fd, posj.x, posj.y);
                         }
                     }
@@ -551,12 +551,11 @@ function SonicManager(mainCanvas, resize) {
 
 
             md.draw(ctx, { x: 0, y: 0 }, scale, false);
-            var fc = canv.canvas.toDataURL("image/png");
+            //var fc = canv.canvas.toDataURL("image/png");
 
-            that.SpriteCache.tileChunks[false + " " + md.index + " " + scale.y + " " + scale.x + " -"] = _H.loadSprite(fc, function (f) {
-                ind_.tcs++;
-                done();
-            });
+            that.SpriteCache.tileChunks[false + " " + md.index + " " + scale.y + " " + scale.x + " -"] = canv.canvas;
+            ind_.tcs++;
+            done();
 
             canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
             ctx = canv.context;
@@ -565,11 +564,10 @@ function SonicManager(mainCanvas, resize) {
 
             if (!md.onlyBackground()) {
                 md.draw(ctx, { x: 0, y: 0 }, scale, true);
-                var fc = canv.canvas.toDataURL("image/png");
-                that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x + " -"] = _H.loadSprite(fc, function (f) {
-                    ind_.tcs++;
-                    done();
-                });
+                //  var fc = canv.canvas.toDataURL("image/png");
+                that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x + " -"] = canv.canvas;
+                ind_.tcs++;
+                done();
             } else {
                 that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x + " -"] = 1;
                 ind_.tcs++;
@@ -588,20 +586,15 @@ function SonicManager(mainCanvas, resize) {
                     ctx.clearRect(0, 0, canv.width, canv.height);
 
                     md.draw(ctx, { x: 0, y: 0 }, scale, true, c);
-                    var fc = canv.canvas.toDataURL("image/png");
-                    that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x + " " + c] = _H.loadSprite(fc, function (f) {
-
-                    });
-
+                    //   var fc = canv.canvas.toDataURL("image/png");
+                    that.SpriteCache.tileChunks[true + " " + md.index + " " + scale.y + " " + scale.x + " " + c] = canv.canvas;
                     canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
                     ctx = canv.context;
                     ctx.clearRect(0, 0, canv.width, canv.height);
 
                     md.draw(ctx, { x: 0, y: 0 }, scale, false, c);
-                    var fc = canv.canvas.toDataURL("image/png");
-                    that.SpriteCache.tileChunks[false + " " + md.index + " " + scale.y + " " + scale.x + " " + c] = _H.loadSprite(fc, function (f) {
-
-                    });
+                    // var fc = canv.canvas.toDataURL("image/png");
+                    that.SpriteCache.tileChunks[false + " " + md.index + " " + scale.y + " " + scale.x + " " + c] = canv.canvas;
                 }
                 sonicManager.CACHING = true;
             }
@@ -646,8 +639,9 @@ function SonicManager(mainCanvas, resize) {
                     }
                 }
             }
-            var fc = canv.canvas.toDataURL("image/png");
-            that.SpriteCache.heightMapChunks[1 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.hmc++; done(); });
+            //  var fc = canv.canvas.toDataURL("image/png");
+            that.SpriteCache.heightMapChunks[1 + " " + md.index + " " + scale.y + " " + scale.x] = canv.canvas;
+            ind_.hmc++; done(); 
 
 
 
@@ -689,8 +683,10 @@ function SonicManager(mainCanvas, resize) {
                     }
                 }
             }
-            var fc = canv.canvas.toDataURL("image/png");
-            that.SpriteCache.heightMapChunks[2 + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, function (f) { ind_.hmc++; done(); });
+          //  var fc = canv.canvas.toDataURL("image/png");
+            that.SpriteCache.heightMapChunks[2 + " " + md.index + " " + scale.y + " " + scale.x] = canv.canvas;
+            ind_.hmc++; done(); 
+
 
         }, function () {
             if (ind_.tcs >= that.SonicLevel.Chunks.length * 2 / speed && ind_.hmc >= that.SonicLevel.Chunks.length * 2 / speed) {

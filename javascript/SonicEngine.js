@@ -12,7 +12,7 @@ window.requestAnimFrame = (function (ff) {
         return window.oRequestAnimationFrame(ff);
     if (window.msRequestAnimationFrame)
         return window.msRequestAnimationFrame(ff);
-    window.setTimeout(ff, 1000 / 60);
+    return window.setTimeout(ff, 1000 / 60);
 });
 
 
@@ -42,16 +42,7 @@ function SonicEngine(canvasName) {
         evt.preventDefault();
     }, false);
 
-    $(document).keypress(doKeyDown);
-    $(document).keydown(function (e) {
-          if (e.ctrlKey || e.keyCode == 8 || e.keyCode == 46 || e.keyCode == 40 || e.keyCode == 38 || e.keyCode == 37 || e.keyCode == 39) {
-              e.preventDefault();
-              doKeyDown(e);
-          } 
-    });
-    $(document).keyup(doKeyUp);
 
-     
     function canvasOnClick(e) {
         e.preventDefault();
         if (sonicManager.uiManager.onClick(e)) return false;
@@ -88,116 +79,92 @@ function SonicEngine(canvasName) {
 
 
 
+    KeyboardJS.bind.key("o", function () {
+        if (sonicManager.sonicToon)
+            sonicManager.inHaltMode = !sonicManager.inHaltMode;
+    }, function () { });
 
 
+    KeyboardJS.bind.key("p", function () {
+        if (sonicManager.sonicToon)
+            if (sonicManager.inHaltMode) {
+                sonicManager.waitingForTickContinue = false;
+            }
+    }, function () { });
 
 
-    function doKeyDown(evt) {
+    KeyboardJS.bind.key("h", function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.hit();
+    }, function () { });
 
-        if (!sonicManager.sonicToon) {
-            sonicManager.uiManager.onKeyDown(evt);
+    KeyboardJS.bind.key("c", function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.debug();
+    }, function () { });
+
+    KeyboardJS.bind.key("e", function () {
+        sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
+    }, function () { });
+
+    KeyboardJS.bind.key("f", function () {
+        sonicManager.showHeightMap = !sonicManager.showHeightMap;
+    }, function () { });
+
+    KeyboardJS.bind.key("up", function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.pressUp();
+        else {
+            sonicManager.windowLocation.y -= 128;
         }
 
+    }, function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.releaseUp();
+    });
 
-        switch (evt.keyCode) {
-            case 111:
-
-                if (sonicManager.sonicToon)
-                    sonicManager.inHaltMode = !sonicManager.inHaltMode;
-                break;
-            case 112:
-                if (sonicManager.sonicToon)
-                    if (sonicManager.inHaltMode) {
-                        sonicManager.waitingForTickContinue = false;
-                    }
-
-                break;
-
-            case 66:
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.hit();
-                break;
-            case 99:
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.debug();
-                break;
-            case 101:
-                sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
-                break;
-            case 102:
-                sonicManager.showHeightMap = !sonicManager.showHeightMap;
-                break;
-            case 38:  /* Up arrow was pressed */
-            case 87:  /* Up arrow was pressed */
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.pressUp();
-                else {
-                    sonicManager.windowLocation.y -= 128;
-                }
-
-                break;
-            case 32: //space
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.pressJump();
-                break;
-            case 40:  /* Down arrow was pressed */
-            case 83:  /* Down arrow was pressed */
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.pressCrouch();
-                else {
-                    sonicManager.windowLocation.y += 128;
-                }
-                break;
-            case 37:  /* Left arrow was pressed */
-            case 65:  /* Left arrow was pressed */
-                sonicManager.windowLocation.x -= 128;
-
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.pressLeft(); else {
-                    sonicManager.windowLocation.x -= 128;
-                }
-                break;
-            case 39:  /* Right arrow was pressed */
-            case 68:  /* Right arrow was pressed */
-                sonicManager.windowLocation.x += 128;
-
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.pressRight(); else {
-                    sonicManager.windowLocation.x += 128;
-                }
-                break;
+    KeyboardJS.bind.key("down", function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.pressCrouch();
+        else {
+            sonicManager.windowLocation.y += 128;
         }
-    }
-    function doKeyUp(evt) {
-        switch (evt.keyCode) {
-            case 38:  /* Up arrow was pressed */
-            case 87:  /* Up arrow was pressed */
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.releaseUp();
-                break;
-            case 32: //space
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.releaseJump();
-                break;
-            case 40:  /* Down arrow was pressed */
-            case 83:  /* Down arrow was pressed */
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.releaseCrouch();
+    }, function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.releaseCrouch();
+    });
 
-                break;
-            case 37:  /* Left arrow was pressed */
-            case 65:  /* Left arrow was pressed */
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.releaseLeft();
-                break;
-            case 39:  /* Right arrow was pressed */
-            case 68:  /* Right arrow was pressed */
-                if (sonicManager.sonicToon)
-                    sonicManager.sonicToon.releaseRight();
-                break;
+    KeyboardJS.bind.key("left", function () {
+        if (sonicManager.sonicToon) {
+            sonicManager.sonicToon.pressLeft();
+        } else {
+            sonicManager.windowLocation.x -= 128;
         }
-    }
+    }, function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.releaseLeft();
+    });
 
+    KeyboardJS.bind.key("right", function () {
+
+        if (sonicManager.sonicToon) {
+            sonicManager.sonicToon.pressRight();
+        } else {
+            sonicManager.windowLocation.x += 128;
+        }
+    }, function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.releaseRight();
+    });
+
+    KeyboardJS.bind.key("space", function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.pressJump();
+    }, function () {
+        if (sonicManager.sonicToon)
+            sonicManager.sonicToon.releaseJump();
+    });
+     
     that.resizeCanvas = function () {
         that.canvasWidth = $(window).width();
         that.canvasHeight = $(window).height();
@@ -211,7 +178,9 @@ function SonicEngine(canvasName) {
     }
 
     that.draw = function () {
-        requestAnimFrame(that.draw);
+        //   requestAnimFrame(that.draw);
+        //window.setTimeout(that.draw, 1000 / 30);
+
         if (!sonicManager.inHaltMode)
             clear(that.canvasItem);
 
@@ -228,9 +197,15 @@ function SonicEngine(canvasName) {
 
 
 
-    requestAnimFrame(that.draw);
-    window.setInterval(sonicManager.tick, 1000 / 60, sonicManager);
+    //requestAnimFrame(that.draw);
+    window.setInterval(that.draw, 1000 / 60);
+
+    window.setInterval(function () {
+        //sonicManager.tick(); 
+        sonicManager.tick(); }, 1000 / 60, sonicManager);
 
 };
 
 
+
+ 

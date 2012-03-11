@@ -15,6 +15,8 @@
     <script src="lib/util/javascript-hint.js"></script>
     <link rel="stylesheet" href="lib/theme/night.css">
     <script src="javascript/linq.js?1" type="text/javascript"> 
+    </script> 
+    <script src="http://cloud.github.com/downloads/RobertWHurst/KeyboardJS/keyboard.0.2.2.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Help.js?1" type="text/javascript"> 
     </script>

@@ -70,7 +70,7 @@
         var fd;
         if ((fd = sonicManager.SpriteCache.tileChunks[layer + " " + this.index + " " + scale.y + " " + scale.x + " " + ((animationFrame != undefined) ? animationFrame : '-')])) {
             if (fd == 1) return false;
-            if (fd.loaded) {
+            if (true || fd.loaded) {
                 canvas.drawImage(fd, position.x, position.y);
 
                 /*  if (this.animated) {

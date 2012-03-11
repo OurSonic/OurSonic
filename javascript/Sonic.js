@@ -753,6 +753,7 @@
         return this.imageLoaded[0] < this.imageLength;
     };
     this.drawUI = function (canvas, pos, scale) {
+        if (canvas.font != "13pt Arial bold")
         canvas.font = "13pt Arial bold";
         canvas.fillStyle = "White";
         canvas.fillText("Rings: " + this.rings, pos.x + 90, pos.y + 45);
