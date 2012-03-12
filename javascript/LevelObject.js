@@ -20,9 +20,9 @@ function LevelObject(o) {
     };
     this.draw = function (canvas, pos, scale) {
         if (this.sprites[0] && this.sprites[0].loaded) {
-            canvas.drawImage(this.sprites[0], (pos.x - this.sprites[0].width / 2) * scale.x, (pos.y - this.sprites[0].height / 2) * scale.y, this.sprites[0].width * scale.x, this.sprites[0].height * scale.y);
+            canvas.drawImage(this.sprites[0], _H.floor((pos.x - this.sprites[0].width / 2) * scale.x), _H.floor((pos.y - this.sprites[0].height / 2) * scale.y), this.sprites[0].width * scale.x, this.sprites[0].height * scale.y);
         } else {
-            canvas.drawImage(broken, (pos.x - broken.width / 2) * scale.x, (pos.y - broken.height / 2) * scale.y, broken.width * scale.x, broken.height * scale.y);
+            canvas.drawImage(broken, _H.floor((pos.x - broken.width / 2) * scale.x), _H.floor((pos.y - broken.height / 2) * scale.y), broken.width * scale.x, broken.height * scale.y);
         }
     };
 

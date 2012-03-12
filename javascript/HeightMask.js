@@ -56,8 +56,8 @@
                         }
                     }
 
-                    var _x = pos.x + (jx * scale.x);
-                    var _y = pos.y + (jy * scale.y);
+                    var _x = _H.floor(pos.x + (jx * scale.x));
+                    var _y = _H.floor(pos.y + (jy * scale.y));
 
                     canvas.lineWidth = 1;
                     if (state <= 0 && _H.itemsGood(this.items, x, y, jy) && solid > 0) {
@@ -65,9 +65,9 @@
                         canvas.fillRect(_x, _y, scale.x, scale.y);
                     } else {
                         if (state != -1) {
-                            canvas.lineWidth = 1;
-                            canvas.strokeStyle = "#0C3146";
-                            canvas.strokeRect(_x, _y, scale.x, scale.y);
+                           // canvas.lineWidth = 1;
+                           // canvas.strokeStyle = "#0C3146";
+                           // canvas.strokeRect(_x, _y, scale.x, scale.y);
                         }
                     }
 
@@ -98,8 +98,8 @@
             canvas.beginPath();
             canvas.lineWidth = 4;
             canvas.strokeStyle = "#03F3CA";
-            canvas.moveTo(pos.x + scale.x * 16 / 2, pos.y + scale.y * 16 / 2);
-            canvas.lineTo(pos.x + scale.x * 16 / 2 - _H.sin(angle) * scale.x * 8, pos.y + scale.y * 16 / 2 - _H.cos(angle) * scale.x * 8);
+            canvas.moveTo(_H.floor(pos.x + scale.x * 16 / 2), _H.floor(pos.y + scale.y * 16 / 2));
+            canvas.lineTo(_H.floor(pos.x + scale.x * 16 / 2 - _H.sin(angle) * scale.x * 8), _H.floor(pos.y + scale.y * 16 / 2 - _H.cos(angle) * scale.x * 8));
             canvas.stroke();
 
         }
@@ -123,8 +123,8 @@
                 canvas.drawImage(fd, pos.x, pos.y);
             }
         } else {
-            canvas.strokeStyle = "#000000";
-            canvas.strokeRect(pos.x, pos.y, scale.x * 16, scale.y * 16);
+           // canvas.strokeStyle = "#000000";
+            //canvas.strokeRect(pos.x, pos.y, scale.x * 16, scale.y * 16);
             if (solid > 0) {
                 for (var x = 0; x < 16; x++) {
                     for (var y = 0; y < 16; y++) {
@@ -134,8 +134,8 @@
 
                             jx = x;
                             jy = y;
-                            var _x = pos.x + (jx * scale.x);
-                            var _y = pos.y + (jy * scale.y);
+                            var _x = _H.floor(pos.x + (jx * scale.x));
+                            var _y = _H.floor(pos.y + (jy * scale.y));
 
 
                             canvas.lineWidth = 1;

@@ -444,7 +444,7 @@
         var data = cache.data[mode],
         percent = min(100, 100 * (value / (mode == 'fps' ? 80 : mode == 'ms' ? 1e3 : 128)));
 
-        value = (mode == 'mem' ? value.toFixed(2) : round(value))*2;
+        value = (mode == 'mem' ? value.toFixed(2) : round(value));
         data.length = [data.length, data.unshift({ 'value': value, 'percent': percent })][0];
 
         value = floor(value);
@@ -496,9 +496,9 @@
         if (cache.lastTime != null) {
             // record data
             cache.frames++;
-            record('ms', max(1e3 / 30, now - cache.lastTime));
+            record('ms', max(1e3 / 60, now - cache.lastTime));
             if (secValue > 999) {
-                record('fps', min(30, 1e3 / (secValue / cache.frames)));
+                record('fps', min(60, 1e3 / (secValue / cache.frames)));
                 memoryNS && record('mem', memoryNS.memory.usedJSHeapSize / 1048576);
                 cache.frames = 0;
                 cache.lastSecond = now;
@@ -679,7 +679,7 @@
     memoryNS = memoryNS && !!memoryNS.memory.usedJSHeapSize && memoryNS;
 
     // start recording
-    setInterval(update, 1e3 / 30);
+    setInterval(update, 1e3 / 60);
 
     // start sampling (once every two seconds)
     setInterval(function () {

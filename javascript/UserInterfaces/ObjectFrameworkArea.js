@@ -2,7 +2,7 @@ window.ObjectFrameworkArea = function () {
     var size = 40 * 4;
 
     var objectFrameworkArea = sonicManager.uiManager.objectFrameworkArea = new UiArea(540, 75, 850, 690, sonicManager.uiManager, true);
-    objectFrameworkArea.visible = true;
+    objectFrameworkArea.visible = false ;
     sonicManager.uiManager.UIAreas.push(objectFrameworkArea);
     objectFrameworkArea.addControl(new TextArea(30, 25, "Object Framework", sonicManager.uiManager.textFont, "blue"));
 
@@ -26,7 +26,7 @@ window.ObjectFrameworkArea = function () {
         var pth;
         objectFrameworkArea.objectFramework.pieceLayouts.push(pth = new LevelObjectPieceLayout("Piece Layout " + (objectFrameworkArea.objectFramework.pieceLayouts.length + 1)));
 
-  
+
         objectFrameworkArea.populate(objectFrameworkArea.objectFramework);
     }));
     objectFrameworkArea.addControl(objectFrameworkArea.pieceLayouts = new ScrollBox(30, 60 + (size * 2) + 10, 25, 4, 250, "rgb(50,60,127)"));
@@ -262,7 +262,7 @@ window.ObjectFrameworkArea = function () {
                 }
 
             }));
-            
+
             bdc.state = { piece: pieceLayout.pieces[0], index: i };
             bdc.toggle = true;
             if (pieceLayout.pieces[0])
@@ -280,8 +280,11 @@ window.ObjectFrameworkArea = function () {
         objectFrameworkArea.mainPanel.addControl(new Button(348, 68, 140, 25, "Add Branch", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
             var pc;
             pe.pieceLayoutMaker.pieceLayout.pieces.push(pc = new LevelObjectPieceLayoutPiece(_H.floor(objectFrameworkArea.objectFramework.pieces.length * Math.random())));
-            pc.x = Math.random() * pe.pieceLayoutMaker.pieceLayout.width;
-            pc.y = Math.random() * pe.pieceLayoutMaker.pieceLayout.height;
+            pc.x = _H.floor(Math.random() * pe.pieceLayoutMaker.pieceLayout.width);
+            pc.y = _H.floor(Math.random() * pe.pieceLayoutMaker.pieceLayout.height);
+
+            pe.pieceLayoutMaker.selectedPieceIndex = pe.pieceLayoutMaker.pieceLayout.pieces.length - 1;
+
             buildleftScroll();
         }));
 
@@ -322,8 +325,8 @@ window.ObjectFrameworkArea = function () {
                             objectFrameworkArea.mainPanel.selectPieceScroll.controls[j].toggled = false;
                     }
                 }));
-                bd.toggle = true;
-                bd.state = pieceLayout.pieces[i];
+                bd.toggle = false;
+                bd.state = pieceLayout.pieces[pe.pieceLayoutMaker.selectedPieceIndex];
                 if (i == pe.pieceLayoutMaker.selectedPieceIndex) bd.toggled = true;
             }
         }
@@ -343,14 +346,16 @@ window.ObjectFrameworkArea = function () {
             }
 
             for (var j = 0; j < objectFrameworkArea.mainPanel.selectPieceScroll.controls.length; j++) {
-                if (df.state.pieceIndex == j)
+                df.state.piece = this;
+                if (df.state.piece.pieceIndex == j)
                     objectFrameworkArea.mainPanel.selectPieceScroll.controls[j].toggled = true;
                 else
                     objectFrameworkArea.mainPanel.selectPieceScroll.controls[j].toggled = false;
             }
 
+
         };
-        
+
 
 
 
@@ -411,6 +416,23 @@ window.ObjectFrameworkArea = function () {
 
 
     };
+    window.imageUploaded = function (img) {
+        _H.loadSprite(img, function (image) {
+            objectFrameworkArea.mainPanel.frameArea.currentFrame.uploadImage(image);
+            var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
+            ce.init(objectFrameworkArea.mainPanel.frameArea.currentFrame);
+            ce.editor.showOutline = false;
+            ce.editable = false;
+            ce.click = function (e) {
+                if (objectFrameworkArea.mainPanel.frameArea.currentFrame) {
+                    objectFrameworkArea.mainPanel.frameArea.currentFrame.offsetX = e.x;
+                    objectFrameworkArea.mainPanel.frameArea.currentFrame.offsetY = e.y;
+                }
+            };
+
+            objectFrameworkArea.mainPanel.frameArea.palatteArea.init(objectFrameworkArea.mainPanel.frameArea.currentFrame.palette, true);
+        });
+    };
 
     objectFrameworkArea.loadAsset = function (asset) {
 
@@ -432,21 +454,6 @@ window.ObjectFrameworkArea = function () {
                     vs.colorMap[i][j] = Math.floor(Math.random() * vs.palette.length);
                 }
             }
-            window.imageUploaded = function (img) {
-                _H.loadSprite(img, function (image) {
-                    objectFrameworkArea.mainPanel.frameArea.currentFrame.uploadImage(image);
-                    var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
-                    ce.init(objectFrameworkArea.mainPanel.frameArea.currentFrame);
-                    ce.editor.showOutline = false;
-                    ce.editable = false;
-                    ce.click = function (e) {
-                        frame.offsetX = e.x;
-                        frame.offsetY = e.y;
-                    };
-
-                    objectFrameworkArea.mainPanel.frameArea.palatteArea.init(objectFrameworkArea.mainPanel.frameArea.currentFrame.palette, true);
-                });
-            };
 
             objectFrameworkArea.mainPanel.populate(asset);
         }));
@@ -509,7 +516,7 @@ window.ObjectFrameworkArea = function () {
             }));
             bt.toggle = true;
 
-            objectFrameworkArea.mainPanel.frameArea.addControl(objectFrameworkArea.mainPanel.frameArea.colorEditor = new ColorEditingArea(230 - 55, 65, { width: 310, height: 225 },true));
+            objectFrameworkArea.mainPanel.frameArea.addControl(objectFrameworkArea.mainPanel.frameArea.colorEditor = new ColorEditingArea(230 - 55, 65, { width: 310, height: 225 }, true));
             var ce = objectFrameworkArea.mainPanel.frameArea.colorEditor;
             ce.init(frame);
             ce.editor.showOutline = false;

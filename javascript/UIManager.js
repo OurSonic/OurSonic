@@ -474,6 +474,7 @@
     window._TileChunkArea();
     window._TilePieceArea();
     window.ObjectFrameworkArea();
+    window.ObjectFrameworkListArea();
     window.ObjectInfoArea();
 
 }

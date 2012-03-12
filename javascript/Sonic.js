@@ -55,9 +55,11 @@
     this.sensorManager.createHorizontalSensor('m1', 4, 0, -12, '#212C2E');
     this.sensorManager.createHorizontalSensor('m2', 4, 0, 12, '#22Ffc1');
     this.watcher = new Watcher();
-    
+
     this.updateMode = function () {
-     
+
+
+
         if (this.angle <= 0x22 || this.angle >= 0xDE) {
             this.mode = RotationMode.Floor;
         } else if (this.angle > 0x22 && this.angle < 0x56) {
@@ -66,12 +68,14 @@
             this.mode = RotationMode.Ceiling;
         } else if (this.angle > 0xA1 && this.angle < 0xDE) {
             this.mode = RotationMode.RightWall;
-        } 
+        }
         this.myRec = { x: this.x - 5, width: 5 * 2, y: this.y - 20, height: 20 * 2 };
+        if (this.inAir)
+            this.mode = RotationMode.Floor;
     };
     this.effectPhysics = function () {
 
-     //   this.watcher.tick();
+        //   this.watcher.tick();
 
         var max = 6;
         if (!this.jumping) {
@@ -279,9 +283,9 @@
                 if (this.mode == RotationMode.RightWall) this.x -= 0;
                 else if (this.mode == RotationMode.LeftWall) this.x += 0;
                 else if (this.mode == RotationMode.Ceiling) this.y += 0;
-                this.mode = RotationMode.Floor;
-                this.angle = 0xFF;
+                var oldMode = this.mode;
                 this.updateMode();
+                this.mode = oldMode;
                 this.hlock = 30;
             }
         }
@@ -302,21 +306,21 @@
         this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x + this.xsp)) % (sonicManager.SonicLevel.LevelWidth * 128);
         this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y + this.ysp)) % (sonicManager.SonicLevel.LevelHeight * 128);
     };
-    this.getBestSensor = function(sensor1, sensor2) {
+    this.getBestSensor = function (sensor1, sensor2) {
         if (sensor1 == -1 && sensor2 == -1) return false;
 
         if (sensor1 == -1) return sensor2;
         if (sensor2 == -1) return sensor1;
 
         switch (this.mode) {
-        case RotationMode.Floor:
-            return sensor1.value < sensor2.value ? sensor1 : sensor2;
-        case RotationMode.LeftWall:
-            return sensor1.value > sensor2.value ? sensor1 : sensor2;
-        case RotationMode.Ceiling:
-            return sensor1.value > sensor2.value ? sensor1 : sensor2;
-        case RotationMode.RightWall:
-            return sensor1.value < sensor2.value ? sensor1 : sensor2;
+            case RotationMode.Floor:
+                return sensor1.value < sensor2.value ? sensor1 : sensor2;
+            case RotationMode.LeftWall:
+                return sensor1.value > sensor2.value ? sensor1 : sensor2;
+            case RotationMode.Ceiling:
+                return sensor1.value > sensor2.value ? sensor1 : sensor2;
+            case RotationMode.RightWall:
+                return sensor1.value < sensor2.value ? sensor1 : sensor2;
         }
         return null;
     };
@@ -334,9 +338,9 @@
             if (this.holdingUp) {
                 this.y -= debugSpeed;
             }
-
-            this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x)) % (sonicManager.SonicLevel.LevelWidth * 128);
-            this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y)) % (sonicManager.SonicLevel.LevelHeight * 128);
+            var offset = this.getOffsetFromImage();
+            this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x)) % (sonicManager.SonicLevel.LevelWidth * 128) + offset.x;
+            this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y)) % (sonicManager.SonicLevel.LevelHeight * 128) + offset.y;
             return;
         }
 
@@ -350,8 +354,12 @@
 
 
         if (this.inAir) {
-            this.angle = 0xff;
-            this.mode = RotationMode.Floor;
+            if (this.angle != 0xff) {
+                this.angle = (0xff + (this.angle + ((this.angle > 0xff / 2) ? 2 : -2))) % 0xff;
+                if (this.angle >= 0xfd || this.angle <= 0x01) {
+                    this.angle = 0xff;
+                }
+            }
         }
 
         this.effectPhysics();
@@ -368,28 +376,28 @@
         var best = this.getBestSensor(sensorM1, sensorM2, this.mode);
         if (best) {
             switch (this.mode) {
-            case RotationMode.Floor:
-                this.x = fx = best.value - 12;
-                this.gsp = 0;
-                if (this.inAir) this.xsp = 0;
-                break;
-            case RotationMode.LeftWall:
-                this.y = fy = best.value - 12;
-                if (this.inAir) this.xsp = 0;
+                case RotationMode.Floor:
+                    this.x = fx = best.value + (best.letter == "m1" ? 12 : -12);
+                    this.gsp = 0;
+                    if (this.inAir) this.xsp = 0;
+                    break;
+                case RotationMode.LeftWall:
+                    this.y = fy = best.value + (best.letter == "m1" ? 12 : -12);
+                    if (this.inAir) this.xsp = 0;
 
-                break;
-            case RotationMode.Ceiling:
-                this.x = fx = best.value - 12;
-                this.gsp = 0;
-                if (this.inAir) this.xsp = 0;
+                    break;
+                case RotationMode.Ceiling:
+                    this.x = fx = best.value + (best.letter == "m1" ? 12 : -12);
+                    this.gsp = 0;
+                    if (this.inAir) this.xsp = 0;
 
-                break;
-            case RotationMode.RightWall:
-                this.y = fy = best.value + 12;
-                this.gsp = 0;
-                if (this.inAir) this.xsp = 0;
+                    break;
+                case RotationMode.RightWall:
+                    this.y = fy = best.value + (best.letter == "m1" ? 12 : -12);
+                    this.gsp = 0;
+                    if (this.inAir) this.xsp = 0;
 
-                break;
+                    break;
             }
         }
         this.sensorManager.check(this);
@@ -399,9 +407,13 @@
 
         if (!this.inAir) {
 
-              best = this.getBestSensor(sensorA, sensorB, this.mode);
+            best = this.getBestSensor(sensorA, sensorB, this.mode);
             if (!best) {
                 this.inAir = true;
+
+                var offset = this.getOffsetFromImage();
+                this.x += offset.x;
+                this.y += offset.y;
             } else {
                 this.justHit = false;
                 switch (this.mode) {
@@ -443,6 +455,10 @@
         } else {
             if (sensorA == -1 && sensorB == -1) {
                 this.inAir = true;
+
+                var offset = this.getOffsetFromImage();
+                this.x += offset.x;
+                this.y += offset.y;
             } else {
 
                 if (sensorA.value >= 0 && sensorB.value >= 0) {
@@ -492,65 +508,68 @@
 
             } else {
                 if (sensorC.value >= 0 && sensorD.value >= 0) {
-                    this.angle = sensorC.angle;
                     if (sensorC.value < sensorD.value) {
                         if (this.y + (__h) >= sensorC.value) {
                             if (this.ysp < 0) {
-                                this.angle = sensorC.angle;
-                                this.y = fy = sensorC.value + __h;
-                                if (sensorC.angle == 0xff) {
-                                    this.ysp = 0;
-                                } else {
+                                if (sensorC.angle > 0x48 && sensorC.angle < 0x58) {
+                                    this.angle = sensorC.angle;
+
                                     this.gsp = -this.ysp;
                                     this.inAir = false;
                                     this.wasInAir = false;
+                                } else {
+                                    this.ysp = 0;
                                 }
+
+                                this.y = fy = sensorC.value + __h;
                             }
                         }
                     } else {
                         if (this.y + (__h) >= sensorD.value) {
                             if (this.ysp < 0) {
-                                this.angle = sensorD.angle;
-                                this.y = fy = sensorD.value + __h;
-                                if (sensorC.angle == 0xff) {
-                                    this.ysp = 0;
-                                } else {
-                                    this.gsp = -this.ysp;
+                                if (sensorD.angle > 0x48 && sensorD.angle < 0x58) {
+                                    this.angle = sensorD.angle;
 
+                                    this.gsp = -this.ysp;
                                     this.inAir = false;
                                     this.wasInAir = false;
                                 }
+                                else {
+                                    this.ysp = 0;
+                                }
+                                this.y = fy = sensorD.value + __h;
                             }
                         }
                     }
                 } else if (sensorC.value > -1) {
                     if (this.y + (__h) >= sensorC.value) {
                         if (this.ysp < 0) {
-                            this.angle = sensorC.angle;
-                            this.y = fy = sensorC.value + __h;
-                            if (sensorC.angle == 0xff) {
-                                this.ysp = 0;
-                            } else {
+                            if (sensorC.angle > 0x48 && sensorC.angle < 0x58) {
+                                this.angle = sensorC.angle;
                                 this.gsp = -this.ysp;
 
                                 this.inAir = false;
                                 this.wasInAir = false;
                             }
+                            else {
+                                this.ysp = 0;
+                            }
+                            this.y = fy = sensorC.value + __h;
                         }
                     }
                 } else if (sensorD.value > -1) {
                     if (this.y + (__h) >= sensorD.value) {
                         if (this.ysp < 0) {
-                            this.angle = sensorD.angle;
-                            this.y = fy = sensorD.value + __h;
-                            if (sensorC.angle == 0xff) {
-                                this.ysp = 0;
-                            } else {
+                            if (sensorD.angle > 0x48 && sensorD.angle < 0x58) {
+                                this.angle = sensorD.angle;
                                 this.gsp = -this.ysp;
-
                                 this.inAir = false;
                                 this.wasInAir = false;
                             }
+                            else {
+                                this.ysp = 0;
+                            }
+                            this.y = fy = sensorD.value + __h;
 
                         }
                     }
@@ -637,7 +656,7 @@
             m = this.checkCollisionLineWrap(x, y, length, direction);
 
         }
-         
+
 
         return m;
     };
@@ -754,7 +773,7 @@
     };
     this.drawUI = function (canvas, pos, scale) {
         if (canvas.font != "13pt Arial bold")
-        canvas.font = "13pt Arial bold";
+            canvas.font = "13pt Arial bold";
         canvas.fillStyle = "White";
         canvas.fillText("Rings: " + this.rings, pos.x + 90, pos.y + 45);
         canvas.fillText("Angle: " + this.angle.toString(16), pos.x + 90, pos.y + 75);
@@ -765,7 +784,7 @@
             canvas.fillText("Air ", pos.x + 220, pos.y + 45);
         if (this.hlock > 0) {
             canvas.fillText("HLock: " + this.hlock, pos.x + 90, pos.y + 195);
-        } 
+        }
 
     };
     function modeString(st) {
@@ -780,7 +799,34 @@
                 return "Left Wall";
         }
     }
+    this.getOffsetFromImage = function () {
+        var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
+        var xOffset = 0;
+        var yOffset = 0;
+        if ( false && cur.height != 40 * scale.x) {
+            switch (this.mode) {
+                case RotationMode.Floor:
 
+                    var n = 0;
+                    yOffset = _H.floor((40 - ((cur.height + n) / scale.y)) / 2);
+                    break;
+                case RotationMode.LeftWall:
+                    var n = 15;
+                    xOffset = _H.floor(-(40 - ((cur.height + n) / scale.x)) / 2);
+                    break;
+                case RotationMode.Ceiling:
+                    var n = 8;
+                    yOffset = _H.floor(-(40 - ((cur.height + n) / scale.y)) / 2);
+                    break;
+                case RotationMode.RightWall:
+                    var n = 9;
+                    xOffset = _H.floor((40 - ((cur.height + n) / scale.x)) / 2);
+                    break;
+            }
+        }
+        return { x: xOffset, y: yOffset };
+
+    };
     this.draw = function (canvas, scale) {
         var fx = _H.floor(this.x);
         var fy = _H.floor(this.y);
@@ -796,31 +842,8 @@
         if (cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y]) {
             if (cur.loaded) {
                 _H.save(canvas);
-                var xOffset = 0;
-                var yOffset = 0;
-                if (cur.height != 40 * scale.x) {
-                    switch (this.mode) {
-                        case RotationMode.Floor:
-
-                            var n = 0;
-                            yOffset = (40 - ((cur.height + n) / scale.y)) / 2;
-                            break;
-                        case RotationMode.LeftWall:
-                            var n = 15;
-                            xOffset = -(40 - ((cur.height + n) / scale.x)) / 2;
-                            break;
-                        case RotationMode.Ceiling:
-                            var n = 8;
-                            yOffset = -(40 - ((cur.height + n) / scale.y)) / 2;
-                            break;
-                        case RotationMode.RightWall:
-                            var n = 20;
-                            xOffset = -(40 - ((cur.height + n) / scale.x)) / 2;
-                            break;
-                    }
-                }
-
-                canvas.translate((fx - sonicManager.windowLocation.x + xOffset + xOffset) * scale.x, ((fy - sonicManager.windowLocation.y + yOffset) * scale.y));
+                var offset = this.getOffsetFromImage();
+                canvas.translate((fx - sonicManager.windowLocation.x + offset.x) * scale.x, ((fy - sonicManager.windowLocation.y + offset.y) * scale.y));
 
 
 
@@ -836,7 +859,7 @@
 
                     if (this.spinDash) {
                         canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + _H.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
-                            (-cur.width / 2) - 25 * scale.x, -cur.height / 2 + (yOffset * scale.y) - 14, cur.width, cur.height);
+                            _H.floor((-cur.width / 2) - 25 * scale.x), _H.floor(-cur.height / 2 + (offset.y * scale.y) - 14), cur.width, cur.height);
                     }
                 } else {
                     if (!this.currentlyBall && !this.spinDash)
@@ -846,7 +869,7 @@
 
                     if (this.spinDash) {
                         canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + _H.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
-                           (-cur.width / 2) - 25 * scale.x, -cur.height / 2 + (yOffset * scale.y) - 14, cur.width, cur.height);
+                           (-cur.width / 2) - 25 * scale.x, -cur.height / 2 + (offset.y * scale.y) - 14, cur.width, cur.height);
                     }
 
                 }
@@ -881,7 +904,7 @@
                 for (var i = 0; i < this.haltSmoke.length; i++) {
                     var lo = this.haltSmoke[i];
                     canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("haltsmoke" + _H.floor((sonicManager.drawTickCount % (4 * 6)) / 6)) + scale.x + scale.y],
-                            ((lo.x - sonicManager.windowLocation.x - 25) * scale.x), ((lo.y + 12 - sonicManager.windowLocation.y + yOffset) * scale.y));
+                            ((lo.x - sonicManager.windowLocation.x - 25) * scale.x), ((lo.y + 12 - sonicManager.windowLocation.y + offset.y) * scale.y));
                     if (_H.floor(((sonicManager.drawTickCount + 6) % (4 * 6)) / 6) == 0) {
                         this.haltSmoke.splice(i, 1);
                     }
@@ -1197,7 +1220,7 @@
             if (this.spriteState.substring(0, this.spriteState.length - 1) != "running") {
                 this.spriteState = "running0";
                 this.runningTick = 1;
-            } else if ((this.runningTick++) % (_H.floor(8 - absgsp)) == 0 || (_H.floor(8 - absgsp) == 0)) {
+            } else if (((this.runningTick++) % (_H.floor(8 - absgsp)) == 0) || (8 - absgsp < 1)) {
                 this.spriteState = "running" + ((j + 1) % 8);
             }
 
@@ -1205,7 +1228,7 @@
             if (this.spriteState.substring(0, this.spriteState.length - 1) != "fastrunning") {
                 this.spriteState = "fastrunning0";
                 this.runningTick = 1;
-            } else if (((this.runningTick++) % (Math.ceil(8 - absgsp)) == 0) || (_H.floor(8 - absgsp) == 0)) {
+            } else if (((this.runningTick++) % (Math.floor(8 - absgsp)) == 0) || (8 - absgsp < 1)) {
                 this.spriteState = "fastrunning" + ((j + 1) % 4);
             }
 
@@ -1237,6 +1260,6 @@ function Watcher() {
     };
     this.multiply = function (val) {
         return val;
-        return this.mult*val;
+        return this.mult * val;
     };
 }

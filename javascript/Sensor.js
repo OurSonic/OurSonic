@@ -1,13 +1,15 @@
 ﻿
 
-Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
+Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
     this.x1 = x1;
+    this.letter = letter;
     this.y1 = y1;
     this.x2 = x2;
     this.y2 = y2;
     this.color = color;
     this.manager = manager;
     this.check = function (character) {
+
         var m;
         var x = _H.floor(character.x);
         var y = _H.floor(character.y);
@@ -27,6 +29,7 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
         }
 
         if (m != -1) {
+            m.letter = this.letter;
             if (m.angle == 255 || m.angle == 0 || m.angle == 1) {
                 if (character.mode == RotationMode.Floor) {
                     m.angle = 255;
@@ -152,7 +155,7 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid) {
                         __y -= 128;
                     }
                     if (curh[__x][__y + i] >= 1) {
-                        if (curh[__x][__y + i] == 1 && sonicManager.sonicToon.inAir &&  sonicManager.sonicToon.ysp < 0) continue;
+                        if (curh[__x][__y + i] == 1 && sonicManager.sonicToon.inAir && sonicManager.sonicToon.ysp < 0) continue;
                         return { value: y1 + i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)] };
                     }
                 }
@@ -249,10 +252,10 @@ SensorManager = function (sonicManager) {
         return sensor;
     };
     this.createHorizontalSensor = function (letter, y, x1, x2, color, ignoreSolid) {
-        return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color, ignoreSolid));
+        return this.addSensor(letter, new Sensor(x1, x2, y, y, this, color, ignoreSolid, letter));
     };
     this.createVerticalSensor = function (letter, x, y1, y2, color, ignoreSolid) {
-        return this.addSensor(letter, new Sensor(x, x, y1, y2, this, color, ignoreSolid));
+        return this.addSensor(letter, new Sensor(x, x, y1, y2, this, color, ignoreSolid, letter));
     };
 
 }; 

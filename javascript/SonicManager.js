@@ -14,7 +14,7 @@ function SonicManager(mainCanvas, resize) {
     this.background = null;
 
     this.uiManager = new UIManager(this, mainCanvas, this.scale);
-    this.uiManager.objectFrameworkArea.populate(new LevelObject("Somekey"));
+    //this.uiManager.objectFrameworkArea.populate(new LevelObject("Somekey"));
 
     this.SonicLevel = {
         Tiles: [],
@@ -169,7 +169,7 @@ function SonicManager(mainCanvas, resize) {
             _H.restore(canvas);
             return;
         }
-        this.screenOffset = { x: canvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: canvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
+        this.screenOffset = { x: _H.floor(canvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2), y: _H.floor(canvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2) };
 
 
         if (this.sonicToon) {
@@ -230,9 +230,9 @@ function SonicManager(mainCanvas, resize) {
 
                 if (!chunk) continue;
 
-                var pos = { x: _xP * 128 * scale.x, y: _yP * 128 * scale.y };
+                var pos = { x: _H.floor(_xP * 128 * scale.x), y: _H.floor(_yP * 128 * scale.y) };
 
-                var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
+                var posj = { x: _H.floor(pos.x - this.windowLocation.x * scale.x), y: _H.floor(pos.y - this.windowLocation.y * scale.x) };
 
                 if (!chunk.isEmpty())
                     chunk.draw(canvas, posj, scale, false);
@@ -296,7 +296,7 @@ function SonicManager(mainCanvas, resize) {
 
                 var pos = { x: _xP * 128 * scale.x, y: _yP * 128 * scale.y };
 
-                var posj = { x: pos.x - this.windowLocation.x * scale.x, y: pos.y - this.windowLocation.y * scale.x };
+                var posj = { x: (_H.floor(pos.x - this.windowLocation.x * scale.x)), y: _H.floor(pos.y - this.windowLocation.y * scale.y) };
 
                 if (!chunk.isEmpty() && !chunk.onlyBackground())
                     chunk.draw(canvas, posj, scale, true);
@@ -641,7 +641,7 @@ function SonicManager(mainCanvas, resize) {
             }
             //  var fc = canv.canvas.toDataURL("image/png");
             that.SpriteCache.heightMapChunks[1 + " " + md.index + " " + scale.y + " " + scale.x] = canv.canvas;
-            ind_.hmc++; done(); 
+            ind_.hmc++; done();
 
 
 
@@ -683,9 +683,9 @@ function SonicManager(mainCanvas, resize) {
                     }
                 }
             }
-          //  var fc = canv.canvas.toDataURL("image/png");
+            //  var fc = canv.canvas.toDataURL("image/png");
             that.SpriteCache.heightMapChunks[2 + " " + md.index + " " + scale.y + " " + scale.x] = canv.canvas;
-            ind_.hmc++; done(); 
+            ind_.hmc++; done();
 
 
         }, function () {

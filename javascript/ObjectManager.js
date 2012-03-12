@@ -120,7 +120,7 @@ function LevelObjectAssetFrame(name) {
             }
         }
 
-        canvas.scale(width / this.width, height / this.height);
+        canvas.scale( (width / this.width),  (height / this.height));
 
 
         for (var x = 0; x < this.width; x++) {
@@ -146,7 +146,7 @@ function LevelObjectAssetFrame(name) {
 
         canvas.translate(pos.x, pos.y);
 
-        canvas.scale(size.width / this.width, size.height / this.height);
+        canvas.scale(_H.floor(size.width / this.width), _H.floor(size.height / this.height));
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 var ex = x;
@@ -161,7 +161,7 @@ function LevelObjectAssetFrame(name) {
 
 
                 canvas.fillRect(ex, ey, 1, 1);
-              //  if (showOutline)
+                //  if (showOutline)
                 //    canvas.strokeRect(ex, ey, 1, 1);
 
                 if (showCollideMap) {
@@ -183,15 +183,15 @@ function LevelObjectAssetFrame(name) {
         if (showOffset) {
 
             canvas.beginPath();
-            canvas.moveTo(  this.offsetX,  0);
-            canvas.lineTo(  this.offsetX,  this.height);
+            canvas.moveTo(this.offsetX, 0);
+            canvas.lineTo(this.offsetX, this.height);
             canvas.lineWidth = 1;
             canvas.strokeStyle = "#000000";
             canvas.stroke();
 
             canvas.beginPath();
-            canvas.moveTo( 0, this.offsetY);
-            canvas.lineTo( this.width,  this.offsetY);
+            canvas.moveTo(0, this.offsetY);
+            canvas.lineTo(this.width, this.offsetY);
             canvas.lineWidth = 1;
             canvas.strokeStyle = "#000000";
             canvas.stroke();

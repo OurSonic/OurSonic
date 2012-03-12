@@ -53,10 +53,11 @@ function SonicEngine(canvasName) {
         return false;
     }
 
+    var lastMouseMove;
     function canvasMouseMove(e) {
         e.preventDefault();
         document.body.style.cursor = "default";
-
+        lastMouseMove = e;
         if (sonicManager.uiManager.onMouseMove(e)) return false;
 
         return false;
@@ -64,7 +65,7 @@ function SonicEngine(canvasName) {
 
     function canvasMouseUp(e) {
         e.preventDefault();
-        sonicManager.uiManager.onMouseUp(e);
+        sonicManager.uiManager.onMouseUp(lastMouseMove);
         return false;
     }
 

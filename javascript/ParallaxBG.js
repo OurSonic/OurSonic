@@ -101,7 +101,7 @@
                 canvas.fillRect(pos.x, pos.y + lastY * scale.y, this.width * scale.x, scale.y * (i - lastY));
                 canvas.strokeStyle = "rgba(" + r + ",57,43,1)";
                 canvas.lineWidth = 3;
-                canvas.strokeRect(pos.x, pos.y + lastY * scale.y, this.width * scale.x, scale.y * (i - lastY));
+                //canvas.strokeRect(pos.x, pos.y + lastY * scale.y, this.width * scale.x, scale.y * (i - lastY));
 
                 var w = 3 * scale.x;
                 canvas.fillRect(pos.x + (this.width * lastSpeed / 2) - w, pos.y + lastY * scale.y, w * 2, scale.y * (i - lastY));
@@ -114,7 +114,7 @@
             canvas.fillRect(pos.x, pos.y + lastY * scale.y, this.width * scale.x, scale.y * (i - lastY));
             canvas.strokeStyle = "rgba(" + r + ",57,43,1)";
             canvas.lineWidth = 3;
-            canvas.strokeRect(pos.x, pos.y + lastY * scale.y, this.width * scale.x, scale.y * (i - lastY));
+           // canvas.strokeRect(pos.x, pos.y + lastY * scale.y, this.width * scale.x, scale.y * (i - lastY));
 
             var w = 3 * scale.x;
             canvas.fillStyle = "rgba(" + r + ",57,43,1)";

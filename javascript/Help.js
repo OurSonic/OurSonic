@@ -369,7 +369,7 @@
             if (key == "_style") return undefined;
 
             else return value;
-        });
+        }).replaceAll("false", "0").replaceAll("true", "1");
     },
     sin: function (f) {
 
