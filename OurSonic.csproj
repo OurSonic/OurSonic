@@ -63,6 +63,7 @@
     <Content Include="javascript\SonicManager.js" />
     <Content Include="javascript\UserInterfaces\BGEditorArea.js" />
     <Content Include="javascript\UserInterfaces\ColorEditorArea.js" />
+    <Content Include="javascript\UserInterfaces\ObjectFrameworkListArea.js" />
     <Content Include="javascript\UserInterfaces\TileChunkArea.js" />
     <Content Include="javascript\UserInterfaces\ModifyTilePieceArea.js" />
     <Content Include="javascript\UserInterfaces\TilePieceArea.js" />
@@ -76,6 +77,8 @@
     <Content Include="javascript\UserInterfaces\SolidTileArea.js" />
     <Content Include="lib\codemirror.css" />
     <Content Include="lib\codemirror.js" />
+    <Content Include="lib\jquery.js" />
+    <Content Include="lib\keyboardjs.js" />
     <Content Include="lib\theme\night.css" />
     <Content Include="lib\mode\javascript\javascript.js" />
     <Content Include="lib\util\dialog.css" />

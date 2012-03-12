@@ -78,6 +78,11 @@ function SonicEngine(canvasName) {
         return evt.preventDefault() && false;
     };
 
+    $(document).keypress(function (e) {
+        if (!sonicManager.sonicToon) {
+            sonicManager.uiManager.onKeyDown(e);
+        }
+    });
 
 
     KeyboardJS.bind.key("o", function () {

@@ -1,0 +1,1 @@
+{"assets":[],"key":"SaesdKey","pieces":[],"pieceLayouts":[],"projectiles":[],"initScript":"this.state = {\r\n\txsp: 0.0,\r\n\tysp: 0.0,\r\n\tfacing: 0,\r\n};","tickScript":"if(this.state.facing){\r\n\tthis.state.facing=0;\r\n\tthis.state.xsp=10;\r\n|","collideScript":"this.die();","hurtScript":"sonic.hit();"}

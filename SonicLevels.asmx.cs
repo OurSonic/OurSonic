@@ -20,14 +20,16 @@ namespace OurSonic
     public class SonicLevels : System.Web.Services.WebService
     {
         private XDocument doc;
+        private XDocument objectDoc;
         private string c;
 
     // private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
-       private string directory = ConfigurationManager.AppSettings["Directory"];
+        private string lvlDirectory = ConfigurationManager.AppSettings["LevelDirectory"];
+        private string objDirectory = ConfigurationManager.AppSettings["ObjectDirectory"];
        
         public SonicLevels()
-        { 
-            c = directory+"sonicLevels.xml";
+        {
+            c = lvlDirectory + "sonicLevels.xml";
              if (!File.Exists(c))
             {
                 var j = File.CreateText(c);
@@ -40,6 +42,9 @@ namespace OurSonic
             {
                 
             }
+
+                     
+            
         }
 
         [WebMethod]
@@ -56,21 +61,21 @@ namespace OurSonic
             return n;
         }
 
-        
+
 
         [WebMethod]
-        public void SaveLevelInformation(string name,string level)
+        public void SaveLevelInformation(string name, string level)
         {
             ((XElement)doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == name).FirstAttribute.NextAttribute.Value = level;
-            doc.Save(c); 
+            doc.Save(c);
         }
 
 
         [WebMethod]
         public string getLevel(string level)
-        { 
+        {
 
-            if(doc.Root.Attribute("Count")==null)
+            if (doc.Root.Attribute("Count") == null)
             {
                 doc.Root.Add(new XAttribute("Count", 1));
             }
@@ -79,34 +84,10 @@ namespace OurSonic
                 doc.Root.Attribute("Count").SetValue(int.Parse(doc.Root.Attribute("Count").Value) + 1);
             }
             doc.Save(c);
-            return File.ReadAllText(directory + level + ".js");
+            return File.ReadAllText(lvlDirectory + level + ".js");
 
         }
 
-        [WebMethod]
-        public string openLevel(string level)
-        {
-            return File.ReadAllText(directory + level+".js");
-            //var sd = new ChunkConsumer().getString();
-            //return sd;
-            File.WriteAllText("B:\\mmc.txt", "AAAAA"); 
-            var fm = File.OpenRead("b:\\mmd.txt");
-            byte[] fmc = new byte[fm.Length];
-            fm.Read(fmc, 0, (int)fm.Length);
-            fm.Close();
-
-          //  return Convert.ToBase64String(fmc);
-
-
-            //var sd = new ChunkConsumer().getString();
-            
-            //return Convert.ToBase64String(sd);
-            //return Convert.ToBase64String(sd);
-
-
-            //return ((XElement)doc.FirstNode).Elements().First(a => a.FirstAttribute.Value == level).FirstAttribute.NextAttribute.Value;
-            
-        }
 
         [WebMethod]
         public string[] getLevels()
@@ -121,8 +102,38 @@ namespace OurSonic
                 doc.Root.Attribute("LVLCount").SetValue(int.Parse(doc.Root.Attribute("LVLCount").Value) + 1);
             }
             doc.Save(c);
-            return new DirectoryInfo(directory).GetFiles().Where(a => a.Extension==(".js")).Select(a => a.Name.Replace(".js","")).ToArray();
-//            return ((XElement)doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();
+            return new DirectoryInfo(lvlDirectory).GetFiles().Where(a => a.Extension == (".js")).Select(a => a.Name.Replace(".js", "")).ToArray();
+            //            return ((XElement)doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();
+        }
+
+
+
+ 
+
+
+        [WebMethod]
+        public void saveObject(string name,string oldName, string obj)
+        {
+            File.Delete(objDirectory + oldName + ".js");
+            File.WriteAllText(objDirectory + name+".js",obj);
+        }
+
+
+        [WebMethod]
+        public string getObject(string _object)
+        {
+             
+            return File.ReadAllText(objDirectory + _object + ".js");
+
+        }
+
+
+
+        [WebMethod]
+        public string[] getObjects()
+        {
+            return new DirectoryInfo(objDirectory).GetFiles().Where(a => a.Extension == (".js")).Select(a => a.Name.Replace(".js", "")).ToArray();
+            //            return ((XElement)doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();
         }
 
     }

@@ -9,7 +9,7 @@ TODO:
 		object framework editor
 			'/ assets
 			'/ pieces 
-			pieceLayouts
+			'/pieceLayouts
 			projectiles
 		object editor
 		chunk editor
@@ -29,7 +29,7 @@ TODO:
 		better/prettier depth support 
 		prettier
 		faster
-		horizontal image scrollbox
+		'/ horizontal image scrollbox
 		blinking on textchange
 	backgrounds
 		background editor

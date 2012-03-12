@@ -253,9 +253,9 @@ window.ObjectFrameworkArea = function () {
 
                 for (var j = 0; j < jdc.controls.length; j++) {
                     if (jdc.controls[j] == this) {
-                        if (this.state.piece.pieceIndex == j)
+                        if (this.piece.pieceIndex == j)
                             this.toggled = true;
-                        this.state.piece.pieceIndex = j;
+                        this.piece.pieceIndex = j;
                         continue;
                     }
                     jdc.controls[j].toggled = false;
@@ -346,8 +346,8 @@ window.ObjectFrameworkArea = function () {
             }
 
             for (var j = 0; j < objectFrameworkArea.mainPanel.selectPieceScroll.controls.length; j++) {
-                df.state.piece = this;
-                if (df.state.piece.pieceIndex == j)
+                df.piece = this;
+                if (df.piece.pieceIndex == j)
                     objectFrameworkArea.mainPanel.selectPieceScroll.controls[j].toggled = true;
                 else
                     objectFrameworkArea.mainPanel.selectPieceScroll.controls[j].toggled = false;
