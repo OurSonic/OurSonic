@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<publishData>
+  <publishProfile publishUrl="ftp://dested.com/httpdocs/oursonic" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FTP" replaceMatchingFiles="True" userName="dested" savePWD="True" userPWD="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAenCylGqweUqUmm5Hf1JuBAAAAAACAAAAAAAQZgAAAAEAACAAAAB4qAkY8pYGSsN/uXwUfGw5uhrkth0lf/9Zks6bEnrnewAAAAAOgAAAAAIAACAAAAA+ZUXy8O0jDUOJSqbQ82i35vNPvjKPpouIraE7obeaRhAAAABZ00FkoJn09BMb5R5UtB3mQAAAABVmbOOgGbLdIhzRk/LEi1zFeiAzbeh8ktsdHRUPXh25S/xt4xVDi48qJEICtnVcvqVVU6aAT//noCf1Mbssv/I=" SelectedForPublish="True">
+    <file relUrl="javascript/UIArea.js" publishTime="03/03/2012 04:21:08" />
+    <file relUrl="lvls/Launch Base Zone Act 1.js" publishTime="02/26/2012 16:24:02" />
+    <file relUrl="javascript/TileItem.js" publishTime="02/29/2012 18:54:42" />
+    <file relUrl="uploadify/jquery.uploadify.v2.1.4.js" publishTime="03/02/2012 23:06:27" />
+    <file relUrl="lvls/Emerald Hill Zone Act 1.js" publishTime="02/27/2012 00:55:49" />
+    <file relUrl="lvls/Oil Ocean Zone Act 2.js" publishTime="02/27/2012 00:55:54" />
+    <file relUrl="lvls/Balloon Park Zone.js" publishTime="02/26/2012 16:24:10" />
+    <file relUrl="Game.aspx" publishTime="03/03/2012 03:44:12" />
+    <file relUrl="lvls/Hidden Palace Zone Mini.js" publishTime="02/26/2012 16:24:08" />
+    <file relUrl="lib/util/match-highlighter.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="javascript/TilePiece.js" publishTime="02/29/2012 18:54:42" />
+    <file relUrl="lvls/Marble Garden Zone Act 2.js" publishTime="02/26/2012 16:24:00" />
+    <file relUrl="Web.config" publishTime="03/01/2012 14:29:07" />
+    <file relUrl="lvls/Hidden Palace Zone.js" publishTime="02/26/2012 16:24:08" />
+    <file relUrl="lvls/Casino Night Zone Act 1.js" publishTime="02/27/2012 00:55:51" />
+    <file relUrl="lvls/Casino Night Zone Act 2.js" publishTime="02/27/2012 00:55:52" />
+    <file relUrl="lvls/Carnival Night Zone Act 2.js" publishTime="02/26/2012 16:24:01" />
+    <file relUrl="lvls/Chemical Plant Zone Act 2.js" publishTime="02/27/2012 00:55:50" />
+    <file relUrl="lib/mode/javascript/javascript.js" publishTime="03/01/2012 02:46:26" />
+    <file relUrl="lvls/The Doomsday Zone.js" publishTime="02/26/2012 16:24:10" />
+    <file relUrl="bin/SonicImageParser.exe" publishTime="03/02/2012 17:11:08" />
+    <file relUrl="lvls/Metropolis Zone Act 3.js" publishTime="02/27/2012 00:55:55" />
+    <file relUrl="lvls/Chrome Gadget Zone.js" publishTime="02/26/2012 16:24:10" />
+    <file relUrl="lvls/Desert Palace Zone.js" publishTime="02/26/2012 16:24:10" />
+    <file relUrl="lvls/Emerald Hill Zone Act 2.js" publishTime="02/27/2012 00:55:49" />
+    <file relUrl="lib/util/searchcursor.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="javascript/Tile.js" publishTime="02/29/2012 18:54:06" />
+    <file relUrl="lvls/Pachinko.js" publishTime="02/26/2012 16:24:11" />
+    <file relUrl="javascript/Sonic.js" publishTime="03/01/2012 04:05:36" />
+    <file relUrl="bin/OurSonic.dll" publishTime="03/03/2012 04:26:49" />
+    <file relUrl="lvls/Mushroom Hill Zone Act 2.js" publishTime="02/26/2012 16:24:04" />
+    <file relUrl="bin/SonicImageParser.pdb" publishTime="03/02/2012 17:11:08" />
+    <file relUrl="javascript/curCompress.js" publishTime="03/03/2012 01:31:55" />
+    <file relUrl="lvls/Death Egg Zone.js" publishTime="02/27/2012 00:55:56" />
+    <file relUrl="lvls/Mushroom Hill Zone Act 2 Boss.js" publishTime="02/26/2012 16:24:05" />
+    <file relUrl="lvls/Hydrocity Zone Act 2.js" publishTime="02/26/2012 16:23:59" />
+    <file relUrl="uploadify/jquery.uploadify.v2.1.4.min.js" publishTime="03/02/2012 16:03:16" />
+    <file relUrl="uploadify/cancel.png" publishTime="03/02/2012 16:03:16" />
+    <file relUrl="javascript/ParallaxBG.js" publishTime="02/29/2012 18:54:06" />
+    <file relUrl="lvls/Angel Island Zone Act 2.js" publishTime="02/26/2012 16:23:57" />
+    <file relUrl="javascript/SonicManager.js" publishTime="03/03/2012 04:00:47" />
+    <file relUrl="javascript/ObjectManager.js" publishTime="03/03/2012 04:17:08" />
+    <file relUrl="javascript/HeightMask.js" publishTime="02/29/2012 18:52:52" />
+    <file relUrl="ObjectMapping.txt" publishTime="02/29/2012 18:49:41" />
+    <file relUrl="bin/SharpLZW.pdb" publishTime="02/05/2012 00:50:54" />
+    <file relUrl="SonicLevels.asmx" publishTime="01/26/2012 20:54:44" />
+    <file relUrl="ReflectImage.ashx" publishTime="03/02/2012 16:54:06" />
+    <file relUrl="lib/util/runmode.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="lvls/Oil Ocean Zone Act 1.js" publishTime="02/27/2012 00:55:53" />
+    <file relUrl="javascript/Editor.js" publishTime="03/01/2012 03:48:38" />
+    <file relUrl="lvls/Endless Mine Zone.js" publishTime="02/26/2012 16:24:10" />
+    <file relUrl="lvls/Metropolis Zone Act 1.js" publishTime="02/27/2012 00:55:54" />
+    <file relUrl="bin/SharpLZW.dll" publishTime="02/05/2012 00:50:54" />
+    <file relUrl="lvls/IceCap Zone Act 2.js" publishTime="02/26/2012 16:24:02" />
+    <file relUrl="uploadify/uploadify.swf" publishTime="03/02/2012 16:03:16" />
+    <file relUrl="lvls/Mushroom Hill Zone Act 1.js" publishTime="02/26/2012 16:24:04" />
+    <file relUrl="lvls/Mystic Cave Zone Act 1.js" publishTime="02/27/2012 00:55:53" />
+    <file relUrl="lvls/Metropolis Zone Act 2.js" publishTime="02/27/2012 00:55:55" />
+    <file relUrl="lvls/Lava Reef Zone Boss.js" publishTime="02/26/2012 16:24:08" />
+    <file relUrl="lvls/IceCap Zone Act 1.js" publishTime="02/26/2012 16:24:01" />
+    <file relUrl="lib/util/search.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="lvls/Launch Base Zone Act 2 Death Egg.js" publishTime="02/26/2012 16:24:03" />
+    <file relUrl="lvls/Hill Top Zone Act 2.js" publishTime="02/27/2012 00:55:52" />
+    <file relUrl="lib/util/overlay.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="javascript/Help.js" publishTime="03/03/2012 00:58:35" />
+    <file relUrl="lvls/Flying Battery Zone Act 2.js" publishTime="02/26/2012 16:24:05" />
+    <file relUrl="lvls/Flying Battery Zone Act 1.js" publishTime="02/26/2012 16:24:05" />
+    <file relUrl="lib/util/dialog.css" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="lvls/Carnival Night Zone Act 1.js" publishTime="02/26/2012 16:24:00" />
+    <file relUrl="lvls/Gumball.js" publishTime="02/26/2012 16:24:11" />
+    <file relUrl="lib/codemirror.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="lvls/Wing Fortress Zone.js" publishTime="02/27/2012 00:55:56" />
+    <file relUrl="lvls/Angel Island Zone Act 1 Intro.js" publishTime="02/26/2012 16:23:56" />
+    <file relUrl="uploadify/swfobject.js" publishTime="03/02/2012 16:50:16" />
+    <file relUrl="lvls/Sandopolis Zone Act 1.js" publishTime="02/26/2012 16:24:06" />
+    <file relUrl="Game2.aspx" publishTime="03/01/2012 04:53:36" />
+    <file relUrl="lib/util/foldcode.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="uploadify/jquery-1.4.2.min.js" publishTime="03/02/2012 16:03:16" />
+    <file relUrl="lvls/Hydrocity Zone Act 1.js" publishTime="02/26/2012 16:23:58" />
+    <file relUrl="lvls/Sandopolis Zone Act 2.js" publishTime="02/26/2012 16:24:06" />
+    <file relUrl="bin/OurSonic.pdb" publishTime="03/03/2012 04:26:49" />
+    <file relUrl="lvls/Sky Sanctuary Zone Act 1.js" publishTime="02/26/2012 16:24:09" />
+    <file relUrl="lvls/Sky Sanctuary Zone Act 2.js" publishTime="02/26/2012 16:24:09" />
+    <file relUrl="javascript/Ring.js" publishTime="02/18/2012 04:38:42" />
+    <file relUrl="javascript/SonicEngine.js" publishTime="03/01/2012 18:34:17" />
+    <file relUrl="javascript/Sensor.js" publishTime="02/27/2012 20:29:58" />
+    <file relUrl="lvls/Death Egg Zone Boss.js" publishTime="02/26/2012 16:24:10" />
+    <file relUrl="javascript/TileChunk.js" publishTime="02/29/2012 18:54:23" />
+    <file relUrl="bin/Yahoo.Yui.Compressor.dll" publishTime="02/14/2012 02:46:25" />
+    <file relUrl="lib/util/dialog.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="lib/codemirror.css" publishTime="03/02/2012 14:41:37" />
+    <file relUrl="lvls/Sky Chase Zone.js" publishTime="02/27/2012 00:55:55" />
+    <file relUrl="javascript/PathMaker.js" publishTime="03/03/2012 04:23:28" />
+    <file relUrl="uploadify/uploadify.css" publishTime="03/02/2012 16:03:16" />
+    <file relUrl="lvls/Death Egg Zone Act 1.js" publishTime="02/26/2012 16:24:09" />
+    <file relUrl="lvls/Death Egg Zone Act 2.js" publishTime="02/26/2012 16:24:10" />
+    <file relUrl="lvls/Hill Top Zone Act 1.js" publishTime="02/27/2012 00:55:52" />
+    <file relUrl="javascript/Stats.js" publishTime="02/22/2012 04:35:23" />
+    <file relUrl="lvls/Launch Base Zone Act 2.js" publishTime="02/26/2012 16:24:03" />
+    <file relUrl="bin/EcmaScript.NET.modified.dll" publishTime="02/14/2012 02:46:25" />
+    <file relUrl="lvls/Angel Island Zone Act 1.js" publishTime="02/26/2012 16:23:57" />
+    <file relUrl="lvls/Azure Lake Zone.js" publishTime="02/26/2012 16:24:10" />
+    <file relUrl="lvls/Slots.js" publishTime="02/26/2012 16:24:11" />
+    <file relUrl="lib/util/formatting.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="assets/Sprites/sonic.png" publishTime="01/26/2012 04:59:23" />
+    <file relUrl="lvls/Aquatic Ruin Zone Act 2.js" publishTime="02/27/2012 00:55:51" />
+    <file relUrl="lvls/Aquatic Ruin Zone Act 1.js" publishTime="02/27/2012 00:55:51" />
+    <file relUrl="uploadify/expressInstall.swf" publishTime="03/02/2012 16:03:16" />
+    <file relUrl="lvls/Angel Island Zone Act 2 Ship.js" publishTime="02/26/2012 16:23:58" />
+    <file relUrl="javascript/linq.js" publishTime="02/16/2012 12:55:21" />
+    <file relUrl="uploadify/uploadify.allglyphs.swf" publishTime="03/02/2012 16:03:16" />
+    <file relUrl="lib/util/javascript-hint.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="javascript/UIManager.js" publishTime="03/03/2012 03:57:24" />
+    <file relUrl="lvls/Lava Reef Zone Act 2.js" publishTime="02/26/2012 16:24:07" />
+    <file relUrl="lvls/Lava Reef Zone Act 1.js" publishTime="02/26/2012 16:24:07" />
+    <file relUrl="javascript/LevelObject.js" publishTime="02/29/2012 18:53:18" />
+    <file relUrl="lvls/Marble Garden Zone Act 1.js" publishTime="02/26/2012 16:23:59" />
+    <file relUrl="lvls/Mystic Cave Zone Act 2.js" publishTime="02/27/2012 00:55:53" />
+    <file relUrl="lvls/Chemical Plant Zone Act 1.js" publishTime="02/27/2012 00:55:50" />
+    <file relUrl="lib/util/simple-hint.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="lib/util/simple-hint.css" publishTime="03/01/2012 02:47:04" />
+  </publishProfile>
+</publishData>

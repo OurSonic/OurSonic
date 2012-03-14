@@ -150,15 +150,15 @@ function LevelObjectAssetFrame(name) {
 
         if (xflip) {
             if (yflip) {
-                canvas.translate(size.x * this.width, size.y * this.height);
+                canvas.translate(size.width, size.height);
                 canvas.scale(-1, -1);
             } else {
-                canvas.translate(size.x * this.width, 0);
+                canvas.translate(size.x * size.width, 0);
                 canvas.scale(-1, 1);
             }
         } else {
             if (yflip) {
-                canvas.translate(0, size.y * this.height);
+                canvas.translate(0, size.y * size.height);
                 canvas.scale(1, -1);
             } else {
 
@@ -166,7 +166,7 @@ function LevelObjectAssetFrame(name) {
         }
 
 
-        canvas.scale(size.x, size.y);
+        canvas.scale(size.width / this.width, size.height / this.height);
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 var ex = x;
@@ -276,10 +276,10 @@ function LevelObjectPieceLayout(name) {
                     }
                     var borderSize = 3;
                     canvas.fillStyle = drawRadial;
-                    canvas.fillRect(pos.x + j.x - frm.offsetX - borderSize, pos.y + j.y - frm.offsetY - borderSize, frm.width + borderSize * 2, frm.height + borderSize*2);
-                    frm.drawUI(canvas, { x: pos.x + j.x - frm.offsetX, y: pos.y + j.y - frm.offsetY }, { x: 1, y: 1 }, false, false, false,false, piece.xflip, piece.yflip);
+                 //   canvas.fillRect(pos.x + j.x - frm.offsetX - borderSize, pos.y + j.y - frm.offsetY - borderSize, frm.width + borderSize * 2, frm.height + borderSize*2);
+                    frm.drawUI(canvas, { x: pos.x + j.x - frm.offsetX, y: pos.y + j.y - frm.offsetY }, { width: frm.width, height: frm.height }, false, false, false, false, piece.xflip, piece.yflip);
                 }
-            } else {
+            } else {    
                 drawRadial = sonicManager.mainCanvas.createRadialGradient(0, 0, 0, 10, 10, 50);
                 drawRadial.addColorStop(0, 'white');
                 if (selectedPieceIndex == i) {
