@@ -139,14 +139,34 @@ function LevelObjectAssetFrame(name) {
 
     };
 
-    this.drawUI = function (canvas, pos, size, showOutline, showCollideMap, showHurtMap, showOffset) {
+    this.drawUI = function (canvas, pos, size, showOutline, showCollideMap, showHurtMap, showOffset, xflip, yflip) {
         canvas.strokeStyle = "#000000";
         canvas.lineWidth = 1;
         canvas.save();
 
         canvas.translate(pos.x, pos.y);
 
-        canvas.scale(_H.floor(size.width / this.width), _H.floor(size.height / this.height));
+         
+
+        if (xflip) {
+            if (yflip) {
+                canvas.translate(size.x * this.width, size.y * this.height);
+                canvas.scale(-1, -1);
+            } else {
+                canvas.translate(size.x * this.width, 0);
+                canvas.scale(-1, 1);
+            }
+        } else {
+            if (yflip) {
+                canvas.translate(0, size.y * this.height);
+                canvas.scale(1, -1);
+            } else {
+
+            }
+        }
+
+
+        canvas.scale(size.x, size.y);
         for (var x = 0; x < this.width; x++) {
             for (var y = 0; y < this.height; y++) {
                 var ex = x;
@@ -237,16 +257,30 @@ function LevelObjectPieceLayout(name) {
             canvas.stroke();
 
         }
+
+
+        var drawRadial;
         for (var i = 0; i < this.pieces.length; i++) {
             var j = this.pieces[i];
             if (showImages) {
                 var piece = sonicManager.uiManager.objectFrameworkArea.objectFramework.pieces[j.pieceIndex];
                 var asset = sonicManager.uiManager.objectFrameworkArea.objectFramework.assets[piece.assetIndex];
                 if (asset.frames.length > 0) {
-                    asset.frames[0].drawUI(canvas, { x: pos.x + j.x - asset.frames[0].offsetX, y: pos.y + j.y - asset.frames[0].offsetY }, { x: 1, y: 1 }, false, false, false);
+                    var frm = asset.frames[0];
+                    drawRadial = sonicManager.mainCanvas.createRadialGradient(0, 0, 0, 10, 10, 50);
+                    drawRadial.addColorStop(0, 'white');
+                    if (selectedPieceIndex == i) {
+                        drawRadial.addColorStop(1, 'yellow');
+                    } else {
+                        drawRadial.addColorStop(1, 'red');
+                    }
+                    var borderSize = 3;
+                    canvas.fillStyle = drawRadial;
+                    canvas.fillRect(pos.x + j.x - frm.offsetX - borderSize, pos.y + j.y - frm.offsetY - borderSize, frm.width + borderSize * 2, frm.height + borderSize*2);
+                    frm.drawUI(canvas, { x: pos.x + j.x - frm.offsetX, y: pos.y + j.y - frm.offsetY }, { x: 1, y: 1 }, false, false, false,false, piece.xflip, piece.yflip);
                 }
             } else {
-                var drawRadial = sonicManager.mainCanvas.createRadialGradient(0, 0, 0, 10, 10, 50);
+                drawRadial = sonicManager.mainCanvas.createRadialGradient(0, 0, 0, 10, 10, 50);
                 drawRadial.addColorStop(0, 'white');
                 if (selectedPieceIndex == i) {
                     drawRadial.addColorStop(1, 'yellow');

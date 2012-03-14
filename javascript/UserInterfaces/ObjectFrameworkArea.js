@@ -2,7 +2,7 @@ window.ObjectFrameworkArea = function () {
     var size = 40 * 4;
 
     var objectFrameworkArea = sonicManager.uiManager.objectFrameworkArea = new UiArea(540, 75, 850, 690, sonicManager.uiManager, true);
-    objectFrameworkArea.visible = false ;
+    objectFrameworkArea.visible = false;
     sonicManager.uiManager.UIAreas.push(objectFrameworkArea);
     objectFrameworkArea.addControl(new TextArea(30, 25, "Object Framework", sonicManager.uiManager.textFont, "blue"));
 
@@ -236,41 +236,46 @@ window.ObjectFrameworkArea = function () {
         objectFrameworkArea.mainPanel.addControl(pe = new PieceLayoutEditor(145, 105, { width: 350, height: 280 }));
         pe.init(pieceLayout);
 
+        var listOfPieces;
+        objectFrameworkArea.mainPanel.addControl(listOfPieces = new ScrollBox(10, 105, 70, 5, 112, "rgb(50,60,127)"));
 
-        var jdc;
-        objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.selectPieceScroll = jdc = new HScrollBox(145, 390, 70, 3, 112, "rgb(50,60,127)"));
+
+        var selectPieceScroll;
+        objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.selectPieceScroll = selectPieceScroll = new HScrollBox(145, 390, 70, 3, 112, "rgb(50,60,127)"));
         var bdc;
-        jdc.controls = [];
+        selectPieceScroll.controls = [];
         for (var i = 0; i < objectFrameworkArea.objectFramework.pieces.length; i++) {
 
-            jdc.addControl(bdc = new ImageButton(0, 0, 0, 0, function () { return objectFrameworkArea.objectFramework.pieces[this.state.index].name; }, "10pt Arial", function (canvas, x, y) {
-                var d = objectFrameworkArea.objectFramework.pieces[this.state.index];
-                var ast = objectFrameworkArea.objectFramework.assets[d.assetIndex];
-                if (ast.frames.length == 0) return;
-                ast.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15, d.xflip, d.yflip);
-            }, function () {
+            selectPieceScroll.addControl(bdc = new ImageButton(0, 0, 0, 0,
+                function () {
+                    return objectFrameworkArea.objectFramework.pieces[this.state.index].name;
+                }, "10pt Arial",
+                function (canvas, x, y) {
+                    var d = objectFrameworkArea.objectFramework.pieces[this.state.index];
+                    var ast = objectFrameworkArea.objectFramework.assets[d.assetIndex];
+                    if (ast.frames.length == 0) return;
+                    ast.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15, d.xflip, d.yflip);
+                }, function () {
+                    listOfPieces.controls[pe.pieceLayoutMaker.selectedPieceIndex].state.pieceIndex = this.state.index;
 
-
-                for (var j = 0; j < jdc.controls.length; j++) {
-                    if (jdc.controls[j] == this) {
-                        if (this.piece.pieceIndex == j)
-                            this.toggled = true;
-                        this.piece.pieceIndex = j;
-                        continue;
+                    for (var i = 0; i < selectPieceScroll.controls.length; i++) {
+                        if (selectPieceScroll.controls[i] == this)
+                            selectPieceScroll.controls[i].toggled = true;
+                        else
+                            selectPieceScroll.controls[i].toggled = false;
                     }
-                    jdc.controls[j].toggled = false;
-                }
+                }));
 
-            }));
-
-            bdc.state = { piece: pieceLayout.pieces[0], index: i };
+            bdc.state = {
+                piece: pieceLayout.pieces[0],
+                index: i
+            };
             bdc.toggle = true;
             if (pieceLayout.pieces[0])
                 bdc.toggled = pieceLayout.pieces[0].pieceIndex == i;
         }
 
         var pe;
-        var jd;
         var showB;
         objectFrameworkArea.mainPanel.addControl(showB = new Button(348, 38, 140, 25, "Show Images", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
             pe.pieceLayoutMaker.showImages = this.toggled;
@@ -288,15 +293,13 @@ window.ObjectFrameworkArea = function () {
             buildleftScroll();
         }));
 
-        objectFrameworkArea.mainPanel.addControl(jd = new ScrollBox(10, 105, 70, 5, 112, "rgb(50,60,127)"));
-
         function buildleftScroll() {
             var bd;
 
-            jd.controls = [];
+            listOfPieces.controls = [];
             for (var i = 0; i < pieceLayout.pieces.length; i++) {
 
-                jd.addControl(bd = new ImageButton(0, 0, 0, 0, function () {
+                listOfPieces.addControl(bd = new ImageButton(0, 0, 0, 0, function () {
                     return objectFrameworkArea.objectFramework.pieces[this.state.pieceIndex].name;
                 }, "10pt Arial", function (canvas, x, y) {
                     var pc = objectFrameworkArea.objectFramework.pieces[this.state.pieceIndex];
@@ -305,28 +308,25 @@ window.ObjectFrameworkArea = function () {
                     ast.frames[0].drawSimple(canvas, { x: x, y: y }, this.width, this.height - 15, pc.xflip, pc.yflip);
                 }, function () {
 
-                    for (var j = 0; j < jd.controls.length; j++) {
-
-
-                        if (jd.controls[j] == this) {
-                            jd.controls[j].toggled = true;
+                    for (var j = 0; j < listOfPieces.controls.length; j++) {
+                        if (this == listOfPieces.controls[j]) {
+                            listOfPieces.controls[j].toggled = true;
                             pe.pieceLayoutMaker.selectedPieceIndex = j;
-                            continue;
+                        } else {
+                            listOfPieces.controls[j].toggled = false;
                         }
-                        jd.controls[j].toggled = false;
+                    }
+
+                    for (var j = 0; j < selectPieceScroll.controls.length; j++) {
+
+                        selectPieceScroll.controls[j].state.piece = this.state;
+                        selectPieceScroll.controls[j].toggled = (j == pieceLayout.pieces[pe.pieceLayoutMaker.selectedPieceIndex].pieceIndex);
 
                     }
-                    pe.pieceLayoutMaker.selectedPieceIndex = pe.pieceLayoutMaker.selectedPieceIndex;
 
-                    for (var j = 0; j < objectFrameworkArea.mainPanel.selectPieceScroll.controls.length; j++) {
-                        if (this.state.pieceIndex == j)
-                            objectFrameworkArea.mainPanel.selectPieceScroll.controls[j].toggled = true;
-                        else
-                            objectFrameworkArea.mainPanel.selectPieceScroll.controls[j].toggled = false;
-                    }
                 }));
-                bd.toggle = false;
-                bd.state = pieceLayout.pieces[pe.pieceLayoutMaker.selectedPieceIndex];
+                bd.toggle = true; 
+                bd.state = pieceLayout.pieces[i];
                 if (i == pe.pieceLayoutMaker.selectedPieceIndex) bd.toggled = true;
             }
         }
@@ -335,13 +335,13 @@ window.ObjectFrameworkArea = function () {
 
         objectFrameworkArea.mainPanel.updatePieces = function () {
             var df;
-            for (var j = 0; j < jd.controls.length; j++) {
+            for (var j = 0; j < listOfPieces.controls.length; j++) {
                 if (j == pe.pieceLayoutMaker.selectedPieceIndex) {
-                    jd.controls[j].toggled = true;
-                    df = jd.controls[j];
+                    listOfPieces.controls[j].toggled = true;
+                    df = listOfPieces.controls[j];
                 }
                 else {
-                    jd.controls[j].toggled = false;
+                    listOfPieces.controls[j].toggled = false;
                 }
             }
 
@@ -573,6 +573,7 @@ window.ObjectFrameworkArea = function () {
     };
 
     objectFrameworkArea.populate = function (object) {
+        objectFrameworkArea.clearMainArea();
         this.objectFramework = object;
         this.key.text = object.key;
         this.assets.controls = [];

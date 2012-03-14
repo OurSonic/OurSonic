@@ -1433,7 +1433,7 @@ function HScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, contro
         if (!this.visible) return;
         for (var ij = this.scrollOffset; ij < this.controls.length; ij++) {
             var control = this.controls[ij];
-            if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+            if (control.y <= e.y && control.y + control.height > e.y && control.x+2 <= e.x && control.x + control.width+2 > e.x) {
                 e.x -= control.x;
                 e.y -= control.y;
                 control.onClick(e);
@@ -1464,7 +1464,7 @@ function HScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, contro
 
         for (var ij = this.scrollOffset; ij < this.controls.length; ij++) {
             var control = this.controls[ij];
-            if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+            if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x+2 && control.x + control.width+2 > e.x) {
                 e.x -= control.x;
                 e.y -= control.y;
                 control.onMouseUp(e);
@@ -1479,7 +1479,7 @@ function HScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, contro
         if (!this.visible) return;
         for (var ij = 0; ij < this.controls.length; ij++) {
             var control = this.controls[ij];
-            if (control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+            if (control.y <= e.y && control.y + control.height > e.y && control.x+2 <= e.x && control.x + control.width+2 > e.x) {
                 e.x -= control.x;
                 e.y -= control.y;
                 control.onMouseOver(e);

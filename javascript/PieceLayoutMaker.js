@@ -14,30 +14,63 @@ function PieceLayoutMaker(pieceLayout) {
 
         if (!lastPosition) {
             for (var i = 0; i < this.pieceLayout.pieces.length; i++) {
-                if (position.x > this.pieceLayout.pieces[i].x - 10 &&
-                    position.x < this.pieceLayout.pieces[i].x + 10 &&
-                    position.y > this.pieceLayout.pieces[i].y - 10 &&
-                    position.y < this.pieceLayout.pieces[i].y + 10) {
-                    this.pieceLayout.pieces[i].x = position.x;
-                    this.pieceLayout.pieces[i].y = position.y;
+
+                var j = this.pieceLayout.pieces[i];
+                var piece = sonicManager.uiManager.objectFrameworkArea.objectFramework.pieces[j.pieceIndex];
+                var asset = sonicManager.uiManager.objectFrameworkArea.objectFramework.assets[piece.assetIndex];
+                var size = { x: 10, y: 10 };
+                if (asset.frames.length > 0) {
+                    var frm = asset.frames[0];
+                    size.x = frm.width / 2 + 10;
+                    size.y = frm.height / 2 + 10;
+                }
+
+
+                if (position.x > j.x - size.x &&
+                    position.x < j.x + size.x &&
+                    position.y > j.y - size.y &&
+                    position.y < j.y + size.y) {
+                    j.x = position.x;
+                    j.y = position.y;
                     this.selectedPieceIndex = i;
+
+                    var cj = sonicManager.uiManager.objectFrameworkArea.mainPanel.selectPieceScroll.controls;
+                    
+                    for (var ci = 0; ci < cj.length; ci++) {
+                        if (ci == j.pieceIndex)
+                            cj[ci].toggled = true;
+                        else
+                            cj[ci].toggled = false;
+                    }
                     break;
                 }
             }
         } else {
             for (var i = 0; i < this.pieceLayout.pieces.length; i++) {
-                if (lastPosition.x > this.pieceLayout.pieces[i].x - 10 &&
-                    lastPosition.x < this.pieceLayout.pieces[i].x + 10 &&
-                    lastPosition.y > this.pieceLayout.pieces[i].y - 10 &&
-                    lastPosition.y < this.pieceLayout.pieces[i].y + 10) {
-                    this.pieceLayout.pieces[i].x = position.x;
-                    this.pieceLayout.pieces[i].y = position.y;
+
+                var j = this.pieceLayout.pieces[i];
+                var piece = sonicManager.uiManager.objectFrameworkArea.objectFramework.pieces[j.pieceIndex];
+                var asset = sonicManager.uiManager.objectFrameworkArea.objectFramework.assets[piece.assetIndex];
+                var size = { x: 10, y: 10 };
+                if (asset.frames.length > 0) {
+                    var frm = asset.frames[0];
+                    size.x = frm.width / 2 + 10;
+                    size.y = frm.height / 2 + 10;
+                }
+
+
+                if (lastPosition.x > j.x - size.x &&
+                    lastPosition.x < j.x + size.x &&
+                    lastPosition.y > j.y - size.y &&
+                    lastPosition.y < j.y + size.y) {
+                    j.x = position.x;
+                    j.y = position.y;
                     this.selectedPieceIndex = i;
                     break;
                 }
             }
         }
-        sonicManager.uiManager.objectFrameworkArea.mainPanel.updatePieces();
+        //sonicManager.uiManager.objectFrameworkArea.mainPanel.updatePieces();
 
     };
 }
