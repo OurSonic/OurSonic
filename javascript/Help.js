@@ -382,8 +382,8 @@
         var funcNameRegex = /function (.{1,})\(/;
         var results = (funcNameRegex).exec((obj).constructor.toString());
         return (results && results.length > 1) ? results[1] : "";
-    } 
- };
+    }
+};
 
 
 
@@ -583,3 +583,11 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
 };
 
 
+
+function make(canvas,img,smallSize, largeSize) {
+    for (var x = 0; x < largeSize; x += smallSize) {
+        for (var y = 0; y < largeSize; y += smallSize) {
+            canvas.drawImage(img, x, y);
+        }
+    }
+}

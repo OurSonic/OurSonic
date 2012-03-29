@@ -20,7 +20,7 @@
                     var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
                     var frame = an.Frames[ind];
                     if (!frame) {
-                        frame = an.Frames[0];//fixors
+                        frame = an.Frames[0]; //fixors
                     }
                     var file = sonicManager.SonicLevel.AnimatedFiles[an.AnimationFile];
                     var va = file[frame.StartingTileIndex + (this.index - anin)];
@@ -29,13 +29,13 @@
                         va.draw(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame);
                         return true;
                     }
-                    
+
                 }
             }
         }
         return false;
     };
-    this.drawUI = function(canvas, pos, scale, xflip, yflip, palette) {
+    this.drawUI = function (canvas, pos, scale, xflip, yflip, palette) {
 
 
         for (var i = 0; i < this.colors.length; i++) {
@@ -82,11 +82,9 @@
         }
         var fd;
         if ((fd = sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x])) {
-            if (this.index[0] != 'A') {
-                canvas.putImageData(fd, pos.x, pos.y);
-            } else {
-                canvas.drawImage(fd, pos.x, pos.y);
-            }
+
+            canvas.drawImage(fd, pos.x, pos.y);
+
         } else {
             if (pos.x < 0 || pos.y < 0) return;
             _H.save(canvas);
@@ -124,7 +122,11 @@
             var cx = this.colors.length * scale.x;
             var cy = this.colors.length * scale.y;
             if (this.index[0] != 'A') {
-                sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x] = canvas.getImageData(oPos.x, oPos.y, cx, cy);
+
+                var j = _H.defaultCanvas(cx, cy);
+                j.context.putImageData(canvas.getImageData(oPos.x, oPos.y, cx, cy),0,0,0,0,cx,cy);
+
+                sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x] = j.canvas;
             } else {
 
                 /*  var canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);

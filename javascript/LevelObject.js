@@ -6,14 +6,16 @@ function LevelObject(o) {
     this.Width = 30;
     this.Height = 30;
 
+    var __rect = { x: 0, y: 0, width: 0, height: 0 };
+    
     this.getRect = function () {
 
-        var x = this.ObjectData.X - monitor.width / 2;
-        var y = this.ObjectData.Y - monitor.height / 2;
-        var w = this.Width;
-        var h = this.Height;
+        __rect.x = this.ObjectData.X - monitor.width / 2;
+        __rect.y = this.ObjectData.Y - monitor.height / 2;
+        __rect.w = this.Width;
+        __rect.h = this.Height;
 
-        return { x: x, y: y, width: w, height: h };
+        return __rect;
     };
     this.collide = function () {
 
@@ -36,12 +38,18 @@ function CollisionSwitcherObject(o) {
     this.sprites = [];
     this.Width = 10;
     this.Height = 70;
+    var __rect = { x: 0, y: 0, width: 0, height: 0 };
 
     this.getRect = function () {
-        var x = this.ObjectData.X - this.Width / 2;
-        var y = this.ObjectData.Y - this.Height / 2;
-        return { x: x, y: y, width: this.Width, height: this.Height };
+
+        __rect.x = this.ObjectData.X - this.width / 2;
+        __rect.y = this.ObjectData.Y - this.height / 2;
+        __rect.w = this.Width;
+        __rect.h = this.Height;
+
+        return __rect;
     };
+
     this.collide = function () {
         if (sonicManager.sonicToon.xsp > 0) {
             sonicManager.SonicLevel.curHeightMap = true;
@@ -93,10 +101,13 @@ function MonitorObject(o) {
 
     }
 
+    var __rect = { x: 0, y: 0, width: 0, height: 0 };
     this.getRect = function () {
-        var x = this.ObjectData.X - monitor.width / 2;
-        var y = this.ObjectData.Y - monitor.height / 2;
-        return { x: x, y: y, width: monitor.width, height: monitor.height };
+        __rect.x = this.ObjectData.X - monitor.width / 2;
+        __rect.y = this.ObjectData.Y - monitor.height / 2;
+        __rect.width = monitor.width;
+        __rect.height = monitor.height;
+        return __rect;
     };
     this.collide = function () {
         if (sonicManager.sonicToon.ysp == 0) {
@@ -209,11 +220,15 @@ function SpringObject(o) {
     var md;
     this.sprites.push(md=_H.loadSprite(mStart + "closed.png"));
 
+    var __rect = { x: 0, y: 0, width: 0, height: 0 };
     this.getRect = function () {
-        var x = this.ObjectData.X - md.width / 2;
-        var y = this.ObjectData.Y - md.height / 2;
-        return { x: x, y: y, width: md.width, height: md.height };
-    };
+        __rect.x = this.ObjectData.X - md.width / 2;
+        __rect.y = this.ObjectData.Y - md.height / 2;
+        __rect.width = md.width;
+        __rect.height = md.height;
+        return __rect;
+    }; 
+    
     this.collide = function () {
         var spd;
         switch (this.type) {

@@ -75,7 +75,7 @@
     };
     this.effectPhysics = function () {
 
-        //   this.watcher.tick();
+         this.watcher.tick();
 
         var max = 6;
         if (!this.jumping) {
@@ -85,6 +85,11 @@
         }
         if (this.inAir && !this.wasInAir) {
             this.wasInAir = true;
+
+            var offset = this.getOffsetFromImage();
+            this.x += offset.x;
+            this.y += offset.y;
+
             if ((this.angle >= 0x70 && this.angle <= 0x90)) {
                 this.xsp = (this.gsp);
             }
@@ -109,11 +114,11 @@
         if (!this.inAir && !this.rolling) {
             if (!this.holdingLeft && !this.holdingRight) {
                 //friction
-                this.gsp -= (Math.min(Math.abs(this.gsp), /*this.watcher.multiply*/(this.frc)) * (this.gsp > 0 ? 1 : -1));
+                this.gsp -= (Math.min(Math.abs(this.gsp), this.watcher.multiply(this.frc)) * (this.gsp > 0 ? 1 : -1));
             }
             oldSign = _H.sign(this.gsp);
             //slope
-            this.gsp += /*this.watcher.multiply*/(this.slp) * -_H.sin(this.angle);
+            this.gsp += this.watcher.multiply(this.slp) * -_H.sin(this.angle);
             if (oldSign != _H.sign(this.gsp) && oldSign != 0) {
                 this.hlock = 30;
             }
@@ -122,11 +127,11 @@
                 this.facing = true;
                 if (this.gsp >= 0) {
                     //accelerate 
-                    this.gsp += /*this.watcher.multiply*/(this.acc);
+                    this.gsp += this.watcher.multiply(this.acc);
                     if (this.gsp > max) this.gsp = max;
                 } else {
                     //decelerate 
-                    this.gsp += /*this.watcher.multiply*/(this.dec);
+                    this.gsp += this.watcher.multiply(this.dec);
                     if (Math.abs(this.gsp) > 4.5) {
                         this.facing = false;
                         this.breaking = 1;
@@ -138,11 +143,11 @@
                 this.facing = false;
                 if (this.gsp <= 0) {
                     //accelerate 
-                    this.gsp -= /*this.watcher.multiply*/(this.acc);
+                    this.gsp -= this.watcher.multiply(this.acc);
                     if (this.gsp < -max) this.gsp = -max;
                 } else {
                     //decelerate 
-                    this.gsp -= /*this.watcher.multiply*/(this.dec);
+                    this.gsp -= this.watcher.multiply(this.dec);
                     if (Math.abs(this.gsp) > 4.5) {
                         this.facing = true;
                         this.breaking = -1;
@@ -175,26 +180,26 @@
             if (this.holdingLeft) {
                 if (this.gsp > 0) {
                     if (this.rolling) {
-                        this.gsp = (_H.max(0, this.gsp - /*this.watcher.multiply*/(this.rdec)));
+                        this.gsp = (_H.max(0, this.gsp - this.watcher.multiply(this.rdec)));
                     }
                 }
             }
             if (this.holdingRight) {
                 if (this.gsp < 0) {
                     if (this.rolling) {
-                        this.gsp = (_H.min(0, this.gsp + /*this.watcher.multiply*/(this.rdec)));
+                        this.gsp = (_H.min(0, this.gsp + this.watcher.multiply(this.rdec)));
                     }
                 }
             }
             //friction
-            this.gsp -= (Math.min(Math.abs(this.gsp), /*this.watcher.multiply*/(this.rfrc)) * (this.gsp > 0 ? 1 : -1));
+            this.gsp -= (Math.min(Math.abs(this.gsp), this.watcher.multiply(this.rfrc)) * (this.gsp > 0 ? 1 : -1));
             oldSign = _H.sign(this.gsp);
             //slope
             var ang = _H.sin(this.angle);
             if ((ang > 0) == (this.gsp > 0))
-                this.gsp += /*this.watcher.multiply*/(-this.slpRollingUp) * ang;
+                this.gsp += this.watcher.multiply(-this.slpRollingUp) * ang;
             else
-                this.gsp += /*this.watcher.multiply*/(-this.slpRollingDown) * ang;
+                this.gsp += this.watcher.multiply(-this.slpRollingDown) * ang;
 
             if (this.gsp > max * 2.5) this.gsp = max * 2.5;
             if (this.gsp < -max * 2.5) this.gsp = -max * 2.5;
@@ -215,22 +220,22 @@
 
                 if (this.xsp >= 0) {
                     //accelerate 
-                    this.xsp += /*this.watcher.multiply*/(this.air);
+                    this.xsp += this.watcher.multiply(this.air);
                     if (this.xsp > max) this.xsp = max;
                 } else {
                     //decelerate 
-                    this.xsp += /*this.watcher.multiply*/(this.air);
+                    this.xsp += this.watcher.multiply(this.air);
                 }
             }
             if (this.holdingLeft && !this.holdingRight) {
                 this.facing = false;
                 if (this.xsp <= 0) {
                     //accelerate 
-                    this.xsp -= /*this.watcher.multiply*/(this.air);
+                    this.xsp -= this.watcher.multiply(this.air);
                     if (this.xsp < -max) this.xsp = -max;
                 } else {
                     //decelerate 
-                    this.xsp -= /*this.watcher.multiply*/(this.air);
+                    this.xsp -= this.watcher.multiply(this.air);
                 }
             }
             if (this.wasInAir) {
@@ -241,7 +246,7 @@
                 }
             }
             //gravity
-            this.ysp += /*this.watcher.multiply*/(this.justHit ? 0.1875 : this.grv);
+            this.ysp += this.watcher.multiply(this.justHit ? 0.1875 : this.grv);
             //drag
             if (this.ysp < 0 && this.ysp > -4) {
                 if (Math.abs(this.xsp) > 0.125) {
@@ -285,8 +290,10 @@
                 else if (this.mode == RotationMode.Ceiling) this.y += 0;
                 var oldMode = this.mode;
                 this.updateMode();
+                this.gsp = 0;
                 this.mode = oldMode;
                 this.hlock = 30;
+                this.inAir = true;
             }
         }
 
@@ -326,7 +333,7 @@
     };
     this.tick = function () {
         if (this.debugging) {
-            var debugSpeed = /*this.watcher.multiply*/(15);
+            var debugSpeed = this.watcher.multiply(15);
 
             if (this.holdingRight) {
                 this.x += debugSpeed;
@@ -338,7 +345,7 @@
             if (this.holdingUp) {
                 this.y -= debugSpeed;
             }
-            var offset = this.getOffsetFromImage();
+            var offset = { x: 0, y: 0 };// this.getOffsetFromImage();
             this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x)) % (sonicManager.SonicLevel.LevelWidth * 128) + offset.x;
             this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y)) % (sonicManager.SonicLevel.LevelHeight * 128) + offset.y;
             return;
@@ -411,9 +418,6 @@
             if (!best) {
                 this.inAir = true;
 
-                var offset = this.getOffsetFromImage();
-                this.x += offset.x;
-                this.y += offset.y;
             } else {
                 this.justHit = false;
                 switch (this.mode) {
@@ -456,9 +460,6 @@
             if (sensorA == -1 && sensorB == -1) {
                 this.inAir = true;
 
-                var offset = this.getOffsetFromImage();
-                this.x += offset.x;
-                this.y += offset.y;
             } else {
 
                 if (sensorA.value >= 0 && sensorB.value >= 0) {
@@ -620,12 +621,13 @@
     };
     this.checkCollisionWithRing = function () {
         var me = this.myRec;
+        var rectangle = { x: 0, width: 8 * 2, y: 0, height: 8 * 2 };
         for (var ring in sonicManager.SonicLevel.Rings) {
             var pos = sonicManager.SonicLevel.Rings[ring];
             if (this.obtainedRing[ring]) continue;
-            var _x = pos.X;
-            var _y = pos.Y;
-            if (_H.intersectRect(me, { x: _x - 8, width: 8 * 2, y: _y - 8, height: 8 * 2 })) {
+            rectangle.x = pos.x - 8;
+            rectangle.y = pos.y - 8;
+            if (_H.intersectRect(me, rectangle)) {
                 this.rings++;
                 this.obtainedRing[ring] = true;
             }
@@ -644,129 +646,8 @@
     };
 
 
-    this.sensorA = 0;
-
-    this.checkCollisionLine = function (x, y, length, direction) {
-
-
-        var m = this.checkCollisionLineWrap(x, y, length, direction);
-
-        if (m != -1 && m.angle == null) {
-            //alert(_H.stringify(m));
-            m = this.checkCollisionLineWrap(x, y, length, direction);
-
-        }
-
-
-        return m;
-    };
-
-
-    this.checkCollisionLineWrap = function (x, y, length, direction) {
-
-
-
-        var _x = _H.floor(x / 128);
-        var _y = _H.floor(y / 128);
-        var tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_y]];
-        var curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-        var cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-
-        var __x = x - _x * 128;
-        var __y = y - _y * 128;
-
-
-
-        var hlen = 128;
-        var i;
-        var m;
-        var curc = 0;
-        switch (direction) {
-            case 0:
-                //left to right
-
-                if (x + length > sonicManager.SonicLevel.LevelWidth * 128)
-                    return { pos: sonicManager.SonicLevel.LevelWidth * 128 - 20, angle: null };
-
-
-                for (i = 0; i < length; i++) {
-
-                    if (__x + i >= 128) {
-                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x + 1][_y]];
-                        curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-                        __x -= 128;
-                    }
-
-                    if (x + i > this.LevelWidth || curh[(__x + i)][__y] >= 2)
-                        return { pos: x + i, angle: cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)] };
-                }
-                break;
-            case 1:
-                //top to bottom
-                if (y + length > sonicManager.SonicLevel.LevelHeight * 128)
-                    return { pos: sonicManager.SonicLevel.LevelHeight * 128 - 20, angle: null };
-                for (i = 0; i < length; i += 1) {
-
-                    if (__y + curc >= 128) {
-                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y + 1)]];
-                        curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-
-                        __y -= 128;
-                    }
-                    if (curh[__x][__y + i] >= 1) {
-                        return { pos: y + i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y + curc) / 16)] };
-                    }
-
-                    curc++;
-                }
-                break;
-            case 2:
-                //right to left
-                if (x - length < 0)
-                    return { pos: 0 + 20, angle: null };
-
-                for (i = 0; i < length; i++) {
-                    if (__x - i < 0) {
-                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[(_x - 1), _y]];
-                        curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-
-                        __x += 128;
-
-                    }
-
-
-                    if (x - i < 0 || curh[(__x - i)][__y] >= 2)
-                        return { pos: x - i, angle: cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)] };
-                }
-                break;
-            case 3:
-                //bottom to top 
-                if (y - length < 0)
-                    return { pos: 20, angle: null };
-
-
-                for (i = 0; i < length; i += 1) {
-                    if (__y - curc < 0) {
-                        tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y - 1)]];
-                        curh = sonicManager.SonicLevel.curHeightMap ? tc.heightBlocks1 : tc.heightBlocks2;
-                        cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
-
-                        __y += 128;
-                    }
-
-                    if (curh[__x][__y - i] >= 2)
-                        return { pos: y - i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y - curc) / 16)] };
-
-                    curc++;
-                }
-                break;
-        }
-        return -1;
-    };
-
+    
+    
     this.spriteState = "normal";
     this.isLoading = function () {
         return this.imageLoaded[0] < this.imageLength;
@@ -799,11 +680,13 @@
                 return "Left Wall";
         }
     }
+
+    var __imageOffset = {x:0,y:0};
     this.getOffsetFromImage = function () {
         var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
         var xOffset = 0;
         var yOffset = 0;
-        if ( false && cur.height != 40 * scale.x) {
+        if (cur.height != 40 * scale.x) {
             switch (this.mode) {
                 case RotationMode.Floor:
 
@@ -824,7 +707,10 @@
                     break;
             }
         }
-        return { x: xOffset, y: yOffset };
+
+        __imageOffset.x = xOffset;
+        __imageOffset.y = yOffset;
+        return __imageOffset;
 
     };
     this.draw = function (canvas, scale) {
@@ -844,11 +730,7 @@
                 _H.save(canvas);
                 var offset = this.getOffsetFromImage();
                 canvas.translate((fx - sonicManager.windowLocation.x + offset.x) * scale.x, ((fy - sonicManager.windowLocation.y + offset.y) * scale.y));
-
-
-
-
-
+                   
                 if (!this.facing) {
                     //canvas.translate(cur.width, 0);
                     canvas.scale(-1, 1);
@@ -1146,6 +1028,7 @@
     };
     this.updateSprite = function () {
         var absgsp = Math.abs(this.gsp);
+        var word = this.spriteState.substring(0, this.spriteState.length - 1);
         var j = parseInt(this.spriteState.substring(this.spriteState.length - 1, this.spriteState.length));
         if (this.breaking > 0) {
             if (this.gsp > 0 || this.gsp == 0 || this.spriteState == "breaking3") {
@@ -1161,14 +1044,14 @@
 
 
         if (this.justHit) {
-            if (this.spriteState.substring(0, this.spriteState.length - 1) != "hit") {
+            if (word != "hit") {
                 this.spriteState = "hit0";
                 this.runningTick = 1;
             } else if ((this.runningTick++) % (_H.floor(8 - absgsp)) == 0) {
                 this.spriteState = "hit1";
             }
         } else if (this.spinDash) {
-            if (this.spriteState.substring(0, this.spriteState.length - 1) != "spindash") {
+            if (word != "spindash") {
                 this.spriteState = "spindash0";
                 this.runningTick = 1;
             } else if ((this.runningTick++) % (_H.floor(2 - absgsp)) == 0) {
@@ -1176,7 +1059,7 @@
             }
         } else if (absgsp == 0 && this.inAir == false) {
             if (this.ducking) {
-                if (this.spriteState.substring(0, this.spriteState.length - 1) != "duck") {
+                if (word != "duck") {
                     this.spriteState = "duck0";
                     this.runningTick = 1;
                 } else if ((this.runningTick++) % (_H.floor(4 - absgsp)) == 0) {
@@ -1184,7 +1067,7 @@
                 }
 
             } else if (this.holdingUp) {
-                if (this.spriteState.substring(0, this.spriteState.length - 1) != "lookingup") {
+                if (word != "lookingup") {
                     this.spriteState = "lookingup0";
                     this.runningTick = 1;
                 } else if ((this.runningTick++) % (_H.floor(4 - absgsp)) == 0) {
@@ -1198,7 +1081,7 @@
                 this.runningTick = 0;
             }
         } else if (this.breaking != 0) {
-            if (this.spriteState.substring(0, this.spriteState.length - 1) != "breaking") {
+            if (word != "breaking") {
                 this.spriteState = "breaking0";
                 this.runningTick = 1;
             } else if ((this.runningTick++) % (7) == 0) {
@@ -1210,14 +1093,14 @@
 
         } else if (this.currentlyBall) {
 
-            if (this.spriteState.substring(0, this.spriteState.length - 1) != "balls") {
+            if (word != "balls") {
                 this.spriteState = "balls0";
                 this.runningTick = 1;
             } else if (((this.runningTick++) % (_H.floor(8 - absgsp)) == 0) || (8 - absgsp < 1)) {
                 this.spriteState = "balls" + ((j + 1) % 5);
             }
         } else if (absgsp < 6) {
-            if (this.spriteState.substring(0, this.spriteState.length - 1) != "running") {
+            if (word != "running") {
                 this.spriteState = "running0";
                 this.runningTick = 1;
             } else if (((this.runningTick++) % (_H.floor(8 - absgsp)) == 0) || (8 - absgsp < 1)) {
@@ -1225,7 +1108,7 @@
             }
 
         } else if (absgsp >= 6) {
-            if (this.spriteState.substring(0, this.spriteState.length - 1) != "fastrunning") {
+            if (word != "fastrunning") {
                 this.spriteState = "fastrunning0";
                 this.runningTick = 1;
             } else if (((this.runningTick++) % (Math.floor(8 - absgsp)) == 0) || (8 - absgsp < 1)) {
@@ -1241,8 +1124,7 @@
 function Watcher() {
     var lastTick = 0;
     this.mult = 1;
-    this.tick = function () {
-        return;
+    this.tick = function () { 
         if (sonicManager.inHaltMode) {
             this.mult = 1;
             return;
@@ -1258,8 +1140,7 @@ function Watcher() {
 
         this.mult = offset / 16.6;
     };
-    this.multiply = function (val) {
-        return val;
+    this.multiply = function (val) { 
         return this.mult * val;
     };
 }

@@ -1,3 +1,5 @@
+var drawInfo = [[0, 0], [1, 0], [0, 1], [1, 1]];
+var drawOrder = [[3, 2, 1, 0], [1, 0, 3, 2], [2, 3, 0, 1], [0, 1, 2, 3]];
 function TilePiece(heightMask, tiles) {
     this.tiles = tiles;
 
@@ -23,28 +25,29 @@ function TilePiece(heightMask, tiles) {
         }
         return true;
     };
-    this.drawUI = function(canvas, position, scale, xflip, yflip) {
-
-        var drawOrder;
+    this.drawUI = function (canvas, position, scale, xflip, yflip) {
+        var drawOrderIndex = 0;
         if (xflip) {
             if (yflip) {
-                drawOrder = [3, 2, 1, 0];
+                drawOrderIndex = 0;
             } else {
-                drawOrder = [1, 0, 3, 2];
+                drawOrderIndex = 1;
             }
         } else {
             if (yflip) {
-                drawOrder = [2, 3, 0, 1];
+                drawOrderIndex = 2;
+
             } else {
-                drawOrder = [0, 1, 2, 3];
+                drawOrderIndex = 3;
             }
         }
         for (var i = 0; i < this.tiles.length; i++) {
-            var mj = this.tiles[i];
-            if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
-                sonicManager.SonicLevel.Tiles[mj.Tile].drawUI(canvas,
-                    { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
-                    _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette);
+            var mj = sonicManager.SonicLevel.Tiles[this.tiles[i].Tile];
+            if (mj) {
+                var df = drawInfo[drawOrder[drawOrderIndex][i]];
+                TilePiece.__position.x = position.x + df[0] * 8 * scale.x;
+                TilePiece.__position.y = position.y + df[1] * 8 * scale.y;
+                mj.drawUI(canvas, TilePiece.__position, scale, _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette);
 
 
             }
@@ -60,34 +63,40 @@ function TilePiece(heightMask, tiles) {
 
         return true;
     };
-    this.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame) {
 
-        var drawOrder;
+    
+    this.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame) {
+        var drawOrderIndex = 0; 
         if (xflip) {
             if (yflip) {
-                drawOrder = [3, 2, 1, 0];
+                drawOrderIndex = 0;
             } else {
-                drawOrder = [1, 0, 3, 2];
+                drawOrderIndex = 1;
             }
         } else {
             if (yflip) {
-                drawOrder = [2, 3, 0, 1];
+                drawOrderIndex = 2;
+
             } else {
-                drawOrder = [0, 1, 2, 3];
+                drawOrderIndex = 3;
             }
         }
         var fd;
         if ((fd = sonicManager.SpriteCache.tilepieces[layer + " " + this.index + " " + scale.y + " " + scale.x])) {
-            if (true || fd.loaded) {
+         
                 canvas.drawImage(fd, position.x, position.y);
-            }
+           
         } else {
             for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
                 if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
                     if (mj.Priority == layer) {
-                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas,
-                                { x: position.x + (drawOrder[i] % 2) * 8 * scale.x, y: position.y + _H.floor(drawOrder[i] / 2) * 8 * scale.y }, scale,
+                    
+                var df = drawInfo[drawOrder[drawOrderIndex][i]];
+                        TilePiece.__position.x = position.x + df[0] * 8 * scale.x;
+                        TilePiece.__position.y = position.y + df[1] * 8 * scale.y;
+                        
+                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas,TilePiece.__position, scale,
                                 _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, layer, animationFrame);
 
                     }
@@ -118,6 +127,7 @@ function TilePiece(heightMask, tiles) {
     };
 
 }
+TilePiece.__position = { x: 0, y: 0 };
 
 
 RotationMode = {

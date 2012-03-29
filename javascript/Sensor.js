@@ -48,10 +48,7 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
     };
 
 
-
-
-
-
+    this.__currentM = { value: 0, angle: 0 };
     this.checkCollisionLineWrap = function (x1, x2, y1, y2, ignoreSolid) {
         var _x = _H.floor(x1 / 128);
         var _y = _H.floor(y1 / 128);
@@ -65,9 +62,11 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
         var length;
 
         if (y1 == y2) {
-            if (Math.max(x1, x2) > sonicManager.SonicLevel.LevelWidth * 128)
-                return { value: sonicManager.SonicLevel.LevelWidth * 128 - 20, angle: 0xff };
-
+            if (Math.max(x1, x2) > sonicManager.SonicLevel.LevelWidth * 128) {
+                this.__currentM.value = sonicManager.SonicLevel.LevelWidth * 128 - 20;
+                this.__currentM.angle = 0xff;
+                return this.__currentM;
+            }
             if (x1 < x2) {
 
                 length = x2 - x1;
@@ -80,8 +79,12 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                             cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                             __x += 128;
                         }
-                        if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2)
-                            return { value: x1 - i, angle: cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)] };
+                        if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2) {
+
+                            this.__currentM.value = x1 - i;
+                            this.__currentM.angle = cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)];
+                            return this.__currentM;
+                        }
                     }
                 }
 
@@ -93,8 +96,11 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                         __x -= 128;
                     }
-                    if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 2)
-                        return { value: x1 + i, angle: cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)] };
+                    if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 2) {
+                        this.__currentM.value = x1 + i;
+                        this.__currentM.angle = cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)];
+                        return this.__currentM;
+                    }
                 }
             } else {
                 length = x1 - x2;
@@ -106,8 +112,11 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                             cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                             __x -= 128;
                         }
-                        if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 2)
-                            return { value: x1 + i, angle: cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)] };
+                        if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 2) {
+                            this.__currentM.value = x1 + i;
+                            this.__currentM.angle = cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)];
+                            return this.__currentM;
+                        }
                     }
 
                 }
@@ -119,8 +128,11 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                         __x += 128;
                     }
-                    if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2)
-                        return { value: x1 - i, angle: cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)] };
+                    if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2) {
+                        this.__currentM.value = x1 - i;
+                        this.__currentM.angle = cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)];
+                        return this.__currentM;
+                    }
                 }
             }
 
@@ -143,7 +155,9 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                             __y += 128;
                         }
                         if (curh[__x][__y - i] > 1) {
-                            return { value: y1 - i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)] };
+                            this.__currentM.value = y1 - i;
+                            this.__currentM.angle = cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)];
+                            return this.__currentM;
                         }
                     }
                 }
@@ -156,7 +170,10 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                     }
                     if (curh[__x][__y + i] >= 1) {
                         if (curh[__x][__y + i] == 1 && sonicManager.sonicToon.inAir && sonicManager.sonicToon.ysp < 0) continue;
-                        return { value: y1 + i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)] };
+
+                        this.__currentM.value = y1 + i;
+                        this.__currentM.angle = cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)];
+                        return this.__currentM;
                     }
                 }
             } else {
@@ -170,7 +187,9 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                             __y -= 128;
                         }
                         if (curh[__x][__y + i] >= 1) {
-                            return { value: y1 + i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)] };
+                            this.__currentM.value = y1 + i;
+                            this.__currentM.angle = cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)];
+                            return this.__currentM;
                         }
                     }
                 }
@@ -183,7 +202,9 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                         __y += 128;
                     }
                     if (curh[__x][__y - i] > 1) {
-                        return { value: y1 - i, angle: cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)] };
+                        this.__currentM.value = y1 - i;
+                        this.__currentM.angle = cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)];
+                        return this.__currentM;
                     }
                 }
             }

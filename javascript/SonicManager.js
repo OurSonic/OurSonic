@@ -340,7 +340,7 @@ function SonicManager(mainCanvas, resize) {
     };
 
     this.spriteLoader = null;
-    this.SpriteCache = { rings: [], tileChunks: [], tilepieces: [], tiles: [], sonicSprites: [], heightMaps: [], heightMapChunks: [] };
+    this.SpriteCache = null;
     this.preLoadSprites = function (scale, completed, update) {
         this.SpriteCache = { rings: [], tileChunks: [], tilepieces: [], tiles: [], sonicSprites: [], heightMaps: [], heightMapChunks: [] };
 
@@ -382,41 +382,40 @@ function SonicManager(mainCanvas, resize) {
         }
 
         var that = this;
-        /*
         var tileStep = sm.addStep("Tiles", function (k, done) {
-        var canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
-        var ctx = canv.context;
-        ctx.clearRect(0, 0, canv.width, canv.height);
+            var canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
+            var ctx = canv.context;
+            ctx.clearRect(0, 0, canv.width, canv.height);
 
-        md = that.SonicLevel.Blocks[k];
-        md.draw(ctx, { x: 0, y: 0 }, scale, false);
-        var fc = canv.canvas.toDataURL("image/png");
-        that.SpriteCache.tilepieces[false + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, done);
-
+            md = that.SonicLevel.Blocks[k];
+            md.draw(ctx, { x: 0, y: 0 }, scale, false);
+            that.SpriteCache.tilepieces[false + " " + md.index + " " + scale.y + " " + scale.x] = canv.canvas;
 
 
 
-        canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
-        ctx = canv.context;
-        ctx.clearRect(0, 0, canv.width, canv.height);
 
-        md.draw(ctx, { x: 0, y: 0 }, scale, true);
-        var fc = canv.canvas.toDataURL("image/png");
-        that.SpriteCache.tilepieces[true + " " + md.index + " " + scale.y + " " + scale.x] = _H.loadSprite(fc, done);
+            canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
+            ctx = canv.context;
+            ctx.clearRect(0, 0, canv.width, canv.height);
+
+            md.draw(ctx, { x: 0, y: 0 }, scale, true);
+            that.SpriteCache.tilepieces[true + " " + md.index + " " + scale.y + " " + scale.x] = canv.canvas;
+            done();
+            done();
 
         }, function () {
-        ind_.tps++;
-        if (ind_.tps == that.SonicLevel.Blocks.length * 2) {
-        return true;
-        }
-        return false;
-        });
+            ind_.tps++;
+            if (ind_.tps == that.SonicLevel.Blocks.length * 2) {
+                return true;
+            }
+            return false;
+        },true);
 
 
 
         for (var k = 0; k < this.SonicLevel.Blocks.length; k++) {
-        sm.addIterationToStep(tileStep, k);
-        }*/
+            sm.addIterationToStep(tileStep, k);
+        }
 
 
         var speed = 1;

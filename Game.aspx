@@ -15,7 +15,11 @@
     <script src="lib/util/javascript-hint.js"></script>
     <link rel="stylesheet" href="lib/theme/night.css">
     <script src="javascript/linq.js?1" type="text/javascript"> 
-    </script> 
+    </script>
+    <script src="javascript/WorkerConsole.js?1" type="text/javascript"> 
+    </script>
+    <script src="javascript/FunctionWorker.js?1" type="text/javascript"> 
+    </script>
     <script src="lib/keyboardjs.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Help.js?1" type="text/javascript"> 
@@ -88,11 +92,38 @@
     </script>
     <script type="text/javascript">
     //<![CDATA[
+        
         $(function () {
+            window.Worker = new FunctionWorker("javascript/FunctionWorker.js");
+           /* fWorker.threadedFunction(
+                function (e) {//start - in thread
+                    var j = 4 + 4;
+                    for (var a = 1; a < 1000; a++) {
+                        for (var i = 1; i < 2000000; i++) {
+                            j += i * 20;
+                        }
+                        for (var i = 1; i < 2000000; i++) {
+                            j -= i / 20;
+                        }
+                        if (a % 10 == 0) {
+                            e.callback(j);
+                            e.data = j;
+                        }
+                    }
+                }, function (e) {//finish - not in thread
+                    $("body").append("<div>Finished: " + e.data + "</div>");
+
+
+                }, function (e) {//callback - not in thread
+                    $("body").append("<div>Callback Data: " + e.data + "</div>");
+
+                }
+            );*/
+
             var stats = new xStats;
             document.body.appendChild(stats.element);
 
-            var myCanv = new SonicEngine("build");
+            var myCanv = new SonicEngine("gameLayer", "uiLayer");
         }); 
         
  
@@ -106,10 +137,10 @@
 // <![CDATA[
         $(document).ready(function () {
             $('#picField').uploadify({
-                'uploader': '/uploadify/uploadify.swf',
-                'script': '/ReflectImage.ashx',
-                'cancelImg': '/uploadify/cancel.png',
-                'folder': '/uploads',
+                'uploader': 'uploadify/uploadify.swf',
+                'script': 'ReflectImage.ashx',
+                'cancelImg': 'uploadify/cancel.png',
+                'folder': 'uploads',
                 'auto': true,
                 onUpload: function (e) {
                     alert(_H.stringify(e));
@@ -123,12 +154,15 @@
     <form id="form1" runat="server">
     <asp:ScriptManager runat="server" ID="scriptManager">
         <Services>
-            <asp:ServiceReference Path="SonicLevels.asmx" /> 
+            <asp:ServiceReference Path="SonicLevels.asmx" />
         </Services>
     </asp:ScriptManager>
     <div id="d_clip_container">
     </div>
-    <canvas id="build" style="margin: 0px; position: absolute; top: 0px; left: 0px; z-index: 0;"></canvas>
+    
+    <canvas id="gameLayer" style="margin: 0px; position: absolute; top: 0px; left: 0px; z-index: 0;"></canvas>
+    <canvas id="uiLayer" style="margin: 0px; position: absolute; top: 0px; left: 0px; z-index: 0;"></canvas>
+    
     <input type="file" id="picField" style="position: absolute; z-index: 100;">
     </form>
 </body>

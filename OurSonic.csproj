@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game2.aspx" />
+    <Content Include="javascript\FunctionWorker.js" />
+    <Content Include="javascript\PathMaker.js" />
     <Content Include="javascript\PieceLayoutMaker.js" />
     <Content Include="javascript\ObjectManager.js" />
     <Content Include="javascript\Editor.js" />
@@ -75,6 +77,7 @@
     <Content Include="javascript\UserInterfaces\ObjectFrameworkArea.js" />
     <Content Include="javascript\UserInterfaces\ObjectInfoArea.js" />
     <Content Include="javascript\UserInterfaces\SolidTileArea.js" />
+    <Content Include="javascript\WorkerConsole.js" />
     <Content Include="lib\codemirror.css" />
     <Content Include="lib\codemirror.js" />
     <Content Include="lib\jquery.js" />
@@ -161,7 +164,7 @@
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52468</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <DevelopmentServerVPath>/oursonic/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

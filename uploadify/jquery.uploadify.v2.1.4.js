@@ -30,8 +30,8 @@ if (jQuery) (
 	            jQuery(this).each(function () {
 	                var settings = jQuery.extend({
 	                    id: jQuery(this).attr('id'), // The ID of the object being Uploadified
-	                    uploader: '/uploadify/uploadify.swf', // The path to the uploadify swf file
-	                    script: '/uploadify/uploadify.php', // The path to the uploadify backend upload script
+	                    uploader: '/oursonic/uploadify/uploadify.swf', // The path to the uploadify swf file
+	                    script: '/oursonic/uploadify/uploadify.php', // The path to the uploadify backend upload script
 	                    expressInstall: null, // The path to the express install swf file
 	                    folder: '', // The path to the upload folder
 	                    height: 30, // The height of the flash button

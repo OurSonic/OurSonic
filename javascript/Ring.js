@@ -20,13 +20,13 @@ function Ring(active) {
                 this.tickCount = 0xffffffff;
                 return false;
             }
-            if (sonicManager.sonicToon.checkCollisionLine(_H.floor(this.x) + 8, _H.floor(this.y) + 8, 16, 1) != -1) {
+/*            if (sonicManager.sonicToon.checkCollisionLine(_H.floor(this.x) + 8, _H.floor(this.y) + 8, 16, 1) != -1) {
                 this.ysp *= -0.75;
             }
 
             if (sonicManager.sonicToon.checkCollisionLine(_H.floor(this.x) - 8, _H.floor(this.y) + 8, 26, 0) != -1) {
                 this.xsp *= -0.75;
-            }
+            }*/
 
             if (sonicManager.drawTickCount > sonicManager.sonicToon.sonicLastHitTick + 64 && 
                 _H.intersectRect(sonicManager.sonicToon.myRec, { x: this.x - 8 * scale.x, width:  8 *2* scale.x, y: this.y - 8 * scale.y, height: 2* 8 * scale.y })) {

@@ -16,11 +16,15 @@ window.requestAnimFrame = (function (ff) {
 });
 
 
-function SonicEngine(canvasName) {
+function SonicEngine(gameCanvas,uiCanvas) {
     var that = this;
 
-    this.canvas = $("#" + canvasName);
-    this.canvasItem = document.getElementById(canvasName).getContext("2d");
+    this.canvas = $("#" + gameCanvas);
+    this.canvasItem = document.getElementById(gameCanvas).getContext("2d");
+
+
+    this.canvas = $("#" + gameCanvas);
+    this.canvasItem = document.getElementById(gameCanvas).getContext("2d");
 
     this.canvasWidth = 0;
     this.canvasHeight = 0;
@@ -180,7 +184,7 @@ function SonicEngine(canvasName) {
     };
 
     function clear(ctx) {
-        ctx.clearRect(0, 0, that.canvasWidth, that.canvasHeight);
+        ctx.canvas.width = that.canvasWidth;
     }
 
     that.draw = function () {

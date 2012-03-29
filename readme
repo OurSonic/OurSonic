@@ -45,4 +45,6 @@ TODO:
 	object database
 		storing via mongodb?
 		create 765 objects
-		
+	speed
+		garbageless tick
+			better implementation of splice
