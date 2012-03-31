@@ -64,9 +64,9 @@ function TilePiece(heightMask, tiles) {
         return true;
     };
 
-    
+
     this.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame) {
-        var drawOrderIndex = 0; 
+        var drawOrderIndex = 0;
         if (xflip) {
             if (yflip) {
                 drawOrderIndex = 0;
@@ -83,25 +83,39 @@ function TilePiece(heightMask, tiles) {
         }
         var fd;
         if ((fd = sonicManager.SpriteCache.tilepieces[layer + " " + this.index + " " + scale.y + " " + scale.x])) {
-         
-                canvas.drawImage(fd, position.x, position.y);
-           
+
+            canvas.drawImage(fd, position.x, position.y);
+
         } else {
+            canvas.save();
+            
             for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
                 if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
                     if (mj.Priority == layer) {
-                    
-                var df = drawInfo[drawOrder[drawOrderIndex][i]];
+
+                        var df = drawInfo[drawOrder[drawOrderIndex][i]];
                         TilePiece.__position.x = position.x + df[0] * 8 * scale.x;
                         TilePiece.__position.y = position.y + df[1] * 8 * scale.y;
-                        
-                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas,TilePiece.__position, scale,
+
+                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas, TilePiece.__position, scale,
                                 _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, layer, animationFrame);
 
                     }
                 }
             }
+
+            canvas.restore();
+
+            var cx = 8 * scale.x * 2;
+            var cy = 8 * scale.y * 2;
+            var j = _H.defaultCanvas(cx, cy);
+            j.context.putImageData(canvas.getImageData(position.x, position.y, cx, cy), 0, 0, 0, 0, cx, cy);
+
+            sonicManager.SpriteCache.tilepieces[layer + " " + this.index + " " + scale.y + " " + scale.x] = j.canvas;
+
+
+
             /* canvas.lineWidth = 2;
             canvas.strokeStyle = "#D142AA";
             canvas.strokeRect(position.x, position.y, 16 * scale.x, 16 * scale.y);*/

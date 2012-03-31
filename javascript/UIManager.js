@@ -17,7 +17,8 @@
         sonicManager.windowLocation = _H.defaultWindowLocation(0, mainCanvas, scale);
         sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
         sonicManager.sonicToon.obtainedRing = [];
-    }
+        window.Engine.resizeCanvas();
+    };
 
     var textFont = this.textFont = "18pt Calibri ";
     this.smallTextFont = "12pt Calibri ";

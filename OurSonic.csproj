@@ -49,6 +49,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DragTest.aspx" />
     <Content Include="Game2.aspx" />
     <Content Include="javascript\FunctionWorker.js" />
     <Content Include="javascript\PathMaker.js" />
@@ -115,6 +116,10 @@
     <None Include="readme" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DragTest.aspx.cs">
+      <DependentUpon>DragTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Game2.aspx.cs">
       <DependentUpon>Game2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

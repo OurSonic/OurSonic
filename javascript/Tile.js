@@ -11,12 +11,35 @@
     this.checkGood = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
 
         if (this.index[0] != 'A') {
+            if (this.willAnimate) {
+                var an = this.willAnimate;
+                var anin = an.AnimationTileIndex;
+
+                if (sonicManager.CACHING) return true; 
+                
+                var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
+                var frame = an.Frames[ind];
+                if (!frame) {
+                    frame = an.Frames[0]; //fixors
+                }
+                var file = sonicManager.SonicLevel.AnimatedFiles[an.AnimationFile];
+                var va = file[frame.StartingTileIndex + (this.index - anin)];
+                if (va) {
+                    if (canvas.fillStyle != "rbga(255,255,255,255)") canvas.fillStyle = "rbga(255,255,255,255)";
+                    va.draw(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame);
+                    return true;
+                }
+                return true;
+
+            }
+
             for (var i = 0; i < sonicManager.SonicLevel.Animations.length; i++) {
                 var an = sonicManager.SonicLevel.Animations[i];
                 var anin = an.AnimationTileIndex;
                 var num = an.NumberOfTiles;
                 if (this.index >= anin && this.index < anin + num) {
                     if (sonicManager.CACHING) return true;
+                    this.willAnimate = an;
                     var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
                     var frame = an.Frames[ind];
                     if (!frame) {
@@ -120,22 +143,12 @@
             pos.y = oPos.y;
 
             var cx = this.colors.length * scale.x;
-            var cy = this.colors.length * scale.y;
-            if (this.index[0] != 'A') {
-
+            var cy = this.colors.length * scale.y; 
                 var j = _H.defaultCanvas(cx, cy);
                 j.context.putImageData(canvas.getImageData(oPos.x, oPos.y, cx, cy),0,0,0,0,cx,cy);
 
                 sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x] = j.canvas;
-            } else {
-
-                /*  var canv = _H.defaultCanvas(8 * scale.x, 8 * scale.y);
-                var ctx = canv.context;
-                ctx.putImageData(canvas.getImageData(oPos.x, oPos.y, scale.x * 8, scale.y * 8), 0, 0);
-                sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette ] = _H.loadSprite(canv.canvas.toDataURL("image/png"));
-                */
-            }
-
+          
 
         }
 

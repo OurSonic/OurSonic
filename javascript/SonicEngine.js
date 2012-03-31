@@ -16,20 +16,21 @@ window.requestAnimFrame = (function (ff) {
 });
 
 
-function SonicEngine(gameCanvas,uiCanvas) {
+function SonicEngine(gameLayer, uiLayer) {
     var that = this;
+    window.Engine = this;
 
-    this.canvas = $("#" + gameCanvas);
-    this.canvasItem = document.getElementById(gameCanvas).getContext("2d");
+    this.gameCanvasItem = $("#" + gameLayer);
+    this.gameCanvas = document.getElementById(gameLayer).getContext("2d");
 
 
-    this.canvas = $("#" + gameCanvas);
-    this.canvasItem = document.getElementById(gameCanvas).getContext("2d");
+    this.uiCanvasItem = $("#" + uiLayer);
+    this.uiCanvas = document.getElementById(uiLayer).getContext("2d");
 
     this.canvasWidth = 0;
     this.canvasHeight = 0;
 
-    var element = document.getElementById(canvasName);
+    var element = document.getElementById(uiLayer); //top layerS
 
     element.addEventListener('DOMMouseScroll', handleScroll, false);
     element.addEventListener('mousewheel', handleScroll, false);
@@ -174,45 +175,68 @@ function SonicEngine(gameCanvas,uiCanvas) {
         if (sonicManager.sonicToon)
             sonicManager.sonicToon.releaseJump();
     });
-     
+
     that.resizeCanvas = function () {
         that.canvasWidth = $(window).width();
         that.canvasHeight = $(window).height();
-        window.sonicManager.windowLocation = _H.defaultWindowLocation(window.sonicManager.sonicToon ? 0 : 1, that.canvasItem, window.sonicManager.scale)
-        that.canvas.attr("width", that.canvasWidth);
-        that.canvas.attr("height", that.canvasHeight);
+        window.sonicManager.windowLocation = _H.defaultWindowLocation(window.sonicManager.sonicToon ? 0 : 1, that.uiCanvas, window.sonicManager.scale);
+
+        that.gameCanvasItem.attr("width", (window.sonicManager.windowLocation.width * window.sonicManager.scale.x));
+        that.gameCanvasItem.attr("height", (window.sonicManager.windowLocation.height * window.sonicManager.scale.y));
+        that.uiCanvasItem.attr("width", that.canvasWidth);
+        that.uiCanvasItem.attr("height", that.canvasHeight);
+
+        that.uiCanvas.goodWidth = that.canvasWidth;
+        that.gameCanvas.goodWidth = (window.sonicManager.windowLocation.width * window.sonicManager.scale.x);
+
+        var screenOffset = window.sonicManager.sonicToon ?
+            { x: _H.floor(that.canvasWidth / 2 - window.sonicManager.windowLocation.width * window.sonicManager.scale.x / 2), y: _H.floor(that.canvasHeight / 2 - window.sonicManager.windowLocation.height * window.sonicManager.scale.y / 2)} :
+            { x: 0, y: 0 };
+
+        that.gameCanvasItem.css("left", screenOffset.x + "px");
+        that.gameCanvasItem.css("top", screenOffset.y + "px");
     };
 
     function clear(ctx) {
-        ctx.canvas.width = that.canvasWidth;
+        ctx.canvas.width = ctx.goodWidth;
     }
 
-    that.draw = function () {
+    that.gameDraw = function () {
         //   requestAnimFrame(that.draw);
         //window.setTimeout(that.draw, 1000 / 30);
 
-        if (!sonicManager.inHaltMode)
-            clear(that.canvasItem);
+        if (!sonicManager.inHaltMode) { 
+            clear(that.gameCanvas);
+        }
+        sonicManager.draw(that.gameCanvas); 
+    };
+    that.uiDraw = function () {
+        //   requestAnimFrame(that.draw);
+        //window.setTimeout(that.draw, 1000 / 30);
 
-        sonicManager.draw(that.canvasItem);
+        if (!sonicManager.inHaltMode) {
+            clear(that.uiCanvas); 
+        } 
 
-        sonicManager.uiManager.draw(that.canvasItem);
+        sonicManager.uiManager.draw(that.uiCanvas);
     };
 
 
     $(window).resize(this.resizeCanvas);
 
-    var sonicManager = window.sonicManager = new SonicManager(this.canvasItem, this.resizeCanvas);
+    var sonicManager = window.sonicManager = new SonicManager(that.gameCanvas, this.resizeCanvas);
     this.resizeCanvas();
 
 
 
     //requestAnimFrame(that.draw);
-    window.setInterval(that.draw, 1000 / 60);
-
     window.setInterval(function () {
-        //sonicManager.tick(); 
-        sonicManager.tick(); }, 1000 / 60, sonicManager);
+
+        sonicManager.tick();
+        that.gameDraw();
+    }, 1000 / 60);
+
+    window.setInterval(that.uiDraw, 1000 / 20);
 
 };
 

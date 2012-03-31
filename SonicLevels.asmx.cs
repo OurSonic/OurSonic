@@ -28,7 +28,9 @@ namespace OurSonic
         private string objDirectory = ConfigurationManager.AppSettings["ObjectDirectory"];
        
         public SonicLevels()
-        {
+        { 
+            int[] myArray = { 1, 3, 5, 7, 9 }; 
+
             c = lvlDirectory + "sonicLevels.xml";
              if (!File.Exists(c))
             {

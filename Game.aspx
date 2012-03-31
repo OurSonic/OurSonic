@@ -20,13 +20,13 @@
     </script>
     <script src="javascript/FunctionWorker.js?1" type="text/javascript"> 
     </script>
+    <script src="javascript/Stats.js?1" type="text/javascript"> 
+    </script>
     <script src="lib/keyboardjs.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Help.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Editor.js?1" type="text/javascript"> 
-    </script>
-    <script src="javascript/Stats.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/Tile.js?1" type="text/javascript"> 
     </script>
@@ -124,6 +124,8 @@
             document.body.appendChild(stats.element);
 
             var myCanv = new SonicEngine("gameLayer", "uiLayer");
+            
+
         }); 
         
  

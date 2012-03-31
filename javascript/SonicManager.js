@@ -6,16 +6,27 @@ function SonicManager(mainCanvas, resize) {
     this.mainCanvas = mainCanvas;
 
     this.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
+    
     this.showHeightMap = false;
     this.goodRing = new Ring(false);
     this.activeRings = [];
     this.forceResize = resize;
 
     this.background = null;
+    this.screenOffset = { x: mainCanvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: mainCanvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
+    
 
     this.uiManager = new UIManager(this, mainCanvas, this.scale);
     //this.uiManager.objectFrameworkArea.populate(new LevelObject("Somekey"));
 
+     
+    this.clickState = ClickState.Dragging;
+    this.tickCount = 0;
+    this.drawTickCount = 0;
+    this.inHaltMode = false;
+    this.waitingForTickContinue = false;
+    this.waitingForDrawContinue = false;
+    
     this.SonicLevel = {
         Tiles: [],
         Blocks: [],
@@ -36,9 +47,6 @@ function SonicManager(mainCanvas, resize) {
         }
         return undefined;
     };
-
-    this.SonicLevel.ChunkMap = [[]];
-    this.clickState = ClickState.Dragging;
 
 
 
@@ -96,11 +104,6 @@ function SonicManager(mainCanvas, resize) {
 
     };
 
-    this.tickCount = 0;
-    this.drawTickCount = 0;
-    this.inHaltMode = false;
-    this.waitingForTickContinue = false;
-    this.waitingForDrawContinue = false;
     var that = this; //internetexplorer doesnt take a this param in setinterval
     this.tick = function () {
         if (that.loading) return;
@@ -144,7 +147,6 @@ function SonicManager(mainCanvas, resize) {
             }
         }
     };
-    this.screenOffset = { x: mainCanvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2, y: mainCanvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2 };
     this.draw = function (canvas) {
 
 
@@ -169,7 +171,7 @@ function SonicManager(mainCanvas, resize) {
             _H.restore(canvas);
             return;
         }
-        this.screenOffset = { x: _H.floor(canvas.canvas.width / 2 - this.windowLocation.width * scale.x / 2), y: _H.floor(canvas.canvas.height / 2 - this.windowLocation.height * scale.y / 2) };
+        this.screenOffset = { x: 0, y: 0 };
 
 
         if (this.sonicToon) {
