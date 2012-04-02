@@ -75,7 +75,7 @@
     };
     this.effectPhysics = function () {
 
-         this.watcher.tick();
+        this.watcher.tick();
 
         var max = 6;
         if (!this.jumping) {
@@ -345,7 +345,7 @@
             if (this.holdingUp) {
                 this.y -= debugSpeed;
             }
-            var offset = { x: 0, y: 0 };// this.getOffsetFromImage();
+            var offset = { x: 0, y: 0 }; // this.getOffsetFromImage();
             this.x = ((sonicManager.SonicLevel.LevelWidth * 128) + (this.x)) % (sonicManager.SonicLevel.LevelWidth * 128) + offset.x;
             this.y = ((sonicManager.SonicLevel.LevelHeight * 128) + (this.y)) % (sonicManager.SonicLevel.LevelHeight * 128) + offset.y;
             return;
@@ -646,8 +646,8 @@
     };
 
 
-    
-    
+
+
     this.spriteState = "normal";
     this.isLoading = function () {
         return this.imageLoaded[0] < this.imageLength;
@@ -681,7 +681,7 @@
         }
     }
 
-    var __imageOffset = {x:0,y:0};
+    var __imageOffset = { x: 0, y: 0 };
     this.getOffsetFromImage = function () {
         var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
         var xOffset = 0;
@@ -713,10 +713,13 @@
         return __imageOffset;
 
     };
+    
+
+
     this.draw = function (canvas, scale) {
         var fx = _H.floor(this.x);
         var fy = _H.floor(this.y);
-        var cur;
+
 
         var mc = sonicManager.drawTickCount - this.sonicJustHitTick;
         if (mc < 120) {
@@ -724,83 +727,77 @@
                 return;
             }
         }
+        var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
+        if (!cur) {
 
-        if (cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y]) {
-            if (cur.loaded) {
-                _H.save(canvas);
-                var offset = this.getOffsetFromImage();
-                canvas.translate((fx - sonicManager.windowLocation.x + offset.x) * scale.x, ((fy - sonicManager.windowLocation.y + offset.y) * scale.y));
-                   
-                if (!this.facing) {
-                    //canvas.translate(cur.width, 0);
-                    canvas.scale(-1, 1);
-                    if (!this.currentlyBall && !this.spinDash)
-                        canvas.rotate(-_H.fixAngle(this.angle));
+        }
 
-                    canvas.drawImage(cur, -cur.width / 2, -cur.height / 2);
+        if (cur.loaded) {
+            _H.save(canvas);
+            var offset = this.getOffsetFromImage();
+            canvas.translate((fx - sonicManager.windowLocation.x + offset.x) * scale.x, ((fy - sonicManager.windowLocation.y + offset.y) * scale.y));
 
-                    if (this.spinDash) {
-                        canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + _H.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
+            if (!this.facing) {
+                //canvas.translate(cur.width, 0);
+                canvas.scale(-1, 1);
+                if (!this.currentlyBall && !this.spinDash)
+                    canvas.rotate(-_H.fixAngle(this.angle));
+
+                canvas.drawImage(cur, -cur.width / 2, -cur.height / 2);
+
+                if (this.spinDash) {
+                    canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + _H.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
                             _H.floor((-cur.width / 2) - 25 * scale.x), _H.floor(-cur.height / 2 + (offset.y * scale.y) - 14), cur.width, cur.height);
-                    }
-                } else {
-                    if (!this.currentlyBall && !this.spinDash)
-                        canvas.rotate(_H.fixAngle(this.angle));
-                    canvas.drawImage(cur, -cur.width / 2, -cur.height / 2);
+                }
+            } else {
+                if (!this.currentlyBall && !this.spinDash)
+                    canvas.rotate(_H.fixAngle(this.angle));
+                canvas.drawImage(cur, -cur.width / 2, -cur.height / 2);
 
 
-                    if (this.spinDash) {
-                        canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + _H.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
+                if (this.spinDash) {
+                    canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("spinsmoke" + _H.floor((sonicManager.drawTickCount % 14) / 2)) + scale.x + scale.y],
                            (-cur.width / 2) - 25 * scale.x, -cur.height / 2 + (offset.y * scale.y) - 14, cur.width, cur.height);
-                    }
-
                 }
-                /*
-                canvas.moveTo(-10 * scale.x, 4 * scale.y);
-                canvas.lineTo(10 * scale.x, 4 * scale.y);
-                canvas.lineWidth = 3;
-                canvas.strokeStyle = "#FFF";
-                canvas.stroke();
-
-                canvas.moveTo(-9 * scale.x, 0 * scale.y);
-                canvas.lineTo(-9 * scale.x, 20 * scale.y);
-                canvas.lineWidth = 3;
-                canvas.strokeStyle = "#FFF";
-                canvas.stroke();
-
-                canvas.moveTo(9 * scale.x, 0 * scale.y);
-                canvas.lineTo(9 * scale.x, 20 * scale.y);
-                canvas.lineWidth = 3;
-                canvas.strokeStyle = "#FFF";
-                canvas.stroke();*/
-
-
-                /*
-                canvas.strokeStyle = "#FFF";
-                canvas.lineWidth = 4;
-                canvas.strokeRect(-cur.width / 2, -cur.height / 2, cur.width, cur.height);
-                */
-                _H.restore(canvas);
-                if (sonicManager.showHeightMap)
-                    this.sensorManager.draw(canvas, scale, this);
-                for (var i = 0; i < this.haltSmoke.length; i++) {
-                    var lo = this.haltSmoke[i];
-                    canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("haltsmoke" + _H.floor((sonicManager.drawTickCount % (4 * 6)) / 6)) + scale.x + scale.y],
-                            ((lo.x - sonicManager.windowLocation.x - 25) * scale.x), ((lo.y + 12 - sonicManager.windowLocation.y + offset.y) * scale.y));
-                    if (_H.floor(((sonicManager.drawTickCount + 6) % (4 * 6)) / 6) == 0) {
-                        this.haltSmoke.splice(i, 1);
-                    }
-                }
-
-
 
             }
+            /*
+            canvas.moveTo(-10 * scale.x, 4 * scale.y);
+            canvas.lineTo(10 * scale.x, 4 * scale.y);
+            canvas.lineWidth = 3;
+            canvas.strokeStyle = "#FFF";
+            canvas.stroke();
 
-        } else if (cur = sonicManager.SpriteCache.sonicSprites[this.spriteState]) {
-            if (cur.loaded)
-                sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y] = _H.scaleSprite(cur, scale);
-        } else {
-            sonicManager.SpriteCache.sonicSprites[this.spriteState] = _H.loadSprite(this.spriteLocations[this.spriteState]);
+            canvas.moveTo(-9 * scale.x, 0 * scale.y);
+            canvas.lineTo(-9 * scale.x, 20 * scale.y);
+            canvas.lineWidth = 3;
+            canvas.strokeStyle = "#FFF";
+            canvas.stroke();
+
+            canvas.moveTo(9 * scale.x, 0 * scale.y);
+            canvas.lineTo(9 * scale.x, 20 * scale.y);
+            canvas.lineWidth = 3;
+            canvas.strokeStyle = "#FFF";
+            canvas.stroke();*/
+
+
+            /*
+            canvas.strokeStyle = "#FFF";
+            canvas.lineWidth = 4;
+            canvas.strokeRect(-cur.width / 2, -cur.height / 2, cur.width, cur.height);
+            */
+            _H.restore(canvas);
+            if (sonicManager.showHeightMap)
+                this.sensorManager.draw(canvas, scale, this);
+            for (var i = 0; i < this.haltSmoke.length; i++) {
+                var lo = this.haltSmoke[i];
+                canvas.drawImage(sonicManager.SpriteCache.sonicSprites[("haltsmoke" + _H.floor((sonicManager.drawTickCount % (4 * 6)) / 6)) + scale.x + scale.y],
+                            ((lo.x - sonicManager.windowLocation.x - 25) * scale.x), ((lo.y + 12 - sonicManager.windowLocation.y + offset.y) * scale.y));
+                if (_H.floor(((sonicManager.drawTickCount + 6) % (4 * 6)) / 6) == 0) {
+                    this.haltSmoke.splice(i, 1);
+                }
+            }
+
         }
 
     };
@@ -1124,7 +1121,7 @@
 function Watcher() {
     var lastTick = 0;
     this.mult = 1;
-    this.tick = function () { 
+    this.tick = function () {
         if (true || sonicManager.inHaltMode) {
             this.mult = 1;
             return;
@@ -1140,7 +1137,7 @@ function Watcher() {
 
         this.mult = offset / 16.6;
     };
-    this.multiply = function (val) { 
+    this.multiply = function (val) {
         return this.mult * val;
     };
 }

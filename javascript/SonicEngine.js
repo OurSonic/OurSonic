@@ -23,7 +23,6 @@ function SonicEngine(gameLayer, uiLayer) {
     this.gameCanvasItem = $("#" + gameLayer);
     this.gameCanvas = document.getElementById(gameLayer).getContext("2d");
 
-
     this.uiCanvasItem = $("#" + uiLayer);
     this.uiCanvas = document.getElementById(uiLayer).getContext("2d");
 
@@ -109,6 +108,23 @@ function SonicEngine(gameLayer, uiLayer) {
             sonicManager.sonicToon.hit();
     }, function () { });
 
+
+    KeyboardJS.bind.key("2", function () {
+        sonicManager.scale.x = 2;
+        sonicManager.scale.y = 2;
+        Engine.resizeCanvas();
+    }, function () { });
+    KeyboardJS.bind.key("3", function () {
+        sonicManager.scale.x = 3;
+        sonicManager.scale.y = 3;
+        Engine.resizeCanvas();
+    }, function () { });
+    KeyboardJS.bind.key("4", function () {
+        sonicManager.scale.x = 4;
+        sonicManager.scale.y = 4;
+        Engine.resizeCanvas();
+    }, function () { });
+
     KeyboardJS.bind.key("c", function () {
         if (sonicManager.sonicToon)
             sonicManager.sonicToon.debug();
@@ -181,16 +197,16 @@ function SonicEngine(gameLayer, uiLayer) {
         that.canvasHeight = $(window).height();
         window.sonicManager.windowLocation = _H.defaultWindowLocation(window.sonicManager.sonicToon ? 0 : 1, that.uiCanvas, window.sonicManager.scale);
 
-        that.gameCanvasItem.attr("width", (window.sonicManager.windowLocation.width * window.sonicManager.scale.x));
-        that.gameCanvasItem.attr("height", (window.sonicManager.windowLocation.height * window.sonicManager.scale.y));
+        that.gameCanvasItem.attr("width", (window.sonicManager.windowLocation.width * (window.sonicManager.sonicToon ? window.sonicManager.scale.x * window.sonicManager.realScale.x : 1)));
+        that.gameCanvasItem.attr("height", (window.sonicManager.windowLocation.height * (window.sonicManager.sonicToon ? window.sonicManager.scale.y * window.sonicManager.realScale.y : 1)));
         that.uiCanvasItem.attr("width", that.canvasWidth);
         that.uiCanvasItem.attr("height", that.canvasHeight);
 
         that.uiCanvas.goodWidth = that.canvasWidth;
-        that.gameCanvas.goodWidth = (window.sonicManager.windowLocation.width * window.sonicManager.scale.x);
+        that.gameCanvas.goodWidth = (window.sonicManager.windowLocation.width * (window.sonicManager.sonicToon ? window.sonicManager.scale.x * window.sonicManager.realScale.x : 1));
 
         var screenOffset = window.sonicManager.sonicToon ?
-            { x: _H.floor(that.canvasWidth / 2 - window.sonicManager.windowLocation.width * window.sonicManager.scale.x / 2), y: _H.floor(that.canvasHeight / 2 - window.sonicManager.windowLocation.height * window.sonicManager.scale.y / 2)} :
+            { x: _H.floor(that.canvasWidth / 2 - window.sonicManager.windowLocation.width * window.sonicManager.scale.x * window.sonicManager.realScale.x / 2), y: _H.floor(that.canvasHeight / 2 - window.sonicManager.windowLocation.height * window.sonicManager.realScale.y * window.sonicManager.scale.y / 2)} :
             { x: 0, y: 0 };
 
         that.gameCanvasItem.css("left", screenOffset.x + "px");
@@ -205,18 +221,18 @@ function SonicEngine(gameLayer, uiLayer) {
         //   requestAnimFrame(that.draw);
         //window.setTimeout(that.draw, 1000 / 30);
 
-        if (!sonicManager.inHaltMode) { 
+        if (!sonicManager.inHaltMode) {
             clear(that.gameCanvas);
         }
-        sonicManager.draw(that.gameCanvas); 
+        sonicManager.draw(that.gameCanvas);
     };
     that.uiDraw = function () {
         //   requestAnimFrame(that.draw);
         //window.setTimeout(that.draw, 1000 / 30);
 
         if (!sonicManager.inHaltMode) {
-            clear(that.uiCanvas); 
-        } 
+            clear(that.uiCanvas);
+        }
 
         sonicManager.uiManager.draw(that.uiCanvas);
     };

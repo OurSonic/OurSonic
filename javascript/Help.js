@@ -100,7 +100,7 @@
                     y = sonicManager.SonicLevel.StartPositions[0].Y - 128 * 2;
                 }
 
-                return { x: x, y: y, width: canvas.canvas.width / scale.x, height: canvas.canvas.height / scale.y, intersects: _H.intersects };
+                return { x: x, y: y, width: canvas.canvas.width , height: canvas.canvas.height , intersects: _H.intersects };
         }
         return null;
     },
@@ -131,11 +131,11 @@
         return items[x] >= 16 - y;
     },
     intersects: function (p) {
-
-        if (this.width == undefined || this.height == undefined || this.x == undefined || this.y == undefined || p.Y == undefined || p.X == undefined)
+        var px = p.X || p.x;
+        var py = p.Y || p.y;
+        if (this.width == undefined || this.height == undefined || this.x == undefined || this.y == undefined || px == undefined || py == undefined)
             alert('bad intersects');
-        if (this.x < p.X && this.x + this.width > p.X &&
-            this.y < p.Y && this.y + this.height > p.Y) {
+        if (this.x < px && this.x + this.width > px && this.y < py && this.y + this.height > py) {
             return true;
         }
         return false;
@@ -159,7 +159,6 @@
 
 
         var ctx = canvas.getContext("2d");
-
         ctx.width = w;
         ctx.height = h;
         return { canvas: canvas, context: ctx };

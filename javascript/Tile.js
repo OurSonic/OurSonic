@@ -11,28 +11,28 @@
     this.checkGood = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {
 
         if (this.index[0] != 'A') {
-            if (this.willAnimate) {
+            if (this.willAnimate === false) return false;
+
+            if (this.willAnimate != undefined) {
                 var an = this.willAnimate;
                 var anin = an.AnimationTileIndex;
 
-                if (sonicManager.CACHING) return true; 
-                
-                var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
+                if (sonicManager.CACHING) return true;
+
+                var ind = animationFrame;
+
                 var frame = an.Frames[ind];
-                if (!frame) {
-                    frame = an.Frames[0]; //fixors
-                }
+                if (!frame) frame = an.Frames[0];
                 var file = sonicManager.SonicLevel.AnimatedFiles[an.AnimationFile];
                 var va = file[frame.StartingTileIndex + (this.index - anin)];
                 if (va) {
-                    if (canvas.fillStyle != "rbga(255,255,255,255)") canvas.fillStyle = "rbga(255,255,255,255)";
+                    if (canvas.fillStyle != "rbga(255,255,255,255)")
+                        canvas.fillStyle = "rbga(255,255,255,255)";
                     va.draw(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame);
                     return true;
                 }
-                return true;
-
+                return false;
             }
-
             for (var i = 0; i < sonicManager.SonicLevel.Animations.length; i++) {
                 var an = sonicManager.SonicLevel.Animations[i];
                 var anin = an.AnimationTileIndex;
@@ -40,21 +40,21 @@
                 if (this.index >= anin && this.index < anin + num) {
                     if (sonicManager.CACHING) return true;
                     this.willAnimate = an;
-                    var ind = animationFrame || ((_H.floor(sonicManager.drawTickCount % (an.Frames.length * 10) / 10)));
+                    var ind = animationFrame;
                     var frame = an.Frames[ind];
-                    if (!frame) {
-                        frame = an.Frames[0]; //fixors
-                    }
+                    if (!frame) frame = an.Frames[0];
                     var file = sonicManager.SonicLevel.AnimatedFiles[an.AnimationFile];
                     var va = file[frame.StartingTileIndex + (this.index - anin)];
                     if (va) {
-                        if (canvas.fillStyle != "rbga(255,255,255,255)") canvas.fillStyle = "rbga(255,255,255,255)";
+                        if (canvas.fillStyle != "rbga(255,255,255,255)")
+                            canvas.fillStyle = "rbga(255,255,255,255)";
                         va.draw(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame);
                         return true;
                     }
 
                 }
             }
+            this.willAnimate = false;
         }
         return false;
     };
@@ -103,54 +103,46 @@
         if (this.checkGood(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame)) {
             return;
         }
-        var fd;
-        if ((fd = sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x])) {
+        var fd = sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x + " " + layer + " " + animationFrame]
+        if (!fd) {
 
-            canvas.drawImage(fd, pos.x, pos.y);
+            var cx = this.colors.length * scale.x;
+            var cy = this.colors.length * scale.y;
+            var j = _H.defaultCanvas(cx, cy);
 
-        } else {
+
             if (pos.x < 0 || pos.y < 0) return;
-            _H.save(canvas);
             var oPos = { x: pos.x, y: pos.y };
+              oPos = { x: 0, y: 0 };
 
             if (xflip) {
-                pos.x = -pos.x - this.colors.length * scale.x;
-                canvas.scale(-1, 1);
+                oPos.x = -this.colors.length * scale.x;
+                j.context.scale(-1, 1);
             }
             if (yflip) {
-                pos.y = -pos.y - this.colors.length * scale.y;
-                canvas.scale(1, -1);
+                oPos.y = -this.colors.length * scale.y;
+                j.context.scale(1, -1);
             }
 
             for (var i = 0; i < this.colors.length; i++) {
-                for (var j = 0; j < this.colors[i].length; j++) {
-                    var gj = this.colors[i][j];
+                for (var jf = 0; jf < this.colors[i].length; jf++) {
+                    var gj = this.colors[i][jf];
                     if (gj == 0) continue;
 
-                    //canvas.drawImage(sonicManager.SonicLevel.Palette[palette][gj], pos.x + ((i)) * scale.x, pos.y + (j) * scale.y, scale.x, scale.y);
+                    //canvas.drawImage(sonicManager.SonicLevel.Palette[palette][gj], oPos.x + ((i)) * scale.x, oPos.y + (j) * scale.y, scale.x, scale.y);
 
                     var m = sonicManager.SonicLevel.Palette[palette][gj];
-                    if (canvas.fillStyle != "#" + m)
-                        canvas.fillStyle = "#" + m;
-                    canvas.fillRect(pos.x + ((i)) * scale.x, pos.y + (j) * scale.y, scale.x, scale.y);
+                    if (j.context.fillStyle != "#" + m)
+                        j.context.fillStyle = "#" + m;
+                    j.context.fillRect(oPos.x + ((i)) * scale.x, oPos.y + (jf) * scale.y, scale.x, scale.y);
 
 
                 }
-            }
+            } 
 
-            _H.restore(canvas);
-            pos.x = oPos.x;
-            pos.y = oPos.y;
-
-            var cx = this.colors.length * scale.x;
-            var cy = this.colors.length * scale.y; 
-                var j = _H.defaultCanvas(cx, cy);
-                j.context.putImageData(canvas.getImageData(oPos.x, oPos.y, cx, cy),0,0,0,0,cx,cy);
-
-                sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x] = j.canvas;
-          
-
+            sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x + " " + layer + " " + animationFrame] = fd = j.canvas;
         }
+        canvas.drawImage(fd, pos.x, pos.y);
 
         /*  if (showOutline) {
         canvas.strokeStyle = "#DD0033";

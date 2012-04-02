@@ -1,4 +1,4 @@
-window.DebuggerArea = function() {
+window.DebuggerArea = function () {
 
 
     var debuggerArea = sonicManager.uiManager.debuggerArea = new UiArea(1347, 95, 250, 240, sonicManager.uiManager, true);
@@ -14,6 +14,7 @@ window.DebuggerArea = function() {
         sonicManager.uiManager.levelManagerArea.visible = true;
         sonicManager.sonicToon.empty();
         sonicManager.sonicToon = null;
+        Engine.resizeCanvas();
     }
     ));
 
@@ -37,7 +38,7 @@ window.DebuggerArea = function() {
         sonicManager.SonicLevel.curHeightMap = !sonicManager.SonicLevel.curHeightMap;
     }
     ));
-    debuggerArea.addControl(new Button(40, 190, 160, 22, "Debug Sonic", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function() {
+    debuggerArea.addControl(new Button(40, 190, 160, 22, "Debug Sonic", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
         if (this.text == "Debug Sonic") {
             sonicManager.sonicToon.debugging = true;
             this.text = "Normal Sonic";

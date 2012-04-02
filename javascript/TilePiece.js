@@ -64,8 +64,15 @@ function TilePiece(heightMask, tiles) {
         return true;
     };
 
+    var cx = 8 * window.sonicManager.scale.x * 2;
+    var cy = 8 * window.sonicManager.scale.y * 2;
 
-    this.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame) {
+    this.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame, bounds) {
+
+        if (!(bounds.x < position.x && bounds.x + bounds.width > position.x && bounds.y < position.y && bounds.y + bounds.height > position.y)) {
+            return true;
+        }
+        
         var drawOrderIndex = 0;
         if (xflip) {
             if (yflip) {
@@ -81,54 +88,30 @@ function TilePiece(heightMask, tiles) {
                 drawOrderIndex = 3;
             }
         }
-        var fd;
-        if ((fd = sonicManager.SpriteCache.tilepieces[layer + " " + this.index + " " + scale.y + " " + scale.x])) {
-
-            canvas.drawImage(fd, position.x, position.y);
-
-        } else {
-            canvas.save();
-            
+        var fd = sonicManager.SpriteCache.tilepieces[layer + " " + this.index + " " + scale.y + " " + scale.x + " " + xflip + " " + yflip + " " + animationFrame];
+        if (!fd) {
+            var ac = _H.defaultCanvas(cx, cy);
             for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
                 if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
                     if (mj.Priority == layer) {
-
+                        var _xf = _H.xor(xflip, mj.XFlip);
+                        var _yf = _H.xor(yflip, mj.YFlip);
                         var df = drawInfo[drawOrder[drawOrderIndex][i]];
-                        TilePiece.__position.x = position.x + df[0] * 8 * scale.x;
-                        TilePiece.__position.y = position.y + df[1] * 8 * scale.y;
-
-                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(canvas, TilePiece.__position, scale,
-                                _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette, layer, animationFrame);
-
+                        TilePiece.__position.x = df[0] * 8 * scale.x;
+                        TilePiece.__position.y = df[1] * 8 * scale.y;
+                        sonicManager.SonicLevel.Tiles[mj.Tile].draw(ac.context, TilePiece.__position, scale, _xf, _yf, mj.Palette, layer, animationFrame);
                     }
                 }
             }
-
-            canvas.restore();
-
-            var cx = 8 * scale.x * 2;
-            var cy = 8 * scale.y * 2;
-            var j = _H.defaultCanvas(cx, cy);
-            j.context.putImageData(canvas.getImageData(position.x, position.y, cx, cy), 0, 0, 0, 0, cx, cy);
-
-            sonicManager.SpriteCache.tilepieces[layer + " " + this.index + " " + scale.y + " " + scale.x] = j.canvas;
-
-
-
+            sonicManager.SpriteCache.tilepieces[layer + " " + this.index + " " + scale.y + " " + scale.x + " " + xflip + " " + yflip + " " + animationFrame] = fd = ac.canvas;
             /* canvas.lineWidth = 2;
             canvas.strokeStyle = "#D142AA";
             canvas.strokeRect(position.x, position.y, 16 * scale.x, 16 * scale.y);*/
         }
-
-
-
-
-
+        canvas.drawImage(fd, position.x, position.y);
         //canvas.fillStyle = "#FFFFFF";
         //canvas.fillText(sonicManager.SonicLevel.Blocks.indexOf(this), position.x + 8 * scale.x, position.y + 8 * scale.y);
-
-
         return true;
     };
     this.equals = function (tp) {
