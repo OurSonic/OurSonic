@@ -75,9 +75,9 @@ function TilePiece(heightMask, tiles) {
 
         this.image[((drawOrder + 1) * 13) ^ (scale.x * 47) ^ ((!animationFrame ? 100 : animationFrame)*71) ^ ((layer + 1) * 7)] = image;
     };
-    this.draw = function (canvas, position, scale, layer, xflip, yflip, animated, animationFrame, bounds) {
+    this.draw = function (canvas, position, scale, layer, xflip, yflip, animationFrame, bounds) {
 
-        if (!(bounds.x < position.x && bounds.x + bounds.width > position.x && bounds.y < position.y && bounds.y + bounds.height > position.y)) {
+        if (!bounds.intersects(position) ) {
             return true;
         }
 

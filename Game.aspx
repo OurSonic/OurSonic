@@ -14,13 +14,13 @@
     <link rel="stylesheet" href="lib/util/simple-hint.css">
     <script src="lib/util/javascript-hint.js"></script>
     <link rel="stylesheet" href="lib/theme/night.css">
-    <script src="javascript/linq.js?1" type="text/javascript"> 
+    <script src="lib/linq.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/WorkerConsole.js?1" type="text/javascript"> 
     </script>
     <script src="javascript/FunctionWorker.js?1" type="text/javascript"> 
     </script>
-    <script src="javascript/Stats.js?1" type="text/javascript"> 
+    <script src="lib/Stats.js?1" type="text/javascript"> 
     </script>
     <script src="lib/keyboardjs.js?1" type="text/javascript"> 
     </script>

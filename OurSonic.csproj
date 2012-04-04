@@ -124,6 +124,7 @@
     <Content Include="assets\Sprites\springyellowopened.png" />
     <Content Include="DragTest.aspx" />
     <Content Include="Game2.aspx" />
+    <Content Include="Global.asax" />
     <Content Include="javascript\FunctionWorker.js" />
     <Content Include="javascript\PathMaker.js" />
     <Content Include="javascript\PieceLayoutMaker.js" />
@@ -189,6 +190,9 @@
     <None Include="readme" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="Jsonner.cs" />
     <Compile Include="MakeSprites.cs" />
     <Compile Include="DragTest.aspx.cs">
@@ -216,10 +220,10 @@
     <Content Include="Game.aspx" />
     <Content Include="javascript\HeightMask.js" />
     <Content Include="javascript\Help.js" />
-    <Content Include="javascript\linq.js" />
+    <Content Include="lib\linq.js" />
     <Content Include="javascript\Sonic.js" />
     <Content Include="javascript\SonicEngine.js" />
-    <Content Include="javascript\Stats.js" />
+    <Content Include="lib\Stats.js" />
     <Content Include="javascript\Tile.js" />
     <Content Include="javascript\TileChunk.js" />
     <Content Include="javascript\TilePiece.js" />

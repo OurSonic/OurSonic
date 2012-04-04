@@ -343,7 +343,7 @@
 
             }
             sonicManager.SonicLevel.Chunks[j] = mj;
-            mj.animated = undefined;
+            mj.animated = [];
             for (var ic = 0; ic < mj.tilePieces.length; ic++) {
                 for (var jc = 0; jc < mj.tilePieces[ic].length; jc++) {
                     var r = mj.tilePieces[ic][jc];
@@ -354,15 +354,12 @@
                             if (sonicManager.SonicLevel.Tiles[mjc.Tile]) {
                                 var fa = sonicManager.containsAnimatedTile(mjc.Tile);
                                 if (fa != undefined) {
-                                    mj.animated = fa;
-                                    acs.push(mj);
-                                    break;
+                                    mj.animated[jc*8+ic] = fa;
+                                    acs[j]=(mj);
                                 }
                             }
                         }
-                        if (mj.animated) break;
                     }
-                    if (mj.animated) break;
 
                 }
             }

@@ -131,11 +131,7 @@
         return items[x] >= 16 - y;
     },
     intersects: function (p) {
-        var px = p.X || p.x;
-        var py = p.Y || p.y;
-        if (this.width == undefined || this.height == undefined || this.x == undefined || this.y == undefined || px == undefined || py == undefined)
-            alert('bad intersects');
-        if (this.x < px && this.x + this.width > px && this.y < py && this.y + this.height > py) {
+        if (this.x < p.x && this.x + this.width > p.x && this.y < p.y && this.y + this.height > p.y) {
             return true;
         }
         return false;

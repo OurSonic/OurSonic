@@ -40,30 +40,34 @@
         }
         this.empty = true;
         return true;
-    };
-    this.lastAnimatedFrame = 0;
-    this.lastAnimatedIndex = 0;
+    }; 
     this.animatedTick = function () {
-        if (this.lastAnimatedFrame == undefined) {
-            this.lastAnimatedFrame = 0;
-            this.lastAnimatedIndex = 0;
+     
+
+        for (var an in this.animated) {
+            var anni = this.animated[an];
+
+            if (anni.lastAnimatedFrame == undefined) {
+                anni.lastAnimatedFrame = 0;
+                anni.lastAnimatedIndex = 0;
+            }
+            
+
+            if (anni.Frames[anni.lastAnimatedIndex].Ticks == 0 ||
+            (sonicManager.drawTickCount - anni.lastAnimatedFrame) >= ((anni.AutomatedTiming > 0)
+                ? anni.AutomatedTiming
+                : anni.Frames[anni.lastAnimatedIndex].Ticks)) {
+                anni.lastAnimatedFrame = sonicManager.drawTickCount;
+                anni.lastAnimatedIndex = (anni.lastAnimatedIndex + 1) % anni.Frames.length;
+            }
+
         }
 
-        if (this.animated.Frames[this.lastAnimatedIndex].Ticks == 0 ||
-            (sonicManager.drawTickCount - this.lastAnimatedFrame) >= ((this.animated.AutomatedTiming > 0)
-                ? this.animated.AutomatedTiming
-                : this.animated.Frames[this.lastAnimatedIndex].Ticks)) {
-            this.lastAnimatedFrame = sonicManager.drawTickCount;
-            this.lastAnimatedIndex = (this.lastAnimatedIndex + 1) % this.animated.Frames.length;
-        }
+        
     };
     this.draw = function (canvas, position, scale, layer, animationFrame, bounds) {
 
-
-        if (animationFrame == undefined && this.animated != undefined) {
-
-            animationFrame = this.lastAnimatedIndex;
-        }
+     
 
         var fd;
         if (false && (fd = sonicManager.SpriteCache.tileChunks[layer + " " + this.index + " " + scale.y + " " + scale.x + " " + ((animationFrame != undefined) ? animationFrame : '-')])) {
@@ -93,7 +97,7 @@
                         TileChunk.__position.x = position.x + i * 16 * scale.x;
                         TileChunk.__position.y = position.y + j * 16 * scale.y;
 
-                        pm.draw(canvas, TileChunk.__position, scale, layer, r.XFlip, r.YFlip, this.animated, animationFrame, bounds);
+                        pm.draw(canvas, TileChunk.__position, scale, layer, r.XFlip, r.YFlip, (this.animated[j * 8 + i] != undefined) ? (this.animated[j * 8 + i].lastAnimatedIndex) : (animationFrame), bounds);
                         //canvas.strokeStyle = "#FFF";
                         //canvas.strokeRect(position.x + i * 16 * scale.x, position.y + j * 16 * scale.y, scale.x * 16, scale.y * 16);
                     }

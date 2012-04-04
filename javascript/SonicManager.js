@@ -134,9 +134,11 @@ function SonicManager(mainCanvas, resize) {
             catch (exc) {
                 var txt = "There was an error on this page.\n\n";
                 txt += "Error description: " + exc.message + "\n\n";
+                txt += "Stack: " + exc.stack + "\n\n";
                 txt += "Click OK to continue.\n\n";
 
                 alert(txt);
+                throw exc;
             }
             finally {
                 that.sonicToon.ticking = false;
@@ -188,7 +190,7 @@ function SonicManager(mainCanvas, resize) {
 
         if (this.sonicToon) {
             canvas.scale(this.realScale.x, this.realScale.y);
-            
+
             if (this.sonicToon.ticking) {
                 while (true) {
                     if (!this.sonicToon.ticking) break;
@@ -230,10 +232,7 @@ function SonicManager(mainCanvas, resize) {
         var bounds = { x: -32, y: -32, width: this.windowLocation.width * scale.x + 32, height: this.windowLocation.height * scale.y + 32, intersects: _H.intersects };
 
         if (this.SonicLevel.Chunks && this.SonicLevel.Chunks.length > 0) {
-            var cd = this.SonicLevel.AnimatedChunks;
-            for (var k = 0; k < cd.length; k++) {
-                cd[k].animatedTick();
-            }
+
 
             var fxP = _H.floor((this.windowLocation.x + 128) / 128);
             var fyP = _H.floor((this.windowLocation.y + 128) / 128);
@@ -241,7 +240,12 @@ function SonicManager(mainCanvas, resize) {
                 var _xP = fxP + offs[off].x;
                 var _yP = fyP + offs[off].y;
                 if (_xP < 0 || _yP < 0 || _xP >= this.SonicLevel.LevelWidth || _yP >= this.SonicLevel.LevelHeight) continue;
-                var chunk = this.SonicLevel.Chunks[this.SonicLevel.ChunkMap[_xP][_yP]];
+                var ind = this.SonicLevel.ChunkMap[_xP][_yP];
+                var chunk = this.SonicLevel.Chunks[ind];
+
+                var anni = this.SonicLevel.AnimatedChunks[ind];
+                if (anni)
+                    anni.animatedTick();
 
                 if (!chunk) continue;
 
@@ -330,7 +334,7 @@ function SonicManager(mainCanvas, resize) {
                         var posj1 = { x: 0, y: 0 };
                         var canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
                         var ctx = canv.context;
-                        ctx.clearRect(0, 0, canv.width, canv.height);
+                        canv.width = canv.width;
                         for (var _y = 0; _y < 8; _y++) {
                             for (var _x = 0; _x < 8; _x++) {
                                 var tp = md.tilePieces[_x][_y];
@@ -442,8 +446,7 @@ function SonicManager(mainCanvas, resize) {
         var tileStep = sm.addStep("Tiles", function (k, done) {
             var canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
             var ctx = canv.context;
-            ctx.clearRect(0, 0, canv.width, canv.height);
-
+            canv.width = canv.width;
             md = that.SonicLevel.Blocks[k];
             md.draw(ctx, { x: 0, y: 0 }, scale, false);
             that.SpriteCache.tilepieces[false + " " + md.index + " " + scale.y + " " + scale.x] = canv.canvas;
@@ -453,7 +456,7 @@ function SonicManager(mainCanvas, resize) {
 
             canv = _H.defaultCanvas(16 * scale.x, 16 * scale.y);
             ctx = canv.context;
-            ctx.clearRect(0, 0, canv.width, canv.height);
+            canv.width = canv.width;
 
             md.draw(ctx, { x: 0, y: 0 }, scale, true);
             that.SpriteCache.tilepieces[true + " " + md.index + " " + scale.y + " " + scale.x] = canv.canvas;
@@ -602,7 +605,7 @@ function SonicManager(mainCanvas, resize) {
 
             var canv = _H.defaultCanvas(128 * scale.x, 128 * scale.y);
             var ctx = canv.context;
-            ctx.clearRect(0, 0, canv.width, canv.height);
+            canv.width = canv.width;
             md = that.SonicLevel.Chunks[k];
             /*
 
@@ -773,7 +776,7 @@ function SonicManager(mainCanvas, resize) {
 
 
 
-        that.spriteLocations = []; 
+        that.spriteLocations = [];
         sm.addIterationToStep(sonicStep, true);
 
 
