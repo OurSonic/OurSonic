@@ -3,10 +3,14 @@
 function SonicManager(mainCanvas, resize) {
     Engine.canvasWidth = $(window).width();
     Engine.canvasHeight = $(window).height();
+    var $sonicSprites;
+    $.getJSON('Content/sprites/sonic.js', function (data) {
+        $sonicSprites = data;
+    });
     
     var scl = 2;
     var scale = this.scale = { x: scl, y: scl };
-    this.realScale = { x: Engine.canvasWidth / 320 / scl, y: Engine.canvasHeight / 240 / scl };
+    this.realScale = { x: 1, y: 1 };
 
     window.sonicManager = this;
     this.mainCanvas = mainCanvas;
@@ -246,7 +250,7 @@ function SonicManager(mainCanvas, resize) {
                 var posj = { x: _H.floor(pos.x - this.windowLocation.x * scale.x), y: _H.floor(pos.y - this.windowLocation.y * scale.x) };
 
                 if (!chunk.isEmpty())
-                    chunk.draw(canvas, posj, scale, false, undefined, bounds);
+                    chunk.draw(canvas, posj, scale, 0, undefined, bounds);
                 if (false && !this.sonicToon) {
                     canvas.strokeStyle = "#DD0033";
                     canvas.lineWidth = 3;
@@ -310,7 +314,7 @@ function SonicManager(mainCanvas, resize) {
                 var posj = { x: (_H.floor(pos.x - this.windowLocation.x * scale.x)), y: _H.floor(pos.y - this.windowLocation.y * scale.y) };
 
                 if (!chunk.isEmpty() && !chunk.onlyBackground())
-                    chunk.draw(canvas, posj, scale, true, null, bounds);
+                    chunk.draw(canvas, posj, scale, 1, null, bounds);
                 if (false && !this.sonicToon) {
                     canvas.strokeStyle = "#DD0033";
                     canvas.lineWidth = 3;
@@ -755,80 +759,22 @@ function SonicManager(mainCanvas, resize) {
 
 
         var sonicStep = sm.addStep("Sonic Sprites", function (sp, done) {
-            var ci = that.SpriteCache.sonicSprites;
-            ci[sp] = _H.loadSprite(that.spriteLocations[sp], function (jd) {
-                ci[jd.tag + scale.x + scale.y] = _H.scaleSprite(jd, scale, done);
-            });
-            ci[sp].tag = sp;
-        }, function () {
-            ind_.ss++;
-            if (ind_.ss == that.imageLength) {
-                return true;
+
+            var cci = that.SpriteCache.sonicSprites;
+
+            for (var spritec in $sonicSprites) {
+                cci[spritec + scale.x + scale.y] = _H.scaleCSImage($sonicSprites[spritec], scale);
             }
-            return false;
+
+            done();
+        }, function () {
+            return true;
         }, false);
 
 
 
-
-        that.spriteLocations = [];
-        that.imageLength = 0;
-
-        that.spriteLocations["normal"] = "assets/Sprites/sonic.png";
-        sm.addIterationToStep(sonicStep, "normal");
-        that.imageLength++;
-        var j;
-        for (j = 0; j < 4; j++) {
-            that.spriteLocations["fastrunning" + j] = "assets/Sprites/fastrunning" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "fastrunning" + j);
-        }
-        for (j = 0; j < 8; j++) {
-            that.spriteLocations["running" + j] = "assets/Sprites/running" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "running" + j);
-        }
-        for (j = 0; j < 4; j++) {
-            that.spriteLocations["breaking" + j] = "assets/Sprites/breaking" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "breaking" + j);
-        }
-        for (j = 0; j < 5; j++) {
-            that.spriteLocations["balls" + j] = "assets/Sprites/balls" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "balls" + j);
-        }
-        for (j = 0; j < 2; j++) {
-            that.spriteLocations["duck" + j] = "assets/Sprites/duck" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "duck" + j);
-        }
-        for (j = 0; j < 2; j++) {
-            that.spriteLocations["hit" + j] = "assets/Sprites/hit" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "hit" + j);
-        }
-        for (j = 0; j < 6; j++) {
-            that.spriteLocations["spindash" + j] = "assets/Sprites/spindash" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "spindash" + j);
-        }
-
-        for (j = 0; j < 7; j++) {
-            that.spriteLocations["spinsmoke" + j] = "assets/Sprites/spinsmoke" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "spinsmoke" + j);
-        }
-        for (j = 0; j < 4; j++) {
-            that.spriteLocations["haltsmoke" + j] = "assets/Sprites/haltsmoke" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "haltsmoke" + j);
-        }
-        for (j = 0; j < 2; j++) {
-            that.spriteLocations["lookingup" + j] = "assets/Sprites/lookingup" + j + ".png";
-            that.imageLength++;
-            sm.addIterationToStep(sonicStep, "lookingup" + j);
-        }
+        that.spriteLocations = []; 
+        sm.addIterationToStep(sonicStep, true);
 
 
 

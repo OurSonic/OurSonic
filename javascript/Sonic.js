@@ -1122,7 +1122,7 @@ function Watcher() {
     var lastTick = 0;
     this.mult = 1;
     this.tick = function () {
-        if (true || sonicManager.inHaltMode) {
+        if (sonicManager.inHaltMode) {
             this.mult = 1;
             return;
         }

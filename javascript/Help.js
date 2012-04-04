@@ -100,7 +100,7 @@
                     y = sonicManager.SonicLevel.StartPositions[0].Y - 128 * 2;
                 }
 
-                return { x: x, y: y, width: canvas.canvas.width , height: canvas.canvas.height , intersects: _H.intersects };
+                return { x: x, y: y, width: canvas.canvas.width, height: canvas.canvas.height, intersects: _H.intersects };
         }
         return null;
     },
@@ -193,6 +193,19 @@
         var d = this.defaultCanvas().context.createImageData(sprite.width * scale.x, sprite.height * scale.y);
         _H.setDataFromColors(d.data, colors, scale, sprite.width, { r: 0, g: 0, b: 0 });
         return _H.loadSprite(_H.getBase64Image(d), complete);
+    },
+    scaleCSImage: function (image, scale, complete) {
+
+        var df = image.bytes;
+        var colors = [];
+        for (var f = 0; f < df.length; f += 1) {
+            colors.push(image.palette[df[f]]);
+        }
+        var dc = this.defaultCanvas();
+        var d = dc.context.createImageData(image.width * scale.x, image.height * scale.y);
+        _H.setDataFromColorsNew(d.data, colors, scale, image.width, { r: 0, g: 0, b: 0 });
+       
+     return _H.loadSprite(_H.getBase64Image(d), complete);
     },
     getCursorPosition: function (event) {
         if (event.targetTouches && event.targetTouches.length > 0) event = event.targetTouches[0];
@@ -301,6 +314,57 @@
                     data[c + 1] = g.g;
                     data[c + 2] = g.b;
                     data[c + 3] = 255;
+
+
+                }
+            }
+        }
+        /*        
+        var ind = 0;
+        for (var c in colors) {
+        var col = colors[c];
+        data[ind++] = (col.r);
+        data[ind++] = (col.g);
+        data[ind++] = (col.b);
+        data[ind++] = (255);
+        return data;
+        }*/
+
+    },
+    setDataFromColorsNew: function (data, colors, scale, width, transparent) {
+
+        for (var i = 0; i < colors.length; i++) {
+            //            alert((i % 8) * scale.x + (_H.floor(i / 8) * 16) * scale.y);
+            var curX = (i % width);
+            var curY = _H.floor(i / width);
+            var g = colors[i];
+            var isTrans = false;
+            if (transparent) {
+                if (g.r == transparent.r && g.g == transparent.g && g.b == transparent.b) {
+                    isTrans = true;
+                }
+            }
+
+            for (var j = 0; j < scale.x; j++) {
+                for (var k = 0; k < scale.y; k++) {
+                    var x = (curX * scale.x + j);
+                    var y = (curY * scale.y + k);
+                    var c = (x + y * (scale.x * width)) * 4;
+
+                    if (isTrans) {
+                        data[c + 0] = 0;
+                        data[c + 1] = 0;
+                        data[c + 2] = 0;
+                        data[c + 3] = 0;
+                        continue;
+
+                    }
+
+
+                    data[c] = g[0];
+                    data[c + 1] = g[1];
+                    data[c + 2] = g[2];
+                    data[c + 3] = g[3];
 
 
                 }

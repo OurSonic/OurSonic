@@ -404,7 +404,6 @@
 
         //        var inds = sonicManager.inds = { r:0,t: 0, tp: 0, tc: 0, total: (sonicManager.SonicLevel.Chunks.length * 2 + sonicManager.SonicLevel.Blocks.length * 5 + sonicManager.SonicLevel.Tiles.length), done: false };
 
-        sonicManager.uiManager.updateTitle("preloading sprites");
         sonicManager.CACHING = true;
         sonicManager.preLoadSprites(scale, function () {
             //          inds.r = 1;

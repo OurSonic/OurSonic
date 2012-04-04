@@ -1,7 +1,7 @@
 window.DebuggerArea = function () {
 
 
-    var debuggerArea = sonicManager.uiManager.debuggerArea = new UiArea(1347, 95, 250, 240, sonicManager.uiManager, true);
+    var debuggerArea = sonicManager.uiManager.debuggerArea = new UiArea(1347, 95, 400, 240, sonicManager.uiManager, true);
     debuggerArea.visible = false;
     sonicManager.uiManager.UIAreas.push(debuggerArea);
     debuggerArea.addControl(new TextArea(30, 25, "Debugger", sonicManager.uiManager.textFont, "blue"));
@@ -17,6 +17,22 @@ window.DebuggerArea = function () {
         Engine.resizeCanvas();
     }
     ));
+    var b;
+    debuggerArea.addControl(b = new Button(180, 60, 120, 22, "Fullscreen", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
+
+        if (b.toggled) {
+
+            window.sonicManager.realScale = { x: Engine.canvasWidth / 320 / window.sonicManager.scale.x, y: Engine.canvasHeight / 240 / window.sonicManager.scale.y };
+            Engine.resizeCanvas();
+        } else {
+            window.sonicManager.realScale = { x: 1, y: 1 };
+
+            Engine.resizeCanvas();
+        }
+    }
+    ));
+
+    b.toggle = true;
 
 
     debuggerArea.addControl(new Button(40, 95, 90, 22, "Hit Sonic", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {

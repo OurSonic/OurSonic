@@ -103,45 +103,45 @@
         if (this.checkGood(canvas, pos, scale, xflip, yflip, palette, layer, animationFrame)) {
             return;
         }
-        var fd = sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x + " " + layer + " " + animationFrame]
-        if (!fd) {
+        //var fd = sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x + " " + layer + " " + animationFrame]
+        //if (!fd) {
 
-            var cx = this.colors.length * scale.x;
-            var cy = this.colors.length * scale.y;
-            var j = _H.defaultCanvas(cx, cy);
-
-
-            if (pos.x < 0 || pos.y < 0) return;
-            var oPos = { x: pos.x, y: pos.y };
-              oPos = { x: 0, y: 0 };
-
-            if (xflip) {
-                oPos.x = -this.colors.length * scale.x;
-                j.context.scale(-1, 1);
-            }
-            if (yflip) {
-                oPos.y = -this.colors.length * scale.y;
-                j.context.scale(1, -1);
-            }
-
-            for (var i = 0; i < this.colors.length; i++) {
-                for (var jf = 0; jf < this.colors[i].length; jf++) {
-                    var gj = this.colors[i][jf];
-                    if (gj == 0) continue;
-
-                    //canvas.drawImage(sonicManager.SonicLevel.Palette[palette][gj], oPos.x + ((i)) * scale.x, oPos.y + (j) * scale.y, scale.x, scale.y);
-
-                    var m = sonicManager.SonicLevel.Palette[palette][gj];
-                    if (j.context.fillStyle != "#" + m)
-                        j.context.fillStyle = "#" + m;
-                    j.context.fillRect(oPos.x + ((i)) * scale.x, oPos.y + (jf) * scale.y, scale.x, scale.y);
+        var cx = this.colors.length * scale.x;
+        var cy = this.colors.length * scale.y;
+        var j = _H.defaultCanvas(cx, cy);
 
 
-                }
-            } 
+        if (pos.x < 0 || pos.y < 0) return;
+        var oPos = { x: pos.x, y: pos.y };
+        oPos = { x: 0, y: 0 };
 
-            sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x + " " + layer + " " + animationFrame] = fd = j.canvas;
+        if (xflip) {
+            oPos.x = -this.colors.length * scale.x;
+            j.context.scale(-1, 1);
         }
+        if (yflip) {
+            oPos.y = -this.colors.length * scale.y;
+            j.context.scale(1, -1);
+        }
+
+        for (var i = 0; i < this.colors.length; i++) {
+            for (var jf = 0; jf < this.colors[i].length; jf++) {
+                var gj = this.colors[i][jf];
+                if (gj == 0) continue;
+
+                //canvas.drawImage(sonicManager.SonicLevel.Palette[palette][gj], oPos.x + ((i)) * scale.x, oPos.y + (j) * scale.y, scale.x, scale.y);
+
+                var m = sonicManager.SonicLevel.Palette[(palette + sonicManager.indexedPalette) % sonicManager.SonicLevel.Palette.length][gj];
+                if (j.context.fillStyle != "#" + m)
+                    j.context.fillStyle = "#" + m;
+                j.context.fillRect(oPos.x + ((i)) * scale.x, oPos.y + (jf) * scale.y, scale.x, scale.y);
+
+
+            }
+        }
+        fd = j.canvas;
+        //  sonicManager.SpriteCache.tiles[this.index + " " + xflip + " " + yflip + " " + palette + " " + scale.y + " " + scale.x + " " + layer + " " + animationFrame] = fd;
+        //  }
         canvas.drawImage(fd, pos.x, pos.y);
 
         /*  if (showOutline) {

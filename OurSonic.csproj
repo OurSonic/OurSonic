@@ -48,6 +48,80 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\Sprites\broken.png" />
+    <Content Include="assets\Sprites\monitorBroken.png" />
+    <Content Include="assets\Sprites\monitorBubble.png" />
+    <Content Include="assets\Sprites\monitorDeath.png" />
+    <Content Include="assets\Sprites\monitorElectric.png" />
+    <Content Include="assets\Sprites\monitorEmpty.png" />
+    <Content Include="assets\Sprites\monitorFlame.png" />
+    <Content Include="assets\Sprites\monitorRing.png" />
+    <Content Include="assets\Sprites\monitorSonicOneUp.png" />
+    <Content Include="assets\Sprites\monitorSpeedShoe.png" />
+    <Content Include="assets\Sprites\monitorStars.png" />
+    <Content Include="assets\Sprites\monitorTailsOneUp.png" />
+    <Content Include="assets\Sprites\monkey\monkeyball.png" />
+    <Content Include="assets\Sprites\monkey\monkeyhand.png" />
+    <Content Include="assets\Sprites\monkey\monkeyhead.png" />
+    <Content Include="assets\Sprites\monkey\monkeynut.png" />
+    <Content Include="assets\Sprites\monkey\monkeytail.png" />
+    <Content Include="assets\Sprites\ring0.png" />
+    <Content Include="assets\Sprites\ring1.png" />
+    <Content Include="assets\Sprites\ring2.png" />
+    <Content Include="assets\Sprites\ring3.png" />
+    <Content Include="assets\Sprites\sonic\balls0.png" />
+    <Content Include="assets\Sprites\sonic\balls1.png" />
+    <Content Include="assets\Sprites\sonic\balls2.png" />
+    <Content Include="assets\Sprites\sonic\balls3.png" />
+    <Content Include="assets\Sprites\sonic\balls4.png" />
+    <Content Include="assets\Sprites\sonic\breaking0.png" />
+    <Content Include="assets\Sprites\sonic\breaking1.png" />
+    <Content Include="assets\Sprites\sonic\breaking2.png" />
+    <Content Include="assets\Sprites\sonic\breaking3.png" />
+    <Content Include="assets\Sprites\sonic\duck0.png" />
+    <Content Include="assets\Sprites\sonic\duck1.png" />
+    <Content Include="assets\Sprites\sonic\fastrunning0.png" />
+    <Content Include="assets\Sprites\sonic\fastrunning1.png" />
+    <Content Include="assets\Sprites\sonic\fastrunning2.png" />
+    <Content Include="assets\Sprites\sonic\fastrunning3.png" />
+    <Content Include="assets\Sprites\sonic\haltsmoke0.png" />
+    <Content Include="assets\Sprites\sonic\haltsmoke1.png" />
+    <Content Include="assets\Sprites\sonic\haltsmoke2.png" />
+    <Content Include="assets\Sprites\sonic\haltsmoke3.png" />
+    <Content Include="assets\Sprites\sonic\hit0.png" />
+    <Content Include="assets\Sprites\sonic\hit1.png" />
+    <Content Include="assets\Sprites\sonic\lookingup0.png" />
+    <Content Include="assets\Sprites\sonic\lookingup1.png" />
+    <Content Include="assets\Sprites\sonic\push1.bmp" />
+    <Content Include="assets\Sprites\sonic\push2.bmp" />
+    <Content Include="assets\Sprites\sonic\push3.bmp" />
+    <Content Include="assets\Sprites\sonic\push4.bmp" />
+    <Content Include="assets\Sprites\sonic\running0.png" />
+    <Content Include="assets\Sprites\sonic\running1.png" />
+    <Content Include="assets\Sprites\sonic\running2.png" />
+    <Content Include="assets\Sprites\sonic\running3.png" />
+    <Content Include="assets\Sprites\sonic\running4.png" />
+    <Content Include="assets\Sprites\sonic\running5.png" />
+    <Content Include="assets\Sprites\sonic\running6.png" />
+    <Content Include="assets\Sprites\sonic\running7.png" />
+    <Content Include="assets\Sprites\sonic\sonic.png" />
+    <Content Include="assets\Sprites\sonic\spindash0.png" />
+    <Content Include="assets\Sprites\sonic\spindash1.png" />
+    <Content Include="assets\Sprites\sonic\spindash2.png" />
+    <Content Include="assets\Sprites\sonic\spindash3.png" />
+    <Content Include="assets\Sprites\sonic\spindash4.png" />
+    <Content Include="assets\Sprites\sonic\spindash5.png" />
+    <Content Include="assets\Sprites\sonic\spinsmoke0.png" />
+    <Content Include="assets\Sprites\sonic\spinsmoke1.png" />
+    <Content Include="assets\Sprites\sonic\spinsmoke2.png" />
+    <Content Include="assets\Sprites\sonic\spinsmoke3.png" />
+    <Content Include="assets\Sprites\sonic\spinsmoke4.png" />
+    <Content Include="assets\Sprites\sonic\spinsmoke5.png" />
+    <Content Include="assets\Sprites\sonic\spinsmoke6.png" />
+    <Content Include="assets\Sprites\springredclosed.png" />
+    <Content Include="assets\Sprites\springredopened.png" />
+    <Content Include="assets\Sprites\springyellowclosed.png" />
+    <Content Include="assets\Sprites\springyellowopened.png" />
     <Content Include="DragTest.aspx" />
     <Content Include="Game2.aspx" />
     <Content Include="javascript\FunctionWorker.js" />
@@ -115,6 +189,8 @@
     <None Include="readme" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Jsonner.cs" />
+    <Compile Include="MakeSprites.cs" />
     <Compile Include="DragTest.aspx.cs">
       <DependentUpon>DragTest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -127,6 +203,7 @@
       <DependentUpon>Game.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Helpers.cs" />
     <Compile Include="ReflectImage.ashx.cs">
       <DependentUpon>ReflectImage.ashx</DependentUpon>
     </Compile>
@@ -136,7 +213,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\Sprites\sonic.png" />
     <Content Include="Game.aspx" />
     <Content Include="javascript\HeightMask.js" />
     <Content Include="javascript\Help.js" />

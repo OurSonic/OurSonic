@@ -94,6 +94,14 @@ function SonicEngine(gameLayer, uiLayer) {
             sonicManager.inHaltMode = !sonicManager.inHaltMode;
     }, function () { });
 
+    KeyboardJS.bind.key("2", function () {
+        sonicManager.indexedPalette++;
+        for (var block in sonicManager.SonicLevel.Blocks) {
+            sonicManager.SonicLevel.Blocks[block].image = [];
+        }
+
+    }, function () { });
+
 
     KeyboardJS.bind.key("p", function () {
         if (sonicManager.sonicToon)
@@ -109,22 +117,7 @@ function SonicEngine(gameLayer, uiLayer) {
     }, function () { });
 
 
-    KeyboardJS.bind.key("2", function () {
-        sonicManager.scale.x = 2;
-        sonicManager.scale.y = 2;
-        Engine.resizeCanvas();
-    }, function () { });
-    KeyboardJS.bind.key("3", function () {
-        sonicManager.scale.x = 3;
-        sonicManager.scale.y = 3;
-        Engine.resizeCanvas();
-    }, function () { });
-    KeyboardJS.bind.key("4", function () {
-        sonicManager.scale.x = 4;
-        sonicManager.scale.y = 4;
-        Engine.resizeCanvas();
-    }, function () { });
-
+ 
     KeyboardJS.bind.key("c", function () {
         if (sonicManager.sonicToon)
             sonicManager.sonicToon.debug();
@@ -241,15 +234,20 @@ function SonicEngine(gameLayer, uiLayer) {
     $(window).resize(this.resizeCanvas);
 
     var sonicManager = window.sonicManager = new SonicManager(that.gameCanvas, this.resizeCanvas);
+    sonicManager.indexedPalette = 0;
+    
     this.resizeCanvas();
 
 
 
     //requestAnimFrame(that.draw);
     window.setInterval(function () {
-
-        sonicManager.tick();
+     
         that.gameDraw();
+    }, 1000 / 60);
+    window.setInterval(function () {
+
+        sonicManager.tick(); 
     }, 1000 / 60);
 
     window.setInterval(that.uiDraw, 1000 / 20);

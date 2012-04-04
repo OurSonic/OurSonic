@@ -73,7 +73,7 @@
     *   'locked': false,
     *   'fps': {
     *     'bg': '#330000',
-    *     'fg': '#cc6300'
+    *     'fg': '#cc6600'
     *   },
     *   'ms': {
     *     'bg': '#000033',
@@ -81,7 +81,7 @@
     *   },
     *   'mem': {
     *     'bg': '#000033',
-    *     'fg': '#630099'
+    *     'fg': '#660099'
     *   }
     * });
     *
@@ -444,7 +444,7 @@
         var data = cache.data[mode],
         percent = min(100, 100 * (value / (mode == 'fps' ? 80 : mode == 'ms' ? 1e3 : 128)));
 
-        value = (mode == 'mem' ? value.toFixed(2) : round(value));
+        value = mode == 'mem' ? value.toFixed(2) : round(value);
         data.length = [data.length, data.unshift({ 'value': value, 'percent': percent })][0];
 
         value = floor(value);
@@ -706,4 +706,4 @@
     '.xstats .bg{opacity:.5;filter:alpha(opacity=50)}' +
     '.xstats{cursor:pointer;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-o-user-select:none;user-select:none}');
 
-} (this, this.document));
+} (this, this.document));   

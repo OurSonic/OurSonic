@@ -57,14 +57,13 @@
             this.lastAnimatedIndex = (this.lastAnimatedIndex + 1) % this.animated.Frames.length;
         }
     };
-    this.draw = function (canvas, position, scale, layer, animationFrame,bounds) {
+    this.draw = function (canvas, position, scale, layer, animationFrame, bounds) {
 
 
         if (animationFrame == undefined && this.animated != undefined) {
 
             animationFrame = this.lastAnimatedIndex;
         }
-
 
         var fd;
         if (false && (fd = sonicManager.SpriteCache.tileChunks[layer + " " + this.index + " " + scale.y + " " + scale.x + " " + ((animationFrame != undefined) ? animationFrame : '-')])) {
@@ -85,7 +84,7 @@
             }*/
         } else {
             _H.save(canvas);
-            
+
             for (var i = 0; i < this.tilePieces.length; i++) {
                 for (var j = 0; j < this.tilePieces[i].length; j++) {
                     var r = this.tilePieces[i][j];
