@@ -220,6 +220,7 @@
                 };
             })(l));
         }*/
+        sonicManager.SonicLevel.Objects = [];
         for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
 
 

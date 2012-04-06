@@ -2,7 +2,7 @@ window.ObjectFrameworkListArea = function () {
     var size = 40 * 4;
 
     var objectFrameworkListArea = sonicManager.uiManager.objectFrameworkListArea = new UiArea(90, 500, 390, 300, sonicManager.uiManager, true);
-    objectFrameworkListArea.visible = true;
+    objectFrameworkListArea.visible = false;
     sonicManager.uiManager.UIAreas.push(objectFrameworkListArea);
     objectFrameworkListArea.addControl(new TextArea(30, 25, "Object Frameworks", sonicManager.uiManager.textFont, "blue"));
     var fList;
