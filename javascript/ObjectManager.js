@@ -10,6 +10,29 @@ function ObjectManager(sonicManager) {
     this.init = function () {
 
     };
+     
+    this.extendObject = function (d) {
+        d.oldKey = name;
+        for (var asset in d.assets) {
+            d.assets[asset] = _H.extend(new LevelObjectAsset(""), d.assets[asset]);
+            for (var frame in d.assets[asset].frames) {
+                d.assets[asset].frames[frame] = _H.extend(new LevelObjectAssetFrame(0), d.assets[asset].frames[frame]);
+            }
+        }
+        for (var piece in d.pieces) {
+            d.pieces[piece] = _H.extend(new LevelObjectPiece(""), d.pieces[piece]);
+        }
+        for (var pieceLayout in d.pieceLayouts) {
+            d.pieceLayouts[pieceLayout] = _H.extend(new LevelObjectPieceLayout(""), d.pieceLayouts[pieceLayout]);
+            for (var piece in d.pieceLayouts[pieceLayout].pieces) {
+                d.pieceLayouts[pieceLayout].pieces[piece] = _H.extend(new LevelObjectPieceLayoutPiece(0), d.pieceLayouts[pieceLayout].pieces[piece]);
+            }
+        }
+        for (var projectile in d.projectiles) {
+            d.projectiles[projectile] = _H.extend(new LevelObjectProjectile(""), d.projectiles[projectile]);
+        }
+        return d;
+    };
 }
 
 function LevelObject(key) {
@@ -31,6 +54,7 @@ function LevelObject(key) {
     };
     this.onHurtSonic = function (level, sonic, sensor) {
     };
+
 }
 
 function LevelObjectAsset(name) {
@@ -120,7 +144,7 @@ function LevelObjectAssetFrame(name) {
             }
         }
 
-        canvas.scale( (width / this.width),  (height / this.height));
+        canvas.scale((width / this.width), (height / this.height));
 
 
         for (var x = 0; x < this.width; x++) {
@@ -146,7 +170,7 @@ function LevelObjectAssetFrame(name) {
 
         canvas.translate(pos.x, pos.y);
 
-         
+
 
         if (xflip) {
             if (yflip) {
@@ -231,6 +255,7 @@ function LevelObjectPiece(name) {
     this.xflip = false;
     this.yflip = false;
     this.name = name ? name : "";
+    
 }
 
 function LevelObjectPieceLayout(name) {
@@ -276,10 +301,10 @@ function LevelObjectPieceLayout(name) {
                     }
                     var borderSize = 3;
                     canvas.fillStyle = drawRadial;
-                 //   canvas.fillRect(pos.x + j.x - frm.offsetX - borderSize, pos.y + j.y - frm.offsetY - borderSize, frm.width + borderSize * 2, frm.height + borderSize*2);
+                    //   canvas.fillRect(pos.x + j.x - frm.offsetX - borderSize, pos.y + j.y - frm.offsetY - borderSize, frm.width + borderSize * 2, frm.height + borderSize*2);
                     frm.drawUI(canvas, { x: pos.x + j.x - frm.offsetX, y: pos.y + j.y - frm.offsetY }, { width: frm.width, height: frm.height }, false, false, false, false, piece.xflip, piece.yflip);
                 }
-            } else {    
+            } else {
                 drawRadial = sonicManager.mainCanvas.createRadialGradient(0, 0, 0, 10, 10, 50);
                 drawRadial.addColorStop(0, 'white');
                 if (selectedPieceIndex == i) {
@@ -298,6 +323,26 @@ function LevelObjectPieceLayout(name) {
         }
 
     };
+
+
+
+    this.draw = function (canvas, x, y, scale, framework) {
+
+
+
+        for (var i = 0; i < this.pieces.length; i++) {
+            var j = this.pieces[i];
+
+            var piece = framework.pieces[j.pieceIndex];
+            var asset = framework.assets[piece.assetIndex];
+            if (asset.frames.length > 0) {
+                var frm = asset.frames[0];
+                frm.drawUI(canvas, { x: (x + j.x) - (frm.offsetX * scale.x), y: (y + j.y) -( frm.offsetY * scale.y)}, { width: frm.width * scale.x, height: frm.height * scale.y }, false, false, false, false, piece.xflip, piece.yflip);
+            }
+
+        }
+
+    };
 }
 
 function LevelObjectPieceLayoutPiece(pieceIndex) {
@@ -306,16 +351,41 @@ function LevelObjectPieceLayoutPiece(pieceIndex) {
     this.x = 0;
     this.y = 0;
 }
+var broken = _H.loadSprite("assets/Sprites/broken.png");
 
-function LevelObjectInfo() {
-    this.x = 0;
-    this.y = 0;
+
+function LevelObjectInfo(o) {
+    this.x = o.X;
+    this.y = o.Y;
     this.xsp = 0;
     this.ysp = 0;
-    this.xflip = 0;
-    this.yflip = 0;
-    this.subdata = undefined;
-    this.key = undefined;
+    this.xflip = o.XFlip;
+    this.yflip = o.YFlip;
+    this.subdata = o.SubType;
+    this.key = o.ID;
+    this.ObjectData = null;
+
+    this.upperNibble = this.subdata >> 4;
+    this.lowerNibble = this.subdata & 0xf;
+
+    this.draw = function (canvas, x, y, scale) {
+        if (this.ObjectData.pieceLayouts.length == 0) {
+            canvas.drawImage(broken, _H.floor((x - broken.width / 2) ), _H.floor((y - broken.height / 2) ), broken.width * scale.x, broken.height * scale.y);
+            return;
+        }
+
+        this.ObjectData.pieceLayouts[0].draw(canvas, x, y, scale, this.ObjectData);
+    };
+
+
+    this.collides = function (sonic) {
+        return false;
+    };
+
+    this.collide = function (sonic) {
+        return false;
+    };
+ 
 }
 
 function LevelObjectProjectile(name) {

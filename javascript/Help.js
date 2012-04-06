@@ -105,12 +105,8 @@
         return null;
     },
     ObjectParse: function (o) {
-        o.upperNibble = function () {
-            return this.SubType >> 4;
-        };
-        o.lowerNibble = function () {
-            return this.SubType & 0xf;
-        };
+  
+   
         switch (o.ID) {
             case 1:
                 //monitor
@@ -200,8 +196,8 @@
         var dc = this.defaultCanvas();
         var d = dc.context.createImageData(image.width * scale.x, image.height * scale.y);
         _H.setDataFromColorsNew(d.data, colors, scale, image.width, { r: 0, g: 0, b: 0 });
-       
-     return _H.loadSprite(_H.getBase64Image(d), complete);
+
+        return _H.loadSprite(_H.getBase64Image(d), complete);
     },
     getCursorPosition: function (event) {
         if (event.targetTouches && event.targetTouches.length > 0) event = event.targetTouches[0];

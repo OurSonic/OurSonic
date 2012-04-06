@@ -211,12 +211,55 @@
             for (r = 0; r < sonicManager.SonicLevel.BackgroundHeight; r++) {
                 sonicManager.SonicLevel.BGChunkMap[q][r] = mf[q + r * sonicManager.SonicLevel.BackgroundWidth];
             }
-        }
-        sonicManager.SonicLevel.Objects = [];
+        } /*
         for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
             o = sonicManager.SonicLevel.Objects[l];
-            sonicManager.SonicLevel.Objects[l] = _H.ObjectParse(o);
+            _H.ObjectParse(o, (function (r) {
+                return function (rq) {
+                    sonicManager.SonicLevel.Objects[r] = rq;
+                };
+            })(l));
+        }*/
+        for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
+
+
+            sonicManager.SonicLevel.Objects[l] = new LevelObjectInfo(sonicManager.SonicLevel.Objects[l]);
+
         }
+
+
+
+        var objectKeys = [];
+        for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
+            o = sonicManager.SonicLevel.Objects[l].key;
+
+            if (JSLINQ(objectKeys).Count(function (p) { return p == o; }) == 0) {
+                objectKeys.push(o);
+            }
+        }
+
+
+
+        OurSonic.SonicLevels.getObjects(objectKeys, function (objects) {
+
+
+            for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
+                o = sonicManager.SonicLevel.Objects[l].key;
+                var d = JSLINQ(objects).First(function (p) { return p.key == o; });
+                if (!d) {
+                    sonicManager.SonicLevel.Objects[l].ObjectData = new LevelObject(o);
+                    continue;
+                }
+
+                var dr = _H.extend(new LevelObject(""), jQuery.parseJSON(d.value));
+
+                dr = sonicManager.objectManager.extendObject(dr);
+                sonicManager.SonicLevel.Objects[l].ObjectData = dr;
+            }
+
+        });
+
+
 
         /*
         var jm = [];
@@ -354,8 +397,8 @@
                             if (sonicManager.SonicLevel.Tiles[mjc.Tile]) {
                                 var fa = sonicManager.containsAnimatedTile(mjc.Tile);
                                 if (fa != undefined) {
-                                    mj.animated[jc*8+ic] = fa;
-                                    acs[j]=(mj);
+                                    mj.animated[jc * 8 + ic] = fa;
+                                    acs[j] = (mj);
                                 }
                             }
                         }

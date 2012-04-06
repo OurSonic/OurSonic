@@ -1,0 +1,174 @@
+33 stereo ring
+34 right ring
+35 death
+36 slow down
+37 spike death
+38 caught air
+39 water splash
+3A shield
+3B drown
+3C roll
+3D destory object
+3E fire shield
+3F water shield
+40 ?
+41 lightning shield
+42 jump attack
+43 fire dash
+44 bubble bounce
+45 lightning shield spark
+46 super sonic transform
+47 ?
+48 fire 1
+49 ?
+4A sonic jump on to tails
+4B ?
+4C closing sound 1
+4D enemy shoting something
+4E angel island caught on fire
+4F fire 2
+50 ?
+51 enemy throwing something
+52 spikes
+53 charging sound
+54 charge shot
+55 hill top sound
+56 ?
+57 water sound 1
+58 closing sound 2
+59 bridge collaps
+5A ?
+5B beebing sound for title screen and score
+5C beeping sound when mecha sonic got shutdown
+5D ?
+5E laser
+5F ?
+60 robotnik zooming
+61 ?
+62 jumping sound
+63 starpoll sound
+64 ?
+65 blue sphere collected
+66 all blue spheres collected
+67 ?
+68 perfect
+69 ?
+6A exit special stage
+6B blip sound
+6C water splash sound 2
+6D closing sound 3
+6E boss hit
+6F earthquake
+70 fire 3
+71 shield
+72 carnival night sound 1
+73 carnival night sound 2
+74 carnival night sound 3
+75 carnival night sound 4
+76 ?
+77 carnival night sound 5 ballon pop
+78 electric sound from robotnik 1
+79 electric sound from badnik
+7A ?
+7B sound from carnival night and bonus stage
+7C death egg sound 1
+7D ?
+7E ?
+7F Ice cap sound 1
+80 ice cap sound 2
+81 robotnik sound 1
+82 ?
+83 ?
+84 ?
+85 ?
+86 ?
+87 mushroom hill sound 1
+88 mushroom hill sound 2
+89 mushroom hill sound 3
+8A sandopolis, sky scanctuary and death egg sound
+8B ?
+8C ?
+8D ?
+8E ?
+8F open door
+90 sandopolis act 2 door closing
+91 sandopolis act 2 door closed
+92 sandopolis act 2 ghost
+93 sandopolis act 2 boss sound
+94 ?
+95 ?
+96 ?
+97 ?
+98 ?
+99 ?
+9A ?
+9B ?
+9C super emerald collected
+9D ?
+9E death egg act 2 boss sound
+9F super Sonic transform
+A0 ?
+A1 ?
+A2 ?
+A3 death egg sound 1
+A4 ?
+A5 ?
+A6 ?
+A7 count down
+A8 sounds like a laser
+A9 air beeping
+AA bumber
+AB spindash
+AC continue jingle
+AD ?
+AE pinball
+AF enter special stage
+B0 tally
+B1 spring
+B2 error
+B3 enter the big ring
+B4 boss explode sound
+B5 a sound from s1 special stage
+B6 spindash zoom
+B7 slot machine
+B8 super emerald sound
+B9 rings spill
+BA tails flying sound
+BB tails got tired
+BC some type of slide sound
+BD fying fortress or something
+BE robotnik flying
+BF ?
+C0 big fan
+C1 small fan
+C2 fire sound
+C3 ?
+C4 death egg act 1 boss sound
+C5 death egg act 1 boss sound
+C6 ?
+C7 carnival night sound
+C8 ?
+C9 robotnik sound
+CA death egg act 2 sound
+CB earthquake sound ?
+CC ?
+CD death egg took off
+CE floating island 1
+CF floating island 2
+D0 ?
+D1 ?
+D2 ?
+D3 ?
+D4 death egg gravity room sound
+D5 ?
+D6 ?
+D7 sound from lava reef
+D8 ?
+D9 ?
+DA ?
+DB, DC, DD, DE, DF same sound
+E1 & E5 fade out
+FB speed up tempo
+FC slow down temop
+FE stop - updated on 7-21-2009
+FF SEGA sound

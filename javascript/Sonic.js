@@ -246,7 +246,7 @@
                 }
             }
             //gravity
-            this.ysp += this.watcher.multiply(this.justHit ? 0.1875 : this.grv);
+            this.ysp += this.justHit ? 0.1875 : this.grv;
             //drag
             if (this.ysp < 0 && this.ysp > -4) {
                 if (Math.abs(this.xsp) > 0.125) {
@@ -637,9 +637,7 @@
         var me = this.myRec;
         for (var obj in sonicManager.SonicLevel.Objects) {
             var ob = sonicManager.SonicLevel.Objects[obj];
-            var _x = ob.X;
-            var _y = ob.Y;
-            if (_H.intersectRect(me, ob.getRect())) {
+            if (ob.collides(me)) {
                 ob.collide();
             }
         }

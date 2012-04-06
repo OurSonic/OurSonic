@@ -23,16 +23,16 @@ namespace OurSonic
         private XDocument objectDoc;
         private string c;
 
-    // private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
+        // private string directory = @"D:\vhosts\dested.com\httpdocs\OurSonic\";
         private string lvlDirectory = ConfigurationManager.AppSettings["LevelDirectory"];
         private string objDirectory = ConfigurationManager.AppSettings["ObjectDirectory"];
-       
+
         public SonicLevels()
-        { 
-            int[] myArray = { 1, 3, 5, 7, 9 }; 
+        {
+            int[] myArray = { 1, 3, 5, 7, 9 };
 
             c = lvlDirectory + "sonicLevels.xml";
-             if (!File.Exists(c))
+            if (!File.Exists(c))
             {
                 var j = File.CreateText(c);
                 j.Write("<soniclevels></soniclevels>");
@@ -40,13 +40,14 @@ namespace OurSonic
             } try
             {
                 doc = XDocument.Load(c);
-            }catch(Exception j)
+            }
+            catch (Exception j)
             {
-                
+
             }
 
-                     
-            
+
+
         }
 
         [WebMethod]
@@ -110,29 +111,46 @@ namespace OurSonic
 
 
 
- 
+
 
 
         [WebMethod]
-        public void saveObject(string name,string oldName, string obj)
+        public void saveObject(string name, string oldName, string obj)
         {
             File.Delete(objDirectory + oldName + ".js");
-            File.WriteAllText(objDirectory + name+".js",obj);
+            File.WriteAllText(objDirectory + name + ".js", obj);
         }
 
 
         [WebMethod]
         public string getObject(string _object)
         {
-             
+            if (!File.Exists(objDirectory + _object + ".js")) return "";
             return File.ReadAllText(objDirectory + _object + ".js");
 
+        }
+        [WebMethod]
+        public object getObjects(string[] _objects)
+        {
+            int ind = 0;
+            return _getObjects(_objects).Select(a=> new {key=_objects[ind++],value=a});
+        }
+        private IEnumerable<string> _getObjects(string[] _objects)
+        {
+            foreach (var _object in _objects)
+            {
+
+                if (!File.Exists(objDirectory + _object + ".js")) yield return "";
+                else
+                yield return File.ReadAllText(objDirectory + _object + ".js");
+
+            }
         }
 
 
 
         [WebMethod]
-        public string[] getObjects()
+        public string[] getAllObjects()
         {
             return new DirectoryInfo(objDirectory).GetFiles().Where(a => a.Extension == (".js")).Select(a => a.Name.Replace(".js", "")).ToArray();
             //            return ((XElement)doc.FirstNode).Elements().Select(a => a.FirstAttribute.Value).ToArray();

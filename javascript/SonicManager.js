@@ -7,7 +7,11 @@ function SonicManager(mainCanvas, resize) {
     $.getJSON('Content/sprites/sonic.js', function (data) {
         $sonicSprites = data;
     });
-    
+    this.objectManager = new ObjectManager(this);
+    this.objectManager.init();
+
+
+
     var scl = 2;
     var scale = this.scale = { x: scl, y: scl };
     this.realScale = { x: 1, y: 1 };
@@ -17,7 +21,7 @@ function SonicManager(mainCanvas, resize) {
 
     this.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
 
-    
+
     this.showHeightMap = false;
     this.goodRing = new Ring(false);
     this.activeRings = [];
@@ -275,15 +279,12 @@ function SonicManager(mainCanvas, resize) {
                     if (this.windowLocation.intersects(r))
                         this.goodRing.draw(canvas, { x: (r.X) - this.windowLocation.x, y: (r.Y) - this.windowLocation.y }, scale, false);
                 }
-            }
+            } 
+
             for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
                 var o = sonicManager.SonicLevel.Objects[l];
-                if (this.sonicToon) {
-                    if (this.windowLocation.intersects({ X: o.ObjectData.X, Y: o.ObjectData.Y }))
-                        o.draw(canvas, { x: (o.ObjectData.X) - this.windowLocation.x, y: (o.ObjectData.Y) - this.windowLocation.y }, scale, true);
-                } else {
-                    if (this.windowLocation.intersects({ X: o.ObjectData.X, Y: o.ObjectData.Y }))
-                        o.draw(canvas, { x: (o.ObjectData.X) - this.windowLocation.x, y: (o.ObjectData.Y) - this.windowLocation.y }, scale, false);
+                if (this.windowLocation.intersects({ x: o.x, y: o.y })) {
+                    o.draw(canvas, ((o.x) - this.windowLocation.x) * scale.x, ((o.y) - this.windowLocation.y) * scale.y, scale, this.sonicToon);
                 }
             }
 
