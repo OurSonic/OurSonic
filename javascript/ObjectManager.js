@@ -144,7 +144,7 @@ function LevelObjectAssetFrame(name) {
             }
         }
 
-        canvas.scale((width / this.width), (height / this.height));
+       // canvas.scale((width / this.width), (height / this.height));
 
 
         for (var x = 0; x < this.width; x++) {
@@ -162,85 +162,108 @@ function LevelObjectAssetFrame(name) {
         canvas.restore();
 
     };
+    
+    this.image = [];
+    this.getCache = function (size, xflip, yflip, showOutline, showCollideMap, showHurtMap) {
+        
+        //return false;
+        return this.image[((xflip + 2) * 13) ^ (size.width * 47) ^ ((yflip + 2) * 71) ^ ((showOutline + 2) * 7) ^ ((showCollideMap + 2) * 89) ^ ((showHurtMap + 2) * 79)];
+    };
+    this.setCache = function (image,size, xflip, yflip, showOutline, showCollideMap, showHurtMap) {
+        //   return;
+        this.image[((xflip + 2) * 13) ^ (size.width * 47) ^ ((yflip + 2) * 71) ^ ((showOutline + 2) * 7) ^ ((showCollideMap + 2) * 89) ^ ((showHurtMap + 2) * 79)] = image;
+    };
 
-    this.drawUI = function (canvas, pos, size, showOutline, showCollideMap, showHurtMap, showOffset, xflip, yflip) {
-        canvas.strokeStyle = "#000000";
-        canvas.lineWidth = 1;
-        canvas.save();
-
-        canvas.translate(pos.x, pos.y);
-
-
-
-        if (xflip) {
-            if (yflip) {
-                canvas.translate(size.width, size.height);
-                canvas.scale(-1, -1);
-            } else {
-                canvas.translate(size.x * size.width, 0);
-                canvas.scale(-1, 1);
-            }
-        } else {
-            if (yflip) {
-                canvas.translate(0, size.y * size.height);
-                canvas.scale(1, -1);
-            } else {
-
-            }
-        }
+    this.drawUI = function (_canvas, pos, size, showOutline, showCollideMap, showHurtMap, showOffset, xflip, yflip) {
 
 
-        canvas.scale(size.width / this.width, size.height / this.height);
-        for (var x = 0; x < this.width; x++) {
-            for (var y = 0; y < this.height; y++) {
-                var ex = x;
-                var ey = y;
-                var color = this.palette[this.colorMap[ex][ey]];
-                //  var negative = _H.negateColor(color);
-                if (canvas.fillStyle != "#" + color)
-                    canvas.fillStyle = "#" + color;
+        var fd = this.getCache(size, xflip, yflip, showOutline, showCollideMap, showHurtMap);
 
-                //if (canvas.strokeStyle != "#" + negative)
-                //    canvas.strokeStyle = "#" + negative; 
+        if (!fd) {
+
+            var mj = _H.defaultCanvas(size.width, size.height);
+            var canvas = mj.context;
+
+            canvas.save();
+
+            canvas.strokeStyle = "#000000";
+            canvas.lineWidth = 1;
 
 
-                canvas.fillRect(ex, ey, 1, 1);
-                //  if (showOutline)
-                //    canvas.strokeRect(ex, ey, 1, 1);
-
-                if (showCollideMap) {
-                    if (this.collisionMap[ex][ey]) {
-                        canvas.fillStyle = "rgba(30,34,255,0.6)";
-                        canvas.fillRect(ex, ey, 1, 1);
-                    }
+            if (xflip) {
+                if (yflip) {
+                    canvas.translate(size.width, size.height);
+                    canvas.scale(-1, -1);
+                } else {
+                    canvas.translate(size.x * size.width, 0);
+                    canvas.scale(-1, 1);
                 }
-
-                if (showHurtMap) {
-                    if (this.hurtSonicMap[ex][ey]) {
-                        canvas.fillStyle = "rgba(211,12,55,0.6)";
-                        canvas.fillRect(ex, ey, 1, 1);
-                    }
+            } else {
+                if (yflip) {
+                    canvas.translate(0, size.y * size.height);
+                    canvas.scale(1, -1);
+                } else {
 
                 }
             }
-        }
-        if (showOffset) {
 
-            canvas.beginPath();
-            canvas.moveTo(this.offsetX, 0);
-            canvas.lineTo(this.offsetX, this.height);
-            canvas.lineWidth = 1;
-            canvas.strokeStyle = "#000000";
-            canvas.stroke();
 
-            canvas.beginPath();
-            canvas.moveTo(0, this.offsetY);
-            canvas.lineTo(this.width, this.offsetY);
-            canvas.lineWidth = 1;
-            canvas.strokeStyle = "#000000";
-            canvas.stroke();
+            canvas.scale(size.width / this.width, size.height / this.height);
+            for (var x = 0; x < this.width; x++) {
+                for (var y = 0; y < this.height; y++) {
+                    var ex = x;
+                    var ey = y;
+                    var color = this.palette[this.colorMap[ex][ey]];
+                    //  var negative = _H.negateColor(color);
+                    if (canvas.fillStyle != "#" + color)
+                        canvas.fillStyle = "#" + color;
+
+                    //if (canvas.strokeStyle != "#" + negative)
+                    //    canvas.strokeStyle = "#" + negative; 
+
+
+                    canvas.fillRect(ex, ey, 1, 1);
+                    //  if (showOutline)
+                    //    canvas.strokeRect(ex, ey, 1, 1);
+
+                    if (showCollideMap) {
+                        if (this.collisionMap[ex][ey]) {
+                            canvas.fillStyle = "rgba(30,34,255,0.6)";
+                            canvas.fillRect(ex, ey, 1, 1);
+                        }
+                    }
+
+                    if (showHurtMap) {
+                        if (this.hurtSonicMap[ex][ey]) {
+                            canvas.fillStyle = "rgba(211,12,55,0.6)";
+                            canvas.fillRect(ex, ey, 1, 1);
+                        }
+
+                    }
+                }
+            }
+            if (showOffset) {
+
+                canvas.beginPath();
+                canvas.moveTo(this.offsetX, 0);
+                canvas.lineTo(this.offsetX, this.height);
+                canvas.lineWidth = 1;
+                canvas.strokeStyle = "#000000";
+                canvas.stroke();
+
+                canvas.beginPath();
+                canvas.moveTo(0, this.offsetY);
+                canvas.lineTo(this.width, this.offsetY);
+                canvas.lineWidth = 1;
+                canvas.strokeStyle = "#000000";
+                canvas.stroke();
+            }
+            canvas.restore();
+            fd = mj.canvas;
+            this.setCache(mj.canvas, size, xflip, yflip, showOutline, showCollideMap, showHurtMap)
         }
-        canvas.restore();
+
+        _canvas.drawImage(fd, pos.x, pos.y);
 
     };
     this.draw = function (canvas, pos, scale) {

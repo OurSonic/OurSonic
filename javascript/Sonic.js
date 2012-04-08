@@ -90,18 +90,18 @@
             this.x += offset.x;
             this.y += offset.y;
 
-            if ((this.angle >= 0x70 && this.angle <= 0x90)) {
+            /*if ((this.angle >= 0x70 && this.angle <= 0x90)) {
                 this.xsp = (this.gsp);
-            }
+            }*/
         }
         if (!this.inAir && this.wasInAir) {
             this.wasInAir = false;
             if ((this.angle >= 0xF0 || this.angle <= 0x0F)) {
                 this.gsp = (this.xsp);
-            } else if ((this.angle >= 0xE0 && this.angle <= 0xEF) ||
+            } else if ((this.angle > 0xE2 && this.angle <= 0xEF) ||
                 (this.angle >= 0x10 && this.angle <= 0x1F)) {
                 this.gsp = (this.ysp);
-            } else if ((this.angle >= 0xC0 && this.angle <= 0xDF)) {
+            } else if ((this.angle >= 0xC0 && this.angle <= 0xE2)) {
                 this.gsp = (-this.ysp);
             } else if ((this.angle >= 0x20 && this.angle <= 0x3F)) {
                 this.gsp = (this.ysp);
@@ -285,13 +285,13 @@
             this.ysp = this.gsp * -_H.sin(this.angle);
 
             if (Math.abs(this.gsp) < 2.5 && this.mode != RotationMode.Floor) {
-                if (this.mode == RotationMode.RightWall) this.x -= 0;
+                if (this.mode == RotationMode.RightWall) this.x += 0;
                 else if (this.mode == RotationMode.LeftWall) this.x += 0;
                 else if (this.mode == RotationMode.Ceiling) this.y += 0;
                 var oldMode = this.mode;
                 this.updateMode();
                 this.gsp = 0;
-                this.mode = oldMode;
+                this.mode = RotationMode.Floor;
                 this.hlock = 30;
                 this.inAir = true;
             }
@@ -412,6 +412,8 @@
         var sensorA = this.sensorManager.getResult('a');
         var sensorB = this.sensorManager.getResult('b');
 
+
+        var hSize = this.getHalfImageSize();
         if (!this.inAir) {
 
             best = this.getBestSensor(sensorA, sensorB, this.mode);
@@ -425,28 +427,28 @@
 
                         best.chosen = true;
                         this.angle = best.angle;
-                        this.y = fy = best.value - 20;
+                        this.y = fy = best.value - hSize.y;
 
 
                         break;
                     case RotationMode.LeftWall:
                         best.chosen = true;
                         this.angle = best.angle;
-                        this.x = fx = best.value + 20;
+                        this.x = fx = best.value + hSize.x;
 
                         break;
                     case RotationMode.Ceiling:
 
                         best.chosen = true;
                         this.angle = best.angle;
-                        this.y = fy = best.value + 20;
+                        this.y = fy = best.value + hSize.y;
 
                         break;
                     case RotationMode.RightWall:
 
                         best.chosen = true;
                         this.angle = best.angle;
-                        this.x = fx = best.value - 20;
+                        this.x = fx = best.value - hSize.x;
 
                         break;
                 }
@@ -466,7 +468,7 @@
                     if (sensorA.value < sensorB.value) {
                         if (this.y + (20) >= sensorA.value) {
                             this.angle = sensorA.angle;
-                            this.y = fy = sensorA.value - 20;
+                            this.y = fy = sensorA.value - hSize.y;
                             this.rolling = this.currentlyBall = false;
                             this.inAir = false;
                         }
@@ -474,7 +476,7 @@
                         if (sensorB.value > -1) {
                             if (this.y + (20) >= sensorB.value) {
                                 this.angle = sensorB.angle;
-                                this.y = fy = sensorB.value - 20;
+                                this.y = fy = sensorB.value - hSize.y;
                                 this.rolling = this.currentlyBall = false;
                                 this.inAir = false;
                             }
@@ -483,14 +485,14 @@
                 } else if (sensorA.value > -1) {
                     if (this.y + (20) >= sensorA.value) {
                         this.angle = sensorA.angle;
-                        this.y = fy = sensorA.value - 20;
+                        this.y = fy = sensorA.value - hSize.y;
                         this.rolling = this.currentlyBall = false;
                         this.inAir = false;
                     }
                 } else if (sensorB.value > -1) {
                     if (this.y + (20) >= sensorB.value) {
                         this.angle = sensorB.angle;
-                        this.y = fy = sensorB.value - 20;
+                        this.y = fy = sensorB.value - hSize.y;
                         this.rolling = this.currentlyBall = false;
                         this.inAir = false;
                     }
@@ -711,7 +713,36 @@
         return __imageOffset;
 
     };
-    
+    this.getHalfImageSize = function () {
+
+        return {x:20,y:20};
+        var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
+        var xSize = 0;
+        var ySize = 0; 
+            switch (this.mode) {
+                case RotationMode.Floor: 
+                    ySize = _H.floor(cur.height/scale.y / 2);
+                    break;
+                case RotationMode.LeftWall:
+                    xSize = _H.floor(cur.width / scale.x / 2);
+                    
+                    break;
+                case RotationMode.Ceiling:
+                    ySize = _H.floor(cur.height / scale.y / 2);
+                   
+                    break;
+                case RotationMode.RightWall:
+
+                    xSize = _H.floor(cur.width / scale.x / 2);
+                    break;
+            } 
+
+        __imageOffset.x = xSize;
+        __imageOffset.y = ySize;
+        return __imageOffset;
+
+    };
+
 
 
     this.draw = function (canvas, scale) {
@@ -975,7 +1006,7 @@ function Watcher() {
     var lastTick = 0;
     this.mult = 1;
     this.tick = function () {
-        if (sonicManager.inHaltMode) {
+        if (true || sonicManager.inHaltMode) {
             this.mult = 1;
             return;
         }

@@ -220,7 +220,6 @@
                 };
             })(l));
         }*/
-        sonicManager.SonicLevel.Objects = [];
         for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
 
 
@@ -274,6 +273,8 @@
         sonicManager.SonicLevel.Palette=jm;*/
 
         var value, td;
+        sonicManager.SonicLevel.curPaletteIndex = 0;
+        sonicManager.SonicLevel.palAn = [];
         sonicManager.SonicLevel.curHeightMap = true;
         for (j = 0; j < sonicManager.SonicLevel.Tiles.length; j++) {
             fc = sonicManager.SonicLevel.Tiles[j];
@@ -408,6 +409,8 @@
                 }
             }
 
+
+
             /*for (je = 0; je < fc.angleMap1.length; je++) {
             for (jc = 0; jc < fc.angleMap1[je].length; jc++) {
             fc.angleMap1[je][jc] = parseInt(fc.angleMap1[je][jc], 16);
@@ -432,6 +435,42 @@
             }
             }*/
 
+        }
+
+        for (var kd = 0; kd < sonicManager.SonicLevel.Blocks.length; kd++) {
+            var dj = sonicManager.SonicLevel.Blocks[kd];
+            dj.animatedFrames = [];
+
+            for (var i = 0; i < dj.tiles.length; i++) {
+                var mj = dj.tiles[i];
+                if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
+
+                    var pl = JSLINQ(sonicManager.SonicLevel.Tiles[mj.Tile].getAllPaletteIndexes());
+
+
+                    if (sonicManager.SonicLevel.PaletteItems[0]) {
+                        for (var k = 0; k < sonicManager.SonicLevel.PaletteItems[0].length; k++) {
+                            var pal = sonicManager.SonicLevel.PaletteItems[0][k];
+
+
+                            for (var m = 0; m < pal.Pieces.length; m++) {
+                                var mje = pal.Pieces[m];
+
+                                if (mj.Palette == mje.PaletteIndex) {
+                                    if (pl.Any(function (J) {
+                                        return J == mje.PaletteOffset / 2 || J == mje.PaletteOffset / 2 + 1;
+                                    })) {
+                                        dj.animatedFrames.push(k);
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+
+            }
         }
 
 
@@ -511,7 +550,7 @@
     window.LevelManagerArea();
     window.ModifyTileArea();
     window.ModifyTilePieceArea();
-    window.ModifyTileChunkArea(); 
+    window.ModifyTileChunkArea();
     window._TileChunkArea();
     window._TilePieceArea();
     window.ObjectFrameworkArea();

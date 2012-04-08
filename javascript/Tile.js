@@ -6,6 +6,37 @@
         this.colors[x][y] = color;
         this.sprites = [];
     };
+    this.curPaletteIndexes = undefined;
+    this.getAllPaletteIndexes = function () {
+
+        if (!this.curPaletteIndexes) {
+
+            var d = [];
+            var dEnumerable = JSLINQ(d);
+
+            for (var i = 0; i < this.colors.length; i++) {
+                for (var jf = 0; jf < this.colors[i].length; jf++) {
+                    var gj = this.colors[i][jf];
+                    if (gj == 0) continue;
+
+                    if (!dEnumerable.Any(function (D) {
+                        return D == gj;
+                    })) {
+                        d.push(gj);
+                    }
+                }
+            }
+
+
+            this.curPaletteIndexes = d;
+        }
+        return this.curPaletteIndexes;
+
+    };
+    this.clearCache = function() {
+        this.curPaletteIndexes = undefined;
+
+    };
 
 
     this.checkGood = function (canvas, pos, scale, xflip, yflip, palette, layer, animationFrame) {

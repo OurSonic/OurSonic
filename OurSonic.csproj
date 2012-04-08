@@ -48,6 +48,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="animatedPaletteInfo.txt" />
+    <Content Include="animatedPalettes.txt" />
+    <Content Include="animatedPalettesLines.txt" />
     <Content Include="assets\Sprites\broken.png" />
     <Content Include="assets\Sprites\monitorBroken.png" />
     <Content Include="assets\Sprites\monitorBubble.png" />
@@ -125,6 +128,7 @@
     <Content Include="DragTest.aspx" />
     <Content Include="Game2.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Instructions.txt" />
     <Content Include="javascript\FunctionWorker.js" />
     <Content Include="javascript\PathMaker.js" />
     <Content Include="javascript\PieceLayoutMaker.js" />

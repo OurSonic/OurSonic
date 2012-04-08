@@ -27,6 +27,9 @@
         }
 
         return last;
+    }, 
+    mod: function (j,n) {
+        return ((j % n) + n) % n;
     },
     floor: function (f) {
         if (f > 0) {
@@ -105,8 +108,8 @@
         return null;
     },
     ObjectParse: function (o) {
-  
-   
+
+
         switch (o.ID) {
             case 1:
                 //monitor
@@ -639,10 +642,15 @@ String.prototype.replaceAll = function (str1, str2, ignore) {
 
 
 
-function make(canvas,img,smallSize, largeSize) {
+function make(canvas, img, smallSize, largeSize) {
     for (var x = 0; x < largeSize; x += smallSize) {
         for (var y = 0; y < largeSize; y += smallSize) {
             canvas.drawImage(img, x, y);
         }
     }
 }
+
+
+window.primeList = [211, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 419, 421, 431, 433, 439, 443, 449, 457, 461, 523, 541, 547, 557, 563, 569, 659, 661, 673, 677, 683, 691, 701, 709, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997];
+
+ 
