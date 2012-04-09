@@ -2,7 +2,7 @@ window.ObjectFrameworkListArea = function () {
     var size = 40 * 4;
 
     var objectFrameworkListArea = sonicManager.uiManager.objectFrameworkListArea = new UiArea(90, 500, 390, 300, sonicManager.uiManager, true);
-    objectFrameworkListArea.visible = false;
+    objectFrameworkListArea.visible = true;
     sonicManager.uiManager.UIAreas.push(objectFrameworkListArea);
     objectFrameworkListArea.addControl(new TextArea(30, 25, "Object Frameworks", sonicManager.uiManager.textFont, "blue"));
     var fList;
@@ -54,6 +54,19 @@ window.ObjectFrameworkListArea = function () {
 
     getObjects();
     var loadObject = function (name) {
+
+        var objects = window.CachedObjects;
+        if (objects) {
+
+            if (objects[name]) {
+
+                sonicManager.uiManager.objectFrameworkArea.populate(objects[name]);
+                sonicManager.uiManager.objectFrameworkArea.visible = true;
+                return;
+            }
+        }
+
+
         var oldTitle = sonicManager.uiManager.curLevelName;
 
         sonicManager.uiManager.updateTitle("Downloading Object:" + name);

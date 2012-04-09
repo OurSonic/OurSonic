@@ -1,144 +1,158 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <publishData>
-  <publishProfile publishUrl="ftp://dested.com/httpdocs/oursonic" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FTP" replaceMatchingFiles="True" userName="dested" savePWD="True" userPWD="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAenCylGqweUqUmm5Hf1JuBAAAAAACAAAAAAAQZgAAAAEAACAAAAB4qAkY8pYGSsN/uXwUfGw5uhrkth0lf/9Zks6bEnrnewAAAAAOgAAAAAIAACAAAAA+ZUXy8O0jDUOJSqbQ82i35vNPvjKPpouIraE7obeaRhAAAABZ00FkoJn09BMb5R5UtB3mQAAAABVmbOOgGbLdIhzRk/LEi1zFeiAzbeh8ktsdHRUPXh25S/xt4xVDi48qJEICtnVcvqVVU6aAT//noCf1Mbssv/I=" SelectedForPublish="True">
-    <file relUrl="javascript/UserInterfaces/LevelManagerArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Hydrocity Zone Act 2.js" publishTime="02/26/2012 16:23:59" />
+  <publishProfile publishUrl="b:\coco\oursonic" deleteExistingFiles="False" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FileSystem" replaceMatchingFiles="True" userName="dested" savePWD="True" userPWD="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAenCylGqweUqUmm5Hf1JuBAAAAAACAAAAAAAQZgAAAAEAACAAAAB4qAkY8pYGSsN/uXwUfGw5uhrkth0lf/9Zks6bEnrnewAAAAAOgAAAAAIAACAAAAA+ZUXy8O0jDUOJSqbQ82i35vNPvjKPpouIraE7obeaRhAAAABZ00FkoJn09BMb5R5UtB3mQAAAABVmbOOgGbLdIhzRk/LEi1zFeiAzbeh8ktsdHRUPXh25S/xt4xVDi48qJEICtnVcvqVVU6aAT//noCf1Mbssv/I=" SelectedForPublish="True">
+    <file relUrl="assets/Sprites/springredopened.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="bin/OurSonic.dll" publishTime="04/08/2012 14:43:06" />
+    <file relUrl="assets/Sprites/sonic/balls1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorStars.png" publishTime="03/31/2012 15:57:29" />
     <file relUrl="javascript/UIArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Launch Base Zone Act 1.js" publishTime="02/26/2012 16:24:02" />
-    <file relUrl="lvls/Angel Island Zone Act 1.js" publishTime="02/26/2012 16:23:57" />
+    <file relUrl="assets/Sprites/broken.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="uploadify/uploadify.allglyphs.swf" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/running1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorBroken.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/hit0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spinsmoke5.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spindash2.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/match-highlighter.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="Game.aspx" publishTime="04/03/2012 22:22:12" />
+    <file relUrl="lib/util/formatting.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/theme/night.css" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="animatedPalettesLines.txt" publishTime="04/06/2012 22:21:55" />
     <file relUrl="javascript/TileItem.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="uploadify/jquery.uploadify.v2.1.4.js" publishTime="03/02/2012 23:06:27" />
-    <file relUrl="javascript/SonicManager.js" publishTime="04/01/2012 21:42:57" />
-    <file relUrl="javascript/UserInterfaces/ModifyTileChunkArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="bin/EcmaScript.NET.modified.dll" publishTime="02/14/2012 02:46:25" />
-    <file relUrl="lvls/IceCap Zone Act 2.js" publishTime="02/26/2012 16:24:02" />
-    <file relUrl="lvls/Balloon Park Zone.js" publishTime="02/26/2012 16:24:10" />
-    <file relUrl="Game.aspx" publishTime="04/01/2012 11:38:16" />
-    <file relUrl="lvls/Hidden Palace Zone Mini.js" publishTime="02/26/2012 16:24:08" />
-    <file relUrl="lib/util/match-highlighter.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="javascript/TilePiece.js" publishTime="04/01/2012 21:36:45" />
-    <file relUrl="Web.config" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Hidden Palace Zone.js" publishTime="02/26/2012 16:24:08" />
-    <file relUrl="lvls/Casino Night Zone Act 1.js" publishTime="02/27/2012 00:55:51" />
-    <file relUrl="lvls/Casino Night Zone Act 2.js" publishTime="02/27/2012 00:55:52" />
-    <file relUrl="lvls/Carnival Night Zone Act 2.js" publishTime="02/26/2012 16:24:01" />
-    <file relUrl="lvls/Chemical Plant Zone Act 2.js" publishTime="02/27/2012 00:55:50" />
-    <file relUrl="javascript/UserInterfaces/TilePieceArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lib/mode/javascript/javascript.js" publishTime="03/01/2012 02:46:26" />
-    <file relUrl="javascript/UserInterfaces/ObjectFrameworkArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/UserInterfaces/ColorEditorArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="bin/SonicImageParser.exe" publishTime="03/02/2012 17:11:08" />
-    <file relUrl="javascript/Sensor.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Metropolis Zone Act 3.js" publishTime="02/27/2012 00:55:55" />
-    <file relUrl="lvls/Desert Palace Zone.js" publishTime="02/26/2012 16:24:10" />
-    <file relUrl="lvls/Emerald Hill Zone Act 2.js" publishTime="02/27/2012 00:55:49" />
-    <file relUrl="lib/util/searchcursor.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="javascript/Tile.js" publishTime="04/01/2012 19:33:19" />
-    <file relUrl="lvls/Pachinko.js" publishTime="02/26/2012 16:24:11" />
-    <file relUrl="javascript/Sonic.js" publishTime="04/01/2012 21:25:23" />
-    <file relUrl="javascript/UserInterfaces/ObjectInfoArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="bin/OurSonic.dll" publishTime="04/01/2012 11:38:47" />
-    <file relUrl="lib/util/simple-hint.css" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="javascript/LevelObject.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="bin/SonicImageParser.pdb" publishTime="03/02/2012 17:11:08" />
-    <file relUrl="javascript/UserInterfaces/LevelInformationArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/curCompress.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Gumball.js" publishTime="02/26/2012 16:24:11" />
-    <file relUrl="lvls/Death Egg Zone.js" publishTime="02/27/2012 00:55:56" />
+    <file relUrl="javascript/TilePiece.js" publishTime="04/08/2012 11:40:23" />
+    <file relUrl="assets/Sprites/sonic/normal.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/simple-hint.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/linq.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/springredclosed.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/running7.png" publishTime="03/31/2012 15:57:29" />
     <file relUrl="javascript/UserInterfaces/ModifyTileArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Mushroom Hill Zone Act 1.js" publishTime="02/26/2012 16:24:04" />
-    <file relUrl="lib/util/formatting.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="javascript/UserInterfaces/ModifyTilePieceArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="uploadify/cancel.png" publishTime="03/02/2012 16:03:16" />
-    <file relUrl="javascript/ParallaxBG.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Oil Ocean Zone Act 2.js" publishTime="02/27/2012 00:55:54" />
-    <file relUrl="lvls/The Doomsday Zone.js" publishTime="02/26/2012 16:24:10" />
-    <file relUrl="javascript/ObjectManager.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/HeightMask.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="ObjectMapping.txt" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="bin/SharpLZW.pdb" publishTime="02/05/2012 00:50:54" />
-    <file relUrl="SonicLevels.asmx" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/PieceLayoutMaker.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="ReflectImage.ashx" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lib/util/runmode.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="Game2.aspx" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/Editor.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Aquatic Ruin Zone Act 1.js" publishTime="02/27/2012 00:55:51" />
-    <file relUrl="lvls/Endless Mine Zone.js" publishTime="02/26/2012 16:24:10" />
-    <file relUrl="lvls/Metropolis Zone Act 1.js" publishTime="02/27/2012 00:55:54" />
-    <file relUrl="bin/SharpLZW.dll" publishTime="02/05/2012 00:50:54" />
-    <file relUrl="lvls/Marble Garden Zone Act 2.js" publishTime="02/26/2012 16:24:00" />
-    <file relUrl="uploadify/uploadify.swf" publishTime="03/02/2012 16:03:16" />
-    <file relUrl="assets/Sprites/sonic.png" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/UserInterfaces/SolidTileArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="uploadify/uploadify.allglyphs.swf" publishTime="03/02/2012 16:03:16" />
-    <file relUrl="lvls/Lava Reef Zone Act 1.js" publishTime="02/26/2012 16:24:07" />
-    <file relUrl="lib/util/search.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="DragTest.aspx" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Lava Reef Zone Boss.js" publishTime="02/26/2012 16:24:08" />
-    <file relUrl="lvls/IceCap Zone Act 1.js" publishTime="02/26/2012 16:24:01" />
-    <file relUrl="lvls/Mushroom Hill Zone Act 2.js" publishTime="02/26/2012 16:24:04" />
-    <file relUrl="lvls/Launch Base Zone Act 2 Death Egg.js" publishTime="02/26/2012 16:24:03" />
-    <file relUrl="javascript/WorkerConsole.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/Stats.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Hill Top Zone Act 2.js" publishTime="02/27/2012 00:55:52" />
-    <file relUrl="lib/util/overlay.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="javascript/Help.js" publishTime="04/01/2012 21:33:52" />
-    <file relUrl="lvls/Flying Battery Zone Act 2.js" publishTime="02/26/2012 16:24:05" />
-    <file relUrl="lvls/Flying Battery Zone Act 1.js" publishTime="02/26/2012 16:24:05" />
-    <file relUrl="lib/util/dialog.css" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="lvls/Oil Ocean Zone Act 1.js" publishTime="02/27/2012 00:55:53" />
-    <file relUrl="lvls/Emerald Hill Zone Act 1.js" publishTime="02/27/2012 00:55:49" />
-    <file relUrl="lvls/Angel Island Zone Act 1 Intro.js" publishTime="02/26/2012 16:23:56" />
-    <file relUrl="uploadify/swfobject.js" publishTime="03/02/2012 16:50:16" />
-    <file relUrl="lvls/Sandopolis Zone Act 1.js" publishTime="02/26/2012 16:24:06" />
-    <file relUrl="lvls/Mystic Cave Zone Act 1.js" publishTime="02/27/2012 00:55:53" />
-    <file relUrl="lib/util/foldcode.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="javascript/UserInterfaces/TileChunkArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="bin/OurSonic.pdb" publishTime="04/01/2012 11:38:47" />
-    <file relUrl="lvls/Sky Sanctuary Zone Act 1.js" publishTime="02/26/2012 16:24:09" />
-    <file relUrl="lvls/Sky Sanctuary Zone Act 2.js" publishTime="02/26/2012 16:24:09" />
-    <file relUrl="javascript/Ring.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/UserInterfaces/BGEditorArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/SonicEngine.js" publishTime="04/01/2012 21:40:16" />
-    <file relUrl="uploadify/jquery.uploadify.v2.1.4.min.js" publishTime="03/02/2012 16:03:16" />
-    <file relUrl="javascript/FunctionWorker.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Death Egg Zone Boss.js" publishTime="02/26/2012 16:24:10" />
-    <file relUrl="javascript/TileChunk.js" publishTime="04/01/2012 20:07:03" />
-    <file relUrl="bin/Yahoo.Yui.Compressor.dll" publishTime="02/14/2012 02:46:25" />
-    <file relUrl="lib/util/dialog.js" publishTime="03/01/2012 02:47:04" />
+    <file relUrl="javascript/curCompress.js" publishTime="04/05/2012 19:35:15" />
+    <file relUrl="assets/Sprites/monkey/monkeyhand.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorSonicOneUp.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/ModifyTileChunkArea.js" publishTime="04/03/2012 22:27:53" />
+    <file relUrl="lib/jquery.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/overlay.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/foldcode.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="animatedPaletteInfo.txt" publishTime="04/07/2012 10:41:08" />
     <file relUrl="lib/codemirror.css" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/UserInterfaces/ObjectFrameworkListArea.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="javascript/PathMaker.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorRing.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/BGEditorArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/breaking3.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/haltsmoke0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorEmpty.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/balls4.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/search.js" publishTime="03/31/2012 15:57:29" />
     <file relUrl="javascript/UserInterfaces/DebuggerArea.js" publishTime="04/01/2012 21:44:10" />
-    <file relUrl="lvls/Sky Chase Zone.js" publishTime="02/27/2012 00:55:55" />
-    <file relUrl="lvls/Death Egg Zone Act 2.js" publishTime="02/26/2012 16:24:10" />
-    <file relUrl="lvls/Hill Top Zone Act 1.js" publishTime="02/27/2012 00:55:52" />
-    <file relUrl="lvls/Death Egg Zone Act 1.js" publishTime="02/26/2012 16:24:09" />
-    <file relUrl="lvls/Sandopolis Zone Act 2.js" publishTime="02/26/2012 16:24:06" />
-    <file relUrl="lvls/Launch Base Zone Act 2.js" publishTime="02/26/2012 16:24:03" />
-    <file relUrl="lvls/Carnival Night Zone Act 1.js" publishTime="02/26/2012 16:24:00" />
-    <file relUrl="lvls/Chrome Gadget Zone.js" publishTime="02/26/2012 16:24:10" />
-    <file relUrl="lvls/Azure Lake Zone.js" publishTime="02/26/2012 16:24:10" />
-    <file relUrl="lvls/Slots.js" publishTime="02/26/2012 16:24:11" />
-    <file relUrl="lvls/Hydrocity Zone Act 1.js" publishTime="02/26/2012 16:23:58" />
-    <file relUrl="lvls/Mushroom Hill Zone Act 2 Boss.js" publishTime="02/26/2012 16:24:05" />
-    <file relUrl="lib/util/simple-hint.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="lvls/Aquatic Ruin Zone Act 2.js" publishTime="02/27/2012 00:55:51" />
-    <file relUrl="lvls/Wing Fortress Zone.js" publishTime="02/27/2012 00:55:56" />
-    <file relUrl="uploadify/expressInstall.swf" publishTime="03/02/2012 16:03:16" />
-    <file relUrl="lvls/Angel Island Zone Act 2.js" publishTime="02/26/2012 16:23:57" />
-    <file relUrl="lib/util/javascript-hint.js" publishTime="03/01/2012 02:47:04" />
-    <file relUrl="javascript/linq.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Angel Island Zone Act 2 Ship.js" publishTime="02/26/2012 16:23:58" />
-    <file relUrl="javascript/UIManager.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Lava Reef Zone Act 2.js" publishTime="02/26/2012 16:24:07" />
-    <file relUrl="uploadify/jquery-1.4.2.min.js" publishTime="03/02/2012 16:03:16" />
+    <file relUrl="javascript/Help.js" publishTime="04/08/2012 12:37:52" />
+    <file relUrl="assets/Sprites/sonic/balls2.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/ring2.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="uploadify/jquery.uploadify.v2.1.4.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/fastrunning3.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monkey/monkeynut.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/running2.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/balls3.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/ParallaxBG.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/Sensor.js" publishTime="04/08/2012 14:07:20" />
+    <file relUrl="Global.asax" publishTime="04/04/2012 00:11:01" />
+    <file relUrl="javascript/UserInterfaces/TileChunkArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="uploadify/uploadify.css" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/running3.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spinsmoke2.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/balls0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/TilePieceArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/ObjectInfoArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="Web.config" publishTime="04/07/2012 18:34:25" />
+    <file relUrl="assets/Sprites/sonic/spindash1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorFlame.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/LevelObject.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/push1.bmp" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/push4.bmp" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/running6.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="ReflectImage.ashx" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/lookingup1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/dialog.css" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spindash4.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spinsmoke1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spinsmoke4.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/PathMaker.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/push3.bmp" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monkey/monkeytail.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorSpeedShoe.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/ModifyTilePieceArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/fastrunning0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/running0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="DragTest.aspx" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/running4.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="uploadify/jquery-1.4.2.min.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/SonicEngine.js" publishTime="04/02/2012 22:01:44" />
+    <file relUrl="lib/util/dialog.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/ObjectManager.js" publishTime="04/08/2012 11:39:41" />
+    <file relUrl="javascript/WorkerConsole.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spinsmoke6.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/FunctionWorker.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/Sonic.js" publishTime="04/08/2012 14:40:03" />
+    <file relUrl="javascript/UIManager.js" publishTime="04/08/2012 11:46:10" />
+    <file relUrl="lib/mode/javascript/javascript.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorElectric.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/ring0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/simple-hint.css" publishTime="04/01/2012 16:34:46" />
+    <file relUrl="javascript/HeightMask.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spindash5.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/ObjectFrameworkArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/TileChunk.js" publishTime="04/04/2012 00:27:51" />
+    <file relUrl="assets/Sprites/monitorDeath.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/haltsmoke2.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/SolidTileArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/Tile.js" publishTime="04/08/2012 11:44:49" />
+    <file relUrl="lib/util/javascript-hint.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="uploadify/uploadify.swf" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/LevelInformationArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/LevelManagerArea.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="Instructions.txt" publishTime="04/07/2012 11:58:08" />
+    <file relUrl="assets/Sprites/sonic/fastrunning2.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monkey/monkeyhead.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/ring3.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spindash0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/searchcursor.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorTailsOneUp.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spindash3.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="uploadify/expressInstall.swf" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/util/runmode.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spinsmoke0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/springyellowopened.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/keyboardjs.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/breaking2.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/ObjectFrameworkListArea.js" publishTime="04/05/2012 23:36:08" />
+    <file relUrl="uploadify/swfobject.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/breaking0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/PieceLayoutMaker.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/spinsmoke3.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monitorBubble.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/hit1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/SonicManager.js" publishTime="04/08/2012 13:25:32" />
+    <file relUrl="uploadify/jquery.uploadify.v2.1.4.min.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/fastrunning1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/running5.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/haltsmoke1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/push2.bmp" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/monkey/monkeyball.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/lookingup0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/haltsmoke3.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/Editor.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="lib/Stats.js" publishTime="04/02/2012 20:31:50" />
+    <file relUrl="Game2.aspx" publishTime="04/03/2012 22:23:01" />
+    <file relUrl="ObjectMapping.txt" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/duck0.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="bin/OurSonic.pdb" publishTime="04/08/2012 14:43:06" />
+    <file relUrl="javascript/Ring.js" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/sonic/breaking1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="SonicLevels.asmx" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="assets/Sprites/springyellowclosed.png" publishTime="03/31/2012 15:57:29" />
     <file relUrl="lib/codemirror.js" publishTime="03/31/2012 15:57:29" />
-    <file relUrl="lvls/Marble Garden Zone Act 1.js" publishTime="02/26/2012 16:23:59" />
-    <file relUrl="lvls/Mystic Cave Zone Act 2.js" publishTime="02/27/2012 00:55:53" />
-    <file relUrl="lvls/Chemical Plant Zone Act 1.js" publishTime="02/27/2012 00:55:50" />
-    <file relUrl="uploadify/uploadify.css" publishTime="03/02/2012 16:03:16" />
-    <file relUrl="lvls/Metropolis Zone Act 2.js" publishTime="02/27/2012 00:55:55" />
+    <file relUrl="assets/Sprites/sonic/duck1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="uploadify/cancel.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="animatedPalettes.txt" publishTime="04/07/2012 16:06:56" />
+    <file relUrl="assets/Sprites/ring1.png" publishTime="03/31/2012 15:57:29" />
+    <file relUrl="javascript/UserInterfaces/ColorEditorArea.js" publishTime="03/31/2012 15:57:29" />
   </publishProfile>
 </publishData>

@@ -91,7 +91,7 @@
             this.y += offset.y;
 
             /*if ((this.angle >= 0x70 && this.angle <= 0x90)) {
-                this.xsp = (this.gsp);
+            this.xsp = (this.gsp);
             }*/
         }
         if (!this.inAir && this.wasInAir) {
@@ -384,23 +384,23 @@
         if (best) {
             switch (this.mode) {
                 case RotationMode.Floor:
-                    this.x = fx = best.value + (best.letter == "m1" ? 12 : -12);
+                    this.x = fx = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
                     break;
                 case RotationMode.LeftWall:
-                    this.y = fy = best.value + (best.letter == "m1" ? 12 : -12);
+                    this.y = fy = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     if (this.inAir) this.xsp = 0;
 
                     break;
                 case RotationMode.Ceiling:
-                    this.x = fx = best.value + (best.letter == "m1" ? 12 : -12);
+                    this.x = fx = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 
                     break;
                 case RotationMode.RightWall:
-                    this.y = fy = best.value + (best.letter == "m1" ? 12 : -12);
+                    this.y = fy = (best.value + (sensorM1.value == sensorM2.value ? 12: (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 
@@ -715,27 +715,27 @@
     };
     this.getHalfImageSize = function () {
 
-        return {x:20,y:20};
+        return { x: 20, y: 20 };
         var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
         var xSize = 0;
-        var ySize = 0; 
-            switch (this.mode) {
-                case RotationMode.Floor: 
-                    ySize = _H.floor(cur.height/scale.y / 2);
-                    break;
-                case RotationMode.LeftWall:
-                    xSize = _H.floor(cur.width / scale.x / 2);
-                    
-                    break;
-                case RotationMode.Ceiling:
-                    ySize = _H.floor(cur.height / scale.y / 2);
-                   
-                    break;
-                case RotationMode.RightWall:
+        var ySize = 0;
+        switch (this.mode) {
+            case RotationMode.Floor:
+                ySize = _H.floor(cur.height / scale.y / 2);
+                break;
+            case RotationMode.LeftWall:
+                xSize = _H.floor(cur.width / scale.x / 2);
 
-                    xSize = _H.floor(cur.width / scale.x / 2);
-                    break;
-            } 
+                break;
+            case RotationMode.Ceiling:
+                ySize = _H.floor(cur.height / scale.y / 2);
+
+                break;
+            case RotationMode.RightWall:
+
+                xSize = _H.floor(cur.width / scale.x / 2);
+                break;
+        }
 
         __imageOffset.x = xSize;
         __imageOffset.y = ySize;

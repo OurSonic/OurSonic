@@ -17,6 +17,7 @@
         sonicManager.windowLocation = _H.defaultWindowLocation(0, mainCanvas, scale);
         sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
         sonicManager.sonicToon.obtainedRing = [];
+
         window.Engine.resizeCanvas();
     };
 
@@ -221,10 +222,7 @@
             })(l));
         }*/
         for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
-
-
             sonicManager.SonicLevel.Objects[l] = new LevelObjectInfo(sonicManager.SonicLevel.Objects[l]);
-
         }
 
 
@@ -241,10 +239,13 @@
 
 
         OurSonic.SonicLevels.getObjects(objectKeys, function (objects) {
-
-
+            window.CachedObjects = [];
             for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
                 o = sonicManager.SonicLevel.Objects[l].key;
+                if (window.CachedObjects[o]) {
+                    sonicManager.SonicLevel.Objects[l].ObjectData = window.CachedObjects[o];
+                    continue;
+                }
                 var d = JSLINQ(objects).First(function (p) { return p.key == o; });
                 if (!d) {
                     sonicManager.SonicLevel.Objects[l].ObjectData = new LevelObject(o);
@@ -254,9 +255,10 @@
                 var dr = _H.extend(new LevelObject(""), jQuery.parseJSON(d.value));
 
                 dr = sonicManager.objectManager.extendObject(dr);
+                window.CachedObjects[o] = dr;
                 sonicManager.SonicLevel.Objects[l].ObjectData = dr;
             }
-
+             
         });
 
 

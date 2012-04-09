@@ -119,6 +119,21 @@ function SonicManager(mainCanvas, resize) {
 
     };
 
+    this.tickObjects = function () {
+
+
+        for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
+
+            var obj = sonicManager.SonicLevel.Objects[l];
+
+            if (this.windowLocation.intersects({ x: obj.x, y: obj.y })) {
+
+                obj.ObjectData.tick(obj, sonicManager.SonicLevel, sonicManager.sonicToon);
+            }
+        }
+
+    };
+
     var that = this; //internetexplorer doesnt take a this param in setinterval
     this.tick = function () {
         if (that.loading) return;
@@ -129,8 +144,11 @@ function SonicManager(mainCanvas, resize) {
                     return;
                 }
             }
-
             that.tickCount++;
+
+            that.tickObjects();
+
+
             that.sonicToon.ticking = true;
             try {
                 that.sonicToon.tick(that.SonicLevel, scale);
@@ -156,7 +174,7 @@ function SonicManager(mainCanvas, resize) {
                     that.waitingForDrawContinue = false;
                 }
             }
-             
+
             if (that.sonicToon.x > 128 * sonicManager.SonicLevel.LevelWidth) {
                 that.sonicToon.x = 0;
             }
@@ -331,8 +349,8 @@ function SonicManager(mainCanvas, resize) {
                     var pal = this.SonicLevel.PaletteItems[0][k];
                     var p = eval(pal.Palette);
 
-                    for (var j = 0; j < pal.TotalLength; j += pal.SkipIndex) {
-                        if (this.drawTickCount % (pal.TotalLength) == j) {
+                    for (var j = 0; j <= pal.TotalLength; j += pal.SkipIndex) {
+                        if (this.drawTickCount % (pal.TotalLength + pal.SkipIndex) == j) {
                             this.SonicLevel.palAn[k] = j / pal.SkipIndex;
                         }
                     }

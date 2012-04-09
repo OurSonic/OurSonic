@@ -95,6 +95,7 @@
     <Content Include="assets\Sprites\sonic\hit1.png" />
     <Content Include="assets\Sprites\sonic\lookingup0.png" />
     <Content Include="assets\Sprites\sonic\lookingup1.png" />
+    <Content Include="assets\Sprites\sonic\normal.png" />
     <Content Include="assets\Sprites\sonic\push1.bmp" />
     <Content Include="assets\Sprites\sonic\push2.bmp" />
     <Content Include="assets\Sprites\sonic\push3.bmp" />
@@ -107,7 +108,6 @@
     <Content Include="assets\Sprites\sonic\running5.png" />
     <Content Include="assets\Sprites\sonic\running6.png" />
     <Content Include="assets\Sprites\sonic\running7.png" />
-    <Content Include="assets\Sprites\sonic\sonic.png" />
     <Content Include="assets\Sprites\sonic\spindash0.png" />
     <Content Include="assets\Sprites\sonic\spindash1.png" />
     <Content Include="assets\Sprites\sonic\spindash2.png" />
