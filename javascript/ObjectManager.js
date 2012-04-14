@@ -65,7 +65,7 @@ function LevelObject(key) {
 
     this.init = function (object, level, sonic) {
         object.reset();
-        this.evalMe("initScript").apply(this, [object, level, sonic]);
+        this.evalMe("initScript").apply(object, [object, level, sonic]);
     };
     this.tick = function (object, level, sonic) {
         if (object.lastDrawTick != sonicManager.tickCount - 1)
@@ -73,10 +73,10 @@ function LevelObject(key) {
 
         object.lastDrawTick = sonicManager.tickCount;
 
-        this.evalMe("tickScript").apply(this, [object, level, sonic]);
+        this.evalMe("tickScript").apply(object, [object, level, sonic]);
 
-        object.xsp = this.state.xsp;
-        object.ysp = this.state.ysp;
+        object.xsp = object.state.xsp;
+        object.ysp = object.state.ysp;
 
         object.x += object.xsp;
         object.y += object.ysp;
@@ -196,10 +196,13 @@ function LevelObjectAssetFrame(name) {
     };
 
     this.image = [];
-    this.getCache = function (size, xflip, yflip, showOutline, showCollideMap, showHurtMap) {
+    this.getCache = function(size, xflip, yflip, showOutline, showCollideMap, showHurtMap) {
 
         //return false;
         return this.image[((xflip + 2) * 13) ^ (size.width * 47) ^ ((yflip + 2) * 71) ^ ((showOutline + 2) * 7) ^ ((showCollideMap + 2) * 89) ^ ((showHurtMap + 2) * 79)];
+    };
+    this.clearCache = function () {
+        this.image = [];
     };
     this.setCache = function (image, size, xflip, yflip, showOutline, showCollideMap, showHurtMap) {
         //   return;

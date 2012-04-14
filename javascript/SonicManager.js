@@ -48,7 +48,7 @@ function SonicManager(mainCanvas, resize) {
         Chunks: [],
         ChunkMap: [[]],
         Rings: {},
-        curHeightMap: true, LevelWidth: 0, LevelHeight: 0, curPaletteIndex: 0
+        curHeightMap: true, LevelWidth: 0, LevelHeight: 0, 
     };
 
     this.containsAnimatedTile = function (index) {
@@ -258,96 +258,11 @@ function SonicManager(mainCanvas, resize) {
         if (this.SonicLevel.Chunks && this.SonicLevel.Chunks.length > 0) {
 
 
-
-            for (var x = 0; false && x < that.SonicLevel.BackgroundWidth; x++) {
-                for (var y = 0; y < that.SonicLevel.BackgroundHeight; y++) {
-                    var ck = sonicManager.SonicLevel.Chunks[that.SonicLevel.BGChunkMap[x][y]];
-                    if (ck) {
-                        if (!ck.isEmpty())
-                            ck.draw(canvas, { x: x * 128 * scale.x - this.windowLocation.x * scale.x, y: y * 128 * scale.y - this.windowLocation.y * scale.y }, scale, 0, undefined, bounds);
-
-                    }
-                }
-            }
-
-
-
-            if (false) {
-                var changePal = ["88EEEE", "22EEEE", "44AAEE", "4466EE", "22EEEE", "44AAEE", "4466EE", "88EEEE", "44AAEE", "4466EE", "88EEEE", "22EEEE", "4466EE", "88EEEE", "22EEEE", "44AAEE", ];
-
-                if (this.drawTickCount % 0x20 == 0x18) {
-                    this.SonicLevel.curPaletteIndex = 3;
-                } else if (this.drawTickCount % 0x20 == 0x10) {
-                    this.SonicLevel.curPaletteIndex = 2;
-                } else if (this.drawTickCount % 0x20 == 0x8) {
-                    this.SonicLevel.curPaletteIndex = 1;
-                } else if (this.drawTickCount % 0x20 == 0x0) {
-                    this.SonicLevel.curPaletteIndex = 0;
-                }
-
-                this.SonicLevel.Palette[2][0x16 / 2] = changePal[this.SonicLevel.curPaletteIndex * 4 + 0];
-                this.SonicLevel.Palette[2][0x16 / 2 + 1] = changePal[this.SonicLevel.curPaletteIndex * 4 + 1];
-                this.SonicLevel.Palette[2][0x1A / 2] = changePal[this.SonicLevel.curPaletteIndex * 4 + 2];
-                this.SonicLevel.Palette[2][0x1A / 2 + 1] = changePal[this.SonicLevel.curPaletteIndex * 4 + 3];
-            }
-            if (false) {
-                var changePal = ["CCEEEE", "EEEEEE", "88EEEE", "0044EE", "CCEEEE", "88EEEE", "88EEEE", "EEEEEE", "AAEEEE", "6688EE", "88EEEE", "88EEEE", "88EEEE", "0044EE", "88EEEE", "6688EE", "66EEEE", "EEEEEE", "88EEEE", "0044EE", "AAEEEE", "88EEEE", "88EEEE", "EEEEEE", "88EEEE", "6688EE", "88EEEE", "88EEEE", "88EEEE", "0044EE", "88EEEE", "6688EE", "66EEEE", "EEEEEE", "88EEEE", "0044EE", "88EEEE", "88EEEE", "88EEEE", "EEEEEE", "AAEEEE", "6688EE", "88EEEE", "88EEEE", "CCEEEE", "0044EE", "88EEEE", "6688EE", "CCEEEE", "EEEEEE", "88EEEE", "0044EE", "CCEEEE", "88EEEE", "88EEEE", "EEEEEE", "CCEEEE", "6688EE", "88EEEE", "88EEEE", "CCEEEE", "0044EE", "88EEEE", "6688EE", ];
-
-
-                for (var j = 0; j < 0x50; j += 0x8) {
-                    if (this.drawTickCount % 0x50 == j) {
-                        this.SonicLevel.curPaletteIndex = j / 0x8;
-                    }
-                }
-                this.SonicLevel.Palette[3][0x4 / 2] = changePal[this.SonicLevel.curPaletteIndex * 2 + 0];
-                this.SonicLevel.Palette[3][0x4 / 2 + 1] = changePal[this.SonicLevel.curPaletteIndex * 2 + 1];
-            }
-
-            if (false) {
-                var changePal = ["000000", "666600", "EEEE00", "222200", "444400", "CCCC00", "444400", "222200", "AAAA00", "666600", "000000", "888800", "888800", "000000", "666600", "AAAA00", "222200", "444400", "CCCC00", "444400", "222200", "EEEE00", "666600", "000000", "EEEE00", "888800", "000000", "CCCC00", "AAAA00", "222200", "AAAA00", "CCCC00", "444400", "888800", "EEEE00", "666600", "666600", "EEEE00", "888800", "444400", "CCCC00", "AAAA00", "222200", "AAAA00", "CCCC00", "000000", "888800", "EEEE00", ];
-
-                for (var j = 0; j < 0x60; j += 0x6) {
-                    if (this.drawTickCount % 0x60 == j) {
-                        this.SonicLevel.curPaletteIndex = j / 0x8;
-                    }
-                }
-                this.SonicLevel.Palette[3][0x12 / 2] = changePal[this.SonicLevel.curPaletteIndex * 4 + 0];
-                this.SonicLevel.Palette[3][0x12 / 2 + 1] = changePal[this.SonicLevel.curPaletteIndex * 4 + 1];
-                this.SonicLevel.Palette[3][0x16 / 2] = changePal[this.SonicLevel.curPaletteIndex * 4 + 2];
-                this.SonicLevel.Palette[3][0x16 / 2 + 1] = changePal[this.SonicLevel.curPaletteIndex * 4 + 3];
-            }
-            /*
-            {
-            var changePal = ["0022EE", "AA8800", "EE00CC", "2244CC", "CC6600", "EE00EE", "4466AA", "CC4400", "CC00EE", "448888", "EE2200", "AA00EE", "66AA66", "EE0000", "8800EE", "66CC44", "EE0022", "6600EE", "88EE22", "EE0044", "4400EE", "88EE00", "EE0066", "2200EE", "88CC00", "EE0088", "0000EE", "AAAA00", "EE00AA", "0000EE", "AA8800", "EE00CC", "0022EE", "CC6600", "EE00EE", "2244CC", "CC4400", "CC00EE", "4466AA", "EE2200", "AA00EE", "448888", "EE0000", "8800EE", "66AA66", "EE0022", "6600EE", "66CC44", "EE0044", "4400EE", "88EE22", "EE0066", "2200EE", "88EE00", "EE0088", "0000EE", "88CC00", "EE00AA", "0000EE", "AAAA00", "EE00CC", "0022EE", "AA8800", "EE00EE", "2244CC", "CC6600", "CC00EE", "4466AA", "CC4400", "AA00EE", "448888", "EE2200", "8800EE", "66AA66", "EE0000", "6600EE", "66CC44", "EE0022", "4400EE", "88EE22", "EE0044", "2200EE", "88EE00", "EE0066", "0000EE", "88CC00", "EE0088", "0000EE", "AAAA00", "EE00AA", ]; ;
-            //cnz3
-            for (var j = 0; j < 0xB4; j += 0x6) {
-            if (this.drawTickCount % 0xB4 == j) {
-            this.SonicLevel.palAn[0] = j / 0x8;
-            }
-            }
-            this.SonicLevel.Palette[2][0x12 / 2] = changePal[this.SonicLevel.palAn[0] * 4 + 0];
-            this.SonicLevel.Palette[2][0x12 / 2 + 1] = changePal[this.SonicLevel.palAn[0] * 4 + 1];
-            this.SonicLevel.Palette[2][0x16 / 2] = changePal[this.SonicLevel.palAn[0] * 4 + 2];
-            this.SonicLevel.Palette[2][0x16 / 2 + 1] = changePal[this.SonicLevel.palAn[0] * 4 + 3];
-            }
-            {
-            var changePal = ["00EE22", "EECCEE", "22EE44", "CCAAEE", "44EE66", "AA88EE", "66EE88", "8866EE", "88EEAA", "6644EE", "AAEECC", "4422EE", "CCEEEE", "2200EE", "EEEEEE", "0000EE", "CCEEEE", "2200EE", "AAEECC", "4422EE", "88EEAA", "6644EE", "66EE88", "8866EE", "44EE66", "AA88EE", "22EE44", "CCAAEE", "00EE22", "EECCEE", "00EE00", "EEEEEE", ]; ;
-            //cnz5
-            for (var j = 0; j < 0x40; j += 0x4) {
-            if (this.drawTickCount % 0x40 == j) {
-            this.SonicLevel.palAn[1] = j / 0x8;
-            }
-            }
-            this.SonicLevel.Palette[2][0xE / 2] = changePal[this.SonicLevel.palAn[1] * 4 + 0];
-            this.SonicLevel.Palette[2][0xE / 2 + 1] = changePal[this.SonicLevel.palAn[1] * 4 + 1];
-
-            }*/
-
+         
 
             if (this.SonicLevel.PaletteItems[0]) {
                 for (var k = 0; k < this.SonicLevel.PaletteItems[0].length; k++) {
-                    var pal = this.SonicLevel.PaletteItems[0][k];
-                    var p = eval(pal.Palette);
+                    var pal = this.SonicLevel.PaletteItems[0][k]; 
 
                     for (var j = 0; j <= pal.TotalLength; j += pal.SkipIndex) {
                         if (this.drawTickCount % (pal.TotalLength + pal.SkipIndex) == j) {
@@ -357,24 +272,13 @@ function SonicManager(mainCanvas, resize) {
 
                     for (var m = 0; m < pal.Pieces.length; m++) {
                         var mj = pal.Pieces[m];
-                        this.SonicLevel.Palette[mj.PaletteIndex][mj.PaletteOffset / 2] = p[this.SonicLevel.palAn[k] * (pal.Pieces.length * 2) + 0 + (mj.PaletteMultiply)];
-                        this.SonicLevel.Palette[mj.PaletteIndex][mj.PaletteOffset / 2 + 1] = p[this.SonicLevel.palAn[k] * (pal.Pieces.length * 2) + 1 + (mj.PaletteMultiply)];
+                        this.SonicLevel.Palette[mj.PaletteIndex][mj.PaletteOffset / 2] = pal.Palette[this.SonicLevel.palAn[k] * (pal.Pieces.length * 2) + 0 + (mj.PaletteMultiply)];
+                        this.SonicLevel.Palette[mj.PaletteIndex][mj.PaletteOffset / 2 + 1] = pal.Palette[this.SonicLevel.palAn[k] * (pal.Pieces.length * 2) + 1 + (mj.PaletteMultiply)];
                     }
 
 
                 }
-
-
-                var longHash = 0;
-
-                for (var k = 0; k < this.SonicLevel.PaletteItems[0].length; k++) {
-                    if (longHash == 0) {
-                        longHash = ((this.SonicLevel.palAn[k] + 1) * Math.pow(10, k));
-                    } else
-                        longHash += ((this.SonicLevel.palAn[k] + 1) * Math.pow(10, k));
-
-                }
-                this.SonicLevel.curPaletteIndex = longHash;
+                 
             }
 
 

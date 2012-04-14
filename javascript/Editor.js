@@ -21,6 +21,7 @@ function Editor(assetFrame,showOffset) {
                 }
             }
         }
+        this.assetFrame.clearCache();
     };
     this.drawLine = function (location1, location2) {
 

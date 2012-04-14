@@ -258,7 +258,7 @@
                 window.CachedObjects[o] = dr;
                 sonicManager.SonicLevel.Objects[l].ObjectData = dr;
             }
-             
+
         });
 
 
@@ -439,6 +439,19 @@
 
         }
 
+        if (sonicManager.SonicLevel.PaletteItems[0]) {
+            for (var k = 0; k < sonicManager.SonicLevel.PaletteItems[0].length; k++) {
+                var pal = sonicManager.SonicLevel.PaletteItems[0][k];
+                pal.Palette = eval(pal.Palette);
+                
+                //below this is bad
+                if (pal.TotalLength == 0)
+                    pal.TotalLength = pal.Palette.length;
+                if (pal.SkipIndex == 0)
+                    pal.SkipIndex = Math.floor(pal.Palette.length / 8);
+                //^
+            }
+        }
         for (var kd = 0; kd < sonicManager.SonicLevel.Blocks.length; kd++) {
             var dj = sonicManager.SonicLevel.Blocks[kd];
             dj.animatedFrames = [];

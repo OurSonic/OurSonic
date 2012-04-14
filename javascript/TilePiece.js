@@ -70,29 +70,24 @@ function TilePiece(heightMask, tiles) {
 
     this.getCache = function (layer, scale, drawOrder, animationFrame, palAn) {
         //return false;
+        var val = ((drawOrder + 1) * Math.pow(10, 0)) + (scale.x * Math.pow(10, 1)) + ((!animationFrame ? 0 : animationFrame) * Math.pow(10, 3)) + ((layer + 1) * Math.pow(10, 4));
 
-        var val = ((drawOrder + 1) * Math.pow(10, 2)) + (scale.x * Math.pow(10, 3)) + ((!animationFrame ? 0 : animationFrame) * Math.pow(10, 5)) + ((layer + 1) * Math.pow(10, 6));
-
-        for (var i = 0; i < this.animatedFrames.length; i++) { 
-            val += ((palAn[this.animatedFrames[i]] + 1) * Math.pow(10, 8+(i*2))); 
+        for (var i = 0; i < this.animatedFrames.length; i++) {
+            val += palAn[this.animatedFrames[i]] +" ";
         }
-
         return this.image[val];
 
-
-        return this.image[((drawOrder + 1) * 13) ^ (scale.x * 47) ^ ((!animationFrame ? 100 : animationFrame) * 71) ^ ((layer + 1) * 7) ^ ((curPaletteIndex + 1) * 89)];
     };
     this.setCache = function (layer, scale, drawOrder, animationFrame, palAn, image) {
         //   return;
-        var val = ((drawOrder + 1) * Math.pow(10, 2)) + (scale.x * Math.pow(10, 3)) + ((!animationFrame ? 0 : animationFrame) * Math.pow(10, 5)) + ((layer + 1) * Math.pow(10, 6));
+        var val = ((drawOrder + 1) * Math.pow(10, 0)) + (scale.x * Math.pow(10, 1)) + ((!animationFrame ? 0 : animationFrame) * Math.pow(10, 3)) + ((layer + 1) * Math.pow(10, 4));
 
         for (var i = 0; i < this.animatedFrames.length; i++) {
-            val += ((palAn[this.animatedFrames[i]] + 1) * Math.pow(10, 8 + (i * 2)));
+            val += palAn[this.animatedFrames[i]] + " ";
         }
         
         this.image[val] = image;
 
-        //        this.image[((drawOrder + 1) * 13) ^ (scale.x * 47) ^ ((!animationFrame ? 100 : animationFrame) * 71) ^ ((layer + 1) * 7) ^ ((curPaletteIndex + 1) * 89)] = image;
     };
     this.draw = function (canvas, position, scale, layer, xflip, yflip, animationFrame, bounds) {
 
