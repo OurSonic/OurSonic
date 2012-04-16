@@ -69,6 +69,8 @@
         } else if (this.angle > 0xA1 && this.angle < 0xDE) {
             this.mode = RotationMode.RightWall;
         }
+        this.x = _H.floor(this.x);
+        this.y = _H.floor(this.y);
         this.myRec = { x: this.x - 5, width: 5 * 2, y: this.y - 20, height: 20 * 2 };
         if (this.inAir)
             this.mode = RotationMode.Floor;
@@ -213,6 +215,8 @@
             }
         }
 
+        this.checkCollisionWithRing();
+
 
         if (this.inAir) {
             if (this.holdingRight && !this.holdingLeft) {
@@ -274,8 +278,6 @@
             }
         }
 
-        this.checkCollisionWithRing();
-        this.checkCollisionWithObjects();
 
         if (!this.inAir) {
             if (this.spinDash) {
@@ -330,6 +332,22 @@
                 return sensor1.value < sensor2.value ? sensor1 : sensor2;
         }
         return null;
+    };
+    this.collisionMap = undefined;
+    this.getCollisionMap = function () {
+        if (!this.collisionMap) {
+            var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
+            var curb = [];
+            for (var j = 0; j < cur.width / scale.x; j++) {
+                curb[j] = [];
+                for (var k = 0; k < cur.height / scale.y; k++) {
+                    curb[j][k] = true;
+                }
+            }
+            this.collisionMap = curb;
+        }
+        return this.collisionMap;
+
     };
     this.tick = function () {
         if (this.debugging) {
@@ -400,7 +418,7 @@
 
                     break;
                 case RotationMode.RightWall:
-                    this.y = fy = (best.value + (sensorM1.value == sensorM2.value ? 12: (best.letter == "m1" ? 12 : -12)));
+                    this.y = fy = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 
@@ -635,12 +653,15 @@
             }
         }
     };
-    this.checkCollisionWithObjects = function () {
-        var me = this.myRec;
-        for (var obj in sonicManager.SonicLevel.Objects) {
-            var ob = sonicManager.SonicLevel.Objects[obj];
+    this.checkCollisionWithObjects = function (x, y) {
+        var me = { x: x, y: y };
+        for (var obj in sonicManager.inFocusObjects) {
+            var ob = sonicManager.inFocusObjects[obj];
             if (ob.collides(me)) {
-                ob.collide();
+                return ob.collide();
+            }
+            if (ob.hurtsSonic(me)) {
+                ob.hurtSonic();
             }
         }
     };

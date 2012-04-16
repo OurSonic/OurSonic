@@ -10,6 +10,22 @@ window.ColorEditorArea = function () {
     }
     ));
 
+    colorEditorArea.addControl(new Button(770, 190, 150, 22, "Modify Hurt Map", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
+        if (colorEditorArea.colorEditor.showHurtMap == false && colorEditorArea.colorEditor.showCollideMap == false) {
+            colorEditorArea.colorEditor.showHurtMap = true;
+            colorEditorArea.colorEditor.showCollideMap = false;
+            this.text = "Modify Collide Map";
+        } else if (colorEditorArea.colorEditor.showCollideMap == false) {
+            colorEditorArea.colorEditor.showHurtMap = false;
+            colorEditorArea.colorEditor.showCollideMap = true;
+            this.text = "Modify Pixel Map";
+        } else {
+            colorEditorArea.colorEditor.showHurtMap = false;
+            colorEditorArea.colorEditor.showCollideMap = false;
+            this.text = "Modify Hurt Map";
+        }
+    }));
+
     colorEditorArea.addControl(new TextArea(750, 150, function () { return "Line Width:" + colorEditorArea.colorEditor.editor.lineWidth; }, sonicManager.uiManager.textFont, "Black"));
 
     colorEditorArea.addControl(new Button(900, 120, 14, 20, "^", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {

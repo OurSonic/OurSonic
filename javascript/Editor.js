@@ -1,6 +1,9 @@
 function Editor(assetFrame,showOffset) {
     this.assetFrame = assetFrame;
 
+    this.showHurtMap = false;
+    this.showCollideMap = false;
+    
     this.lineWidth = 1;
     this.currentColor = 0;
     this.showOutline = true;
@@ -10,17 +13,21 @@ function Editor(assetFrame,showOffset) {
     this.drawPixel = function (location1) {
 
         var halfwidth = _H.floor(this.lineWidth / 2);
+        var map = !this.showHurtMap && !this.showCollideMap ? this.assetFrame.colorMap : (this.showHurtMap ? this.assetFrame.hurtSonicMap : this.assetFrame.collisionMap);
+
+        
 
         if (this.lineWidth == 1) {
-            this.assetFrame.colorMap[location1.x][location1.y] = this.currentColor;
+            map[location1.x][location1.y] = this.currentColor;
         } else {
             var k, c;
             for (k = -halfwidth; k < halfwidth; k++) {
                 for (c = -halfwidth; c < halfwidth; c++) {
-                    this.assetFrame.colorMap[Math.min(Math.max(0, location1.x + k), this.assetFrame.width)][Math.min(Math.max(0, location1.y + c), this.assetFrame.height)] = this.currentColor;
+                    map[Math.min(Math.max(0, location1.x + k), this.assetFrame.width)][Math.min(Math.max(0, location1.y + c), this.assetFrame.height)] = this.currentColor;
                 }
             }
         }
+        
         this.assetFrame.clearCache();
     };
     this.drawLine = function (location1, location2) {

@@ -48,7 +48,7 @@ function SonicManager(mainCanvas, resize) {
         Chunks: [],
         ChunkMap: [[]],
         Rings: {},
-        curHeightMap: true, LevelWidth: 0, LevelHeight: 0, 
+        curHeightMap: true, LevelWidth: 0, LevelHeight: 0
     };
 
     this.containsAnimatedTile = function (index) {
@@ -121,13 +121,13 @@ function SonicManager(mainCanvas, resize) {
 
     this.tickObjects = function () {
 
-
+        sonicManager.inFocusObjects = [];
         for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
 
             var obj = sonicManager.SonicLevel.Objects[l];
 
             if (this.windowLocation.intersects({ x: obj.x, y: obj.y })) {
-
+                sonicManager.inFocusObjects.push(obj);
                 obj.ObjectData.tick(obj, sonicManager.SonicLevel, sonicManager.sonicToon);
             }
         }
@@ -333,7 +333,7 @@ function SonicManager(mainCanvas, resize) {
             for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
                 var o = sonicManager.SonicLevel.Objects[l];
                 if (this.windowLocation.intersects({ x: o.x, y: o.y })) {
-                    o.draw(canvas, ((o.x) - this.windowLocation.x) * scale.x, ((o.y) - this.windowLocation.y) * scale.y, scale, this.sonicToon);
+                    o.draw(canvas, ((o.x) - this.windowLocation.x) * scale.x, ((o.y) - this.windowLocation.y) * scale.y, scale, this.showHeightMap);
                 }
             }
 

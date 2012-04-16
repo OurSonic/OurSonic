@@ -73,9 +73,12 @@ function TilePiece(heightMask, tiles) {
         var val = ((drawOrder + 1) * Math.pow(10, 0)) + (scale.x * Math.pow(10, 1)) + ((!animationFrame ? 0 : animationFrame) * Math.pow(10, 3)) + ((layer + 1) * Math.pow(10, 4));
 
         for (var i = 0; i < this.animatedFrames.length; i++) {
-            val += palAn[this.animatedFrames[i]] +" ";
+            val += palAn[this.animatedFrames[i]] + " ";
         }
-        return this.image[val];
+        if (!this.image[val]) return undefined;
+        if (this.image[val].image && this.image[val].image.loaded)
+            return this.image[val].image;
+        return this.image[val].canvas;
 
     };
     this.setCache = function (layer, scale, drawOrder, animationFrame, palAn, image) {
@@ -85,8 +88,11 @@ function TilePiece(heightMask, tiles) {
         for (var i = 0; i < this.animatedFrames.length; i++) {
             val += palAn[this.animatedFrames[i]] + " ";
         }
-        
-        this.image[val] = image;
+        //var img = new Image();
+        //img.src = image.toDataURL();
+        //img.onload = function () { img.loaded = true; }
+        image.loaded = true;
+        this.image[val] = { canvas: image, image: image };
 
     };
     this.draw = function (canvas, position, scale, layer, xflip, yflip, animationFrame, bounds) {

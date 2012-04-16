@@ -27,8 +27,8 @@
         }
 
         return last;
-    }, 
-    mod: function (j,n) {
+    },
+    mod: function (j, n) {
         return ((j % n) + n) % n;
     },
     floor: function (f) {
@@ -136,7 +136,9 @@
         return false;
     },
     intersects2: function (that, p) {
-
+        p.X = p.X || p.x;
+        p.Y = p.Y || p.y;
+        
         if (that.width == undefined || that.height == undefined || that.x == undefined || that.y == undefined || p.Y == undefined || p.X == undefined)
             alert('bad intersects');
         if (that.x < p.X && that.x + that.width > p.X &&
@@ -419,6 +421,7 @@
 
         return JSON.stringify(obj, function (key, value) {
 
+            if (key == "image") return undefined;
             if (key == "imageData") return undefined;
             if (key == "oldScale") return undefined;
             if (key == "sprite") return undefined;

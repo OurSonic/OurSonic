@@ -85,7 +85,7 @@
             are = cl.items[ij];
             if (are.visible && are.y <= cell.y && are.y + are.height > cell.y && are.x <= cell.x && are.x + are.width > cell.x) {
                 goodArea = are;
-                var ec = { x: cell.x - are.x, y: cell.y - are.y };
+                var ec = { x: cell.x - are.x, y: cell.y - are.y, right: e.button == 2 };
                 are.click(ec);
                 break;
             }
@@ -138,7 +138,7 @@
                 are.y + are.height > cell.y &&
                     are.x <= cell.x &&
                         are.x + are.width > cell.x)) {
-                cell = { x: cell.x - are.x, y: cell.y - are.y };
+                cell = { x: cell.x - are.x, y: cell.y - are.y, right: e.button == 2 };
                 return are.mouseMove(cell);
 
             }
@@ -154,7 +154,7 @@
 
         for (var ij = 0; ij < this.UIAreas.length; ij++) {
             var are = this.UIAreas[ij];
-            var ec = { x: cell.x - are.x, y: cell.y - are.y };
+            var ec = { x: cell.x - are.x, y: cell.y - are.y, right: e.button == 2 };
             are.mouseUp(ec);
         }
         this.dragger.mouseUp(e);
@@ -255,6 +255,19 @@
                 var dr = _H.extend(new LevelObject(""), jQuery.parseJSON(d.value));
 
                 dr = sonicManager.objectManager.extendObject(dr);
+
+                    /*                for (var n = 0; n < dr.assets.length; n++) {
+                for (var s = 0; s < dr.assets[n].frames.length; s++) {
+                dr.assets[n].frames[s].hurtSonicMap.length = dr.assets[n].frames[s].width;
+                dr.assets[n].frames[s].collisionMap.length = dr.assets[n].frames[s].width;
+                for (var t = 0; t < dr.assets[n].frames[s].hurtSonicMap.length; t++) {
+                dr.assets[n].frames[s].hurtSonicMap[t].length = dr.assets[n].frames[s].height;
+                dr.assets[n].frames[s].collisionMap[t].length = dr.assets[n].frames[s].height;
+
+                }
+                }
+                }*/
+
                 window.CachedObjects[o] = dr;
                 sonicManager.SonicLevel.Objects[l].ObjectData = dr;
             }
@@ -443,7 +456,7 @@
             for (var k = 0; k < sonicManager.SonicLevel.PaletteItems[0].length; k++) {
                 var pal = sonicManager.SonicLevel.PaletteItems[0][k];
                 pal.Palette = eval(pal.Palette);
-                
+
                 //below this is bad
                 if (pal.TotalLength == 0)
                     pal.TotalLength = pal.Palette.length;

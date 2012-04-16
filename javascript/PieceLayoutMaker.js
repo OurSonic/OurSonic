@@ -6,10 +6,10 @@ function PieceLayoutMaker(pieceLayout) {
     this.showOutline = true;
     this.showImages = false;
     this.selectedPieceIndex = 0;
-    this.draggingIndex = -1; 
-
+    this.draggingIndex = -1;
+    this.zeroPosition = { x: 0, y: 0 };
     this.draw = function (canvas, pos, scale) {
-        this.pieceLayout.drawUI(canvas, pos, scale, this.showOutline, this.showImages, this.selectedPieceIndex);
+        this.pieceLayout.drawUI(canvas, pos, scale, this.showOutline, this.showImages, this.selectedPieceIndex, this.zeroPosition);
     };
     this.mouseUp = function () {
         this.draggingIndex = -1;
@@ -20,8 +20,7 @@ function PieceLayoutMaker(pieceLayout) {
         if (lastPosition) {
             goodPosition = position;
             position = lastPosition;
-
-        }  
+        }
 
         for (var i = 0; i < this.pieceLayout.pieces.length; i++) {
 
@@ -36,19 +35,19 @@ function PieceLayoutMaker(pieceLayout) {
             }
 
 
-            if (position.x > j.x - size.x &&
-                    position.x < j.x + size.x &&
-                    position.y > j.y - size.y &&
-                    position.y < j.y + size.y) {
+            if (position.x - this.zeroPosition.x > j.x - size.x &&
+                    position.x - this.zeroPosition.x < j.x + size.x &&
+                    position.y - this.zeroPosition.y > j.y - size.y &&
+                    position.y - this.zeroPosition.y < j.y + size.y) {
 
                 if (!(this.draggingIndex == -1 || this.draggingIndex == i))
                     continue;
 
-                j.x = goodPosition.x;
-                j.y = goodPosition.y;
+                j.x = goodPosition.x - this.zeroPosition.x;
+                j.y = goodPosition.y - this.zeroPosition.y;
                 this.selectedPieceIndex = i;
                 this.draggingIndex = i;
-                
+
                 var cj = sonicManager.uiManager.objectFrameworkArea.mainPanel.selectPieceScroll.controls;
 
                 for (var ci = 0; ci < cj.length; ci++) {
@@ -57,8 +56,13 @@ function PieceLayoutMaker(pieceLayout) {
                     else
                         cj[ci].toggled = false;
                 }
-                break;
+                return;
             }
+        }
+
+        if (lastPosition) {
+            this.zeroPosition.x += goodPosition.x - lastPosition.x;
+            this.zeroPosition.y += goodPosition.y - lastPosition.y;
         }
 
         //sonicManager.uiManager.objectFrameworkArea.mainPanel.updatePieces();

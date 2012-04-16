@@ -878,8 +878,11 @@ function ColorEditingArea(x, y, size, showOffset) {
         if (!this.editor) return;
         this.clicking = true;
         this.clickHandled = false;
-        var scalex = this.size.width/this.editor.assetFrame.width;
-        var scaley = this.size.height/this.editor.assetFrame.height;
+        var scalex = this.size.width / this.editor.assetFrame.width;
+        var scaley = this.size.height / this.editor.assetFrame.height;
+        this.editor.showHurtMap = this.showHurtMap;
+        this.editor.showCollideMap = this.showCollideMap;
+    
         var pos = { x: _H.floor(e.x / scalex), y: _H.floor(e.y / scaley) };
         if (!this.editable) {
             if (this.click) {
@@ -889,6 +892,11 @@ function ColorEditingArea(x, y, size, showOffset) {
             this.lastPosition = pos;
             if (this.paletteEditor)
                 this.editor.currentColor = this.paletteEditor.selectedIndex;
+
+            if (this.showHurtMap || this.showCollideMap) {
+                this.editor.currentColor = !e.right;
+            }
+
             this.editor.drawPixel(pos);
         }
 
@@ -911,7 +919,9 @@ function ColorEditingArea(x, y, size, showOffset) {
         var scaley = this.size.height/this.editor.assetFrame.height;
 
         var pos = { x: _H.floor(e.x / scalex), y: _H.floor(e.y / scaley) };
-
+        this.editor.showHurtMap = this.showHurtMap;
+        this.editor.showCollideMap = this.showCollideMap;
+ 
 
         if (this.clicking) {
             if (!this.editable) {
@@ -920,6 +930,9 @@ function ColorEditingArea(x, y, size, showOffset) {
                 }
             } else {
                 this.clickHandled = true;
+                if (this.showHurtMap || this.showCollideMap) {
+                    this.editor.currentColor = !e.right;
+                }
                 this.editor.drawLine(pos, this.lastPosition);
                 this.lastPosition = pos;
             }

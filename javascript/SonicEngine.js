@@ -82,7 +82,8 @@ function SonicEngine(gameLayer, uiLayer) {
         return evt.preventDefault() && false;
     };
 
-    $(document).keypress(function (e) {
+    $(document).keydown(function (e) { 
+
         if (!sonicManager.sonicToon) {
             sonicManager.uiManager.onKeyDown(e);
         }
@@ -90,6 +91,8 @@ function SonicEngine(gameLayer, uiLayer) {
 
 
     KeyboardJS.bind.key("o", function () {
+                     
+
         if (sonicManager.sonicToon)
             sonicManager.inHaltMode = !sonicManager.inHaltMode;
     }, function () { });

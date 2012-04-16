@@ -61,6 +61,14 @@ window.ObjectFrameworkArea = function () {
                 onCursorActivity: function () {
                     editor.setLineClass(hlLine, null);
                     hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
+                },
+                onFocus: function (editor) {
+                    sonicManager.typingInEditor = true;
+
+                },
+                onBlur: function (editor) {
+                    sonicManager.typingInEditor = false;
+
                 }
             });
             editor.setOption("theme", "night");
@@ -87,6 +95,12 @@ window.ObjectFrameworkArea = function () {
             }
         }, function () {
             var sc = editor.getScrollerElement();
+            editor.onBlur();
+            Engine.uiCanvasItem.focus();
+//            document.body.focus();
+
+            //            editor.onBlur();
+
             if (sc) {
                 sc.style.left = "-100px";
                 sc.style.top = "-100px";
@@ -325,7 +339,7 @@ window.ObjectFrameworkArea = function () {
                     }
 
                 }));
-                bd.toggle = true; 
+                bd.toggle = true;
                 bd.state = pieceLayout.pieces[i];
                 if (i == pe.pieceLayoutMaker.selectedPieceIndex) bd.toggled = true;
             }
