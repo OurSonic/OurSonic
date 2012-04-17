@@ -814,14 +814,11 @@ function PieceLayoutEditor(x, y, size) {
         this.lastPosition = null;
         this.clickHandled = false;
         this.clicking = false;
-        this.pieceLayoutMaker.mouseUp();
-        
+        this.pieceLayoutMaker.mouseUp(); 
     };
     this.clickHandled = false;
     this.onMouseOver = function (e) {
-        if (!this.pieceLayoutMaker) return;
-
-
+        if (!this.pieceLayoutMaker) return; 
 
         if (this.clicking) {
             this.clickHandled = true;

@@ -255,8 +255,7 @@
                     continue;
                 }
 
-                var dr = _H.extend(new LevelObject(""), jQuery.parseJSON(d.value));
-
+                var dr = _H.extend(new LevelObject(""), jQuery.parseJSON(d.value)); 
                 dr = sonicManager.objectManager.extendObject(dr);
 
                 for (var n = 0; n < dr.assets.length; n++) {

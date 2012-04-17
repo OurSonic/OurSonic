@@ -44,7 +44,10 @@ window.ObjectFrameworkArea = function () {
     var editor;
 
     objectFrameworkArea.addControl(new TextArea(320, 80 - 20, "Key: ", sonicManager.uiManager.textFont, "black"));
-    objectFrameworkArea.addControl(objectFrameworkArea.key = new TextBox(370, 60 - 20, 459, 25, "", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.key = this.text; }));
+    objectFrameworkArea.addControl(objectFrameworkArea.key = new TextBox(370, 60 - 20, 150, 25, "", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.text = this.text; }));
+
+    objectFrameworkArea.addControl(new TextArea(320 + 205, 80 - 24, "Description: ", sonicManager.uiManager.smallTextFont, "black"));
+    objectFrameworkArea.addControl(objectFrameworkArea.description = new TextBox(370 + 240, 60 - 20, 220, 25, "", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.description = this.text; }));
 
 
     var addCodeWindow = function (value, change) {
@@ -258,6 +261,14 @@ window.ObjectFrameworkArea = function () {
         objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.selectPieceScroll = selectPieceScroll = new HScrollBox(145, 390, 70, 3, 112, "rgb(50,60,127)"));
         var bdc;
         selectPieceScroll.controls = [];
+        
+         
+        objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.priorityDrawing = new Button(348, 38, 140, 25, "Foreground", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
+            pe.pieceLayoutMaker.setPriority( this.toggled);
+        }));
+        objectFrameworkArea.mainPanel.priorityDrawing.toggle = true;
+        
+
         for (var i = 0; i < objectFrameworkArea.objectFramework.pieces.length; i++) {
 
             selectPieceScroll.addControl(bdc = new ImageButton(0, 0, 0, 0,
@@ -590,6 +601,7 @@ window.ObjectFrameworkArea = function () {
         objectFrameworkArea.clearMainArea();
         this.objectFramework = object;
         this.key.text = object.key;
+        this.description.text = object.description || "";
         this.assets.controls = [];
         var b;
         var i;

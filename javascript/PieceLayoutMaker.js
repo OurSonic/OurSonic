@@ -14,6 +14,9 @@ function PieceLayoutMaker(pieceLayout) {
     this.mouseUp = function () {
         this.draggingIndex = -1;
     };
+    this.setPriority = function (val) {
+        this.pieceLayout.pieces[this.selectedPieceIndex].priority = val;
+    };
     this.placeItem = function (position, lastPosition) {
 
         var goodPosition = position;
