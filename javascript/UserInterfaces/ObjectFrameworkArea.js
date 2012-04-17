@@ -95,9 +95,9 @@ window.ObjectFrameworkArea = function () {
             }
         }, function () {
             var sc = editor.getScrollerElement();
-            editor.onBlur();
-            Engine.uiCanvasItem.focus();
-//            document.body.focus();
+            editor.getInputField().blur();
+//            Engine.uiCanvasItem.focus();
+            //            document.body.focus();
 
             //            editor.onBlur();
 

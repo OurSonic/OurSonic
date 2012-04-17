@@ -17,10 +17,11 @@ window.DebuggerArea = function () {
         Engine.resizeCanvas();
     }
     ));
+    
     var b;
-    debuggerArea.addControl(b = new Button(180, 60, 120, 22, "Fullscreen", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
+    debuggerArea.addControl(b = new Button(180, 60, 120, 22, "Fullscreen", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", sonicManager.uiManager.debuggerArea.fullscreen = function (override) {
 
-        if (b.toggled) {
+        if (override ||b.toggled) {
 
             window.sonicManager.realScale = { x: Engine.canvasWidth / 320 / window.sonicManager.scale.x, y: Engine.canvasHeight / 240 / window.sonicManager.scale.y };
             Engine.resizeCanvas();

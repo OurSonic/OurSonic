@@ -175,6 +175,7 @@
     <Content Include="lib\util\searchcursor.js" />
     <Content Include="lib\util\simple-hint.css" />
     <Content Include="lib\util\simple-hint.js" />
+    <Content Include="lib\WebGL2d.js" />
     <Content Include="ObjectMapping.txt" />
     <Content Include="SonicLevels.asmx" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />

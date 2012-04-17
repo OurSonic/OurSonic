@@ -13,6 +13,9 @@
     <script src="lib/util/simple-hint.js"></script>
     <link rel="stylesheet" href="lib/util/simple-hint.css">
     <script src="lib/util/javascript-hint.js"></script>
+
+    <script src="lib/WebGL2d.js"></script>
+    
     <link rel="stylesheet" href="lib/theme/night.css">
     <script src="lib/linq.js?1" type="text/javascript"> 
     </script>
@@ -92,8 +95,9 @@
     </script>
     <script type="text/javascript">
     //<![CDATA[
-        
+
         $(function () {
+
             window.Worker = new FunctionWorker("javascript/FunctionWorker.js");
            /* fWorker.threadedFunction(
                 function (e) {//start - in thread

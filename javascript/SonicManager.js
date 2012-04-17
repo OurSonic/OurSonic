@@ -264,7 +264,7 @@ function SonicManager(mainCanvas, resize) {
                 for (var k = 0; k < this.SonicLevel.PaletteItems[0].length; k++) {
                     var pal = this.SonicLevel.PaletteItems[0][k]; 
 
-                    for (var j = 0; j <= pal.TotalLength; j += pal.SkipIndex) {
+                    for (var j = 0; j < pal.TotalLength; j += pal.SkipIndex) {
                         if (this.drawTickCount % (pal.TotalLength + pal.SkipIndex) == j) {
                             this.SonicLevel.palAn[k] = j / pal.SkipIndex;
                         }
@@ -323,10 +323,10 @@ function SonicManager(mainCanvas, resize) {
                 if (this.sonicToon) {
                     if (!this.sonicToon.obtainedRing[ring])
                         if (this.windowLocation.intersects(r))
-                            this.goodRing.draw(canvas, { x: (r.X) - this.windowLocation.x, y: (r.Y) - this.windowLocation.y }, scale, true);
+                            this.goodRing.draw(canvas, { x: (r.x) - this.windowLocation.x, y: (r.y) - this.windowLocation.y }, scale, true);
                 } else {
                     if (this.windowLocation.intersects(r))
-                        this.goodRing.draw(canvas, { x: (r.X) - this.windowLocation.x, y: (r.Y) - this.windowLocation.y }, scale, false);
+                        this.goodRing.draw(canvas, { x: (r.x) - this.windowLocation.x, y: (r.y) - this.windowLocation.y }, scale, false);
                 }
             }
 

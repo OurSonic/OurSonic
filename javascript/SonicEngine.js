@@ -21,6 +21,7 @@ function SonicEngine(gameLayer, uiLayer) {
     window.Engine = this;
 
     this.gameCanvasItem = $("#" + gameLayer);
+    
     this.gameCanvas = document.getElementById(gameLayer).getContext("2d");
 
     this.uiCanvasItem = $("#" + uiLayer);

@@ -17,8 +17,7 @@
         sonicManager.windowLocation = _H.defaultWindowLocation(0, mainCanvas, scale);
         sonicManager.sonicToon = new Sonic(sonicManager.SonicLevel, sonicManager.scale);
         sonicManager.sonicToon.obtainedRing = [];
-
-        window.Engine.resizeCanvas();
+        sonicManager.uiManager.debuggerArea.fullscreen(true);
     };
 
     var textFont = this.textFont = "18pt Calibri ";
@@ -191,6 +190,10 @@
         if (!sonicManager.SonicLevel.Rings)
             sonicManager.SonicLevel.Rings = [];
 
+        for (var n = 0; n < sonicManager.SonicLevel.Rings.length; n++) {
+            sonicManager.SonicLevel.Rings[n].x = sonicManager.SonicLevel.Rings[n].X;
+            sonicManager.SonicLevel.Rings[n].y = sonicManager.SonicLevel.Rings[n].Y;
+        }
 
         sonicManager.SonicLevel.LevelWidth = sonicManager.SonicLevel.ForegroundWidth;
         sonicManager.SonicLevel.LevelHeight = sonicManager.SonicLevel.ForegroundHeight;
@@ -256,17 +259,17 @@
 
                 dr = sonicManager.objectManager.extendObject(dr);
 
-                    /*                for (var n = 0; n < dr.assets.length; n++) {
-                for (var s = 0; s < dr.assets[n].frames.length; s++) {
-                dr.assets[n].frames[s].hurtSonicMap.length = dr.assets[n].frames[s].width;
-                dr.assets[n].frames[s].collisionMap.length = dr.assets[n].frames[s].width;
-                for (var t = 0; t < dr.assets[n].frames[s].hurtSonicMap.length; t++) {
-                dr.assets[n].frames[s].hurtSonicMap[t].length = dr.assets[n].frames[s].height;
-                dr.assets[n].frames[s].collisionMap[t].length = dr.assets[n].frames[s].height;
+                for (var n = 0; n < dr.assets.length; n++) {
+                    for (var s = 0; s < dr.assets[n].frames.length; s++) {
+                        dr.assets[n].frames[s].hurtSonicMap.length = dr.assets[n].frames[s].width;
+                        dr.assets[n].frames[s].collisionMap.length = dr.assets[n].frames[s].width;
+                        for (var t = 0; t < dr.assets[n].frames[s].hurtSonicMap.length; t++) {
+                            dr.assets[n].frames[s].hurtSonicMap[t].length = dr.assets[n].frames[s].height;
+                            dr.assets[n].frames[s].collisionMap[t].length = dr.assets[n].frames[s].height;
 
+                        }
+                    }
                 }
-                }
-                }*/
 
                 window.CachedObjects[o] = dr;
                 sonicManager.SonicLevel.Objects[l].ObjectData = dr;

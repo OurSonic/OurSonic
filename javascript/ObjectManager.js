@@ -222,6 +222,7 @@ function LevelObjectAssetFrame(name) {
 
         if (!fd) {
 
+
             var mj = _H.defaultCanvas(size.width, size.height);
             var canvas = mj.context;
 
@@ -248,17 +249,24 @@ function LevelObjectAssetFrame(name) {
                 }
             }
 
+            var transparent = this.colorMap[0][0];
 
             canvas.scale(size.width / this.width, size.height / this.height);
             for (var x = 0; x < this.width; x++) {
                 for (var y = 0; y < this.height; y++) {
                     var ex = x;
                     var ey = y;
-                    var color = this.palette[this.colorMap[ex][ey]];
-                    //  var negative = _H.negateColor(color);
-                    if (canvas.fillStyle != "#" + color)
-                        canvas.fillStyle = "#" + color;
+                    var d = this.colorMap[ex][ey];
+                    if (transparent == d) {
+                        if (canvas.fillStyle != "rgba(0,0,0,0)")
+                            canvas.fillStyle = "rgba(0,0,0,0)";
+                    } else {
+                        var color = this.palette[d];
+                        //  var negative = _H.negateColor(color);
+                        if (canvas.fillStyle != "#" + color)
+                            canvas.fillStyle = "#" + color;
 
+                    }
                     //if (canvas.strokeStyle != "#" + negative)
                     //    canvas.strokeStyle = "#" + negative; 
 
@@ -301,7 +309,7 @@ function LevelObjectAssetFrame(name) {
             }
             canvas.restore();
             fd = mj.canvas;
-            this.setCache(mj.canvas, size, xflip, yflip, showOutline, showCollideMap, showHurtMap)
+            this.setCache(mj.canvas, size, xflip, yflip, showOutline, showCollideMap, showHurtMap);
         }
 
         _canvas.drawImage(fd, pos.x, pos.y);
@@ -344,9 +352,8 @@ function LevelObjectPieceLayout(name) {
         canvas.clip();
         canvas.closePath();
 
-
         canvas.translate(zeroPosition.x, zeroPosition.y);
-//        canvas.scale(3, 3);
+        //        canvas.scale(3, 3);
 
         canvas.beginPath();
         canvas.moveTo(pos.x + -250, pos.y + 0);
@@ -458,7 +465,35 @@ function LevelObjectInfo(o) {
 
     this.upperNibble = this.subdata >> 4;
     this.lowerNibble = this.subdata & 0xf;
+    this._rect = { x: 0, y: 0, width: 0, height: 0 };
+    this.getRect = function () {
 
+        this._rect.x = this.x;
+        this._rect.y = this.y;
+
+
+        if (this.ObjectData.pieceLayouts.length == 0) {
+            this._rect.width = broken.width;
+            this._rect.height = broken.height;
+            return this._rect;
+        }
+
+        var pcs = this.ObjectData.mainPieceLayout().pieces;
+        for (var pieceIndex = 0; pieceIndex < pcs.length; pieceIndex++) {
+            var j = pcs[pieceIndex];
+            var piece = this.ObjectData.pieces[j.pieceIndex];
+            var asset = this.ObjectData.assets[piece.assetIndex];
+            if (asset.frames.length > 0) {
+                var frm = asset.frames[j.frameIndex];
+                this._rect.width = frm.width;
+                this._rect.height = frm.height;
+            }
+        }
+
+        this._rect.x = this.x;
+        this._rect.y = this.y;
+        return this._rect;
+    }
     this.draw = function (canvas, x, y, scale, showHeightMap) {
         if (this.ObjectData.pieceLayouts.length == 0) {
             canvas.drawImage(broken, _H.floor((x - broken.width / 2)), _H.floor((y - broken.height / 2)), broken.width * scale.x, broken.height * scale.y);

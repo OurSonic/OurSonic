@@ -1729,7 +1729,7 @@ function ScrollBox(x, y, itemHeight, visibleItems, itemWidth, backColor, control
         canv.strokeStyle = "#444";
         canv.fillRect(this.parent.x + this.x + this.itemWidth + 2 + 2, this.parent.y + this.y + 2, scrollWidth, height);
 
-        canv.fillStyle = "FFDDFF";
+        canv.fillStyle = "#FFDDFF";
         canv.lineWidth = 1;
         canv.strokeStyle = "#FFDDFF";
         this.scrollPosition = height * this.scrollOffset / (this.controls.length - this.visibleItems);

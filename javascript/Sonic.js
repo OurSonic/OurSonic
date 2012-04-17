@@ -51,7 +51,7 @@
     this.sensorManager.createVerticalSensor('a', -9, 0, 36, '#F202F2');
     this.sensorManager.createVerticalSensor('b', 9, 0, 36, '#02C2F2');
     this.sensorManager.createVerticalSensor('c', -9, 0, -20, '#2D2C21');
-    this.sensorManager.createVerticalSensor('d', 9, 0, -20, '#C242822');
+    this.sensorManager.createVerticalSensor('d', 9, 0, -20, '#C24222');
     this.sensorManager.createHorizontalSensor('m1', 4, 0, -12, '#212C2E');
     this.sensorManager.createHorizontalSensor('m2', 4, 0, 12, '#22Ffc1');
     this.watcher = new Watcher();
