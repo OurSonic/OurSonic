@@ -23,7 +23,7 @@ window.DebuggerArea = function () {
 
         if (override ||b.toggled) {
 
-            window.sonicManager.realScale = { x: Engine.canvasWidth / 320 / window.sonicManager.scale.x, y: Engine.canvasHeight / 240 / window.sonicManager.scale.y };
+            window.sonicManager.realScale = { x: Engine.canvasWidth / 320 / window.sonicManager.scale.x, y: Engine.canvasHeight / 224 / window.sonicManager.scale.y };
             Engine.resizeCanvas();
         } else {
             window.sonicManager.realScale = { x: 1, y: 1 };

@@ -201,7 +201,7 @@ function SonicEngine(gameLayer, uiLayer) {
         that.canvasWidth = $(window).width();
         that.canvasHeight = $(window).height();
         window.sonicManager.windowLocation = _H.defaultWindowLocation(window.sonicManager.sonicToon ? 0 : 1, that.uiCanvas, window.sonicManager.scale);
-        window.sonicManager.realScale = { x: Engine.canvasWidth / 320 / window.sonicManager.scale.x, y: Engine.canvasHeight / 240 / window.sonicManager.scale.y };
+        window.sonicManager.realScale = { x: Engine.canvasWidth / 320 / window.sonicManager.scale.x, y: Engine.canvasHeight / 224 / window.sonicManager.scale.y };
 
         that.gameCanvasItem.attr("width", (window.sonicManager.windowLocation.width * (window.sonicManager.sonicToon ? window.sonicManager.scale.x * window.sonicManager.realScale.x : 1)));
         that.gameCanvasItem.attr("height", (window.sonicManager.windowLocation.height * (window.sonicManager.sonicToon ? window.sonicManager.scale.y * window.sonicManager.realScale.y : 1)));

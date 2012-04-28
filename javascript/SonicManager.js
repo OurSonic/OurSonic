@@ -395,7 +395,7 @@ function SonicManager(mainCanvas, resize) {
 
             for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
                 var o = sonicManager.SonicLevel.Objects[l];
-                if (this.bigWindowLocation.intersects({ x: o.x, y: o.y })) {
+                if (o.dead || this.bigWindowLocation.intersects({ x: o.x, y: o.y })) {
                     o.draw(canvas, ((o.x) - this.windowLocation.x) * scale.x, ((o.y) - this.windowLocation.y) * scale.y, scale, this.showHeightMap);
                 }
             }

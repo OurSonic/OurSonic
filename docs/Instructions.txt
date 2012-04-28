@@ -1,0 +1,11 @@
+﻿CMPI
+
+Subtracts the immediate data from the destination operand and sets the
+condition codes according to the result; the destination location is not changed. The
+size of the operation may be speciﬁed as byte, word, or long. The size of the immediate
+data matches the operation size. 
+
+
+LEA load 32 bits
+
+ADDQ   ADD QUICK   1-8

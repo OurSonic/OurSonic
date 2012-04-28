@@ -45,6 +45,7 @@ function LevelObject(key) {
     this.tickScript = "";
     this.collideScript = "";
     this.hurtScript = "";
+    
 
     this.die = function () {
 
@@ -82,7 +83,7 @@ function LevelObject(key) {
 
         }
     };
-     
+
 
     this.tick = function (object, level, sonic) {
         if (object.lastDrawTick != sonicManager.tickCount - 1)
@@ -95,9 +96,10 @@ function LevelObject(key) {
         } catch (EJ) {
 
         }
-        object.xsp = object.state.xsp;
-        object.ysp = object.state.ysp;
-
+        if (object.state) {
+            object.xsp = object.state.xsp;
+            object.ysp = object.state.ysp;
+        }
         object.x += object.xsp;
         object.y += object.ysp;
 
@@ -464,11 +466,8 @@ function LevelObjectPieceLayout(name) {
 
 
 
-    this.draw = function (canvas, x, y, scale, framework,instance, showHeightMap) {
-
-
-
-        for (var i = 0; i < framework.pieces.length; i++) {
+    this.draw = function (canvas, x, y, scale, framework,instance, showHeightMap) { 
+        for (var i = 0; i < instance.pieces.length; i++) {
             var j = instance.pieces[i];
             if (!j.visible) continue;
             var piece = framework.pieces[j.pieceIndex];
@@ -510,6 +509,8 @@ function LevelObjectInfo(o) {
     this.lowerNibble = this.subdata & 0xf;
     this.pieceIndex = 0;
     this.pieces = [];
+    this.dead = false;
+    
 
     this.setPieceLayoutIndex = function (ind) {
         this.pieceIndex = ind;
@@ -532,7 +533,7 @@ function LevelObjectInfo(o) {
 
     };
     this.tick = function (object, level, sonic) {
-        if (!this.ObjectData) return false;
+        if (this.dead || !this.ObjectData) return false;
         return this.ObjectData.tick(object, level, sonic);
     };
     
@@ -570,7 +571,7 @@ function LevelObjectInfo(o) {
         return this._rect;
     };
     this.draw = function (canvas, x, y, scale, showHeightMap) {
-        if (!this.ObjectData) return;
+        if (this.dead || !this.ObjectData) return;
         
         if (this.ObjectData.pieceLayouts.length == 0) {
             canvas.drawImage(broken, _H.floor((x - broken.width / 2)), _H.floor((y - broken.height / 2)), broken.width * scale.x, broken.height * scale.y);
@@ -584,9 +585,10 @@ function LevelObjectInfo(o) {
         this.y = this.o.Y;
         this.xsp = 0;
         this.ysp = 0;
-
+        this.state = undefined;
         this.xflip = this.o.XFlip;
         this.yflip = this.o.YFlip;
+        this.dead = false;
 
         this.subdata = this.o.SubType;
         this.upperNibble = this.subdata >> 4;
@@ -601,10 +603,13 @@ function LevelObjectInfo(o) {
     this.hurtsSonic = function (sonic) {
         return this.collision(sonic, true);
     };
+    this.kill = function() {
+        this.dead = true;
+    };
 
     this.collision = function (sonic, isHurtMap) {
 
-        if (!this.ObjectData || this.ObjectData.pieceLayouts.length == 0) return false;
+        if (this.dead || !this.ObjectData || this.ObjectData.pieceLayouts.length == 0) return false;
         var pcs = this.pieces;
         for (var pieceIndex = 0; pieceIndex < pcs.length; pieceIndex++) {
             var j = pcs[pieceIndex];

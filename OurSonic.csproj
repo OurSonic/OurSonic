@@ -48,9 +48,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="animatedPaletteInfo.txt" />
-    <Content Include="animatedPalettes.txt" />
-    <Content Include="animatedPalettesLines.txt" />
+    <Content Include="docs\animatedPaletteInfo.txt" />
+    <Content Include="docs\animatedPalettes.txt" />
+    <Content Include="docs\animatedPalettesLines.txt" />
     <Content Include="assets\Sprites\broken.png" />
     <Content Include="assets\Sprites\monitorBroken.png" />
     <Content Include="assets\Sprites\monitorBubble.png" />
@@ -128,7 +128,7 @@
     <Content Include="DragTest.aspx" />
     <Content Include="Game2.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="Instructions.txt" />
+    <Content Include="docs\Instructions.txt" />
     <Content Include="javascript\Animation.js" />
     <Content Include="javascript\FunctionWorker.js" />
     <Content Include="javascript\PathMaker.js" />
@@ -177,7 +177,7 @@
     <Content Include="lib\util\simple-hint.css" />
     <Content Include="lib\util\simple-hint.js" />
     <Content Include="lib\WebGL2d.js" />
-    <Content Include="ObjectMapping.txt" />
+    <Content Include="docs\ObjectMapping.txt" />
     <Content Include="SonicLevels.asmx" />
     <None Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="uploadify\cancel.png" />

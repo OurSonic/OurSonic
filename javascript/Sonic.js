@@ -11,23 +11,26 @@
     this.holdingUp = false;
     this.LevelWidth = 0;
     this.xsp = 0;
+    this.gsp = 0;
     this.ysp = 0;
     this.sonicLastHitTick = 0;
     this.acc = 0.046875;
     this.dec = 0.5;
     this.frc = 0.046875;
-    this.gsp = 0;
     this.rdec = 0.125;
     this.rfrc = 0.0234375;
-    this.runningTick = 0;
     this.slp = 0.125;
     this.slpRollingUp = 0.078125;
     this.slpRollingDown = 0.3125;
     this.jmp = -6.5;
     this.grv = 0.21875;
     this.air = 0.09375;
+    this.topSpeed = 6;
+    this.rolling = false;
+    this.runningTick = 0;
     this.sonicLevel = sonicLevel;
     this.inAir = false;
+    this.releaseJmp = 0;
     this.wasInAir = false;
     this.holdingJump = false;
     this.justHit = false;
@@ -46,8 +49,41 @@
     this.spinDashSpeed = 0;
 
     this.angle = 0xff;
-    var oldSign;
+    var oldSign; 
+    this.setVariables = function (water) {
+        if (water) {
+            this.acc = 0.0234375;
+            this.rdec = 0.125;
+            this.dec = 0.25;
+            this.rfrc = 0.01171875;
+            this.frc = 0.0234375;
+            this.slp = 0.125;
 
+            this.slpRollingUp = 0.078125;
+            this.slpRollingDown = 0.3125;
+            this.jmp = -3.5;
+            this.releaseJmp = -2;
+            this.grv = 0.0625;
+            this.topSpeed = 3;
+            this.air = 0.046875;
+        }
+        else {
+            this.acc = 0.046875;
+            this.dec = 0.5;
+            this.frc = 0.046875;
+            this.rdec = 0.125;
+            this.rfrc = 0.0234375;
+            this.slp = 0.125;
+            this.slpRollingUp = 0.078125;
+            this.slpRollingDown = 0.3125;
+            this.releaseJmp = 0;
+            this.jmp = -6.5;
+            this.grv = 0.21875;
+            this.topSpeed = 6;
+            this.air = 0.09375;
+        }
+    };
+    this.setVariables(false);
     this.sensorManager.createVerticalSensor('a', -9, 0, 36, '#F202F2');
     this.sensorManager.createVerticalSensor('b', 9, 0, 36, '#02C2F2');
     this.sensorManager.createVerticalSensor('c', -9, 0, -20, '#2D2C21');
@@ -69,8 +105,8 @@
         } else if (this.angle > 0xA1 && this.angle < 0xDE) {
             this.mode = RotationMode.RightWall;
         }
-//        this.x = _H.floor(this.x);
-//        this.y = _H.floor(this.y);
+        //        this.x = _H.floor(this.x);
+        //        this.y = _H.floor(this.y);
         this.myRec = { x: this.x - 5, width: 5 * 2, y: this.y - 20, height: 20 * 2 };
         if (this.inAir)
             this.mode = RotationMode.Floor;
@@ -79,7 +115,7 @@
 
         this.watcher.tick();
 
-        var max = 6;
+        var max = this.topSpeed;
         if (!this.jumping) {
             if (!this.inAir && this.wasJumping) {
                 this.wasJumping = false;
@@ -393,7 +429,7 @@
 
         this.effectPhysics();
         this.updateSprite();
-         
+
 
         this.sensorManager.check(this);
 
@@ -404,23 +440,23 @@
         if (best) {
             switch (this.mode) {
                 case RotationMode.Floor:
-                    this.x =  (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.x = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
                     break;
                 case RotationMode.LeftWall:
-                    this.y =   (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.y = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     if (this.inAir) this.xsp = 0;
 
                     break;
                 case RotationMode.Ceiling:
-                    this.x =  (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.x = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 
                     break;
                 case RotationMode.RightWall:
-                    this.y =  (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.y = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 

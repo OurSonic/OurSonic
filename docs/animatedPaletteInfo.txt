@@ -1,0 +1,36 @@
+dested> hey mainmemory, maybe sometime this weekend you can help me go through and make sense of this? http://pastebin.com/LznP1p3X
+tipsyGumshoe> Type: text/html; charset=utf-8 Title: [ASM (NASM)] AnPal_AIZ1: move.b($FFFFF72E).w,d0 bne.sloc_221E subq.w#1,($FFFF - Pastebin.com
+dested> or if anyone else has any insight on animated palettes or can help me break down what this asm does
+FraGag> dested: do you want a summary of what the code does, or something more detailed? 
+dested> a summary would be a great start
+dested> fragag*
+FraGag> basically, AnPal_PalAIZ1_1 contains animated colors that are put on the 3rd palette line, and AnPal_PalAIZ1_2 contains colors put on the 4th palette line
+dested> ah
+FraGag> I don't know what $FFFFF72E does here so I'll just skip it
+dested> so the rest of the junk is defining the colors maybe?
+dested> ok
+FraGag> $FFFFF634 is a counter: when it reaches -1, it's reset to 7 and the code below runs; otherwise nothing happens
+FraGag> this means that the colors are changed every 8 frames
+dested> i dig
+FraGag> $FFFFF632 is an offset in the color tables; it's incremented by 8 and restricted to the range [0, $18]
+FraGag> why 8? because there are 4 colors (of 2 bytes each) changed on each palette line
+dested> i see
+FraGag> lines like this:
+FraGag>                 move.l  (a0,d0.w),(Normal_palette_line_3+$16).w
+FraGag> change 2 colors at once
+dested> so three total frames of color
+FraGag> 4: 0, 8, $10 and $18
+dested> ah i see
+FraGag> when it reaches $20, the andi.w makes it 0
+FraGag> because $20 and $18 = 0
+dested> okay, so tell me about this color table, is that in the asm file somewhere?
+FraGag> yes, search for AnPal_PalAIZ1_1 and AnPal_PalAIZ1_2
+FraGag> the colors are right after these labels
+dested> perrrfect
+dested> even so, this parser is an order of magnitude more complicated than the one i had to write for animated tiles im feeling 
+dested> im gonna have to do a bit of research on what each of these instructions is actually doing to make sure i get the timings right
+dested> this input has been incredibly helpful though 
+FraGag> if you want to know what the instructions do, just read the manual: http://www.freescale.com/files/archives/doc/ref_manual/M68000PRM.pdf :P
+tipsyGumshoe> Type: application/pdf Size: 2.28MB Updated: 4 years, 47 weeks, 6 days, 7 hours, 38 minutes, 36 seconds ago
+dested> thats where im going next
+dested> well, tomorrow :-( 
