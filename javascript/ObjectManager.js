@@ -42,9 +42,9 @@ function LevelObject(key) {
     this.pieceLayouts = [];
     this.projectiles = [];
     this.initScript = "this.state = {\r\n\txsp: 0.0,\r\n\tysp: 0.0,\r\n\tfacing: false,\r\n};";
-    this.tickScript = "if(this.state.facing){\r\n\tthis.state.facing=false;\r\n\tthis.state.xsp=10;\r\n}";
-    this.collideScript = "this.die();";
-    this.hurtScript = "sonic.hit(this.x,this.y);";
+    this.tickScript = "";
+    this.collideScript = "";
+    this.hurtScript = "";
 
     this.die = function () {
 
@@ -82,7 +82,8 @@ function LevelObject(key) {
 
         }
     };
-    
+     
+
     this.tick = function (object, level, sonic) {
         if (object.lastDrawTick != sonicManager.tickCount - 1)
             this.init(object, level, sonic);
@@ -463,12 +464,12 @@ function LevelObjectPieceLayout(name) {
 
 
 
-    this.draw = function (canvas, x, y, scale, framework, showHeightMap) {
+    this.draw = function (canvas, x, y, scale, framework,instance, showHeightMap) {
 
 
 
-        for (var i = 0; i < this.pieces.length; i++) {
-            var j = this.pieces[i];
+        for (var i = 0; i < framework.pieces.length; i++) {
+            var j = instance.pieces[i];
             if (!j.visible) continue;
             var piece = framework.pieces[j.pieceIndex];
             var asset = framework.assets[piece.assetIndex];
@@ -512,8 +513,29 @@ function LevelObjectInfo(o) {
 
     this.setPieceLayoutIndex = function (ind) {
         this.pieceIndex = ind;
-    }
+        var pcs = this.ObjectData.pieceLayouts[this.pieceIndex].pieces;
+        
+        this.pieces = [];
+        for (var i = 0; i < pcs.length; i++) {
+            this.pieces.push(_H.clone(pcs[i]));
+        }
 
+    };
+    this.setObjectData = function(obj) {
+        this.ObjectData = obj;
+
+        if (this.ObjectData.pieceLayouts.length > this.pieceIndex && 
+            this.ObjectData.pieceLayouts[this.pieceIndex].pieces.length > 0) {
+            this.setPieceLayoutIndex(0);
+        }
+
+
+    };
+    this.tick = function (object, level, sonic) {
+        if (!this.ObjectData) return false;
+        return this.ObjectData.tick(object, level, sonic);
+    };
+    
     this.mainPieceLayout = function() {
         return this.ObjectData.pieceLayouts[this.pieceIndex];
     };
@@ -548,12 +570,14 @@ function LevelObjectInfo(o) {
         return this._rect;
     };
     this.draw = function (canvas, x, y, scale, showHeightMap) {
+        if (!this.ObjectData) return;
+        
         if (this.ObjectData.pieceLayouts.length == 0) {
             canvas.drawImage(broken, _H.floor((x - broken.width / 2)), _H.floor((y - broken.height / 2)), broken.width * scale.x, broken.height * scale.y);
             return;
         }
 
-        this.ObjectData.mainPieceLayout().draw(canvas, x, y, scale, this.ObjectData, showHeightMap);
+        this.mainPieceLayout().draw(canvas, x, y, scale, this.ObjectData,this , showHeightMap);
     };
     this.reset = function () {
         this.x = this.o.X;
@@ -579,7 +603,8 @@ function LevelObjectInfo(o) {
     };
 
     this.collision = function (sonic, isHurtMap) {
-        if (this.ObjectData.pieceLayouts.length == 0) return false;
+
+        if (!this.ObjectData || this.ObjectData.pieceLayouts.length == 0) return false;
         var pcs = this.pieces;
         for (var pieceIndex = 0; pieceIndex < pcs.length; pieceIndex++) {
             var j = pcs[pieceIndex];

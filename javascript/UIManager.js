@@ -249,16 +249,16 @@
             for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
                 o = sonicManager.SonicLevel.Objects[l].key;
                 if (window.CachedObjects[o]) {
-                    sonicManager.SonicLevel.Objects[l].ObjectData = window.CachedObjects[o];
+                    sonicManager.SonicLevel.Objects[l].setObjectData(window.CachedObjects[o]);
                     continue;
                 }
                 var d = JSLINQ(objects).First(function (p) { return p.key == o; });
                 if (!d) {
-                    sonicManager.SonicLevel.Objects[l].ObjectData = new LevelObject(o);
+                    sonicManager.SonicLevel.Objects[l].setObjectData(new LevelObject(o));
                     continue;
                 }
 
-                var dr = _H.extend(new LevelObject(""), jQuery.parseJSON(d.value)); 
+                var dr = _H.extend(new LevelObject(""), jQuery.parseJSON(d.value));
                 dr = sonicManager.objectManager.extendObject(dr);
 
                 for (var n = 0; n < dr.assets.length; n++) {
@@ -273,8 +273,9 @@
                     }
                 }
 
-                window.CachedObjects[o] = dr;
-                sonicManager.SonicLevel.Objects[l].ObjectData = dr;
+                window.CachedObjects[o] = dr; 
+                sonicManager.SonicLevel.Objects[l].setObjectData(dr);
+                
             }
 
         });

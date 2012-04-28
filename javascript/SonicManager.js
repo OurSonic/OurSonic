@@ -137,7 +137,7 @@ function SonicManager(mainCanvas, resize) {
 
             if (this.bigWindowLocation.intersects({ x: obj.x, y: obj.y })) {
                 sonicManager.inFocusObjects.push(obj);
-                obj.ObjectData.tick(obj, sonicManager.SonicLevel, sonicManager.sonicToon);
+                obj.tick(obj, sonicManager.SonicLevel, sonicManager.sonicToon);
             }
         }
 
@@ -200,29 +200,44 @@ function SonicManager(mainCanvas, resize) {
         var dm = JSLINQ(sonicManager.animations).Where(function (d) { return d.name == name; }).items;
         if (dm.length == 0)
             return false;
-        sonicManager.animationInstances.push(new AnimationInstance(dm[0], x, y, tick));
-
+        var h;
+        sonicManager.animationInstances.push(h = new AnimationInstance(dm[0], x, y, tick));
+        h.destroy = (function (_h) {
+            return function () {
+                _H.removeAt(sonicManager.animationInstances,sonicManager.animationInstances.indexOf(_h));
+            };
+        })(h);
+        return h;
     };
     this.addExplosion = function (x, y) {
-        sonicManager.addAnimation("explosion", x, y, function () {
-            if (sonicManager.drawTickCount % 5 == 0) {
+        var explosion = sonicManager.addAnimation("explosion", x, y, function () {
+            var speed = 5;
 
-                var jv = (function (imgs) {
-                    var dj = 0;
-                    for (var vm in imgs) {
-                        dj++;
-                    }
-                    return dj;
-                })(this.animation.images);
+            var jv = (function (imgs) {
+                var dj = 0;
+                for (var vm in imgs) {
+                    dj++;
+                }
+                return dj;
+            })(this.animation.images);
 
+
+
+            if (++this.startTick == speed * jv) {
+                this.destroy();
+                return;
+            }
+
+            if (sonicManager.drawTickCount % speed == 0) {
 
                 if (sonicManager.drawTickCount % jv == 0) {
-                    
+
                 }
 
                 this.animationIndex = (this.animationIndex + 1) % jv;
             }
         });
+        explosion.startTick = 0;
     };
 
     this.draw = function (canvas) {

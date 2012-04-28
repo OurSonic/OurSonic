@@ -14,6 +14,18 @@
         window.StateCount--;
         canvas.restore();
     },
+    clone: function (c) {
+        var dc = {};
+        for (var j in c) {
+            dc[j] = c[j];
+        }
+        return dc;
+    },
+    removeAt:function (array,from, to) {
+        var rest = array.slice((to || from) + 1 || array.length);
+        array.length = from < 0 ? array.length + from : from;
+        return this.push.apply(array, rest);
+},
     decodeString: function (lvl) {
         var m = lvl.indexOf('&');
         var mln = lvl.substring(0, m);
@@ -127,13 +139,13 @@
         return items[x] >= 16 - y;
     },
     intersects: function (p) {
-        
+
         return this.x < p.x && this.x + this.width > p.x && this.y < p.y && this.y + this.height > p.y;
     },
     intersects2: function (that, p) {
         p.X = p.X || p.x;
         p.Y = p.Y || p.y;
-        
+
         if (that.width == undefined || that.height == undefined || that.x == undefined || that.y == undefined || p.Y == undefined || p.X == undefined)
             alert('bad intersects');
         if (that.x < p.X && that.x + that.width > p.X &&

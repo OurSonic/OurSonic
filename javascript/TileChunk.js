@@ -98,7 +98,7 @@
                     TileChunk.__position.x = position.x + i * lX;
                     TileChunk.__position.y = position.y + j * lY;
 
-                    pm.draw(canvas, TileChunk.__position, scale, layer, r.XFlip, r.YFlip, this.animated[j * 8 + i], bounds);
+                    pm.draw(canvas, TileChunk.__position, scale, layer, r.XFlip, r.YFlip, (this.animated[j * 8 + i] != undefined) ? (this.animated[j * 8 + i].lastAnimatedIndex) : (0), bounds);
                     //canvas.strokeStyle = "#FFF";
                     //canvas.strokeRect(position.x + i * 16 * scale.x, position.y + j * 16 * scale.y, scale.x * 16, scale.y * 16);
                 }
