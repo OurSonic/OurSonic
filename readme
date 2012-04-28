@@ -5,12 +5,12 @@ Sonic simulator and level editor
 TODO:
 	Editors
 		Redo in new system
-			Prettier, proper window bar
-		Piece layout
-		Keyboard shit
+	1		Prettier, proper window bar
+	1	Piece layout
+	1	Keyboard shit
 		Drag-and-drop upload
-		Object frameworks, images, pages
-		Minimize menus
+	1	Object frameworks, images, pages
+	1	Minimize menus
 		Drawing editor
 			Draw lines
 			Draw shapes
@@ -22,63 +22,64 @@ TODO:
 			Collision Map/Angle Editor
 		Tile Editor
 	Script
-		Debugging
-			List of objects currently on the screen
-				Console for each
-				Watch for each
-				Pause and evaluate
-		Update text every so often, not on keydown
-		Reset piece locations when piece layout updates
-		Javascript autoformat
+	1	Debugging
+	1		List of objects currently on the screen
+	1			Console for each
+	1			Watch for each
+	1			Pause and evaluate
+	1	Update text every so often, not on keydown
+	1	Reset piece locations when piece layout updates
+	1	Javascript autoformat
 			Error checking
 				Syntax
 				And variable lookups
 			Intellisense 
 		Keybindings
 			Control+w
-		Remove textbox when deselected
+	1	Remove textbox when deselected
 	Game
 		Water
+		Bosses
+			Boss editor
 		Animation bugs
 			Finish palette logic
 			Launch base zone
 		Objects
-			Transparent color
-			Object priority
-				When showheightmap all have high priority
-			4 direction rotate
-			Collision with shapes 
-			Object API
-			Projectiles
+	1		Transparent color
+	1		Object priority
+	1			When showheightmap all have high priority
+	1		4 direction rotate
+	1		Collision with shapes 
+	1		Think about proper Object API
+				Implement
+	1		Projectiles
 			Proper rebound Logic
 		Backgrounds
 			Tile based slicing
 			Export logic (manually)
-		Expand the object window
-		Collisions
-			Pink ones
+	1	Expand the object window 
 		Animations
-			Break images into sections (8^2, 16^2)
+	2		Break images into sections (8^2, 16^2)
 		Lag magnifier
 		Speed
 			Garbageless tick
 		Sonic
-			Reaquire the ground properly
+	2		Reaquire the ground properly
 			Pushing
 			Balancing
-			Jumping through floors
-				only detect A and B
+	1		Jumping through floors
+	1			only detect A and B
 			Water
 			 ==	Variables
 				Release velocity
 			Shields
 		Proper window
 			borders
-			spindash lag
+	2		spindash lag
 	Server
-		NodeJS
+	2	NodeJS
 		Saving levels
 			Forking
 				Merging??
-		Proper object database
+	2	Proper object database
 			Mongo or like
