@@ -1,50 +1,69 @@
-﻿Our Sonic
+Our Sonic
 
-Sonic simulator and level editor
-
+Sonic simulator and level editor 
 
 TODO:
-
-	level editor
-		object framework editor
-			'/ assets
-			'/ pieces 
-			'/pieceLayouts
-			projectiles
-		object editor
-		chunk editor
-		block editor
-			heightmap/angle editor
-		tile editor
-	simulation
-		check phsyics variables
-		lag magnifier 
-	image editor
-		drawlines
-		drawpolygon
-		floodfill
-		selection (with threshold)
-		modify palette
-	uis
-		better/prettier depth support 
-		prettier
-		faster
-		'/ horizontal image scrollbox
-		blinking on textchange
-	backgrounds
-		background editor
-		manually insert s3 logic
-	animated tiles
-		fix bug on launchbase
-	animated palette
-		determine logic
-	framework
-		convert to node.js
-		saving of new levels
-		forking
-	object database
-		storing via mongodb?
-		create 765 objects
-	speed
-		garbageless tick
-			better implementation of splice
+	Editors
+		Redo in new system
+			Prettier, proper window bar
+		Piece layout
+		Keyboard shit
+		Drag-and-drop upload
+		Object frameworks, images, pages
+		Minimize menus
+		Drawing editor
+			Draw lines
+			Draw shapes
+			Flood fill
+			Selection (with threshold)
+			Modify palette info
+		Chunk editor
+		Block Editor
+			Collision Map/Angle Editor
+		Tile Editor
+	Script
+		Debugging
+			List of objects currently on the screen
+				Console for each
+				Watch for each
+				Pause and evaluate
+		Update text every so often, not on keydown
+		Reset piece locations when piece layout updates
+		Javascript autoformat
+			Error checking
+				Syntax
+				And variable lookups
+			Intellisense 
+		Keybindings
+			Control+w
+		Remove textbox when deselected
+	Game
+		Animation bugs
+			Finish palette logic
+			Launch base zone
+		Objects
+			Transparent color
+			Object priority
+				When showheightmap all have high priority
+			4 direction rotate
+			Collision with shapes 
+			Object API
+			Projectiles
+		Backgrounds
+			Tile based slicing
+			Export logic (manually)
+		Expand the object window
+		Collisions
+			Pink ones
+		Animations
+			Break images into sections (8^2, 16^2)
+		Lag magnifier
+		Speed
+			Garbageless tick
+	Server
+		NodeJS
+		Saving levels
+			Forking
+				Merging??
+		Proper object database
+			Mongo or like
