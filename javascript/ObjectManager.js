@@ -44,9 +44,11 @@ function LevelObject(key) {
     this.initScript = "this.state = {\r\n\txsp: 0.0,\r\n\tysp: 0.0,\r\n\tfacing: false,\r\n};";
     this.tickScript = "if(this.state.facing){\r\n\tthis.state.facing=false;\r\n\tthis.state.xsp=10;\r\n}";
     this.collideScript = "this.die();";
-    this.hurtScript = "sonic.hit();";
-    this.mainPieceLayout = function () {
-        return this.pieceLayouts[0];
+    this.hurtScript = "sonic.hit(this.x,this.y);";
+
+    this.die = function () {
+
+        alert('todo death');
     };
 
     this.evalMe = function (js) {
@@ -62,7 +64,7 @@ function LevelObject(key) {
 
         if (!this[js + "Compiled"]) {
             try {
-                this[js + "Compiled"] = eval("(function(object,level,sonic){" + this[js] + "});");
+                this[js + "Compiled"] = eval("(function(object,level,sonic,sensor,piece){" + this[js] + "});");
             } catch (EJ) {
 
             }
@@ -70,18 +72,28 @@ function LevelObject(key) {
         return this[js + "Compiled"];
     };
 
+
     this.init = function (object, level, sonic) {
         object.reset();
-        this.evalMe("initScript").apply(object, [object, level, sonic]);
+        try {
+            this.evalMe("initScript").apply(object, [object, level, sonic]);
+            
+        } catch (EJ) {
+
+        }
     };
+    
     this.tick = function (object, level, sonic) {
         if (object.lastDrawTick != sonicManager.tickCount - 1)
             this.init(object, level, sonic);
 
         object.lastDrawTick = sonicManager.tickCount;
 
-        this.evalMe("tickScript").apply(object, [object, level, sonic]);
+        try {
+            this.evalMe("tickScript").apply(object, [object, level, sonic]);
+        } catch (EJ) {
 
+        }
         object.xsp = object.state.xsp;
         object.ysp = object.state.ysp;
 
@@ -89,11 +101,19 @@ function LevelObject(key) {
         object.y += object.ysp;
 
     };
-    this.onCollide = function (object, level, sonic) {
-        return this.evalMe("collideScript").apply(object, [object, level, sonic]);
+    this.onCollide = function (object, level, sonic, sensor, piece) {
+        try {
+            return this.evalMe("collideScript").apply(object, [object, level, sonic, sensor, piece]);
+        } catch (EJ) {
+            return false;
+        }
     };
-    this.onHurtSonic = function (object, level, sonic) {
-        return this.evalMe("hurtScript").apply(object, [object, level, sonic]);
+    this.onHurtSonic = function (object, level, sonic, sensor, piece) {
+        try {
+            return this.evalMe("hurtScript").apply(object, [object, level, sonic, sensor, piece]);
+        } catch (EJ) {
+            return false;
+        }
     };
 
 }
@@ -115,6 +135,28 @@ function LevelObjectAssetFrame(name) {
         this.hurtSonicMap[i] = [];
 
     }
+
+    this.setWidth = function (w) {
+        this.width = w;
+        this.collisionMap = this.collisionMap.slice(0, w);
+        this.clearCache();
+
+
+    };
+    this.setHeight = function (h) {
+        this.height = h;
+        for (var j = 0; j < this.width; j++) {
+            this.collisionMap[j] = this.collisionMap[j].slice(0, h);
+        }
+        this.clearCache();
+    };
+    this.setOffset = function (ex, ey) {
+
+        this.offsetX = ex;
+        this.offsetY = ey;
+
+        this.clearCache();
+    };
 
     this.uploadImage = function (sprite) {
         this.width = sprite.width;
@@ -249,7 +291,7 @@ function LevelObjectAssetFrame(name) {
                 }
             }
 
-            var transparent = this.colorMap[0][0];
+            var transparent = -200; //this.colorMap[0][0]
 
             canvas.scale(size.width / this.width, size.height / this.height);
             for (var x = 0; x < this.width; x++) {
@@ -432,7 +474,7 @@ function LevelObjectPieceLayout(name) {
             var asset = framework.assets[piece.assetIndex];
             if (asset.frames.length > 0) {
                 var frm = asset.frames[j.frameIndex];
-                frm.drawUI(canvas, { x: (x + j.x) - (frm.offsetX * scale.x), y: (y + j.y) - (frm.offsetY * scale.y) }, { width: frm.width * scale.x, height: frm.height * scale.y }, false, showHeightMap, showHeightMap, false, piece.xflip, piece.yflip);
+                frm.drawUI(canvas, { x: (x + j.x * scale.x) - (frm.offsetX * scale.x), y: (y + j.y * scale.y) - (frm.offsetY * scale.y) }, { width: frm.width * scale.x, height: frm.height * scale.y }, false, showHeightMap, showHeightMap, false, piece.xflip, piece.yflip);
             }
 
         }
@@ -463,9 +505,19 @@ function LevelObjectInfo(o) {
     this.subdata = o.SubType;
     this.key = o.ID;
     this.ObjectData = null;
-
     this.upperNibble = this.subdata >> 4;
     this.lowerNibble = this.subdata & 0xf;
+    this.pieceIndex = 0;
+    this.pieces = [];
+
+    this.setPieceLayoutIndex = function (ind) {
+        this.pieceIndex = ind;
+    }
+
+    this.mainPieceLayout = function() {
+        return this.ObjectData.pieceLayouts[this.pieceIndex];
+    };
+
     this._rect = { x: 0, y: 0, width: 0, height: 0 };
     this.getRect = function () {
 
@@ -479,7 +531,7 @@ function LevelObjectInfo(o) {
             return this._rect;
         }
 
-        var pcs = this.ObjectData.mainPieceLayout().pieces;
+        var pcs = this.pieces;
         for (var pieceIndex = 0; pieceIndex < pcs.length; pieceIndex++) {
             var j = pcs[pieceIndex];
             var piece = this.ObjectData.pieces[j.pieceIndex];
@@ -494,7 +546,7 @@ function LevelObjectInfo(o) {
         this._rect.x = this.x;
         this._rect.y = this.y;
         return this._rect;
-    }
+    };
     this.draw = function (canvas, x, y, scale, showHeightMap) {
         if (this.ObjectData.pieceLayouts.length == 0) {
             canvas.drawImage(broken, _H.floor((x - broken.width / 2)), _H.floor((y - broken.height / 2)), broken.width * scale.x, broken.height * scale.y);
@@ -528,7 +580,7 @@ function LevelObjectInfo(o) {
 
     this.collision = function (sonic, isHurtMap) {
         if (this.ObjectData.pieceLayouts.length == 0) return false;
-        var pcs = this.ObjectData.mainPieceLayout().pieces;
+        var pcs = this.pieces;
         for (var pieceIndex = 0; pieceIndex < pcs.length; pieceIndex++) {
             var j = pcs[pieceIndex];
             var piece = this.ObjectData.pieces[j.pieceIndex];
@@ -537,7 +589,7 @@ function LevelObjectInfo(o) {
                 var frm = asset.frames[j.frameIndex];
                 var map = isHurtMap ? frm.hurtSonicMap : frm.collisionMap;
                 if (twoDArray(map, (sonic.x - this.x + frm.offsetX + j.x), (sonic.y - this.y + frm.offsetY + j.y)) == true) {
-                    return true;
+                    return j;
                 }
             }
         }
@@ -546,18 +598,19 @@ function LevelObjectInfo(o) {
     };
 
     function twoDArray(map, x, y) {
-        if (!map)
+        if (!map || x < 0 || y < 0 || x > map.length)
             return false;
-        if (!map[x])
+        var d = map[x];
+        if (!d || y > d.length)
             return false;
-        return map[x][y];
+        return d[y];
     }
 
-    this.collide = function (sonic) {
-        return this.ObjectData.onCollide(this, sonicManager.SonicLevel, sonicManager.sonicToon);
+    this.collide = function (sonic, sensor, piece) {
+        return this.ObjectData.onCollide(this, sonicManager.SonicLevel, sonicManager.sonicToon, sensor, piece);
     };
-    this.hurtSonic = function (sonic) {
-        return this.ObjectData.onHurtSonic(this, sonicManager.SonicLevel, sonicManager.sonicToon);
+    this.hurtSonic = function (sonic, sensor, piece) {
+        return this.ObjectData.onHurtSonic(this, sonicManager.SonicLevel, sonicManager.sonicToon, sensor, piece);
     };
 
 }

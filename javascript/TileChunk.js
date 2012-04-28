@@ -65,9 +65,7 @@
 
         
     };
-    this.draw = function (canvas, position, scale, layer, animationFrame, bounds) {
-
-     
+    this.draw = function (canvas, position, scale, layer, bounds) {
 
         var fd;
         if (false && (fd = sonicManager.SpriteCache.tileChunks[layer + " " + this.index + " " + scale.y + " " + scale.x + " " + ((animationFrame != undefined) ? animationFrame : '-')])) {
@@ -88,20 +86,23 @@
             }*/
         } else {
             _H.save(canvas);
+            var len1 = this.tilePieces.length;
+            var len2 = this.tilePieces[0].length;
+            var lX = 16 * scale.x;
+            var lY = 16 * scale.y;
+            for (var i = 0; i < len1; i++) {
+            for (var j = 0; j < len2; j++) {
+                var r = this.tilePieces[i][j];
+                var pm = sonicManager.SonicLevel.Blocks[r.Block];
+                if (pm) {
+                    TileChunk.__position.x = position.x + i * lX;
+                    TileChunk.__position.y = position.y + j * lY;
 
-            for (var i = 0; i < this.tilePieces.length; i++) {
-                for (var j = 0; j < this.tilePieces[i].length; j++) {
-                    var r = this.tilePieces[i][j];
-                    var pm = sonicManager.SonicLevel.Blocks[r.Block];
-                    if (pm) {
-                        TileChunk.__position.x = position.x + i * 16 * scale.x;
-                        TileChunk.__position.y = position.y + j * 16 * scale.y;
-
-                        pm.draw(canvas, TileChunk.__position, scale, layer, r.XFlip, r.YFlip, (this.animated[j * 8 + i] != undefined) ? (this.animated[j * 8 + i].lastAnimatedIndex) : (animationFrame), bounds);
-                        //canvas.strokeStyle = "#FFF";
-                        //canvas.strokeRect(position.x + i * 16 * scale.x, position.y + j * 16 * scale.y, scale.x * 16, scale.y * 16);
-                    }
+                    pm.draw(canvas, TileChunk.__position, scale, layer, r.XFlip, r.YFlip, this.animated[j * 8 + i], bounds);
+                    //canvas.strokeStyle = "#FFF";
+                    //canvas.strokeRect(position.x + i * 16 * scale.x, position.y + j * 16 * scale.y, scale.x * 16, scale.y * 16);
                 }
+            }
             }
             _H.restore(canvas);
         }

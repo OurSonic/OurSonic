@@ -14,7 +14,7 @@ public partial class Game : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        //new MakeSprites().Do();
+        new MakeSprites().Do2();
 
        /* string[] st = new string[]
                           {

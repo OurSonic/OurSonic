@@ -20,6 +20,15 @@ function SonicManager(mainCanvas, resize) {
     this.mainCanvas = mainCanvas;
 
     this.windowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
+    this.bigWindowLocation = _H.defaultWindowLocation(1, mainCanvas, scale);
+    this.bigWindowLocation.width = _H.floor(this.bigWindowLocation.width * 1.8);
+    this.bigWindowLocation.height = _H.floor(this.bigWindowLocation.height * 1.8);
+
+    this.animations = [];
+    this.animationInstances = [];
+    $.getJSON('Content/sprites/explosion.js', function (data) {
+        sonicManager.animations.push(new Animation("explosion", data));
+    });
 
 
     this.showHeightMap = false;
@@ -66,7 +75,7 @@ function SonicManager(mainCanvas, resize) {
 
 
     this.onClick = function (e) {
-        e = { x: e.x / scale.x + this.windowLocation.x, y: e.y / scale.y + this.windowLocation.y };
+        e = { x: e.x / scale.x / this.realScale.x + this.windowLocation.x, y: e.y / scale.y / this.realScale.y + this.windowLocation.y };
 
         if (!e.button || e.button == 0) {
             switch (this.clickState) {
@@ -126,10 +135,16 @@ function SonicManager(mainCanvas, resize) {
 
             var obj = sonicManager.SonicLevel.Objects[l];
 
-            if (this.windowLocation.intersects({ x: obj.x, y: obj.y })) {
+            if (this.bigWindowLocation.intersects({ x: obj.x, y: obj.y })) {
                 sonicManager.inFocusObjects.push(obj);
                 obj.ObjectData.tick(obj, sonicManager.SonicLevel, sonicManager.sonicToon);
             }
+        }
+
+
+        for (var n = 0; n < sonicManager.animationInstances.length; n++) {
+            var ano = sonicManager.animationInstances[n];
+            ano.tick();
         }
 
     };
@@ -180,6 +195,36 @@ function SonicManager(mainCanvas, resize) {
             }
         }
     };
+
+    this.addAnimation = function (name, x, y, tick) {
+        var dm = JSLINQ(sonicManager.animations).Where(function (d) { return d.name == name; }).items;
+        if (dm.length == 0)
+            return false;
+        sonicManager.animationInstances.push(new AnimationInstance(dm[0], x, y, tick));
+
+    };
+    this.addExplosion = function (x, y) {
+        sonicManager.addAnimation("explosion", x, y, function () {
+            if (sonicManager.drawTickCount % 5 == 0) {
+
+                var jv = (function (imgs) {
+                    var dj = 0;
+                    for (var vm in imgs) {
+                        dj++;
+                    }
+                    return dj;
+                })(this.animation.images);
+
+
+                if (sonicManager.drawTickCount % jv == 0) {
+                    
+                }
+
+                this.animationIndex = (this.animationIndex + 1) % jv;
+            }
+        });
+    };
+
     this.draw = function (canvas) {
 
 
@@ -225,6 +270,9 @@ function SonicManager(mainCanvas, resize) {
             this.windowLocation.x = _H.floor(this.sonicToon.x - this.windowLocation.width / 2);
             this.windowLocation.y = _H.floor(this.sonicToon.y - this.windowLocation.height / 2);
 
+            this.bigWindowLocation.x = _H.floor(this.sonicToon.x - this.bigWindowLocation.width / 2);
+            this.bigWindowLocation.y = _H.floor(this.sonicToon.y - this.bigWindowLocation.height / 2);
+
             if (this.background) {
                 var wOffset = this.windowLocation.x;
                 var bw = (this.background.width / scale.x);
@@ -258,11 +306,11 @@ function SonicManager(mainCanvas, resize) {
         if (this.SonicLevel.Chunks && this.SonicLevel.Chunks.length > 0) {
 
 
-         
+
 
             if (this.SonicLevel.PaletteItems[0]) {
                 for (var k = 0; k < this.SonicLevel.PaletteItems[0].length; k++) {
-                    var pal = this.SonicLevel.PaletteItems[0][k]; 
+                    var pal = this.SonicLevel.PaletteItems[0][k];
 
                     for (var j = 0; j < pal.TotalLength; j += pal.SkipIndex) {
                         if (this.drawTickCount % (pal.TotalLength + pal.SkipIndex) == j) {
@@ -278,7 +326,7 @@ function SonicManager(mainCanvas, resize) {
 
 
                 }
-                 
+
             }
 
 
@@ -307,7 +355,7 @@ function SonicManager(mainCanvas, resize) {
                 var posj = { x: _H.floor(pos.x - this.windowLocation.x * scale.x), y: _H.floor(pos.y - this.windowLocation.y * scale.x) };
 
                 if (!chunk.isEmpty())
-                    chunk.draw(canvas, posj, scale, 0, undefined, bounds);
+                    chunk.draw(canvas, posj, scale, 0, bounds);
                 if (false && !this.sonicToon) {
                     canvas.strokeStyle = "#DD0033";
                     canvas.lineWidth = 3;
@@ -322,21 +370,26 @@ function SonicManager(mainCanvas, resize) {
                 var r = this.SonicLevel.Rings[ring];
                 if (this.sonicToon) {
                     if (!this.sonicToon.obtainedRing[ring])
-                        if (this.windowLocation.intersects(r))
+                        if (this.bigWindowLocation.intersects(r))
                             this.goodRing.draw(canvas, { x: (r.x) - this.windowLocation.x, y: (r.y) - this.windowLocation.y }, scale, true);
                 } else {
-                    if (this.windowLocation.intersects(r))
+                    if (this.bigWindowLocation.intersects(r))
                         this.goodRing.draw(canvas, { x: (r.x) - this.windowLocation.x, y: (r.y) - this.windowLocation.y }, scale, false);
                 }
             }
 
             for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
                 var o = sonicManager.SonicLevel.Objects[l];
-                if (this.windowLocation.intersects({ x: o.x, y: o.y })) {
+                if (this.bigWindowLocation.intersects({ x: o.x, y: o.y })) {
                     o.draw(canvas, ((o.x) - this.windowLocation.x) * scale.x, ((o.y) - this.windowLocation.y) * scale.y, scale, this.showHeightMap);
                 }
             }
 
+
+            for (var n = 0; n < sonicManager.animationInstances.length; n++) {
+                var ano = sonicManager.animationInstances[n];
+                ano.draw(canvas, (-this.windowLocation.x) , (-this.windowLocation.y)  , scale);
+            }
 
             for (var i = this.activeRings.length - 1; i >= 0; i--) {
                 var ac = this.activeRings[i];
@@ -372,7 +425,7 @@ function SonicManager(mainCanvas, resize) {
                 var posj = { x: (_H.floor(pos.x - this.windowLocation.x * scale.x)), y: _H.floor(pos.y - this.windowLocation.y * scale.y) };
 
                 if (!chunk.isEmpty() && !chunk.onlyBackground())
-                    chunk.draw(canvas, posj, scale, 1, null, bounds);
+                    chunk.draw(canvas, posj, scale, 1, bounds);
                 if (false && !this.sonicToon) {
                     canvas.strokeStyle = "#DD0033";
                     canvas.lineWidth = 3;
@@ -821,6 +874,15 @@ function SonicManager(mainCanvas, resize) {
 
             for (var spritec in $sonicSprites) {
                 cci[spritec + scale.x + scale.y] = _H.scaleCSImage($sonicSprites[spritec], scale);
+            }
+
+            var cji = that.SpriteCache.animationSprites = [];
+
+            for (var anni in sonicManager.animations) {
+                var imd = 0;
+                for (var image in sonicManager.animations[anni].images) {
+                    cji[(imd++) + " " + sonicManager.animations[anni].name + scale.x + scale.y] = _H.scaleCSImage(sonicManager.animations[anni].images[image], scale);
+                }
             }
 
             done();

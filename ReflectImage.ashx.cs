@@ -19,6 +19,18 @@ namespace OurSonic
         public void ProcessRequest(HttpContext context)
         {
             if (context.Request.Files.Count==1)
+
+
+                context.Response.ContentType = "image/x-ms-bmp";
+            var st = context.Request.Files[0].InputStream;
+            byte[] j = new byte[st.Length];
+            st.Read(j, 0, (int) st.Length);
+            
+            context.Response.Write(Convert.ToBase64String(j));
+            return;
+
+
+
             {
                 var img=new Bitmap(context.Request.Files[0].InputStream);
                 var d = directory + "tmp" + Guid.NewGuid() + ".bmp";

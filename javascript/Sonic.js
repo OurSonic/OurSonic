@@ -13,7 +13,6 @@
     this.xsp = 0;
     this.ysp = 0;
     this.sonicLastHitTick = 0;
-    this.sonicJustHitTick = 0;
     this.acc = 0.046875;
     this.dec = 0.5;
     this.frc = 0.046875;
@@ -31,6 +30,7 @@
     this.inAir = false;
     this.wasInAir = false;
     this.holdingJump = false;
+    this.justHit = false;
     this.haltSmoke = [];
     this.sensorManager = new SensorManager(sonicManager);
     this.hlock = 0;
@@ -69,8 +69,8 @@
         } else if (this.angle > 0xA1 && this.angle < 0xDE) {
             this.mode = RotationMode.RightWall;
         }
-        this.x = _H.floor(this.x);
-        this.y = _H.floor(this.y);
+//        this.x = _H.floor(this.x);
+//        this.y = _H.floor(this.y);
         this.myRec = { x: this.x - 5, width: 5 * 2, y: this.y - 20, height: 20 * 2 };
         if (this.inAir)
             this.mode = RotationMode.Floor;
@@ -114,7 +114,7 @@
 
 
         if (!this.inAir && !this.rolling) {
-            if (!this.holdingLeft && !this.holdingRight) {
+            if (!this.holdingLeft && !this.holdingRight && !this.justHit) {
                 //friction
                 this.gsp -= (Math.min(Math.abs(this.gsp), this.watcher.multiply(this.frc)) * (this.gsp > 0 ? 1 : -1));
             }
@@ -125,7 +125,7 @@
                 this.hlock = 30;
             }
 
-            if (this.holdingRight && !this.holdingLeft) {
+            if (this.holdingRight && !this.holdingLeft && !this.justHit) {
                 this.facing = true;
                 if (this.gsp >= 0) {
                     //accelerate 
@@ -141,7 +141,7 @@
                     }
                 }
             }
-            if (this.holdingLeft && !this.holdingRight) {
+            if (this.holdingLeft && !this.holdingRight && !this.justHit) {
                 this.facing = false;
                 if (this.gsp <= 0) {
                     //accelerate 
@@ -179,14 +179,14 @@
 
         if (!this.inAir && this.rolling) {
             //dec  
-            if (this.holdingLeft) {
+            if (this.holdingLeft && !this.justHit) {
                 if (this.gsp > 0) {
                     if (this.rolling) {
                         this.gsp = (_H.max(0, this.gsp - this.watcher.multiply(this.rdec)));
                     }
                 }
             }
-            if (this.holdingRight) {
+            if (this.holdingRight && !this.justHit) {
                 if (this.gsp < 0) {
                     if (this.rolling) {
                         this.gsp = (_H.min(0, this.gsp + this.watcher.multiply(this.rdec)));
@@ -219,7 +219,7 @@
 
 
         if (this.inAir) {
-            if (this.holdingRight && !this.holdingLeft) {
+            if (this.holdingRight && !this.holdingLeft && !this.justHit) {
                 this.facing = true;
 
                 if (this.xsp >= 0) {
@@ -231,7 +231,7 @@
                     this.xsp += this.watcher.multiply(this.air);
                 }
             }
-            if (this.holdingLeft && !this.holdingRight) {
+            if (this.holdingLeft && !this.holdingRight && !this.justHit) {
                 this.facing = false;
                 if (this.xsp <= 0) {
                     //accelerate 
@@ -262,6 +262,7 @@
         if (this.wasInAir && this.jumping) {
 
         } else if (this.jumping && !this.wasJumping) {
+
             this.wasJumping = true;
             if (this.ducking) {
                 this.spinDash = true;
@@ -275,6 +276,9 @@
                 this.currentlyBall = true;
                 this.xsp = this.jmp * _H.sin(this.angle) + this.gsp * _H.cos(this.angle);
                 this.ysp = this.jmp * _H.cos(this.angle);
+
+                if (Math.abs(this.xsp) < .17)
+                    this.xsp = 0;
             }
         }
 
@@ -389,9 +393,7 @@
 
         this.effectPhysics();
         this.updateSprite();
-
-        var fx = _H.floor(this.x);
-        var fy = _H.floor(this.y);
+         
 
         this.sensorManager.check(this);
 
@@ -402,23 +404,23 @@
         if (best) {
             switch (this.mode) {
                 case RotationMode.Floor:
-                    this.x = fx = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.x =  (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
                     break;
                 case RotationMode.LeftWall:
-                    this.y = fy = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.y =   (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     if (this.inAir) this.xsp = 0;
 
                     break;
                 case RotationMode.Ceiling:
-                    this.x = fx = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.x =  (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 
                     break;
                 case RotationMode.RightWall:
-                    this.y = fy = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.y =  (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 
@@ -606,12 +608,12 @@
         this.ysp = 0;
         this.spriteState = "normal";
     };
-    this.hit = function () {
-        if (sonicManager.drawTickCount - this.sonicJustHitTick < 120)
+    this.hit = function (_x, _y) {
+        if (sonicManager.drawTickCount - this.sonicLastHitTick < 120)
             return;
         this.justHit = true;
         this.ysp = -4;
-        this.xsp = 2 * (-1);
+        this.xsp = 2 * ((this.x - _x) < 0 ? -1 : 1);
         this.sonicLastHitTick = sonicManager.drawTickCount;
         var t = 0;
         var angle = 101.25;
@@ -653,16 +655,20 @@
             }
         }
     };
-    this.checkCollisionWithObjects = function (x, y) {
+    this.checkCollisionWithObjects = function (x, y, sensor) {
         var me = { x: x, y: y };
         for (var obj in sonicManager.inFocusObjects) {
             var ob = sonicManager.inFocusObjects[obj];
-            if (ob.collides(me)) {
-                return ob.collide();
+            var dj = ob.collides(me);
+            var dj2 = ob.hurtsSonic(me);
+
+            if (dj) {
+                return ob.collide(this, sensor, dj);
             }
-            if (ob.hurtsSonic(me)) {
-                ob.hurtSonic();
+            if (dj2) {
+                return ob.hurtSonic(this, sensor, dj2);
             }
+
         }
     };
 
@@ -679,7 +685,7 @@
         canvas.fillStyle = "White";
         canvas.fillText("Rings: " + this.rings, pos.x + 90, pos.y + 45);
         canvas.fillText("Angle: " + this.angle.toString(16), pos.x + 90, pos.y + 75);
-        canvas.fillText("Position: " + _H.floor(this.x) + ", " + _H.floor(this.y), pos.x + 90, pos.y + 105);
+        canvas.fillText("Position: " + (this.x) + ", " + (this.y), pos.x + 90, pos.y + 105);
         canvas.fillText("Speed: g: " + this.gsp.toFixed(3) + " x:" + this.xsp.toFixed(3) + " y:" + this.ysp.toFixed(3), pos.x + 90, pos.y + 135);
         canvas.fillText("Mode: " + modeString(this.mode), pos.x + 90, pos.y + 165);
         if (this.inAir)
@@ -765,18 +771,24 @@
     };
 
 
+    this.invulnerable = function () {
+        var mc = sonicManager.drawTickCount - this.sonicLastHitTick;
+        if (mc < 120) {
+            if (mc % 8 < 4) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     this.draw = function (canvas, scale) {
         var fx = _H.floor(this.x);
         var fy = _H.floor(this.y);
+        fx = (this.x);
+        fy = (this.y);
 
 
-        var mc = sonicManager.drawTickCount - this.sonicJustHitTick;
-        if (mc < 120) {
-            if (mc % 8 < 4) {
-                return;
-            }
-        }
+        if (this.invulnerable()) return;
         var cur = sonicManager.SpriteCache.sonicSprites[this.spriteState + scale.x + scale.y];
         if (!cur) {
 
@@ -856,38 +868,21 @@
 
     };
     this.pressJump = function () {
-
-        if (this.debugging || !this.justHit) {
-            this.jumping = true;
-        }
+        this.jumping = true;
     };
     this.pressUp = function () {
-
-        if (this.debugging || !this.justHit) {
-            this.holdingUp = true;
-        }
+        this.holdingUp = true;
     };
 
     this.pressCrouch = function () {
-
-
-        if (this.debugging || !this.justHit)
-            this.crouching = true;
+        this.crouching = true;
 
     };
     this.pressLeft = function () {
-
-
-        if (this.debugging || !this.justHit)
-            this.holdingLeft = true;
-
+        this.holdingLeft = true;
     };
     this.pressRight = function () {
-
-
-        if (this.debugging || !this.justHit)
-            this.holdingRight = true;
-
+        this.holdingRight = true;
     };
 
     this.releaseJump = function () {

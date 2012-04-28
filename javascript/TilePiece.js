@@ -47,7 +47,7 @@ function TilePiece(heightMask, tiles) {
                 var df = drawInfo[drawOrder[drawOrderIndex][i]];
                 TilePiece.__position.x = position.x + df[0] * 8 * scale.x;
                 TilePiece.__position.y = position.y + df[1] * 8 * scale.y;
-                mj.drawUI(canvas, TilePiece.__position, scale, _H.xor(xflip, mj.XFlip), _H.xor(yflip, mj.YFlip), mj.Palette);
+                mj.drawUI(canvas, TilePiece.__position, scale, (xflip^ mj.XFlip), (yflip^mj.YFlip), mj.Palette);
 
 
             }
@@ -70,9 +70,9 @@ function TilePiece(heightMask, tiles) {
 
     this.getCache = function (layer, scale, drawOrder, animationFrame, palAn) {
         //return false;
-        var val = ((drawOrder + 1) * Math.pow(10, 0)) + (scale.x * Math.pow(10, 1)) + ((!animationFrame ? 0 : animationFrame) * Math.pow(10, 3)) + ((layer + 1) * Math.pow(10, 4));
+        var val = ((drawOrder + 1)) + (scale.x * 10) + ((!animationFrame ? 0 : animationFrame) * 1000) + ((layer + 1) * 10000);
 
-        for (var i = 0; i < this.animatedFrames.length; i++) {
+        for (var i = 0;  i < this.animatedFrames.length; i+=1) {
             val += palAn[this.animatedFrames[i]] + " ";
         }
         if (!this.image[val]) return undefined;
@@ -83,9 +83,9 @@ function TilePiece(heightMask, tiles) {
     };
     this.setCache = function (layer, scale, drawOrder, animationFrame, palAn, image) {
         //   return;
-        var val = ((drawOrder + 1) * Math.pow(10, 0)) + (scale.x * Math.pow(10, 1)) + ((!animationFrame ? 0 : animationFrame) * Math.pow(10, 3)) + ((layer + 1) * Math.pow(10, 4));
+        var val = ((drawOrder + 1) ) + (scale.x * 10) + ((!animationFrame ? 0 : animationFrame) * 1000) + ((layer + 1) * 10000);
 
-        for (var i = 0; i < this.animatedFrames.length; i++) {
+        for (var i = 0; i < this.animatedFrames.length; i+=1) {
             val += palAn[this.animatedFrames[i]] + " ";
         }
         //var img = new Image();
@@ -100,7 +100,6 @@ function TilePiece(heightMask, tiles) {
         if (bounds && !bounds.intersects(position)) {
             return true;
         }
-
         var drawOrderIndex = 0;
         if (xflip) {
             if (yflip) {
@@ -119,15 +118,17 @@ function TilePiece(heightMask, tiles) {
         var fd = this.getCache(layer, scale, drawOrderIndex, animationFrame, sonicManager.SonicLevel.palAn);
         if (!fd) {
             var ac = _H.defaultCanvas(cx, cy);
+            var sX=8 * scale.x;
+            var sY=8 * scale.y;
             for (var i = 0; i < this.tiles.length; i++) {
                 var mj = this.tiles[i];
                 if (sonicManager.SonicLevel.Tiles[mj.Tile]) {
                     if (mj.Priority == layer) {
-                        var _xf = _H.xor(xflip, mj.XFlip);
-                        var _yf = _H.xor(yflip, mj.YFlip);
+                        var _xf = (xflip^ mj.XFlip);
+                        var _yf = (yflip^mj.YFlip);
                         var df = drawInfo[drawOrder[drawOrderIndex][i]];
-                        TilePiece.__position.x = df[0] * 8 * scale.x;
-                        TilePiece.__position.y = df[1] * 8 * scale.y;
+                        TilePiece.__position.x = df[0] * sX;
+                        TilePiece.__position.y = df[1] * sY;
                         sonicManager.SonicLevel.Tiles[mj.Tile].draw(ac.context, TilePiece.__position, scale, _xf, _yf, mj.Palette, layer, animationFrame);
                     }
                 }

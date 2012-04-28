@@ -29,6 +29,9 @@
     this.dragger = new Dragger(function (xsp, ysp) {
         sonicManager.windowLocation.x += xsp;
         sonicManager.windowLocation.y += ysp;
+
+        sonicManager.bigWindowLocation.y = sonicManager.windowLocation.y;
+        sonicManager.bigWindowLocation.x = sonicManager.windowLocation.x;
     });
     this.draw = function (canvas) {
         this.dragger.tick();

@@ -41,19 +41,23 @@ function UiArea(x, y, w, h, manager, closable) {
 
     this.click = function (e) {
         if (!this.visible) return;
+        var satisifed = false;
 
         for (var ij = 0; ij < this.controls.length; ij++) {
             var control = this.controls[ij];
-            control.focused = false;
             if (control.visible && control.y <= e.y && control.y + control.height > e.y && control.x <= e.x && control.x + control.width > e.x) {
+                control.focused = true;
                 e.x -= control.x;
                 e.y -= control.y;
                 control.onClick(e);
-                return false;
+                satisifed = true;
+            } else {
+                control.focused = false;
 
             }
         }
-        this.dragging = { x: e.x, y: e.y };
+        if (!satisifed)
+            this.dragging = { x: e.x, y: e.y };
 
 
     };
@@ -154,10 +158,10 @@ function UiArea(x, y, w, h, manager, closable) {
             this.x = _x;
             this.y = _y;
 
-            this.cachedDrawing = _H.loadSprite(cg.toDataURL("image/png"));
+            this.cachedDrawing = cg;
         }
 
-        if (this.cachedDrawing.loaded) {
+        if (this.cachedDrawing) {
             canv.drawImage(this.cachedDrawing, _H.floor(this.x), _H.floor(this.y));
             if (this.cachedDrawing.width != this.width + 20 || this.cachedDrawing.height != this.height + 20)
                 this.cachedDrawing = null;
@@ -173,7 +177,8 @@ function UiArea(x, y, w, h, manager, closable) {
                     this.cachedDrawing = null;
             }
             _H.restore(canv);
-        } else {
+        }
+        /*else {
             cv = canv;
             var lingrad = cv.createLinearGradient(0, 0, 0, this.height);
             lingrad.addColorStop(0, 'rgba(220,220,220,0.85)');
@@ -206,7 +211,7 @@ function UiArea(x, y, w, h, manager, closable) {
             this.y = _y;
             _H.restore(canv);
 
-        }
+        }*/
 
     };
 

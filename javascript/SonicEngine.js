@@ -117,7 +117,7 @@ function SonicEngine(gameLayer, uiLayer) {
 
     KeyboardJS.bind.key("h", function () {
         if (sonicManager.sonicToon)
-            sonicManager.sonicToon.hit();
+            sonicManager.sonicToon.hit(sonicManager.sonicToon.x, sonicManager.sonicToon.y);
     }, function () { });
 
 
@@ -140,6 +140,8 @@ function SonicEngine(gameLayer, uiLayer) {
             sonicManager.sonicToon.pressUp();
         else {
             sonicManager.windowLocation.y -= 128;
+            sonicManager.bigWindowLocation.y = sonicManager.windowLocation.y;
+
         }
 
     }, function () {
@@ -152,6 +154,8 @@ function SonicEngine(gameLayer, uiLayer) {
             sonicManager.sonicToon.pressCrouch();
         else {
             sonicManager.windowLocation.y += 128;
+            sonicManager.bigWindowLocation.y = sonicManager.windowLocation.y;
+
         }
     }, function () {
         if (sonicManager.sonicToon)
@@ -162,7 +166,9 @@ function SonicEngine(gameLayer, uiLayer) {
         if (sonicManager.sonicToon) {
             sonicManager.sonicToon.pressLeft();
         } else {
-            sonicManager.windowLocation.x -= 128;
+            sonicManager.windowLocation.x -= 128; 
+            sonicManager.bigWindowLocation.x = sonicManager.windowLocation.x;
+            
         }
     }, function () {
         if (sonicManager.sonicToon)
@@ -175,6 +181,8 @@ function SonicEngine(gameLayer, uiLayer) {
             sonicManager.sonicToon.pressRight();
         } else {
             sonicManager.windowLocation.x += 128;
+            sonicManager.bigWindowLocation.x = sonicManager.windowLocation.x;
+
         }
     }, function () {
         if (sonicManager.sonicToon)
@@ -193,6 +201,7 @@ function SonicEngine(gameLayer, uiLayer) {
         that.canvasWidth = $(window).width();
         that.canvasHeight = $(window).height();
         window.sonicManager.windowLocation = _H.defaultWindowLocation(window.sonicManager.sonicToon ? 0 : 1, that.uiCanvas, window.sonicManager.scale);
+        window.sonicManager.realScale = { x: Engine.canvasWidth / 320 / window.sonicManager.scale.x, y: Engine.canvasHeight / 240 / window.sonicManager.scale.y };
 
         that.gameCanvasItem.attr("width", (window.sonicManager.windowLocation.width * (window.sonicManager.sonicToon ? window.sonicManager.scale.x * window.sonicManager.realScale.x : 1)));
         that.gameCanvasItem.attr("height", (window.sonicManager.windowLocation.height * (window.sonicManager.sonicToon ? window.sonicManager.scale.y * window.sonicManager.realScale.y : 1)));
@@ -233,9 +242,11 @@ function SonicEngine(gameLayer, uiLayer) {
 
         sonicManager.uiManager.draw(that.uiCanvas);
     };
+    window.onresize = function (event) {
+        that.resizeCanvas();
+    };
 
-
-    $(window).resize(this.resizeCanvas);
+    $(document).resize(this.resizeCanvas);
 
     var sonicManager = window.sonicManager = new SonicManager(that.gameCanvas, this.resizeCanvas);
     sonicManager.indexedPalette = 0;
@@ -249,6 +260,7 @@ function SonicEngine(gameLayer, uiLayer) {
      
         that.gameDraw();
     }, 1000 / 60);
+    
     window.setInterval(function () {
 
         sonicManager.tick(); 

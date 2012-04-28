@@ -129,6 +129,7 @@
     <Content Include="Game2.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Instructions.txt" />
+    <Content Include="javascript\Animation.js" />
     <Content Include="javascript\FunctionWorker.js" />
     <Content Include="javascript\PathMaker.js" />
     <Content Include="javascript\PieceLayoutMaker.js" />
@@ -244,12 +245,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>36771</DevelopmentServerPort>
           <DevelopmentServerVPath>/oursonic/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
+          <IISUrl>http://localhost/OurSonic</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

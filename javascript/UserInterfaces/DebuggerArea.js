@@ -37,7 +37,7 @@ window.DebuggerArea = function () {
 
 
     debuggerArea.addControl(new Button(40, 95, 90, 22, "Hit Sonic", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
-        sonicManager.sonicToon.hit();
+        sonicManager.sonicToon.hit(sonicManager.sonicToon.x, sonicManager.sonicToon.y);
     }
     ));
 

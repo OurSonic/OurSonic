@@ -44,7 +44,7 @@ window.ObjectFrameworkArea = function () {
     var editor;
 
     objectFrameworkArea.addControl(new TextArea(320, 80 - 20, "Key: ", sonicManager.uiManager.textFont, "black"));
-    objectFrameworkArea.addControl(objectFrameworkArea.key = new TextBox(370, 60 - 20, 150, 25, "", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.text = this.text; }));
+    objectFrameworkArea.addControl(objectFrameworkArea.key = new TextBox(370, 60 - 20, 150, 25, "", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.key = this.text; }));
 
     objectFrameworkArea.addControl(new TextArea(320 + 205, 80 - 24, "Description: ", sonicManager.uiManager.smallTextFont, "black"));
     objectFrameworkArea.addControl(objectFrameworkArea.description = new TextBox(370 + 240, 60 - 20, 220, 25, "", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () { objectFrameworkArea.objectFramework.description = this.text; }));
@@ -99,7 +99,7 @@ window.ObjectFrameworkArea = function () {
         }, function () {
             var sc = editor.getScrollerElement();
             editor.getInputField().blur();
-//            Engine.uiCanvasItem.focus();
+            //            Engine.uiCanvasItem.focus();
             //            document.body.focus();
 
             //            editor.onBlur();
@@ -261,13 +261,13 @@ window.ObjectFrameworkArea = function () {
         objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.selectPieceScroll = selectPieceScroll = new HScrollBox(145, 390, 70, 3, 112, "rgb(50,60,127)"));
         var bdc;
         selectPieceScroll.controls = [];
-        
-         
-        objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.priorityDrawing = new Button(348, 38, 140, 25, "Foreground", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
-            pe.pieceLayoutMaker.setPriority( this.toggled);
+
+
+        objectFrameworkArea.mainPanel.addControl(objectFrameworkArea.mainPanel.priorityDrawing = new Button(148, 38, 140, 25, "Foreground", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
+            pe.pieceLayoutMaker.setPriority(this.toggled);
         }));
         objectFrameworkArea.mainPanel.priorityDrawing.toggle = true;
-        
+
 
         for (var i = 0; i < objectFrameworkArea.objectFramework.pieces.length; i++) {
 
@@ -452,6 +452,7 @@ window.ObjectFrameworkArea = function () {
                 if (objectFrameworkArea.mainPanel.frameArea.currentFrame) {
                     objectFrameworkArea.mainPanel.frameArea.currentFrame.offsetX = e.x;
                     objectFrameworkArea.mainPanel.frameArea.currentFrame.offsetY = e.y;
+                    objectFrameworkArea.mainPanel.frameArea.currentFrame.clearCache();
                 }
             };
 
@@ -516,19 +517,22 @@ window.ObjectFrameworkArea = function () {
             objectFrameworkArea.mainPanel.frameArea.addControl(new TextArea(0, 275, function () { return "Width:  " + frame.width; }, sonicManager.uiManager.smallTextFont, "Black"));
 
             objectFrameworkArea.mainPanel.frameArea.addControl(new Button(75, 275 - 25, 14, 17, "^", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
-                frame.width = Math.min(frame.width + 1, 100);
+                frame.setWidth(frame.width + 1);
             }));
             objectFrameworkArea.mainPanel.frameArea.addControl(new Button(75, 275 - 5, 14, 20, "v", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
-                frame.width = Math.max(frame.width - 1, 1);
+                frame.setWidth(frame.width - 1);
+
             }));
 
             objectFrameworkArea.mainPanel.frameArea.addControl(new TextArea(0, 320, function () { return "Height: " + frame.height; }, sonicManager.uiManager.smallTextFont, "Black"));
 
             objectFrameworkArea.mainPanel.frameArea.addControl(new Button(75, 320 - 25, 14, 17, "^", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
-                frame.height = Math.min(frame.height + 1, 100);
+                frame.setHeight(frame.height + 1);
+
             }));
             objectFrameworkArea.mainPanel.frameArea.addControl(new Button(75, 320 - 5, 14, 20, "v", sonicManager.uiManager.buttonFont, "rgb(50,150,50)", function () {
-                frame.height = Math.max(frame.height - 1, 1);
+                frame.setHeight(frame.height - 1);
+
             }));
 
             var bt;
@@ -547,8 +551,8 @@ window.ObjectFrameworkArea = function () {
             ce.editor.showOutline = false;
             ce.editable = false;
             ce.click = function (e) {
-                frame.offsetX = e.x;
-                frame.offsetY = e.y;
+                frame.setOffset(e.x, e.y);
+                
             };
             objectFrameworkArea.mainPanel.frameArea.addControl(new HtmlBox(19, 64, 120, 31, function () {
                 var sc = document.getElementById("picFieldUploader");

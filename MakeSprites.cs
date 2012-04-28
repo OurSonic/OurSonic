@@ -26,6 +26,20 @@ namespace OurSonic
 
         }
 
+        public void Do2()
+        {
+            var di = new DirectoryInfo(@"B:\code\BRANCHosnic\OurSonic\assets\Sprites\explosion");
+            Dictionary<string, Image> bj = new Dictionary<string, Image>(di.GetFiles().Count());
+            foreach (var img in di.GetFiles())
+            {
+                bj.Add(img.Name.Replace(img.Extension, ""), getImage(img.OpenRead()));
+            }
+            var j = new JavaScriptSerializer();
+            var js = j.Serialize(bj);
+            File.WriteAllText(@"B:\code\BRANCHosnic\OurSonic\Content\sprites\explosion.js", js, Encoding.UTF8);
+
+        }
+
 
         public class Image
         {

@@ -43,10 +43,7 @@
     max: function (f1, f2) {
         return f1 < f2 ? f2 : f1;
     },
-    xor: function (x1, x2) {
-        //        return x1 || x2;
-        return (x1 && !x2) || (!x1 && x2);
-    },
+
     loadSprite: function (src, complete) {
 
         var sprite1 = new Image();
@@ -130,10 +127,8 @@
         return items[x] >= 16 - y;
     },
     intersects: function (p) {
-        if (this.x < p.x && this.x + this.width > p.x && this.y < p.y && this.y + this.height > p.y) {
-            return true;
-        }
-        return false;
+        
+        return this.x < p.x && this.x + this.width > p.x && this.y < p.y && this.y + this.height > p.y;
     },
     intersects2: function (that, p) {
         p.X = p.X || p.x;

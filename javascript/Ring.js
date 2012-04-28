@@ -7,9 +7,6 @@ function Ring(active) {
     this.ysp = 0;
     this.tickCount = 0;
 
-
-
-
     this.draw = function (canvas, pos, scale) {
         if (active) {
             this.ysp += 0.09375;
