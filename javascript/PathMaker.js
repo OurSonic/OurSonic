@@ -35,5 +35,7 @@ function PathMaker(path) {
             }
         }
 
+        this.path.update();
+
     };
 }

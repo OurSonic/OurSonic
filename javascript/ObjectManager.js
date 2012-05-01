@@ -45,7 +45,7 @@ function LevelObject(key) {
     this.tickScript = "";
     this.collideScript = "";
     this.hurtScript = "";
-    
+
 
     this.die = function () {
 
@@ -64,11 +64,8 @@ function LevelObject(key) {
 
 
         if (!this[js + "Compiled"]) {
-            try {
-                this[js + "Compiled"] = eval("(function(object,level,sonic,sensor,piece){" + this[js] + "});");
-            } catch (EJ) {
+            this[js + "Compiled"] = eval("(function(object,level,sonic,sensor,piece){" + this[js] + "});");
 
-            }
         }
         return this[js + "Compiled"];
     };
@@ -76,12 +73,9 @@ function LevelObject(key) {
 
     this.init = function (object, level, sonic) {
         object.reset();
-        try {
-            this.evalMe("initScript").apply(object, [object, level, sonic]);
-            
-        } catch (EJ) {
 
-        }
+        this.evalMe("initScript").apply(object, [object, level, sonic]);
+
     };
 
 
@@ -91,11 +85,8 @@ function LevelObject(key) {
 
         object.lastDrawTick = sonicManager.tickCount;
 
-        try {
-            this.evalMe("tickScript").apply(object, [object, level, sonic]);
-        } catch (EJ) {
+        this.evalMe("tickScript").apply(object, [object, level, sonic]);
 
-        }
         if (object.state) {
             object.xsp = object.state.xsp;
             object.ysp = object.state.ysp;
@@ -105,18 +96,14 @@ function LevelObject(key) {
 
     };
     this.onCollide = function (object, level, sonic, sensor, piece) {
-        try {
-            return this.evalMe("collideScript").apply(object, [object, level, sonic, sensor, piece]);
-        } catch (EJ) {
-            return false;
-        }
+
+        return this.evalMe("collideScript").apply(object, [object, level, sonic, sensor, piece]);
+
     };
     this.onHurtSonic = function (object, level, sonic, sensor, piece) {
-        try {
-            return this.evalMe("hurtScript").apply(object, [object, level, sonic, sensor, piece]);
-        } catch (EJ) {
-            return false;
-        }
+
+        return this.evalMe("hurtScript").apply(object, [object, level, sonic, sensor, piece]);
+
     };
 
 }
@@ -383,6 +370,13 @@ function LevelObjectPieceLayout(name) {
 
     this.name = name ? name : "";
 
+    this.update = function () {
+
+        for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
+            sonicManager.SonicLevel.Objects[l].reset();
+        }
+
+    };
 
     this.drawUI = function (canvas, pos, scale, showOutline, showImages, selectedPieceIndex, zeroPosition) {
         canvas.save();
@@ -466,7 +460,7 @@ function LevelObjectPieceLayout(name) {
 
 
 
-    this.draw = function (canvas, x, y, scale, framework,instance, showHeightMap) { 
+    this.draw = function (canvas, x, y, scale, framework, instance, showHeightMap) {
         for (var i = 0; i < instance.pieces.length; i++) {
             var j = instance.pieces[i];
             if (!j.visible) continue;
@@ -510,75 +504,118 @@ function LevelObjectInfo(o) {
     this.pieceIndex = 0;
     this.pieces = [];
     this.dead = false;
-    
+    this.debug = { lines: [] };
+
+    this.log = function (txt, level) {
+        if (level === undefined) level = 100;
+
+        if (level == 0) {
+            this.debug.lines.push(" -- " + txt + " -- ");
+        } else {
+            this.debug.lines.push(txt);
+        }
+
+        if (this.consoleLog) {
+            this.consoleLog(this.debug);
+        }
+    };
+
 
     this.setPieceLayoutIndex = function (ind) {
         this.pieceIndex = ind;
         var pcs = this.ObjectData.pieceLayouts[this.pieceIndex].pieces;
-        
+
         this.pieces = [];
         for (var i = 0; i < pcs.length; i++) {
             this.pieces.push(_H.clone(pcs[i]));
         }
 
     };
-    this.setObjectData = function(obj) {
+    this.setObjectData = function (obj) {
         this.ObjectData = obj;
 
-        if (this.ObjectData.pieceLayouts.length > this.pieceIndex && 
+        if (this.ObjectData.pieceLayouts.length > this.pieceIndex &&
             this.ObjectData.pieceLayouts[this.pieceIndex].pieces.length > 0) {
-            this.setPieceLayoutIndex(0);
+            this.setPieceLayoutIndex(this.pieceIndex);
         }
 
 
     };
     this.tick = function (object, level, sonic) {
         if (this.dead || !this.ObjectData) return false;
-        return this.ObjectData.tick(object, level, sonic);
+
+        try {
+            return this.ObjectData.tick(object, level, sonic);
+        } catch (EJ) {
+            this.log(EJ.name + " " + EJ.message, 0);
+
+            return false;
+        }
+
     };
-    
-    this.mainPieceLayout = function() {
+
+    this.mainPieceLayout = function () {
         return this.ObjectData.pieceLayouts[this.pieceIndex];
     };
 
     this._rect = { x: 0, y: 0, width: 0, height: 0 };
-    this.getRect = function () {
-
-        this._rect.x = this.x;
-        this._rect.y = this.y;
-
+    this.getRect = function (scale) {
 
         if (this.ObjectData.pieceLayouts.length == 0) {
+            this._rect.x = this.x;
+            this._rect.y = this.y;
             this._rect.width = broken.width;
             this._rect.height = broken.height;
             return this._rect;
         }
 
         var pcs = this.pieces;
+
+        this._rect.x = 0;
+        this._rect.y = 0;
+        this._rect.width = 0;
+        this._rect.height = 0;
+
         for (var pieceIndex = 0; pieceIndex < pcs.length; pieceIndex++) {
             var j = pcs[pieceIndex];
             var piece = this.ObjectData.pieces[j.pieceIndex];
             var asset = this.ObjectData.assets[piece.assetIndex];
             if (asset.frames.length > 0) {
                 var frm = asset.frames[j.frameIndex];
-                this._rect.width = frm.width;
-                this._rect.height = frm.height;
+                _H.mergeRect(this._rect, { x: frm.offsetX + j.x, y: frm.offsetY + j.y, width: frm.width * scale.x, height: frm.height * scale.y });
             }
         }
+        this._rect.x = this._rect.x * scale.x;
+        this._rect.y = this._rect.y * scale.y;
+        this._rect.width -= this._rect.x;
+        this._rect.height -= this._rect.y;
 
-        this._rect.x = this.x;
-        this._rect.y = this.y;
+        this._rect.x += this.x;
+        this._rect.y += this.y;
         return this._rect;
     };
     this.draw = function (canvas, x, y, scale, showHeightMap) {
         if (this.dead || !this.ObjectData) return;
-        
+
         if (this.ObjectData.pieceLayouts.length == 0) {
             canvas.drawImage(broken, _H.floor((x - broken.width / 2)), _H.floor((y - broken.height / 2)), broken.width * scale.x, broken.height * scale.y);
             return;
         }
 
-        this.mainPieceLayout().draw(canvas, x, y, scale, this.ObjectData,this , showHeightMap);
+        this.mainPieceLayout().draw(canvas, x, y, scale, this.ObjectData, this, showHeightMap);
+        if (this.consoleLog) {
+
+            var gr = this.getRect(scale);
+            canvas.save();
+            canvas.fillStyle = "rgba(228,228,12,0.4)";
+            var wd = 1;
+            canvas.fillRect(gr.x - this.x + x - (gr.width / 2) - wd, gr.y - this.y + y - (gr.height / 2) - wd, gr.width - (gr.x - this.x) + wd * 2, gr.height - (gr.y - this.y) + wd * 2);
+            canvas.restore();
+
+        }
+
+
+
     };
     this.reset = function () {
         this.x = this.o.X;
@@ -589,10 +626,16 @@ function LevelObjectInfo(o) {
         this.xflip = this.o.XFlip;
         this.yflip = this.o.YFlip;
         this.dead = false;
-
+        this.pieceIndex = 0; //maybe
         this.subdata = this.o.SubType;
         this.upperNibble = this.subdata >> 4;
         this.lowerNibble = this.subdata & 0xf;
+        if (this.ObjectData.pieceLayouts.length > this.pieceIndex &&
+            this.ObjectData.pieceLayouts[this.pieceIndex].pieces.length > 0) {
+            this.setPieceLayoutIndex(this.pieceIndex);
+        }
+
+
     };
 
 
@@ -603,7 +646,7 @@ function LevelObjectInfo(o) {
     this.hurtsSonic = function (sonic) {
         return this.collision(sonic, true);
     };
-    this.kill = function() {
+    this.kill = function () {
         this.dead = true;
     };
 
@@ -637,10 +680,21 @@ function LevelObjectInfo(o) {
     }
 
     this.collide = function (sonic, sensor, piece) {
-        return this.ObjectData.onCollide(this, sonicManager.SonicLevel, sonicManager.sonicToon, sensor, piece);
+        try {
+            return this.ObjectData.onCollide(this, sonicManager.SonicLevel, sonicManager.sonicToon, sensor, piece);
+        } catch (EJ) {
+            this.log(EJ.name + " " + EJ.message + " " + EJ.stack, 0);
+            return false;
+        }
     };
     this.hurtSonic = function (sonic, sensor, piece) {
-        return this.ObjectData.onHurtSonic(this, sonicManager.SonicLevel, sonicManager.sonicToon, sensor, piece);
+        try {
+            return this.ObjectData.onHurtSonic(this, sonicManager.SonicLevel, sonicManager.sonicToon, sensor, piece);
+        } catch (EJ) {
+            this.log(EJ.name + " " + EJ.message + " " + EJ.stack, 0);
+
+            return false;
+        }
     };
 
 }

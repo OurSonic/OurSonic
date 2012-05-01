@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <% int AJ = new Random().Next(1,int.MaxValue); %>
+    <% string AJ = "a2aaas"; %>
     <meta name="viewport" content="width = device-width, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, user-scalable = no" />
     <title>Our Sonic</title>
     <script src="lib/jquery.js" type="text/javascript">
@@ -14,9 +14,7 @@
     <script src="lib/util/simple-hint.js"></script>
     <link rel="stylesheet" href="lib/util/simple-hint.css">
     <script src="lib/util/javascript-hint.js"></script>
-
     <script src="lib/WebGL2d.js"></script>
-    
     <link rel="stylesheet" href="lib/theme/night.css">
     <script src="lib/linq.js?<%= AJ %>" type="text/javascript"> 
     </script>
@@ -70,6 +68,8 @@
     </script>
     <script src="javascript/UserInterfaces/ColorEditorArea.js?<%= AJ %>" type="text/javascript"> 
     </script>
+    <script src="javascript/UserInterfaces/LiveObjectsArea.js?<%= AJ %>" type="text/javascript"> 
+    </script>
     <script src="javascript/UserInterfaces/DebuggerArea.js?<%= AJ %>" type="text/javascript"> 
     </script>
     <script src="javascript/UserInterfaces/LevelInformationArea.js?<%= AJ %>" type="text/javascript"> 
@@ -102,36 +102,36 @@
         $(function () {
 
             window.Worker = new FunctionWorker("javascript/FunctionWorker.js");
-           /* fWorker.threadedFunction(
-                function (e) {//start - in thread
-                    var j = 4 + 4;
-                    for (var a = 1; a < 1000; a++) {
-                        for (var i = 1; i < 2000000; i++) {
-                            j += i * 20;
-                        }
-                        for (var i = 1; i < 2000000; i++) {
-                            j -= i / 20;
-                        }
-                        if (a % 10 == 0) {
-                            e.callback(j);
-                            e.data = j;
-                        }
-                    }
-                }, function (e) {//finish - not in thread
-                    $("body").append("<div>Finished: " + e.data + "</div>");
+            /* fWorker.threadedFunction(
+            function (e) {//start - in thread
+            var j = 4 + 4;
+            for (var a = 1; a < 1000; a++) {
+            for (var i = 1; i < 2000000; i++) {
+            j += i * 20;
+            }
+            for (var i = 1; i < 2000000; i++) {
+            j -= i / 20;
+            }
+            if (a % 10 == 0) {
+            e.callback(j);
+            e.data = j;
+            }
+            }
+            }, function (e) {//finish - not in thread
+            $("body").append("<div>Finished: " + e.data + "</div>");
 
 
-                }, function (e) {//callback - not in thread
-                    $("body").append("<div>Callback Data: " + e.data + "</div>");
+            }, function (e) {//callback - not in thread
+            $("body").append("<div>Callback Data: " + e.data + "</div>");
 
-                }
+            }
             );*/
 
             var stats = new xStats;
             document.body.appendChild(stats.element);
 
             var myCanv = new SonicEngine("gameLayer", "uiLayer");
-            
+
 
         }); 
         
@@ -168,25 +168,24 @@
     </asp:ScriptManager>
     <div id="d_clip_container">
     </div>
-    
-    <canvas id="gameLayer" style="margin: 0px; position: absolute; top: 0px; left: 0px; z-index: 0;"></canvas>
-    <canvas id="uiLayer" style="margin: 0px; position: absolute; top: 0px; left: 0px; z-index: 0;"></canvas>
-    
+    <canvas id="gameLayer" style="margin: 0px; position: absolute; top: 0px; left: 0px;
+        z-index: 0;"></canvas>
+    <canvas id="uiLayer" style="margin: 0px; position: absolute; top: 0px; left: 0px;
+        z-index: 0;"></canvas>
     <input type="file" id="picField" style="position: absolute; z-index: 100;">
     </form>
-<script type="text/javascript">
+    <script type="text/javascript">
 
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-30696843-1']);
-    _gaq.push(['_trackPageview']);
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-30696843-1']);
+        _gaq.push(['_trackPageview']);
 
-    (function () {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
 
-</script>
-
+    </script>
 </body>
 </html>

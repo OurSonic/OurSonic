@@ -9,9 +9,9 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
     this.color = color;
     this.manager = manager;
     this.check = function (character) {
-        
+
         var _y2 = sonicManager.sonicToon.inAir ? y2 : y2;
-        
+
         var m;
         var x = _H.floor(character.x);
         var y = _H.floor(character.y);
@@ -280,7 +280,7 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                 length = x2 - x1;
                 if (curh[(__x)][__y] >= 2) {
 
-                    for (i = 0; i < 128 * 10; i++) {
+                    for (i = 0; i < 128 * 2; i++) {
                         if (__x - i < 0) {
                             if (_x - 1 < 0) {
                                 this.__currentM.value = 0;
@@ -294,7 +294,11 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                             cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                             __x += 128;
                         }
-                        if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2 || sonicManager.sonicToon.checkCollisionWithObjects(x1 - i, y1, this.letter)) {
+                        if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 1 || sonicManager.sonicToon.checkCollisionWithObjects(x1 - i, y1, this.letter)) {
+
+                            if (!((curh[(__x - i)][__y] < 3 || (letter == 'a' || letter == 'b')))) {
+                                continue;
+                            }
 
                             this.__currentM.value = x1 - i;
                             this.__currentM.angle = cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)];
@@ -319,7 +323,13 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                         __x -= 128;
                     }
-                    if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 2 || sonicManager.sonicToon.checkCollisionWithObjects(x1 + i, y1, this.letter)) {
+                    if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 1 || sonicManager.sonicToon.checkCollisionWithObjects(x1 + i, y1, this.letter)) {
+
+
+                        if (!((curh[(__x + i)][__y] < 3 || (letter == 'a' || letter == 'b')))) {
+                            continue;
+                        }
+
                         this.__currentM.value = x1 + i;
                         this.__currentM.angle = cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)];
                         return this.__currentM;
@@ -328,7 +338,7 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
             } else {
                 length = x1 - x2;
                 if (curh[(__x)][__y] >= 2) {
-                    for (i = 0; i < 128 * 10; i++) {
+                    for (i = 0; i < 128 * 2; i++) {
                         if (__x + i >= 128) {
                             if (_x + 1 >= this.LevelWidth) {
                                 this.__currentM.value = this.LevelWidth * 128;
@@ -342,7 +352,13 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                             cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                             __x -= 128;
                         }
-                        if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 2 || sonicManager.sonicToon.checkCollisionWithObjects(x1 + i, y1, this.letter)) {
+                        if (x1 + i > this.LevelWidth || curh[(__x + i)][__y] >= 1 || sonicManager.sonicToon.checkCollisionWithObjects(x1 + i, y1, this.letter)) {
+
+
+                            if (!((curh[(__x + i)][__y] < 3 || (letter == 'a' || letter == 'b')))) {
+                                continue;
+                            }
+
                             this.__currentM.value = x1 + i;
                             this.__currentM.angle = cura[_H.floor((__x + i) / 16)][_H.floor((__y) / 16)];
                             return this.__currentM;
@@ -365,7 +381,13 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                         cura = sonicManager.SonicLevel.curHeightMap ? tc.angleMap1 : tc.angleMap2;
                         __x += 128;
                     }
-                    if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 2 || sonicManager.sonicToon.checkCollisionWithObjects(x1 - i, y1, this.letter)) {
+                    if (x1 - i > this.LevelWidth || curh[(__x - i)][__y] >= 1 || sonicManager.sonicToon.checkCollisionWithObjects(x1 - i, y1, this.letter)) {
+
+
+                        if (!((curh[(__x - i)][__y] < 3 || (letter == 'a' || letter == 'b')))) {
+                            continue;
+                        }
+
                         this.__currentM.value = x1 - i;
                         this.__currentM.angle = cura[_H.floor((__x - i) / 16)][_H.floor((__y) / 16)];
                         return this.__currentM;
@@ -379,7 +401,7 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
             if (y1 < y2) {
                 length = y2 - y1;
                 if (curh[(__x)][__y] >= 2) {
-                    for (i = 0; i < 128 * 10; i++) {
+                    for (i = 0; i < 128 * 2; i++) {
                         if (__y - i < 0) {
                             tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][_H.mod((_y - 1), sonicManager.SonicLevel.LevelHeight)]];
                             this.checkChunk(tc, sonicManager.SonicLevel.curHeightMap);
@@ -388,6 +410,10 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                             __y += 128;
                         }
                         if (curh[__x][__y - i] > 1 || sonicManager.sonicToon.checkCollisionWithObjects(x1, y1 - i, this.letter)) {
+                            if (!((curh[__x][__y - i] < 3 || (letter == 'a' || letter == 'b')))) {
+                                continue;
+                            }
+
                             this.__currentM.value = y1 - i;
                             this.__currentM.angle = cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)];
                             return this.__currentM;
@@ -405,6 +431,11 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                     if (curh[__x][__y + i] >= 1 || sonicManager.sonicToon.checkCollisionWithObjects(x1, y1 + i, this.letter)) {
                         if (curh[__x][__y + i] == 1 && sonicManager.sonicToon.inAir && sonicManager.sonicToon.ysp < 0) continue;
 
+                        if (!((curh[__x][__y + i] < 3 || (letter == 'a' || letter == 'b')))) {
+                            continue;
+                        }
+
+
                         this.__currentM.value = y1 + i;
                         this.__currentM.angle = cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)];
                         return this.__currentM;
@@ -412,8 +443,8 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                 }
             } else {
                 length = y1 - y2;
-                if (curh[(__x)][__y] >= 2) {
-                    for (i = 0; i < 128 * 10; i++) {
+                if (curh[(__x)][__y] >=2) {
+                    for (i = 0; i < 128 * 2; i++) {
                         if (__y + i >= 128) {
                             tc = sonicManager.SonicLevel.Chunks[sonicManager.SonicLevel.ChunkMap[_x][(_y + 1) % sonicManager.SonicLevel.LevelHeight]];
                             this.checkChunk(tc, sonicManager.SonicLevel.curHeightMap);
@@ -423,6 +454,10 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                         }
 
                         if (curh[__x][__y + i] >= 1 || sonicManager.sonicToon.checkCollisionWithObjects(x1, y1 + i, this.letter)) {
+                            if (!((curh[__x][__y + i] < 3 || (letter == 'a' || letter == 'b')))) {
+                                continue;
+                            }
+
                             this.__currentM.value = y1 + i;
                             this.__currentM.angle = cura[_H.floor((__x) / 16)][_H.floor((__y + i) / 16)];
                             return this.__currentM;
@@ -439,6 +474,9 @@ Sensor = function (x1, x2, y1, y2, manager, color, ignoreSolid, letter) {
                         __y += 128;
                     }
                     if (curh[__x][__y - i] > 1 || sonicManager.sonicToon.checkCollisionWithObjects(x1, y1 + i, this.letter)) {
+                        if (!((curh[__x][__y - i] < 3 || (letter == 'a' || letter == 'b')))) {
+                            continue;
+                        }
                         this.__currentM.value = y1 - i;
                         this.__currentM.angle = cura[_H.floor((__x) / 16)][_H.floor((__y - i) / 16)];
                         return this.__currentM;

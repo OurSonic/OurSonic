@@ -59,6 +59,7 @@ function PieceLayoutMaker(pieceLayout) {
                     else
                         cj[ci].toggled = false;
                 }
+                this.pieceLayout.update();
                 return;
             }
         }

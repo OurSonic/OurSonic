@@ -145,6 +145,7 @@
     <Content Include="javascript\SonicManager.js" />
     <Content Include="javascript\UserInterfaces\BGEditorArea.js" />
     <Content Include="javascript\UserInterfaces\ColorEditorArea.js" />
+    <Content Include="javascript\UserInterfaces\LiveObjectsArea.js" />
     <Content Include="javascript\UserInterfaces\ObjectFrameworkListArea.js" />
     <Content Include="javascript\UserInterfaces\TileChunkArea.js" />
     <Content Include="javascript\UserInterfaces\ModifyTilePieceArea.js" />

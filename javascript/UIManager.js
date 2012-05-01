@@ -229,6 +229,7 @@
         }*/
         for (l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
             sonicManager.SonicLevel.Objects[l] = new LevelObjectInfo(sonicManager.SonicLevel.Objects[l]);
+            sonicManager.SonicLevel.Objects[l].index = l;
         }
 
 
@@ -273,9 +274,9 @@
                     }
                 }
 
-                window.CachedObjects[o] = dr; 
+                window.CachedObjects[o] = dr;
                 sonicManager.SonicLevel.Objects[l].setObjectData(dr);
-                
+
             }
 
         });
@@ -583,13 +584,14 @@
     window.LevelInformationArea();
     window.LevelManagerArea();
     window.ModifyTileArea();
-    window.ModifyTilePieceArea();
+    window.ModifyTilePieceArea();   
     window.ModifyTileChunkArea();
     window._TileChunkArea();
     window._TilePieceArea();
     window.ObjectFrameworkArea();
     window.ObjectFrameworkListArea();
     window.ObjectInfoArea();
+    window.LiveObjectsArea();
 
 }
 

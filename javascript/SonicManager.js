@@ -111,7 +111,7 @@ function SonicManager(mainCanvas, resize) {
                     for (var l = 0; l < sonicManager.SonicLevel.Objects.length; l++) {
                         var o = sonicManager.SonicLevel.Objects[l];
 
-                        if (_H.intersects2(o.getRect(), { X: ex, Y: ey })) {
+                        if (_H.intersects2(o.getRect(scale), { X: ex, Y: ey })) {
                             alert("Object Data: " + _H.stringify(o));
                         }
                     }
@@ -140,6 +140,8 @@ function SonicManager(mainCanvas, resize) {
                 obj.tick(obj, sonicManager.SonicLevel, sonicManager.sonicToon);
             }
         }
+
+        sonicManager.uiManager.liveObjectsArea.populate(sonicManager.inFocusObjects);
 
 
         for (var n = 0; n < sonicManager.animationInstances.length; n++) {

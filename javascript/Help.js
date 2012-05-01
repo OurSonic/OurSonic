@@ -21,11 +21,20 @@
         }
         return dc;
     },
-    removeAt:function (array,from, to) {
+
+    mergeRect: function (main, small) {
+
+        main.x = Math.min(small.x, main.x); 
+        main.width = Math.max(((small.x + small.width) + main.x), main.width); 
+        main.y = Math.min(small.y, main.y); 
+        main.height = Math.max(((small.y + small.height) + main.y), main.height);
+
+    },
+    removeAt: function (array, from, to) {
         var rest = array.slice((to || from) + 1 || array.length);
         array.length = from < 0 ? array.length + from : from;
-        return this.push.apply(array, rest);
-},
+        return array.push.apply(array, rest);
+    },
     decodeString: function (lvl) {
         var m = lvl.indexOf('&');
         var mln = lvl.substring(0, m);
