@@ -49,7 +49,7 @@
     this.spinDashSpeed = 0;
 
     this.angle = 0xff;
-    var oldSign; 
+    var oldSign;
     this.setVariables = function (water) {
         if (water) {
             this.acc = 0.0234375;
@@ -450,13 +450,13 @@
 
                     break;
                 case RotationMode.Ceiling:
-                    this.x = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.x = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? -12 : 12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 
                     break;
                 case RotationMode.RightWall:
-                    this.y = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? 12 : -12)));
+                    this.y = (best.value + (sensorM1.value == sensorM2.value ? 12 : (best.letter == "m1" ? -12 : 12)));
                     this.gsp = 0;
                     if (this.inAir) this.xsp = 0;
 
@@ -570,10 +570,10 @@
                     if (sensorC.value < sensorD.value) {
                         if (this.y + (__h) >= sensorC.value) {
                             if (this.ysp < 0) {
-                                if (sensorC.angle > 0x48 && sensorC.angle < 0x58) {
+                                if (sensorC.angle > 0x40 && sensorC.angle < 0xC0) {
                                     this.angle = sensorC.angle;
 
-                                    this.gsp = -this.ysp;
+                                    this.gsp = this.ysp;
                                     this.inAir = false;
                                     this.wasInAir = false;
                                 } else {
@@ -586,7 +586,7 @@
                     } else {
                         if (this.y + (__h) >= sensorD.value) {
                             if (this.ysp < 0) {
-                                if (sensorD.angle > 0x48 && sensorD.angle < 0x58) {
+                                if (sensorD.angle > 0x40 && sensorD.angle < 0xC0) {
                                     this.angle = sensorD.angle;
 
                                     this.gsp = -this.ysp;
@@ -603,9 +603,9 @@
                 } else if (sensorC.value > -1) {
                     if (this.y + (__h) >= sensorC.value) {
                         if (this.ysp < 0) {
-                            if (sensorC.angle > 0x48 && sensorC.angle < 0x58) {
+                            if (sensorC.angle > 0x40 && sensorC.angle < 0xC0) {
                                 this.angle = sensorC.angle;
-                                this.gsp = -this.ysp;
+                                this.gsp = this.ysp;
 
                                 this.inAir = false;
                                 this.wasInAir = false;
@@ -619,7 +619,7 @@
                 } else if (sensorD.value > -1) {
                     if (this.y + (__h) >= sensorD.value) {
                         if (this.ysp < 0) {
-                            if (sensorD.angle > 0x48 && sensorD.angle < 0x58) {
+                            if (sensorD.angle > 0x40 && sensorD.angle < 0xC0) {
                                 this.angle = sensorD.angle;
                                 this.gsp = -this.ysp;
                                 this.inAir = false;
@@ -834,6 +834,27 @@
             _H.save(canvas);
             var offset = this.getOffsetFromImage();
             canvas.translate((fx - sonicManager.windowLocation.x + offset.x) * scale.x, ((fy - sonicManager.windowLocation.y + offset.y) * scale.y));
+            if (true || sonicManager.showHeightMap) {
+                canvas.save();
+                var mul = 6;
+                var xj = this.xsp * scale.x * mul;
+                var yj = this.ysp * scale.y * mul;
+                canvas.beginPath();
+                canvas.moveTo(0, 0);
+                canvas.lineTo(xj, yj);
+                canvas.fillStyle = "rgba(163,241,255,0.8)";
+                canvas.arc(xj, yj, 5, 0, 2 * Math.PI, true);
+                canvas.closePath();
+
+                canvas.lineWidth = 6;
+                canvas.strokeStyle = "white"; //6C6CFC
+                canvas.stroke();
+                canvas.lineWidth = 3;
+                canvas.strokeStyle = "#2448D8"; //6C6CFC
+                canvas.fill();
+                canvas.stroke();
+                canvas.restore();
+            }
 
             if (!this.facing) {
                 //canvas.translate(cur.width, 0);
@@ -859,6 +880,7 @@
                 }
 
             }
+
             /*
             canvas.moveTo(-10 * scale.x, 4 * scale.y);
             canvas.lineTo(10 * scale.x, 4 * scale.y);

@@ -6,8 +6,7 @@
     <% string AJ = "a2aaas"; %>
     <meta name="viewport" content="width = device-width, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, user-scalable = no" />
     <title>Our Sonic</title>
-    <script src="lib/jquery.js" type="text/javascript">
-    </script>
+    <script src="lib/jquery.js" type="text/javascript"></script>
     <link rel="stylesheet" href="lib/codemirror.css">
     <script src="lib/codemirror.js"></script>
     <script src="lib/mode/javascript/javascript.js"></script>
@@ -21,7 +20,7 @@
     <script src="javascript/WorkerConsole.js?<%= AJ %>" type="text/javascript"> 
     </script>
     <script src="javascript/FunctionWorker.js?<%= AJ %>" type="text/javascript"> 
-    </script>
+    </script> 
     <script src="lib/Stats.js?<%= AJ %>" type="text/javascript"> 
     </script>
     <script src="lib/keyboardjs.js?<%= AJ %>" type="text/javascript"> 

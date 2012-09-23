@@ -1,6 +1,6 @@
 ﻿function Tile(colors) {
     this.colors = colors;
-    ;
+
     this.sprites = [];
     this.changeColor = function (x, y, color) {
         this.colors[x][y] = color;

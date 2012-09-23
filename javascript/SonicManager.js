@@ -281,7 +281,7 @@ function SonicManager(mainCanvas, resize) {
             canvas.translate(this.screenOffset.x, this.screenOffset.y);
 
             canvas.fillStyle = "#000000";
-            canvas.fillRect(0, 0, this.windowLocation.width * scale.x, this.windowLocation.height * scale.x);
+            canvas.fillRect(0, 0, this.windowLocation.width * scale.x, this.windowLocation.height * scale.y);
 
 
             this.windowLocation.x = _H.floor(this.sonicToon.x - this.windowLocation.width / 2);
@@ -369,7 +369,7 @@ function SonicManager(mainCanvas, resize) {
 
                 var pos = { x: _H.floor(_xP * 128 * scale.x), y: _H.floor(_yPreal * 128 * scale.y) };
 
-                var posj = { x: _H.floor(pos.x - this.windowLocation.x * scale.x), y: _H.floor(pos.y - this.windowLocation.y * scale.x) };
+                var posj = { x: _H.floor(pos.x - this.windowLocation.x * scale.x), y: _H.floor(pos.y - this.windowLocation.y * scale.y) };
 
                 if (!chunk.isEmpty())
                     chunk.draw(canvas, posj, scale, 0, bounds);
